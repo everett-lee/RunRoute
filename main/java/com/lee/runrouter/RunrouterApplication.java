@@ -1,6 +1,5 @@
 package com.lee.runrouter;
 
-import com.lee.runrouter.distancecalc.ScaledBBCalculator;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.GraphBuilder;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
@@ -10,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @SpringBootApplication
@@ -19,15 +17,13 @@ public class RunrouterApplication {
 	public static void main(String[] args) {
         ApplicationContext ctx = SpringApplication.run(RunrouterApplication.class, args);
 
-        boolean[] opts = {true, true, true, true, true, false, false,
+        boolean[] opts = {true, true, true, true, true, true, true,
                 true, true, true, true, true, true, true, true};
-        double[] coords = {51.446586, -0.125309};
+        double[] coords = {51.25, -1};
 
         ElementRepo repo = ctx.getBean(ElementRepo.class);
         GraphBuilder gb = ctx.getBean(GraphBuilder.class);
-        gb.buildGraph(coords, 1, opts);
-        ScaledBBCalculator calc = ctx.getBean(ScaledBBCalculator.class);
-        System.out.println(Arrays.toString(calc.calcBoundingBox(coords[0], coords[1], 5)));
+        gb.buildGraph(coords, 21, opts);
 
         System.out.println(repo.getWayRepo().size());
         System.out.println(repo.getOriginWay().getName());

@@ -6,8 +6,6 @@ import com.lee.runrouter.distancecalc.ScaledBBCalculator;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.SQLException;
-
 import static org.junit.Assert.*;
 
 public class OriginParserTest {
@@ -25,7 +23,7 @@ public class OriginParserTest {
     }
 
     @Test
-    public void checkReturnedIDMatchesSQL() throws SQLException {
+    public void testReturnedIDMatchesSQL() {
         boolean[] opts = {true, true, true, true, true, true, true,
                 true, true, true, true, true, true, true, true};
         double[] coords = {51.446586, -0.125309};
@@ -36,13 +34,23 @@ public class OriginParserTest {
     }
 
     @Test
-    public void checkReturnedIDMatchesSQLTwo() throws SQLException {
+    public void testkReturnedIDMatchesSQLTwo() {
         boolean[] opts = {true, true, true, true, true, true, true,
                 true, true, true, true, true, true, true, true};
-        double[] coords = {51.446586, -0.125309};
+        double[] coords = {51.919199, 1.045613};
         long id = op.getOriginWayID(coords, opts);
 
         // originWay closest to the giving coordinates
-        assertEquals(12540900, id);
+        assertEquals(60886410, id);
+    }
+
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testThrowErrorOnNoResult() {
+         boolean[] opts = {true, true, true, true, true, true, true,
+                true, true, true, true, true, true, true, true};
+        double[] coords = {-180, -180};
+        long id = op.getOriginWayID(coords, opts);
+
     }
 }

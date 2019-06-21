@@ -60,8 +60,6 @@ public class GraphBuilder {
                 // instance of Way from the way builder
 
                 if (id == originID) { // update repo reference to the origin
-                    System.out.println("The ID: " + id);
-                    System.out.println("ORIGIND ID: " + originID);
                     repo.setOriginWay(wayBuilder.getElement());
                 }
 

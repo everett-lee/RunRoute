@@ -1,5 +1,9 @@
 package com.lee.runrouter.graph.graphbuilder.node;
 
+/**
+ *  Represents an OpenStreetMap Node. Has an id
+ *  number and coordinates.
+ */
 public class Node {
     private long id;
     private double lat;

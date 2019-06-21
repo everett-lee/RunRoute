@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * Contains the first and final node of each Way, along with
- * all the nodes with Compose the way.
+ * all the nodes with compose the Way.
  */
 public class NodeContainer {
     private Node startNode;

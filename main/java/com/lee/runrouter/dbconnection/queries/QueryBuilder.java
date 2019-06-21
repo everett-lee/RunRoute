@@ -12,7 +12,7 @@ import java.sql.PreparedStatement;
 public interface QueryBuilder {
     public void reset();
 
-    public void setBBCoords(double[] BBCoords);
+    public void setBBCoords(double[] BBCoords, double[] origin);
 
     public void setHighWayOptions(boolean[] opts);
 

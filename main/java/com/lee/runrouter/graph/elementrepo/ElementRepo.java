@@ -11,6 +11,7 @@ import java.util.*;
  */
 @Component
 public class ElementRepo {
+    private Way originWay;
     private final Way start; // starting node of the route
     private final Map<Long, List<Way>> nodeToWay; // the Ways associated
     // with each node ID
@@ -37,5 +38,13 @@ public class ElementRepo {
 
     public List<Way> getWayRepo() {
         return wayRepo;
+    }
+
+    public Way getOriginWay() {
+        return originWay;
+    }
+
+    public void setOriginWay(Way originWay) {
+        this.originWay = originWay;
     }
 }

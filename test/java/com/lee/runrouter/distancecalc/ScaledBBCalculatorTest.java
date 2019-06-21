@@ -2,6 +2,8 @@ package com.lee.runrouter.distancecalc;
 
 import org.junit.*;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 public class ScaledBBCalculatorTest {

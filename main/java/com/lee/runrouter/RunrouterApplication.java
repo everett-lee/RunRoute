@@ -1,5 +1,6 @@
 package com.lee.runrouter;
 
+import com.lee.runrouter.distancecalc.ScaledBBCalculator;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.GraphBuilder;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @SpringBootApplication
@@ -19,15 +21,20 @@ public class RunrouterApplication {
 
         boolean[] opts = {true, true, true, true, true, false, false,
                 true, true, true, true, true, true, true, true};
-        double[] coords = {51.916036,1.042514};
+        double[] coords = {51.446586, -0.125309};
 
         ElementRepo repo = ctx.getBean(ElementRepo.class);
         GraphBuilder gb = ctx.getBean(GraphBuilder.class);
-        gb.buildGraph(coords, 3.5, opts);
+        gb.buildGraph(coords, 1, opts);
+        ScaledBBCalculator calc = ctx.getBean(ScaledBBCalculator.class);
+        System.out.println(Arrays.toString(calc.calcBoundingBox(coords[0], coords[1], 5)));
 
-        travel(repo.getWayRepo().get(1), repo);
+        System.out.println(repo.getWayRepo().size());
+        System.out.println(repo.getOriginWay().getName());
+        System.out.println(repo.getOriginWay().getNodeContainer().getStartNode());
+        System.out.println(repo.getOriginWay().getNodeContainer().getEndNode());
 
-	}
+    }
 
 	static void travel(Way way, ElementRepo repo) {
 	    double distance = 0;

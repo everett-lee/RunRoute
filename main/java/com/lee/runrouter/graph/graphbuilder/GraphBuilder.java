@@ -4,6 +4,7 @@ import com.lee.runrouter.dbconnection.queries.*;
 import com.lee.runrouter.graph.elementbuilder.WayBuilder;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
@@ -12,7 +13,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class GraphBuilder {
-    private QueryDirector director;
+    private QueryDirector wayDirector;
+    private OriginParser originParser;
     private WayBuilder wayBuilder;
     private ElementRepo repo;
 
@@ -20,14 +22,18 @@ public class GraphBuilder {
      * Constructs Way objects from the ResultSet returned by the QueryDirector class and adds them
      * to the repository.
      *
-     * @param director the QueryDirector class. Encapsulates PostGIS SQL query creation
+     * @param wayDirector the WayQueryDirector class. Encapsulates PostGIS SQL query for retrieving
+     *                    Ways matching the user-provided parameters
+     * @param originParser  builds and executes PostGIS query to retrieve ID
+     *                      corresponding to the originating way of the route.
      * @param wayBuilder the WayBuilder class. For incremental construction of Way objects
      * @param repo repository of Way objects and their associated nodes
      */
     @Autowired
-    public GraphBuilder(QueryDirector director, WayBuilder wayBuilder
-            , ElementRepo repo) {
-        this.director = director;
+    public GraphBuilder(@Qualifier("WayQueryDirector") QueryDirector wayDirector,
+                        OriginParser originParser, WayBuilder wayBuilder, ElementRepo repo) {
+        this.wayDirector = wayDirector;
+        this.originParser = originParser;
         this.wayBuilder = wayBuilder;
         this.repo = repo;
     }
@@ -38,9 +44,11 @@ public class GraphBuilder {
      * @param options an Array of booleans representing options such as preferred terrain types
      */
     public void buildGraph(double[] coords, double distance, boolean[] options) {
-        director.setOptions(options);
-        director.buildQuery(coords[0], coords[1], distance);
-        ResultSet results =  director.getResults();
+        Long originID = originParser.getOriginWayID(coords, options);
+
+        wayDirector.setOptions(options);
+        wayDirector.buildQuery(coords[0], coords[1], distance);
+        ResultSet results =  wayDirector.getResults();
 
         try {
             while (results.next()) {
@@ -50,6 +58,12 @@ public class GraphBuilder {
                 wayBuilder.reset();
                 wayBuilder.createInstance(id); // generate a new
                 // instance of Way from the way builder
+
+                if (id == originID) { // update repo reference to the origin
+                    System.out.println("The ID: " + id);
+                    System.out.println("ORIGIND ID: " + originID);
+                    repo.setOriginWay(wayBuilder.getElement());
+                }
 
                 Array tags = results.getArray(++i);
                 String[] tagArray = (String[]) tags.getArray();
@@ -106,6 +120,7 @@ public class GraphBuilder {
                 // add way to the repo
                 repo.getWayRepo().add(wayBuilder.getElement());
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

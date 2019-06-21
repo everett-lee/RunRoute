@@ -1,6 +1,7 @@
 package com.lee.runrouter.dbconnection.queries;
 
 import com.lee.runrouter.dbconnection.DBconnection;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
@@ -10,6 +11,7 @@ import java.sql.*;
  * The query is also assigned the correct configuration of road options.
  */
 @Component
+@Qualifier("WayQueryBuilder")
 public class WayQueryBuilder implements QueryBuilder {
     private Connection conn;
     private String sql;
@@ -56,12 +58,12 @@ public class WayQueryBuilder implements QueryBuilder {
 
     // select the correct coordinates for the queries bounding box
     @Override
-    public void setBBCoords(double[] bbCoords) {
+    public void setBBCoords(double[] BBCoords, double[] origin) {
         try {
-            preparedStatement.setDouble(1, bbCoords[0]);
-            preparedStatement.setDouble(2, bbCoords[1]);
-            preparedStatement.setDouble(3, bbCoords[2]);
-            preparedStatement.setDouble(4, bbCoords[3]);
+            preparedStatement.setDouble(1, BBCoords[0]);
+            preparedStatement.setDouble(2, BBCoords[1]);
+            preparedStatement.setDouble(3, BBCoords[2]);
+            preparedStatement.setDouble(4, BBCoords[3]);
         } catch (SQLException e) {
             e.printStackTrace();
         }

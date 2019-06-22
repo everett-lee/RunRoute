@@ -1,10 +1,12 @@
 package com.lee.runrouter.graph.graphbuilder.node;
 
+import java.io.Serializable;
+
 /**
  *  Represents an OpenStreetMap Node. Has an id
  *  number and coordinates.
  */
-public class Node {
+public class Node implements Serializable {
     private long id;
     private double lat;
     private double lon;
@@ -30,4 +32,5 @@ public class Node {
     public String toString() {
         return String.format("id: %d, coordinates: (%.3f, %.3f)", id, lat, lon);
     }
+
 }

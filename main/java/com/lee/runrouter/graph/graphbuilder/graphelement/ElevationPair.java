@@ -1,6 +1,8 @@
 package com.lee.runrouter.graph.graphbuilder.graphelement;
 
-public class ElevationPair {
+import java.io.Serializable;
+
+public class ElevationPair implements Serializable {
     private long startElevation;
     private long endElevation;
 

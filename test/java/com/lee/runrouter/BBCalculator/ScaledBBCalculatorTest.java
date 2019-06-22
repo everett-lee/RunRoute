@@ -1,8 +1,6 @@
-package com.lee.runrouter.distancecalc;
+package com.lee.runrouter.BBCalculator;
 
 import org.junit.*;
-
-import java.util.Arrays;
 
 import static org.junit.Assert.*;
 

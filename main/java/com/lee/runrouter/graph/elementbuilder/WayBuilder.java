@@ -2,7 +2,7 @@ package com.lee.runrouter.graph.elementbuilder;
 
 import com.lee.runrouter.graph.graphbuilder.node.Node;
 import com.lee.runrouter.graph.graphbuilder.graphelement.ElevationPair;
-import com.lee.runrouter.graph.graphbuilder.graphelement.NodeContainer;
+import com.lee.runrouter.graph.graphbuilder.node.NodeContainer;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import org.springframework.stereotype.Component;
 

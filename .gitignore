@@ -28,3 +28,6 @@ main/java/com/lee/runrouter/dbconnection/DBconnection.java
 # props
 *.properties
 
+# serialised files
+*.ser
+

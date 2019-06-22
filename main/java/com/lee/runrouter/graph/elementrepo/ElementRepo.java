@@ -3,6 +3,7 @@ package com.lee.runrouter.graph.elementrepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -10,7 +11,7 @@ import java.util.*;
  * routing algorithm to look up connected Ways
  */
 @Component
-public class ElementRepo {
+public class ElementRepo implements Serializable {
     private Way originWay;
     private final Way start; // starting node of the route
     private final Map<Long, List<Way>> nodeToWay; // the Ways associated

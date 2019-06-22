@@ -1,13 +1,13 @@
-package com.lee.runrouter.graph.graphbuilder.graphelement;
+package com.lee.runrouter.graph.graphbuilder.node;
 
-import com.lee.runrouter.graph.graphbuilder.node.Node;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Contains the first and final node of each Way, along with
  * all the nodes with compose the Way.
  */
-public class NodeContainer {
+public class NodeContainer implements Serializable {
     private Node startNode;
     private Node endNode;
     private List<Node> nodes;

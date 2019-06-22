@@ -1,4 +1,4 @@
-package com.lee.runrouter.distancecalc;
+package com.lee.runrouter.BBCalculator;
 
 import org.springframework.stereotype.Component;
 

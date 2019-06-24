@@ -32,8 +32,8 @@ public class ElementRepo implements Serializable {
      ** @param way being examined for connections
      * @return A list of connected Ways
      */
-    public List<Way> getConnectedWays(Way way) {
-        List<Way> connectedWays = new ArrayList<>();
+    public List<ConnectionPair> getConnectedWays(Way way) {
+        List<ConnectionPair> connectedWays = new ArrayList<>();
 
         for (Node n: way.getNodeContainer().getNodes()) {
             Optional<List<Way>> waysOptional = Optional.ofNullable(nodeToWay.get(n.getId()));
@@ -42,7 +42,10 @@ public class ElementRepo implements Serializable {
             if (waysOptional.isPresent()) {
                 List<Way> ways = waysOptional.get();
                 ways.remove(way); // remove current Way from list
-                connectedWays.addAll(ways);
+
+                // for each way in the list of returned ways, add it to the list of connected Ways
+                // along with the connected Node
+                ways.forEach(w -> connectedWays.add(new ConnectionPair(n, w)));
             }
         }
 

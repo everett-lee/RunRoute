@@ -5,12 +5,15 @@ import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
 
+/**
+ * Scores the Way under consideration based on the distance from the starting/origin Way.
+ * This is used to favour returning routes.
+ */
 public class DistanceFromOriginHeuristic implements Heuristic {
     private ElementRepo repo;
     private DistanceCalculator distanceCalculator;
     private final double NUMERATOR = 10; // magnitude scaled with number of points
     // attributed to finding return ways
-
 
     public DistanceFromOriginHeuristic(ElementRepo repo, DistanceCalculator distanceCalculator) {
         this.repo = repo;

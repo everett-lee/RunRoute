@@ -12,7 +12,7 @@ public class AlgoHelpers {
     static DistanceCalculator distanceCalculator = new HaversineCalculator();
 
     // find the closest node and return it.
-    static Node findClosest(Node compared, List<Node> colleagues) {
+    static public Node findClosest(Node compared, List<Node> colleagues) {
 
         Node closest = colleagues.stream().sorted(Comparator
                 .comparing(currentNode -> distanceCalculator.calculateDistance(compared, currentNode)))
@@ -23,7 +23,7 @@ public class AlgoHelpers {
     }
 
     // simple rise over run calculation
-    static double calculateIncline(double startElevation, double endElevation, double distance) {
+    static public double calculateIncline(double startElevation, double endElevation, double distance) {
         return (endElevation-startElevation) / distance;
     }
 }

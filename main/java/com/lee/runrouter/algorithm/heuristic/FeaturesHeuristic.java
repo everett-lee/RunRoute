@@ -5,6 +5,10 @@ import com.lee.runrouter.graph.graphbuilder.node.Node;
 
 import java.util.List;
 
+/**
+ * Scores Way under consideration based on its features and attributes.
+ * The scores reflect matches against user-supplied preferences.
+ */
 public class FeaturesHeuristic implements Heuristic {
     private double score = 0.0;
     private Way selectedWay;
@@ -38,7 +42,7 @@ public class FeaturesHeuristic implements Heuristic {
     }
 
     @Override
-    public double getScore (Node currentNode, Node visitedNode, Way selectedWay) {
+    public double getScore (Node currentNode, Node connectingNode, Way selectedWay) {
         this.selectedWay = selectedWay;
         this.currentNode = currentNode;
 

@@ -1,15 +1,19 @@
 package com.lee.runrouter.algorithm.pathnode;
 
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
+import com.lee.runrouter.graph.graphbuilder.node.Node;
 
-
+/**
+ * Stores the path traversed in the course of the generated cycle.
+ * The path can be re-traced by following predecessor nodes.
+ */
 public class PrimaryPathTuple implements PathTuple {
-    private Way predecessor;
+    private Node predecessor;
     private Way currentWay;
     private double score;
     private double length;
 
-    public PrimaryPathTuple(Way predecessor, Way currentWay, double score, double length) {
+    public PrimaryPathTuple(Node predecessor, Way currentWay, double score, double length) {
         this.predecessor = predecessor;
         this.currentWay = currentWay;
         this.score = score;
@@ -17,13 +21,8 @@ public class PrimaryPathTuple implements PathTuple {
     }
 
     @Override
-    public Way getPredecessor() {
+    public Node getPredecessor() {
         return this.predecessor;
-    }
-
-    @Override
-    public Way getWay() {
-        return this.currentWay;
     }
 
     @Override
@@ -34,5 +33,10 @@ public class PrimaryPathTuple implements PathTuple {
     @Override
     public double getLength() {
         return this.length;
+    }
+
+    @Override
+    public Way getCurrentWay() {
+        return this.currentWay;
     }
 }

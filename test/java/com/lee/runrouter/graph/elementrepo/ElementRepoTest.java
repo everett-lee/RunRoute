@@ -41,13 +41,15 @@ public class ElementRepoTest {
             }
         }
 
-        List<Way> result = repo.getConnectedWays(wayUnderTest);
+        List<ConnectionPair> result = repo.getConnectedWays(wayUnderTest);
 
         // all three ways are contained
         boolean flag = true;
 
-        for (Way w: result) {
-            if (w.getId() != 12540910 && w.getId() != 12540900 && w.getId() != 26464531) {
+        for (ConnectionPair pair: result) {
+            if (pair.getConnectingWay().getId() != 12540910 &&
+            pair.getConnectingWay().getId() != 12540900 &&
+                    pair.getConnectingWay().getId() != 26464531) {
                 flag = false;
             }
         }
@@ -66,11 +68,10 @@ public class ElementRepoTest {
             }
         }
 
-
-        List<Way> result = repo.getConnectedWays(wayUnderTest);
+        List<ConnectionPair> result = repo.getConnectedWays(wayUnderTest);
 
         // there is only the Way with this id number connected
-        boolean flag = result.get(0).getId() == 26576457;
+        boolean flag = result.get(0).getConnectingWay().getId() == 26576457;
 
         assertTrue(flag);
         assertTrue(result.size() == 1);

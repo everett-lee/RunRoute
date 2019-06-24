@@ -26,7 +26,7 @@ public class FeaturesHeuristicTest {
         double expected = 0.2;
 
         assertEquals(expected,
-                featuresHeuristic.getScore(new Node(1, 1, 1), wayUnderTest),
+                featuresHeuristic.getScore(new Node(1, 1, 1), new Node(1, 1, 1), wayUnderTest),
                 0.0001);
     }
 
@@ -43,7 +43,7 @@ public class FeaturesHeuristicTest {
         double expected = 0.2;
 
         assertEquals(expected,
-                featuresHeuristic.getScore(new Node(1, 1, 1), wayUnderTest),
+                featuresHeuristic.getScore(new Node(1, 1, 1), new Node(1, 1, 1), wayUnderTest),
                 0.0001);
     }
 
@@ -61,7 +61,7 @@ public class FeaturesHeuristicTest {
         double expected = 0.0;
 
         assertEquals(expected,
-                featuresHeuristic.getScore(new Node(1, 1, 1), wayUnderTest),
+                featuresHeuristic.getScore(new Node(1, 1, 1), new Node(1, 1, 1), wayUnderTest),
                 0.0001);
     }
 

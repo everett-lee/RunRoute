@@ -1,6 +1,7 @@
 package com.lee.runrouter.graph.elementrepo;
 
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
+import com.lee.runrouter.graph.graphbuilder.node.Node;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -22,6 +23,30 @@ public class ElementRepo implements Serializable {
         this.start = null;
         this.nodeToWay = new HashMap<>();
         this.wayRepo = new ArrayList<>();
+    }
+
+
+    /** Examines siblings of a Way to return those others
+     * that connect/intersect it
+     *
+     ** @param way being examined for connections
+     * @return A list of connected Ways
+     */
+    public List<Way> getConnectedWays(Way way) {
+        List<Way> connectedWays = new ArrayList<>();
+
+        for (Node n: way.getNodeContainer().getNodes()) {
+            Optional<List<Way>> waysOptional = Optional.ofNullable(nodeToWay.get(n.getId()));
+            // find all connected Ways using id number as look-up
+
+            if (waysOptional.isPresent()) {
+                List<Way> ways = waysOptional.get();
+                ways.remove(way); // remove current Way from list
+                connectedWays.addAll(ways);
+            }
+        }
+
+        return connectedWays;
     }
 
     public Map<Long, List<Way>> getNodeToWay() {

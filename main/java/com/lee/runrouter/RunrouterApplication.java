@@ -20,11 +20,16 @@ public class RunrouterApplication {
                 true, true, true, true, true, true, true, true};
         double[] coords = {51.446583, -0.125217};
 
+        final long startTime = System.currentTimeMillis();
         ElementRepo repo = ctx.getBean(ElementRepo.class);
         GraphBuilder gb = ctx.getBean(GraphBuilder.class);
         gb.buildGraph(coords, 5, opts);
+        final long endTime = System.currentTimeMillis();
+
+        System.out.println("Total execution time: " + (endTime - startTime));
 
         serialize(repo);
+
     }
 	static void serialize(ElementRepo repo) {
         try {

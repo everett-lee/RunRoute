@@ -49,7 +49,7 @@ public class DistanceFromOriginHeuristicTest {
 
         double expected = 10 / 409.2 ; // the 'score' obtained by dividing the constant by
         // the distance between the closest node (b) and the origin.
-        assertEquals(expected, distanceFromOriginHeuristic.getScore(a, way), 0.01);
+        assertEquals(expected, distanceFromOriginHeuristic.getScore(a, a, way), 0.01);
     }
 
     @Test
@@ -76,8 +76,8 @@ public class DistanceFromOriginHeuristicTest {
         when(originWay.getNodeContainer()).thenReturn(originNodeContainer);
         when(originNodeContainer.getStartNode()).thenReturn(origin);
 
-        double score1 = distanceFromOriginHeuristic.getScore(a, way);
-        double score2 = distanceFromOriginHeuristic.getScore(a, way2);
+        double score1 = distanceFromOriginHeuristic.getScore(a, a, way);
+        double score2 = distanceFromOriginHeuristic.getScore(a, a, way2);
 
         boolean result = score2 > score1; // way2 is closer to the origin than
         // way, so yields a higher score

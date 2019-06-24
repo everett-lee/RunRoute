@@ -3,15 +3,17 @@ package com.lee.runrouter.algorithm.pathnode;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 
 
-public class PrimaryPathNode implements PathNode {
+public class PrimaryPathTuple implements PathTuple {
     private Way predecessor;
     private Way currentWay;
     private double score;
+    private double length;
 
-    public PrimaryPathNode(Way predecessor, Way currentWay, double score) {
+    public PrimaryPathTuple(Way predecessor, Way currentWay, double score, double length) {
         this.predecessor = predecessor;
         this.currentWay = currentWay;
         this.score = score;
+        this.length = length;
     }
 
     @Override
@@ -27,5 +29,10 @@ public class PrimaryPathNode implements PathNode {
     @Override
     public double getScore() {
         return this.score;
+    }
+
+    @Override
+    public double getLength() {
+        return this.length;
     }
 }

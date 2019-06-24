@@ -38,7 +38,7 @@ public class FeaturesHeuristic implements Heuristic {
     }
 
     @Override
-    public double getScore (Node currentNode, Way selectedWay) {
+    public double getScore (Node currentNode, Node visitedNode, Way selectedWay) {
         this.selectedWay = selectedWay;
         this.currentNode = currentNode;
 

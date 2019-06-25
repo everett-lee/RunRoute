@@ -47,7 +47,7 @@ public class DistanceFromOriginHeuristicTest {
         when(originWay.getNodeContainer()).thenReturn(originNodeContainer);
         when(originNodeContainer.getStartNode()).thenReturn(origin);
 
-        double expected = 10 / 409.2 ; // the 'score' obtained by dividing the constant by
+        double expected = 50 / 362.4 ; // the 'score' obtained by dividing the constant by
         // the distance between the closest node (b) and the origin.
         assertEquals(expected, distanceFromOriginHeuristic.getScore(a, a, way), 0.01);
     }

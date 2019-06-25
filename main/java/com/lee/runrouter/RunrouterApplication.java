@@ -23,7 +23,7 @@ public class RunrouterApplication {
         final long startTime = System.currentTimeMillis();
         ElementRepo repo = ctx.getBean(ElementRepo.class);
         GraphBuilder gb = ctx.getBean(GraphBuilder.class);
-        gb.buildGraph(coords, 5, opts);
+        gb.buildGraph(coords, 15, opts);
         final long endTime = System.currentTimeMillis();
 
         System.out.println("Total execution time: " + (endTime - startTime));

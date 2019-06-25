@@ -14,7 +14,7 @@ import java.io.ObjectInputStream;
 
 import static org.junit.Assert.*;
 
-public class PrimaryEdgeDistanceCalculatorTest {
+public class EdgeDistanceCalculatorMainTest {
     DistanceCalculator distanceCalculator;
     EdgeDistanceCalculator edgeDistanceCalculator;
     static ElementRepo repo;
@@ -38,12 +38,13 @@ public class PrimaryEdgeDistanceCalculatorTest {
     @Before
     public void setUp() {
         this.distanceCalculator = new HaversineCalculator();
-        this.edgeDistanceCalculator = new PrimaryEdgeDistanceCalculator(distanceCalculator);
+        this.edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
     }
 
     @Test
     public void testLengthProvidedWhereTerminalNodesUsed() {
-       Way wayUnderTest1 = repo.getWayRepo().get(1);
+       Way wayUnderTest1 = repo.getWayRepo().stream().filter(x -> x.getId() == 51436348L)
+               .findFirst().get();
        Node a = wayUnderTest1.getNodeContainer().getEndNode();
 
        Way wayUnderTest2 = repo.getNodeToWay().get(43398761L).stream()

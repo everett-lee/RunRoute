@@ -5,11 +5,12 @@ import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class PrimaryEdgeDistanceCalculator implements EdgeDistanceCalculator {
+public class EdgeDistanceCalculatorMain implements EdgeDistanceCalculator {
     DistanceCalculator distanceCalculator;
 
-    public PrimaryEdgeDistanceCalculator(DistanceCalculator distanceCalculator) {
+    public EdgeDistanceCalculatorMain(DistanceCalculator distanceCalculator) {
         this.distanceCalculator = distanceCalculator;
     }
 
@@ -47,15 +48,28 @@ public class PrimaryEdgeDistanceCalculator implements EdgeDistanceCalculator {
      */
     private double iterativeDistance(Node currentNode, Node connectingNode, Way currentWay) {
         double distance = 0.0;
+
         List<Node> nodes = currentWay.getNodeContainer().getNodes();
-        int indexOfConnectingNode = nodes.indexOf(connectingNode);
+
+        int indexofCurrentNode = -1;
+        for (int i = 0; i < nodes.size(); i++) {
+            if (nodes.get(i).getId() == currentNode.getId()) {
+                indexofCurrentNode = i;
+            }
+        }
+
+        int indexOfConnectingNode = -1;
+        for (int i = 0; i < nodes.size(); i++) {
+            if (nodes.get(i).getId() == connectingNode.getId()) {
+                indexOfConnectingNode = i;
+            }
+        }
 
         Node thisNode = currentNode;
         Node nextNode = null;
-
         // current node is at the front of the list, so iterate forwards
-        if (currentNode.getId() == nodes.get(0).getId()) {
-            int i = 0;
+        if (indexOfConnectingNode > indexofCurrentNode) {
+            int i = indexofCurrentNode;
             while (thisNode.getId() != connectingNode.getId()) {
                 i += 1;
                 nextNode = nodes.get(i);
@@ -64,11 +78,10 @@ public class PrimaryEdgeDistanceCalculator implements EdgeDistanceCalculator {
                 distance += runningDist;
                 thisNode = nextNode;
             }
-        }
 
         // current node is at the back of the list, so iterate backwards
-        if (currentNode.getId() == nodes.get(nodes.size()-1).getId()) {
-            int i = nodes.size()-1;
+        } else {
+            int i = indexofCurrentNode;
             while (thisNode.getId() != connectingNode.getId()) {
                 i -= 1;
                 nextNode = nodes.get(i);

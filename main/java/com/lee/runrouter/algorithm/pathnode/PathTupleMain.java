@@ -7,21 +7,23 @@ import com.lee.runrouter.graph.graphbuilder.node.Node;
  * Stores the path traversed in the course of the generated cycle.
  * The path can be re-traced by following predecessor nodes.
  */
-public class PrimaryPathTuple implements PathTuple {
-    private Node predecessor;
+public class PathTupleMain implements PathTuple {
+    private PathTuple predecessor;
+    private Node previousNode;
     private Way currentWay;
     private double score;
     private double length;
 
-    public PrimaryPathTuple(Node predecessor, Way currentWay, double score, double length) {
+    public PathTupleMain(PathTuple predecessor, Node previousNode, Way currentWay, double score, double length) {
         this.predecessor = predecessor;
+        this.previousNode = previousNode;
         this.currentWay = currentWay;
         this.score = score;
         this.length = length;
     }
 
     @Override
-    public Node getPredecessor() {
+    public PathTuple getPredecessor() {
         return this.predecessor;
     }
 
@@ -36,7 +38,13 @@ public class PrimaryPathTuple implements PathTuple {
     }
 
     @Override
+    public Node getPreviousNode() {
+        return this.previousNode;
+    }
+
+    @Override
     public Way getCurrentWay() {
         return this.currentWay;
     }
+
 }

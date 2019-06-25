@@ -8,33 +8,41 @@ import com.lee.runrouter.graph.elementrepo.*;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
 
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class BestFirstSearch implements GraphSearch {
     private ElementRepo repo;
-    private DistanceFromOriginHeuristic distanceHeursitic;
-    private FeaturesHeuristic featuresHeuristic;
+    private Heuristic distanceFromOriginHeursitic;
+    private Heuristic featuresHeuristic;
     private EdgeDistanceCalculator edgeDistanceCalculator;
+    private ElevationHeuristic elevationHeuristic;
+    private double maxGradient = 0.8;
 
     private PriorityQueue<PathTuple> queue;
-    private final double SCALE = 0.05; // amount to scale upper and lower bound on
+    private final double SCALE = 0.1; // amount to scale upper and lower bound on
     // run length by
 
-    public BestFirstSearch(ElementRepo repo, DistanceFromOriginHeuristic distanceHeuristic,
-                           FeaturesHeuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator) {
+    public BestFirstSearch(ElementRepo repo, Heuristic distanceHeuristic,
+                           Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator,
+                           ElevationHeuristic elevationHeuristic) {
         this.repo = repo;
-        this.distanceHeursitic = distanceHeuristic;
+        this.distanceFromOriginHeursitic = distanceHeuristic;
         this.featuresHeuristic = featuresHeuristic;
         this.edgeDistanceCalculator = edgeDistanceCalculator;
+        this.elevationHeuristic = elevationHeuristic;
 
-        // compare priority queue items by their assigned score
-        this.queue = new PriorityQueue<>(Comparator.comparing(node -> node.getScore()));
+        // compare priority queue items by their assigned score in descending order
+        this.queue = new PriorityQueue<>(Comparator
+                .comparing((PathTuple tuple) -> tuple.getScore()).reversed());
     }
 
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double distance) {
-        double runLength = 0;
+        distance *= 1000; // distance in meters
+        Set<Long> visitedWays = new HashSet<>();
+
+        double runLength;
+        double halfLength = distance / 2;
         double upperBound = distance + (distance * SCALE); // upper bound of
         // run length
         double lowerBound = distance - (distance * SCALE); // lower bound of
@@ -45,50 +53,91 @@ public class BestFirstSearch implements GraphSearch {
         currentNode = AlgoHelpers.findClosest(currentNode, root.getNodeContainer().getNodes());
 
         // add the root Way to to the queue, with predecessor set to null
-        queue.add(new PrimaryPathTuple(null, repo.getOriginWay(), 0, 0));
+        queue.add(new PathTupleMain(null, currentNode, repo.getOriginWay(), 0, 0));
 
         while (!queue.isEmpty()) {
-
             PathTuple topTuple = queue.poll();
-            runLength = topTuple.getLength();
+
+//           queue.stream().forEach(x -> System.out.print(x.getCurrentWay().getId() + " " + x.getScore() + " "));
+//            System.out.println();
+            returnPath(topTuple);
+
+
+
+            // if the run has exceeded its minimum length
+            if (topTuple.getLength() >= lowerBound) {
+                System.out.println("hi");
+                // the route has returned to the origin
+                if (topTuple.getCurrentWay().getId() == repo.getOriginWay().getId()) {
+                    System.out.println("Yoooooooo");
+                    return topTuple;
+                }
+            }
+
             Way currentWay = topTuple.getCurrentWay();
-            double score = 0;
+
+            double score;
+
 
             // for each of the Ways reachable from the current Way
             for (ConnectionPair pair : repo.getConnectedWays(currentWay)) {
+                runLength = topTuple.getLength();
                 score = 0;
+                currentNode = topTuple.getPreviousNode();
                 Node connectingNode = pair.getConnectingNode();
+
                 Way selectedWay = pair.getConnectingWay();
+
+                if (visitedWays.contains(selectedWay.getId())) {
+                    score -= 1;
+                }
+
 
                 double distanceToNext = edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
 
                 if (runLength + distanceToNext > upperBound) {
-                    continue; // skip to next where max lenght exceeded
+                    continue; // skip to next where max length exceeded
                 }
 
-                //score += calculateElevationScore(currentNode, currentWay);
+//                double gradient = elevationHeuristic.getScore(currentNode, connectingNode,
+//                        currentWay, selectedWay, distanceToNext);
+//
+//                if (Math.abs(gradient) > this.maxGradient) {
+//                    continue; }
+//
+//                score += gradient;
+
+                // add the corresponding features score
                 score += featuresHeuristic.getScore(currentNode, connectingNode, selectedWay);
 
-
-                // if the run has exceeded its minimum length
-                if (runLength >= lowerBound) {
-                    // the route has returned to the origin
-                    if (currentWay == repo.getOriginWay()) {
-                        return new PrimaryPathTuple(currentNode, selectedWay, score, runLength);
-                    }
+                if (true) {
+                    score += distanceFromOriginHeursitic.getScore(currentNode, connectingNode, selectedWay);
                 }
 
-            }
+                PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
+                        score, runLength + distanceToNext);
+                queue.add(toAdd);
 
+                visitedWays.add(selectedWay.getId());
+            }
         }
 
         // error condition
-        return new PrimaryPathTuple(currentNode, repo.getOriginWay(), -1, -1);
+        return new PathTupleMain(null, null, repo.getOriginWay(), -1, -1);
     }
 
-    private double calculateElevationScore(Node currentNode, Way w) {
-        return 1;
+    public void setMaxGradient(double maxGradient) {
+        this.maxGradient = maxGradient;
     }
 
+    static void returnPath(PathTuple tp) {
+        if (tp.getPredecessor() == null) {
+            System.out.println();
+            return;
+        }
+
+        System.out.print("(" + tp.getPreviousNode().getId() + " distance: " + tp.getLength() + ") ");
+        returnPath(tp.getPredecessor());
+    }
 }

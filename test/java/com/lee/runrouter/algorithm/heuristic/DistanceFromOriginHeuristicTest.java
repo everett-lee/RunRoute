@@ -9,6 +9,9 @@ import com.lee.runrouter.graph.graphbuilder.node.NodeContainer;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -20,6 +23,7 @@ public class DistanceFromOriginHeuristicTest {
     Way originWay;
     NodeContainer nc;
     NodeContainer originNodeContainer;
+
 
     @Before
     public void setUp() {
@@ -45,7 +49,7 @@ public class DistanceFromOriginHeuristicTest {
 
         when(repo.getOriginWay()).thenReturn(originWay);
         when(originWay.getNodeContainer()).thenReturn(originNodeContainer);
-        when(originNodeContainer.getStartNode()).thenReturn(origin);
+        when(originNodeContainer.getNodes()).thenReturn(new ArrayList<>(Arrays.asList(origin)));
 
         double expected = 50 / 362.4 ; // the 'score' obtained by dividing the constant by
         // the distance between the closest node (b) and the origin.
@@ -54,7 +58,6 @@ public class DistanceFromOriginHeuristicTest {
 
     @Test
     public void testCloserOfTwo() {
-
         Node a = new Node(1, 51.447651, -0.126708);
         Node b = new Node(2, 51.446272, -0.124363);
         Node origin = new Node(3, 51.449822, -0.122808);
@@ -74,7 +77,7 @@ public class DistanceFromOriginHeuristicTest {
 
         when(repo.getOriginWay()).thenReturn(originWay);
         when(originWay.getNodeContainer()).thenReturn(originNodeContainer);
-        when(originNodeContainer.getStartNode()).thenReturn(origin);
+        when(originNodeContainer.getNodes()).thenReturn(new ArrayList<>(Arrays.asList(origin)));
 
         double score1 = distanceFromOriginHeuristic.getScore(a, a, way);
         double score2 = distanceFromOriginHeuristic.getScore(a, a, way2);

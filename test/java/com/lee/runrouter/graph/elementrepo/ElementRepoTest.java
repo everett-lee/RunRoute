@@ -1,6 +1,7 @@
 package com.lee.runrouter.graph.elementrepo;
 
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
+import com.lee.runrouter.graph.graphbuilder.node.Node;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -75,5 +76,23 @@ public class ElementRepoTest {
 
         assertTrue(flag);
         assertTrue(result.size() == 1);
+    }
+
+    @Test
+    public void testFindPathBack() {
+        Way wayUnderTest = repo.getWayRepo().stream().filter(x -> x.getId() == 106644898L).findFirst().get();
+
+        Way w1 = repo.getConnectedWays(wayUnderTest).stream()
+                .filter(x -> x.getConnectingWay().getId() == 106644899L).findFirst().get().getConnectingWay();
+
+        boolean flag = false;
+
+        for (ConnectionPair pair: repo.getConnectedWays(w1)) {
+            if (pair.getConnectingWay().getId() == 106644898L) {
+                flag = true;
+            }
+        }
+
+        assertTrue(flag);
     }
 }

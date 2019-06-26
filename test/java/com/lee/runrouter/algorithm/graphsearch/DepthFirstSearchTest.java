@@ -13,13 +13,15 @@ import org.junit.Test;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class BestFirstSearchTest {
+public class DepthFirstSearchTest {
     ElementRepo repo;
-    GraphSearch bfs;
+    GraphSearch dfs;
     DistanceCalculator distanceCalculator;
     Heuristic distanceHeuristic;
     Heuristic featuresHeuristic;
@@ -56,16 +58,16 @@ public class BestFirstSearchTest {
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         elevationHeuristic = new ElevationHeuristicMain(true);
 
-        bfs = new BestFirstSearch(repo, distanceHeuristic,
+        dfs = new DepthFirstSearch(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, elevationHeuristic);
     }
+
 
     @Test
     public void bb() {
         double[] coords = {51.446583, -0.125217};
-        PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 3);
+        PathTuple x = dfs.searchGraph(repo.getOriginWay(), coords, 5);
         System.out.println(x.getPredecessor() + " hello");
     }
-
 
 }

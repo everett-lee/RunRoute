@@ -14,8 +14,9 @@ import java.util.List;
 public class DistanceFromOriginHeuristic implements Heuristic {
     private ElementRepo repo;
     private DistanceCalculator distanceCalculator;
-    private final double NUMERATOR = 5; // magnitude scaled with number of points
+    private final double NUMERATOR = 500; // magnitude scaled with number of points
     // attributed to finding return ways
+
 
     public DistanceFromOriginHeuristic(ElementRepo repo, DistanceCalculator distanceCalculator) {
         this.repo = repo;
@@ -44,7 +45,6 @@ public class DistanceFromOriginHeuristic implements Heuristic {
 
         double endNodeDistance = distanceCalculator.calculateDistance(endNode,
                 midStartNode);
-
 
         // Numerator set above as a constant reflecting importance of favouring
         // return routes

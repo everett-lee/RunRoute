@@ -17,7 +17,7 @@ import java.util.*;
 
 import static org.junit.Assert.*;
 
-public class BestFirstSearchTest {
+public class BFSTest {
     ElementRepo repo;
     GraphSearch bfs;
     DistanceCalculator distanceCalculator;
@@ -56,7 +56,7 @@ public class BestFirstSearchTest {
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         elevationHeuristic = new ElevationHeuristicMain(true);
 
-        bfs = new BestFirstSearch(repo, distanceHeuristic,
+        bfs = new BFS(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, elevationHeuristic);
     }
 
@@ -65,6 +65,19 @@ public class BestFirstSearchTest {
         double[] coords = {51.446583, -0.125217};
         PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 3);
         System.out.println(x.getPredecessor() + " hello");
+
+        returnPath(x);
+
+    }
+
+    static void returnPath(PathTuple tp) {
+        if (tp.getPredecessor() == null) {
+            System.out.println();
+            return;
+        }
+
+        System.out.print("(" + tp.getPreviousNode().getId() + " distance: " + tp.getLength() + ") ");
+        returnPath(tp.getPredecessor());
     }
 
 

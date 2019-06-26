@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A repository class for generated Way instances. Used by the
@@ -36,18 +37,24 @@ public class ElementRepo implements Serializable {
         List<ConnectionPair> connectedWays = new ArrayList<>();
 
         for (Node n: way.getNodeContainer().getNodes()) {
-            Optional<List<Way>> waysOptional = Optional.ofNullable(nodeToWay.get(n.getId()));
             // find all connected Ways using id number as look-up
+            Optional<List<Way>> waysOptional = Optional.ofNullable(nodeToWay.get(n.getId()));
 
             if (waysOptional.isPresent()) {
                 List<Way> ways = waysOptional.get();
-                ways.remove(way); // remove current Way from list
+
 
                 // for each way in the list of returned ways, add it to the list of connected Ways
                 // along with the connected Node
-                ways.forEach(w -> connectedWays.add(new ConnectionPair(n, w)));
+                for (Way w: ways) {
+                    connectedWays.add((new ConnectionPair(n, w)));
+                }
             }
         }
+
+        connectedWays = connectedWays.stream()
+                .filter(pair -> pair.getConnectingWay().getId() != way.getId())
+                .collect(Collectors.toList());
 
         return connectedWays;
     }
@@ -61,7 +68,9 @@ public class ElementRepo implements Serializable {
             // associated with the id
             nodeToWay.put(id, new ArrayList<>(Arrays.asList(way)));
         } else {
-            nodeToWay.get(id).add(way); // add the associated way to the list
+            if (!nodeToWay.get(id).contains(way)) {
+                nodeToWay.get(id).add(way); // add the associated way to the list
+            }
         }
     }
 

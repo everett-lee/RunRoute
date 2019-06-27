@@ -33,10 +33,16 @@ public class ElevationHeuristicMain implements ElevationHeuristic {
 
     // simple rise over run calculation
     private double calculateGradient(double startElevation, double endElevation, double distance) {
-        double modifier = 1; // where uphill is preferred
+        double modifier = 10; // where uphill is preferred
 
         if (preferDownhill) {
-            modifier = -1;
+            modifier = -10;
+        }
+
+        double elevationDelta = endElevation - startElevation;
+
+        if (elevationDelta == 0) {
+            return 0;
         }
 
         return ((endElevation - startElevation) / distance) * modifier;

@@ -11,14 +11,14 @@ import java.util.List;
  * Scores the Way under consideration based on the distance from the starting/origin Way.
  * This is used to favour returning routes.
  */
-public class DistanceFromOriginHeuristic implements Heuristic {
+public class DistanceFromOriginToMidHeuristic implements Heuristic {
     private ElementRepo repo;
     private DistanceCalculator distanceCalculator;
     private final double NUMERATOR = 500; // magnitude scaled with number of points
     // attributed to finding return ways
 
 
-    public DistanceFromOriginHeuristic(ElementRepo repo, DistanceCalculator distanceCalculator) {
+    public DistanceFromOriginToMidHeuristic(ElementRepo repo, DistanceCalculator distanceCalculator) {
         this.repo = repo;
         this.distanceCalculator = distanceCalculator;
     }
@@ -33,22 +33,15 @@ public class DistanceFromOriginHeuristic implements Heuristic {
      */
     @Override
     public double getScore(Node currentNode, Node visitedNode, Way selectedWay) {
-        Node startNode = selectedWay.getNodeContainer().getStartNode();
-        Node endNode = selectedWay.getNodeContainer().getEndNode();
+        List<Node> selectedWaynodes = selectedWay.getNodeContainer().getNodes();
+        Node midSelectedNode = selectedWaynodes.get(selectedWaynodes.size()/2);
 
         List<Node> startingWaynodes = repo.getOriginWay().getNodeContainer().getNodes();
         Node midStartNode = startingWaynodes.get(startingWaynodes.size()/2);
 
-        double startNodeDistance = distanceCalculator.calculateDistance(startNode,
+        double distance = distanceCalculator.calculateDistance(midSelectedNode,
                 midStartNode);
 
-        double endNodeDistance = distanceCalculator.calculateDistance(endNode,
-                midStartNode);
-
-        // Numerator set above as a constant reflecting importance of favouring
-        // return routes
-        // assumption: denominator cannot be zero unless Node being used in the
-        // calculation is the origin, in which case algorithm should have terminated
-        return NUMERATOR / Math.min(startNodeDistance, endNodeDistance);
+        return NUMERATOR / distance;
     }
 }

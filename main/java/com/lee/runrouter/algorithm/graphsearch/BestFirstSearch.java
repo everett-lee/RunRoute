@@ -8,6 +8,7 @@ import com.lee.runrouter.graph.elementrepo.*;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
 
+
 import java.util.*;
 
 public class BestFirstSearch implements GraphSearch {
@@ -19,7 +20,7 @@ public class BestFirstSearch implements GraphSearch {
     private double maxGradient = 0.8;
 
     private PriorityQueue<PathTuple> queue;
-    private final double SCALE = 0.1; // amount to scale upper and lower bound on
+    private final double SCALE = 0.05; // amount to scale upper and lower bound on
     // run length by
 
     public BestFirstSearch(ElementRepo repo, Heuristic distanceHeuristic,
@@ -42,7 +43,6 @@ public class BestFirstSearch implements GraphSearch {
         Set<Long> visitedWays = new HashSet<>();
 
         double runLength;
-        double halfLength = distance / 2;
         double upperBound = distance + (distance * SCALE); // upper bound of
         // run length
         double lowerBound = distance - (distance * SCALE); // lower bound of

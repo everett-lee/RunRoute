@@ -20,7 +20,7 @@ public class BFS implements GraphSearch {
     private double maxGradient = 0.8;
 
     private PriorityQueue<PathTuple> queue;
-    private final double SCALE = 0.1; // amount to scale upper and lower bound on
+    private final double SCALE = 0.05f; // amount to scale upper and lower bound on
     // run length by
 
     public BFS(ElementRepo repo, Heuristic distanceHeuristic,
@@ -43,32 +43,26 @@ public class BFS implements GraphSearch {
         Set<Long> visitedWays = new HashSet<>();
 
         double currentRouteLength;
-        double halfLength = distance / 8;
         double upperBound = distance + (distance * SCALE); // upper bound of
         // run length
-        double lowerBound = distance - (distance * SCALE); // lower bound of
+        double lowerBound = distance; // lower bound of
         // run length
 
         Node originNode = new Node(-1, coords[0], coords[1]);
         originNode = AlgoHelpers.findClosest(originNode, repo.getOriginWay().getNodeContainer().getNodes());
         queue.add(new PathTupleMain(null, originNode, root, 0, 0));
 
-        double maxDisScore = 0;
+
         while (!queue.isEmpty()) {
             PathTuple topTuple = queue.poll();
             Way currentWay = topTuple.getCurrentWay();
             Node currentNode  = topTuple.getPreviousNode();
             double score;
 
-            //returnPath(topTuple);
-
             currentRouteLength = topTuple.getLength();
 
             if (currentRouteLength > lowerBound) {
-                if (currentWay.getId() == repo.getOriginWay().getId()) {
-                    return new PathTupleMain(topTuple, currentNode,
-                            currentWay, topTuple.getScore(), topTuple.getLength());
-                }
+                return topTuple;
             }
 
             for (ConnectionPair pair: repo.getConnectedWays(currentWay)) {
@@ -85,19 +79,8 @@ public class BFS implements GraphSearch {
                     continue; // skip to next where max length exceeded
                 }
 
-
                 if (visitedWays.contains(selectedWay.getId())) {
                     score -= 5;
-                }
-
-                if (currentRouteLength > halfLength) {
-                    score += distanceFromOriginHeursitic.getScore(currentNode, connectingNode, selectedWay);
-
-                    if (score < maxDisScore * 0.8) {
-                        continue;
-                    } else {
-                        maxDisScore = score;
-                    }
                 }
 
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
@@ -117,7 +100,7 @@ public class BFS implements GraphSearch {
 
     static void returnPath(PathTuple tp) {
         if (tp.getPredecessor() == null) {
-            System.out.println();
+            System.out.print("(" + tp.getPreviousNode().getId() + " distance: " + tp.getLength() + ") ");
             return;
         }
 

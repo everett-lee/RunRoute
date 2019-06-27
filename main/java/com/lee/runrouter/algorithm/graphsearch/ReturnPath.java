@@ -17,15 +17,23 @@ import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Set;
 
-
+/**
+ * Variant of the BFS algorithm that restricts the next selected Way
+ * to those closer to the starting point than the previous. It is used
+ * to complete the circuit and return to the route's starting position
+ * following execution of the BFS.
+ */
 public class ReturnPath implements GraphSearch {
-    private ElementRepo repo;
+    private ElementRepo repo; // the repository of Ways and Nodes
     private Heuristic distanceFromOriginHeursitic;
     private Heuristic featuresHeuristic;
     private EdgeDistanceCalculator edgeDistanceCalculator;
     private ElevationHeuristic elevationHeuristic;
-    private DistanceCalculator distanceCalculator;
-    private double maxGradient = 0.8;
+    private double maxGradient = 0.8; // is used-defined
+    private final double REPEATED_EDGE_PENALTY = 1; // deducted from score where
+    // edge/Way has been previously visited
+    private final double RANDOM_REDUCER = 5; // divides into random number added to the
+    // score
 
     private PriorityQueue<PathTuple> queue;
     private final double SCALE = 0.5; // amount to scale upper and lower bound on
@@ -39,14 +47,26 @@ public class ReturnPath implements GraphSearch {
         this.featuresHeuristic = featuresHeuristic;
         this.edgeDistanceCalculator = edgeDistanceCalculator;
         this.elevationHeuristic = elevationHeuristic;
-        this.distanceCalculator = distanceCalculator;
 
         // compare priority queue items by their assigned score in descending order
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getScore()).reversed());
     }
 
-
+    /**
+     * Method for generating a route of the specified length,
+     * connecting the initial position back to the origin point
+     * of th route.
+     * The method returns when it connects back to the origin
+     * Way after exceeding the minimum required run length.
+     *
+     * @param root the Way at which the run begins
+     * @param coords the coordinates at which the run begins
+     * @param distance the required distance for the run
+     * @return a PathTuple containing links to previous PathTuples,
+     *  the final Node and Way, their score, and the total length
+     *  of the path
+     */
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double distance) {
         distance *= 1000; // distance in meters
@@ -70,8 +90,6 @@ public class ReturnPath implements GraphSearch {
             double score;
             currentRouteLength = topTuple.getLength();
 
-            // distance to origin point from the last explored way
-            double lastDist = distanceFromOriginHeursitic.getScore(currentWay);
 
             // if the run has reached or exceeded its minimum length
             if (topTuple.getLength() >= lowerBound) {
@@ -81,6 +99,10 @@ public class ReturnPath implements GraphSearch {
                     return topTuple;
                 }
             }
+
+            // distance to origin point from the last explored way
+            double lastDist = distanceFromOriginHeursitic.getScore(currentWay);
+
             // for each Way reachable from the current Way
             for (ConnectionPair pair: repo.getConnectedWays(currentWay)) {
                 currentRouteLength = topTuple.getLength();
@@ -107,7 +129,7 @@ public class ReturnPath implements GraphSearch {
 
                 // drop the score where this way has already been explored
                 if (visitedWays.contains(currentWay.getId())) {
-                    score -= 1;
+                    score -= REPEATED_EDGE_PENALTY;
                 }
 
                 visitedWays.add(currentWay.getId());
@@ -122,27 +144,15 @@ public class ReturnPath implements GraphSearch {
                 score += featuresHeuristic.getScore(selectedWay);
 
                 // add a small random value to break ties
-                score += (Math.random()/5);
+                score += (Math.random() / RANDOM_REDUCER);
 
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, currentRouteLength + distanceToNext);
                 queue.add(toAdd);
             }
-
         }
 
         return new PathTupleMain(null, null, null,
                 -1, -1);
-    }
-
-    static void returnPath(PathTuple tp) {
-        if (tp.getPredecessor() == null) {
-            System.out.println();
-            return;
-        }
-
-        System.out.print("(" + tp.getPreviousNode().getId() + " distance: " + tp.getLength() + ") " + "Way : "
-                + tp.getCurrentWay().getId());
-        returnPath(tp.getPredecessor());
     }
  }

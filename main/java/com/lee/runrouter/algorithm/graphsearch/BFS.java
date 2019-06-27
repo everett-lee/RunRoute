@@ -11,16 +11,25 @@ import com.lee.runrouter.graph.graphbuilder.node.Node;
 
 import java.util.*;
 
+/**
+ * A greedy Best-First Search algorithm that utilises a priority queue
+ * to explore the neighbouring node with the highest score (as assessed
+ * by the heuristics) at each stage.
+ */
 public class BFS implements GraphSearch {
-    private ElementRepo repo;
+    private ElementRepo repo; // the repository of Ways and Nodes
     private Heuristic distanceFromOriginHeursitic;
     private Heuristic featuresHeuristic;
     private EdgeDistanceCalculator edgeDistanceCalculator;
     private ElevationHeuristic elevationHeuristic;
-    private double maxGradient = 0.8;
+    private double maxGradient = 0.8; // is used-defined
+    private final double REPEATED_EDGE_PENALTY = 5; // deducted from score where
+    // edge/Way has been previously visited
+    private final double RANDOM_REDUCER = 5; // divides into random number added to the
+    // score
 
     private PriorityQueue<PathTuple> queue;
-    private final double SCALE = 0.05; // amount to scale upper and lower bound on
+    private final double SCALE = 0.1; // amount to scale upper and lower bound on
     // run length by
 
     public BFS(ElementRepo repo, Heuristic distanceHeuristic,
@@ -32,11 +41,24 @@ public class BFS implements GraphSearch {
         this.edgeDistanceCalculator = edgeDistanceCalculator;
         this.elevationHeuristic = elevationHeuristic;
 
-        // compare priority queue items by their assigned score in descending order
+        // sort priority queue items by their assigned score in descending order
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getScore()).reversed());
     }
 
+    /**
+     * Method for generating a route of the specified length,
+     * that selects a path based on the given preferences.
+     * The method returns as soon as a valid route of the minimum
+     * length has been generated
+     *
+     * @param root the Way at which the run begins
+     * @param coords the coordinates at which the run begins
+     * @param distance the required distance for the run
+     * @return a PathTuple containing links to previous PathTuples,
+     *  the final Node and Way, their score, and the total length
+     *  of the path
+     */
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double distance) {
         distance *= 1000; // distance in meters
@@ -45,7 +67,7 @@ public class BFS implements GraphSearch {
         double currentRouteLength;
         double upperBound = distance + (distance * SCALE); // upper bound of
         // run length
-        double lowerBound = distance; // lower bound of
+        double lowerBound = distance - (distance * SCALE); // lower bound of
         // run length
 
         Node originNode = new Node(-1, coords[0], coords[1]);
@@ -61,10 +83,12 @@ public class BFS implements GraphSearch {
 
             currentRouteLength = topTuple.getLength();
 
+            // return the first route to exceed the minimum length requirement.
             if (currentRouteLength > lowerBound) {
                 return topTuple;
             }
 
+            // for each Way reachable from the the current Way
             for (ConnectionPair pair: repo.getConnectedWays(currentWay)) {
                 currentRouteLength = topTuple.getLength();
                 score = 0;
@@ -72,16 +96,18 @@ public class BFS implements GraphSearch {
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();
 
+                // calculates distance from the current Node to the Node connecting
+                // the current Way to the selected Way
                 double distanceToNext = edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
 
                 if (currentRouteLength + distanceToNext > upperBound) {
-                    continue; // skip to next where max length exceeded
+                    continue; // skip to next where maximum length exceeded
                 }
 
                 // drop the score where this way has already been explored
                 if (visitedWays.contains(currentWay.getId())) {
-                    score -= 1;
+                    score -= REPEATED_EDGE_PENALTY;
                 }
 
                 visitedWays.add(currentWay.getId());
@@ -89,6 +115,8 @@ public class BFS implements GraphSearch {
                 double gradient = elevationHeuristic.getScore(currentNode, connectingNode,
                         currentWay, selectedWay, distanceToNext);
 
+                // skip to next where the gradient of this way exceeds
+                // the maximum
                 if (Math.abs(gradient) > this.maxGradient) {
                     continue; }
 
@@ -96,15 +124,15 @@ public class BFS implements GraphSearch {
                 score += featuresHeuristic.getScore(selectedWay);
 
                 // add a small random value to break ties
-                score += (Math.random()/5);
+                score += (Math.random() / RANDOM_REDUCER);
 
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, currentRouteLength + distanceToNext);
                 queue.add(toAdd);
             }
-
         }
 
+        // null object returned in the event of an error
         return new PathTupleMain(null, null, null,
                 -1, -1);
     }

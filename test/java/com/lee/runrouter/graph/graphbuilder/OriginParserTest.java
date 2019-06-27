@@ -2,7 +2,7 @@ package com.lee.runrouter.graph.graphbuilder;
 
 import com.lee.runrouter.dbconnection.queries.OriginQueryBuilder;
 import com.lee.runrouter.dbconnection.queries.OriginQueryDirector;
-import com.lee.runrouter.BBCalculator.ScaledBBCalculator;
+import com.lee.runrouter.bbcalculator.ScaledBBCalculator;
 import org.junit.Before;
 import org.junit.Test;
 

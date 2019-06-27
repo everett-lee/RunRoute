@@ -1,5 +1,6 @@
 package com.lee.runrouter.BBCalculator;
 
+import com.lee.runrouter.bbcalculator.ScaledBBCalculator;
 import org.junit.*;
 
 import static org.junit.Assert.*;

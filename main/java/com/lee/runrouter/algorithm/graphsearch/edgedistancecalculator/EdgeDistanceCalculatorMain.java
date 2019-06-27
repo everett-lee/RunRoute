@@ -57,14 +57,12 @@ public class EdgeDistanceCalculatorMain implements EdgeDistanceCalculator {
         List<Node> nodes = currentWay.getNodeContainer().getNodes();
 
         int indexofCurrentNode = -1;
+        int indexOfConnectingNode = -1;
         for (int i = 0; i < nodes.size(); i++) {
             if (nodes.get(i).getId() == currentNode.getId()) {
                 indexofCurrentNode = i;
             }
-        }
 
-        int indexOfConnectingNode = -1;
-        for (int i = 0; i < nodes.size(); i++) {
             if (nodes.get(i).getId() == connectingNode.getId()) {
                 indexOfConnectingNode = i;
             }

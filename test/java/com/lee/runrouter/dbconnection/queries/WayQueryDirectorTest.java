@@ -1,7 +1,7 @@
 package com.lee.runrouter.dbconnection.queries;
 
-import com.lee.runrouter.BBCalculator.BBCalculator;
-import com.lee.runrouter.BBCalculator.ScaledBBCalculator;
+import com.lee.runrouter.bbcalculator.BBCalculator;
+import com.lee.runrouter.bbcalculator.ScaledBBCalculator;
 import org.junit.Before;
 import org.junit.Test;
 

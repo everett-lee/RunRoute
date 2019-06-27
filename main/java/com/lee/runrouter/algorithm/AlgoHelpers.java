@@ -21,9 +21,4 @@ public class AlgoHelpers {
 
         return closest;
     }
-
-    // simple rise over run calculation
-    static public double calculateIncline(double startElevation, double endElevation, double distance) {
-        return (endElevation-startElevation) / distance;
-    }
 }

@@ -1,4 +1,4 @@
-package com.lee.runrouter.BBCalculator;
+package com.lee.runrouter.bbcalculator;
 
 import org.springframework.stereotype.Component;
 

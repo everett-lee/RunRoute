@@ -25,7 +25,7 @@ public class ReturnPath implements GraphSearch {
     private EdgeDistanceCalculator edgeDistanceCalculator;
     private ElevationHeuristic elevationHeuristic;
     private DistanceCalculator distanceCalculator;
-    private double maxGradient = 0.1;
+    private double maxGradient = 0.8;
 
     private PriorityQueue<PathTuple> queue;
     private final double SCALE = 0.5; // amount to scale upper and lower bound on
@@ -71,7 +71,7 @@ public class ReturnPath implements GraphSearch {
             currentRouteLength = topTuple.getLength();
 
             // distance to origin point from the last explored way
-            double lastDist = distanceFromOriginHeursitic.getScore(currentNode, currentNode, currentWay);
+            double lastDist = distanceFromOriginHeursitic.getScore(currentWay);
 
             // if the run has reached or exceeded its minimum length
             if (topTuple.getLength() >= lowerBound) {
@@ -97,7 +97,7 @@ public class ReturnPath implements GraphSearch {
                 }
 
                 double currentDistanceScore
-                        = distanceFromOriginHeursitic.getScore(currentNode, currentNode, selectedWay);
+                        = distanceFromOriginHeursitic.getScore(selectedWay);
 
                 // if the current distance score is less than the previous Way's, that
                 // is it is further away, then skip this iteration
@@ -112,13 +112,17 @@ public class ReturnPath implements GraphSearch {
 
                 visitedWays.add(currentWay.getId());
 
-                score += elevationHeuristic.getScore(currentNode,
-                        connectingNode, currentWay, selectedWay, distanceToNext);
+                double gradient = elevationHeuristic.getScore(currentNode, connectingNode,
+                        currentWay, selectedWay, distanceToNext);
 
-                score += featuresHeuristic.getScore(currentNode, connectingNode, selectedWay);
+                if (Math.abs(gradient) > this.maxGradient) {
+                    continue; }
+
+                // add score reflecting correspondence of terrain features to user selectionss
+                score += featuresHeuristic.getScore(selectedWay);
 
                 // add a small random value to break ties
-                score += (Math.random()/10);
+                score += (Math.random()/5);
 
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, currentRouteLength + distanceToNext);

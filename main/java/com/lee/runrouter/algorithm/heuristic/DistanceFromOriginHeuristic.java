@@ -25,14 +25,12 @@ public class DistanceFromOriginHeuristic implements Heuristic {
 
     /**
      *
-     * @param currentNode the current Node
-     * @param visitedNode the Node connecting the current Way to the selectedWay
      * @param selectedWay the Way being assessed
      * @return a score corresponding to the distance from either endpoint of the way
      * back to the route origin
      */
     @Override
-    public double getScore(Node currentNode, Node visitedNode, Way selectedWay) {
+    public double getScore(Way selectedWay) {
         Node startNode = selectedWay.getNodeContainer().getStartNode();
         Node endNode = selectedWay.getNodeContainer().getEndNode();
 

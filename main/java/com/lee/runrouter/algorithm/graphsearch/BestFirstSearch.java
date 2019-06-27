@@ -58,10 +58,6 @@ public class BestFirstSearch implements GraphSearch {
         while (!queue.isEmpty()) {
             PathTuple topTuple = queue.poll();
 
-////           queue.stream().forEach(x -> System.out.print(x.getCurrentWay().getId() + " " + x.getScore() + " "));
-//            System.out.println();
-            returnPath(topTuple);
-
             // if the run has exceeded its minimum length
             if (topTuple.getLength() >= lowerBound) {
                 // the route has returned to the origin
@@ -72,21 +68,15 @@ public class BestFirstSearch implements GraphSearch {
             }
 
             Way currentWay = topTuple.getCurrentWay();
-
             double score;
-
 
             // for each of the Ways reachable from the current Way
             for (ConnectionPair pair : repo.getConnectedWays(currentWay)) {
                 runLength = topTuple.getLength();
-                score = 0;
                 currentNode = topTuple.getPreviousNode();
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();
-
-//                if (visitedWays.contains(selectedWay.getId())) {
-//                    score = score * 0.9;
-//                }
+                score = 0;
 
                 double distanceToNext = edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
@@ -95,24 +85,28 @@ public class BestFirstSearch implements GraphSearch {
                     continue; // skip to next where max length exceeded
                 }
 
-//                double gradient = elevationHeuristic.getScore(currentNode, connectingNode,
-//                        currentWay, selectedWay, distanceToNext);
-//
-//                if (Math.abs(gradient) > this.maxGradient) {
-//                    continue; }
-//
-//                score += gradient;
+                double gradient = elevationHeuristic.getScore(currentNode, connectingNode,
+                        currentWay, selectedWay, distanceToNext);
+
+                if (Math.abs(gradient) > this.maxGradient) {
+                    continue; }
+
+                score += gradient;
 
                 //  add the corresponding features score
-                score += featuresHeuristic.getScore(currentNode, connectingNode, selectedWay);
+                score += featuresHeuristic.getScore(selectedWay);
 
                 if (runLength + distanceToNext > distance / 4) {
-                    score += distanceFromOriginHeursitic.getScore(currentNode, connectingNode, selectedWay);
+                    score += distanceFromOriginHeursitic.getScore(selectedWay);
                 }
 
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, runLength + distanceToNext);
                 queue.add(toAdd);
+
+                if (visitedWays.contains(selectedWay.getId())) {
+                    score -= 1;
+                }
 
                 visitedWays.add(selectedWay.getId());
             }

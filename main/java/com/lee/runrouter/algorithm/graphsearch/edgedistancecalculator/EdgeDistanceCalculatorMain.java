@@ -7,8 +7,13 @@ import com.lee.runrouter.graph.graphbuilder.node.Node;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * For calculating the great-circle distance between each of the points/Nodes
+ * making up a given Way.
+ */
 public class EdgeDistanceCalculatorMain implements EdgeDistanceCalculator {
-    DistanceCalculator distanceCalculator;
+    DistanceCalculator distanceCalculator; // the calculator used to
+    // estimate the graph-circle distance between points
 
     public EdgeDistanceCalculatorMain(DistanceCalculator distanceCalculator) {
         this.distanceCalculator = distanceCalculator;

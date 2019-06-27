@@ -32,7 +32,7 @@ public class DistanceFromOriginToMidHeuristic implements Heuristic {
      * back to the route origin
      */
     @Override
-    public double getScore(Node currentNode, Node visitedNode, Way selectedWay) {
+    public double getScore(Way selectedWay) {
         List<Node> selectedWaynodes = selectedWay.getNodeContainer().getNodes();
         Node midSelectedNode = selectedWaynodes.get(selectedWaynodes.size()/2);
 

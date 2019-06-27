@@ -57,10 +57,10 @@ public class DistanceFromOriginToMidTestHeuristicRealData {
         Way w3 = repo.getWayRepo().stream().filter(x -> x.getId() == 22898317L).findFirst().get();
         Way w4 = repo.getWayRepo().stream().filter(x -> x.getId() == 12536353L).findFirst().get();
 
-        double score1 = distanceFromOriginHeuristic.getScore(n1, n2, w1);
-        double score2 = distanceFromOriginHeuristic.getScore(n1, n2, w2);
-        double score3 = distanceFromOriginHeuristic.getScore(n1, n2, w3);
-        double score4 = distanceFromOriginHeuristic.getScore(n1, n2, w4);
+        double score1 = distanceFromOriginHeuristic.getScore(w1);
+        double score2 = distanceFromOriginHeuristic.getScore(w2);
+        double score3 = distanceFromOriginHeuristic.getScore(w3);
+        double score4 = distanceFromOriginHeuristic.getScore(w4);
 
 
         assertTrue(score2 > score1);
@@ -81,7 +81,7 @@ public class DistanceFromOriginToMidTestHeuristicRealData {
 
         repo.getConnectedWays(w1).forEach(x ->
         {
-            double score = distanceFromOriginHeuristic.getScore(n1, n2, x.getConnectingWay());
+            double score = distanceFromOriginHeuristic.getScore(x.getConnectingWay());
             PathTupleMain pt = new PathTupleMain(null, x.getConnectingNode()
                     , x.getConnectingWay(), score, 0);
             queue.add(pt);
@@ -107,16 +107,16 @@ public class DistanceFromOriginToMidTestHeuristicRealData {
         List<Way> outQueue = new ArrayList<>();
 
         PathTupleMain pt = new PathTupleMain(null, n1
-                , w1, distanceFromOriginHeuristic.getScore(n1, n2, w1), 0);
+                , w1, distanceFromOriginHeuristic.getScore(w1), 0);
         queue.add(pt);
         pt = new PathTupleMain(null, n1
-                , w2, distanceFromOriginHeuristic.getScore(n1, n2, w2), 0);
+                , w2, distanceFromOriginHeuristic.getScore(w2), 0);
         queue.add(pt);
         pt = new PathTupleMain(null, n1
-                , w3, distanceFromOriginHeuristic.getScore(n1, n2, w3), 0);
+                , w3, distanceFromOriginHeuristic.getScore(w3), 0);
         queue.add(pt);
         pt = new PathTupleMain(null, n1
-                , w4, distanceFromOriginHeuristic.getScore(n1, n2, w4), 0);
+                , w4, distanceFromOriginHeuristic.getScore(w4), 0);
         queue.add(pt);
 
         while (!queue.isEmpty()) {

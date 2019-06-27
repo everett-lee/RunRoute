@@ -20,7 +20,7 @@ public class BFS implements GraphSearch {
     private double maxGradient = 0.8;
 
     private PriorityQueue<PathTuple> queue;
-    private final double SCALE = 0.05f; // amount to scale upper and lower bound on
+    private final double SCALE = 0.05; // amount to scale upper and lower bound on
     // run length by
 
     public BFS(ElementRepo repo, Heuristic distanceHeuristic,
@@ -79,32 +79,33 @@ public class BFS implements GraphSearch {
                     continue; // skip to next where max length exceeded
                 }
 
-                if (visitedWays.contains(selectedWay.getId())) {
-                    score -= 5;
+                // drop the score where this way has already been explored
+                if (visitedWays.contains(currentWay.getId())) {
+                    score -= 1;
                 }
+
+                visitedWays.add(currentWay.getId());
+
+                double gradient = elevationHeuristic.getScore(currentNode, connectingNode,
+                        currentWay, selectedWay, distanceToNext);
+
+                if (Math.abs(gradient) > this.maxGradient) {
+                    continue; }
+
+                // add score reflecting correspondence of terrain features to user selections
+                score += featuresHeuristic.getScore(selectedWay);
+
+                // add a small random value to break ties
+                score += (Math.random()/5);
 
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, currentRouteLength + distanceToNext);
                 queue.add(toAdd);
-
-                if (selectedWay.getId() != repo.getOriginWay().getId()) {
-                    visitedWays.add(selectedWay.getId());
-                }
             }
 
         }
 
         return new PathTupleMain(null, null, null,
                 -1, -1);
-    }
-
-    static void returnPath(PathTuple tp) {
-        if (tp.getPredecessor() == null) {
-            System.out.print("(" + tp.getPreviousNode().getId() + " distance: " + tp.getLength() + ") ");
-            return;
-        }
-
-        System.out.print("(" + tp.getPreviousNode().getId() + " distance: " + tp.getLength() + ") ");
-        returnPath(tp.getPredecessor());
     }
 }

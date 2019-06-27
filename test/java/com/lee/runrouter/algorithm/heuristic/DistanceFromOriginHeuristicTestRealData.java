@@ -58,10 +58,10 @@ public class DistanceFromOriginHeuristicTestRealData {
         Way w3 = repo.getWayRepo().stream().filter(x -> x.getId() == 22898317L).findFirst().get();
         Way w4 = repo.getWayRepo().stream().filter(x -> x.getId() == 12536353L).findFirst().get();
 
-        double score1 = distanceFromOriginHeuristic.getScore(n1, n2, w1);
-        double score2 = distanceFromOriginHeuristic.getScore(n1, n2, w2);
-        double score3 = distanceFromOriginHeuristic.getScore(n1, n2, w3);
-        double score4 = distanceFromOriginHeuristic.getScore(n1, n2, w4);
+        double score1 = distanceFromOriginHeuristic.getScore(w1);
+        double score2 = distanceFromOriginHeuristic.getScore(w2);
+        double score3 = distanceFromOriginHeuristic.getScore(w3);
+        double score4 = distanceFromOriginHeuristic.getScore(w4);
 
         System.out.println(score2);
         System.out.println(score1);
@@ -84,7 +84,7 @@ public class DistanceFromOriginHeuristicTestRealData {
 
         repo.getConnectedWays(w1).forEach(x ->
         {
-            double score = distanceFromOriginHeuristic.getScore(n1, n2, x.getConnectingWay());
+            double score = distanceFromOriginHeuristic.getScore(x.getConnectingWay());
             PathTupleMain pt = new PathTupleMain(null, x.getConnectingNode()
                     , x.getConnectingWay(), score, 0);
             queue.add(pt);

@@ -12,15 +12,14 @@ import java.util.List;
 public class FeaturesHeuristic implements Heuristic {
     private double score = 0.0;
     private Way selectedWay;
-    private Node currentNode;
 
     private List<String> preferredSurfaces;
     private List<String> preferredHighways;
 
 
     // Allocated scores for features
-    static final double SURFACE_VALUE = 0.2;
-    static final double HIGHWAY_VALUE = 0.2;
+    static final double SURFACE_VALUE = 0.5;
+    static final double HIGHWAY_VALUE = 0.5;
 
     public FeaturesHeuristic(List<String> preferredSurfaces, List<String> preferredHighways) {
         this.preferredSurfaces = preferredSurfaces;
@@ -42,9 +41,8 @@ public class FeaturesHeuristic implements Heuristic {
     }
 
     @Override
-    public double getScore (Node currentNode, Node connectingNode, Way selectedWay) {
+    public double getScore (Way selectedWay) {
         this.selectedWay = selectedWay;
-        this.currentNode = currentNode;
 
         calculateScore();
         return this.score;

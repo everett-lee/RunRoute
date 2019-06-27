@@ -23,10 +23,10 @@ public class FeaturesHeuristicTest {
         wayUnderTest.setHighway("Primary");
         wayUnderTest.setSurface("Gravel");
 
-        double expected = 0.2;
+        double expected = 1;
 
         assertEquals(expected,
-                featuresHeuristic.getScore(new Node(1, 1, 1), new Node(1, 1, 1), wayUnderTest),
+                featuresHeuristic.getScore(wayUnderTest),
                 0.0001);
     }
 
@@ -40,10 +40,10 @@ public class FeaturesHeuristicTest {
         wayUnderTest.setHighway("Primary");
         wayUnderTest.setSurface("Gravel");
 
-        double expected = 0.2;
+        double expected = 1;
 
         assertEquals(expected,
-                featuresHeuristic.getScore(new Node(1, 1, 1), new Node(1, 1, 1), wayUnderTest),
+                featuresHeuristic.getScore(wayUnderTest),
                 0.0001);
     }
 
@@ -61,7 +61,7 @@ public class FeaturesHeuristicTest {
         double expected = 0.0;
 
         assertEquals(expected,
-                featuresHeuristic.getScore(new Node(1, 1, 1), new Node(1, 1, 1), wayUnderTest),
+                featuresHeuristic.getScore(wayUnderTest),
                 0.0001);
     }
 

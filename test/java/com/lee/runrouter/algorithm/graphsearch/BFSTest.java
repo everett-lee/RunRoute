@@ -115,6 +115,32 @@ public class BFSTest {
 
     }
 
+
+    @Test
+    public void TulseHillTest10KM() {
+        double[] coords = {51.441109, -0.106974};
+
+        List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("GRASS",
+                "DIRT", "GRAVEL"));
+        List<String> preferredHighways = new ArrayList<>(Arrays.asList("LIVING_STREET","PEDESTRIAN", "TRACK",
+                "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
+        featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
+        edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
+        elevationHeuristic = new ElevationHeuristicMain(true);
+        bfs = new BFS(repo, distanceHeuristic,
+                featuresHeuristic, edgeDistanceCalculator, elevationHeuristic);
+
+        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 4004611L)
+                .findFirst().get();
+        repo.setOriginWay(origin);
+
+        PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 5);
+        System.out.println(x.getPredecessor() + " hello");
+
+        returnPath(x);
+
+    }
+
     static void returnPath(PathTuple tp) {
         if (tp.getPredecessor() == null) {
             System.out.println("(" + tp.getPreviousNode() + " distance: " + tp.getLength() + ") " + " way: " + tp.getCurrentWay().getId());

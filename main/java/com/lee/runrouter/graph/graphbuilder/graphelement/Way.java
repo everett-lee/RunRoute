@@ -29,6 +29,7 @@ public class Way implements Serializable {
         this.id = id;
         this.surface = Surface.UNDEFINED;
         this.highway = Highway.UNCLASSIFIED;
+        this.name = "Unknown"; // some Ways are unnamed by default
     }
 
     public long getId() {

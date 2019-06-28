@@ -1,13 +1,15 @@
-package com.lee.runrouter.algorithm.graphsearch;
+package com.lee.runrouter.algorithm;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
+import com.lee.runrouter.algorithm.graphsearch.BFS;
+import com.lee.runrouter.algorithm.graphsearch.GraphSearch;
+import com.lee.runrouter.algorithm.graphsearch.ReturnPath;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
 import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
-import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,17 +20,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.lee.runrouter.graph.graphbuilder.node.Node;
 import static org.junit.Assert.*;
 
-public class ReturnPathTest {
+public class IteratedLocalSearchMainTest {
     ElementRepo repo;
+    GraphSearch bfs;
     GraphSearch returnPath;
     DistanceCalculator distanceCalculator;
     Heuristic distanceHeuristic;
     Heuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
     ElevationHeuristic elevationHeuristic;
+    IteratedLocalSearch ils;
 
     {
         // deserialise test repo used for testing.
@@ -57,100 +60,40 @@ public class ReturnPathTest {
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
         featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
-        elevationHeuristic = new ElevationHeuristicMain(false);
+        elevationHeuristic = new ElevationHeuristicMain(true);
 
+
+        bfs = new BFS(repo, distanceHeuristic,
+                featuresHeuristic, edgeDistanceCalculator, elevationHeuristic);
 
         returnPath = new ReturnPath(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, elevationHeuristic, distanceCalculator);
+
+        ils = new IteratedLocalSearchMain(bfs, returnPath, repo);
     }
 
-    @Test(timeout=3000)
-    public void testMorrishRoadShortReturn() {
-        double[] coords = {51.442, -0.109};
-        Way w = repo.getWayRepo().stream().filter(x -> x.getId() == 26446121L).findFirst().get();
-        System.out.println(w);
-
-        PathTuple x = returnPath.searchGraph(w, coords, 2.5);
-        System.out.println(x.getPredecessor() + " hello");
+    @Test(timeout=5000)
+    public void testMorrishRoadShortRoundTrip() {
+        double[] coords = {51.446810, -0.125484};
+        PathTuple res = ils.generateCycle(coords, 5);
 
         String str = "node(id:";
-        str = returnPath(x, str);
+        str = returnPath(res, str);
         System.out.println(str);
 
     }
 
 
-    @Test(timeout=3000)
-    public void testMorrishRoadLongerReturn() {
-        double[] coords = {51.445, -0.112};
-        Way w = repo.getWayRepo().stream().filter(x -> x.getId() == 4898590L).findFirst().get();
+    @Test(timeout=5000)
+    public void testMorrishRoadLongRoundTrip() {
+        double[] coords = {51.446810, -0.125484};
+        PathTuple res = ils.generateCycle(coords, 10);
 
-        PathTuple x = returnPath.searchGraph(w, coords, 5);
-        System.out.println(x.getPredecessor() + " hello");
 
         String str = "node(id:";
-        str = returnPath(x, str);
+        str = returnPath(res, str);
         System.out.println(str);
-
-
     }
-
-    @Test(timeout=3000)
-    public void testCraignairRoadShortReturn() {
-        double[] coords = {51.443, -0.125};
-        Way w = repo.getWayRepo().stream().filter(x -> x.getId() == 12694843L).findFirst().get();
-
-            Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
-                .findFirst().get();
-        repo.setOriginWay(origin);
-
-        PathTuple x = returnPath.searchGraph(w, coords, 2.5);
-        System.out.println(x.getPredecessor() + " hello");
-
-        String str = "node(id:";
-        str = returnPath(x, str);
-        System.out.println(str);
-
-
-    }
-
-    @Test(timeout=3000)
-    public void testCraignairRoadLongerReturn() {
-        double[] coords = {51.441, -0.137};
-        Way w = repo.getWayRepo().stream().filter(x -> x.getId() == 22751151L).findFirst().get();
-
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
-                .findFirst().get();
-        repo.setOriginWay(origin);
-
-        PathTuple x = returnPath.searchGraph(w, coords, 5);
-        System.out.println(x.getPredecessor() + " hello");
-
-        String str = "node(id:";
-        str = returnPath(x, str);
-        System.out.println(str);
-
-    }
-
-    @Test(timeout=3000)
-    public void testTulseHillReturn() {
-        double[] coords = {51.448, -0.137};
-        Way w = repo.getWayRepo().stream().filter(x -> x.getId() == 12538762L).findFirst().get();
-
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 4004611L)
-                .findFirst().get();
-        repo.setOriginWay(origin);
-
-
-        PathTuple x = returnPath.searchGraph(w, coords, 5);
-        System.out.println(x.getPredecessor() + " hello");
-
-        String str = "node(id:";
-        str = returnPath(x, str);
-        System.out.println(str);
-
-    }
-
 
 
     static String returnPath(PathTuple tp, String acc) {
@@ -165,5 +108,6 @@ public class ReturnPathTest {
         acc += ");\nout;";
         return acc;
     }
+
 
 }

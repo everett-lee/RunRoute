@@ -73,7 +73,7 @@ public class GraphBuilderTests {
         assertEquals(res.getSurface(), "GRAVEL");
         assertEquals(res.getHighway(), "LIVING_STREET");
         assertFalse(res.isLit());
-        assertNull(res.getName());
+        assertEquals(res.getName(), "Unknown");
         assertEquals(res.getLength(), 42D, 0.00001);
         assertEquals(res.getNodeContainer().getStartNode().getId(), 10L);
         assertEquals(res.getNodeContainer().getStartNode().getLat(), 51.92, 0.00001);

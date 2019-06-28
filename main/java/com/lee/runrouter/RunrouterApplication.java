@@ -33,6 +33,7 @@ public class RunrouterApplication {
     }
 	static void serialize(ElementRepo repo) {
         try {
+            System.out.println("Starting... ");
             FileOutputStream fileOut =
                     new FileOutputStream("/home/lee/project/app/runrouter/src/repo.ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);

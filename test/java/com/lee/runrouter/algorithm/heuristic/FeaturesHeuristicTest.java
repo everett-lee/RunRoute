@@ -23,7 +23,7 @@ public class FeaturesHeuristicTest {
         wayUnderTest.setHighway("Primary");
         wayUnderTest.setSurface("Gravel");
 
-        double expected = 1;
+        double expected = 1.5;
 
         assertEquals(expected,
                 featuresHeuristic.getScore(wayUnderTest),
@@ -40,7 +40,7 @@ public class FeaturesHeuristicTest {
         wayUnderTest.setHighway("Primary");
         wayUnderTest.setSurface("Gravel");
 
-        double expected = 1;
+        double expected = 1.5;
 
         assertEquals(expected,
                 featuresHeuristic.getScore(wayUnderTest),

@@ -23,13 +23,13 @@ public class BFS implements GraphSearch {
     private EdgeDistanceCalculator edgeDistanceCalculator;
     private ElevationHeuristic elevationHeuristic;
     private double maxGradient = 0.8; // is used-defined
-    private final double REPEATED_EDGE_PENALTY = 5; // deducted from score where
+    private final double REPEATED_EDGE_PENALTY = 2; // deducted from score where
     // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 5; // divides into random number added to the
     // score
 
     private PriorityQueue<PathTuple> queue;
-    private final double SCALE = 0.1; // amount to scale upper and lower bound on
+    private final double SCALE = 0.15; // amount to scale upper and lower bound on
     // run length by
 
     public BFS(ElementRepo repo, Heuristic distanceHeuristic,
@@ -91,7 +91,7 @@ public class BFS implements GraphSearch {
             // for each Way reachable from the the current Way
             for (ConnectionPair pair: repo.getConnectedWays(currentWay)) {
                 currentRouteLength = topTuple.getLength();
-                score = 0;
+                score = topTuple.getScore(); //       KEEP THIS WAY?
                 currentNode = topTuple.getPreviousNode();
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();
@@ -100,6 +100,7 @@ public class BFS implements GraphSearch {
                 // the current Way to the selected Way
                 double distanceToNext = edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
+
 
                 if (currentRouteLength + distanceToNext > upperBound) {
                     continue; // skip to next where maximum length exceeded

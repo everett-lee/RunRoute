@@ -30,14 +30,17 @@ public class ReturnPath implements GraphSearch {
     private EdgeDistanceCalculator edgeDistanceCalculator;
     private ElevationHeuristic elevationHeuristic;
     private double maxGradient = 0.8; // is used-defined
-    private final double REPEATED_EDGE_PENALTY = 1; // deducted from score where
+    private final double REPEATED_EDGE_PENALTY = 2; // deducted from score where
     // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 5; // divides into random number added to the
     // score
 
     private PriorityQueue<PathTuple> queue;
-    private final double SCALE = 0.5; // amount to scale upper and lower bound on
+    private final double LOWER_SCALE = 0.65; // amount to scale upper lower bound on
     // run length by
+    private final double UPPER_SCALE = 0.1; // amount to scale upper bound on
+    // run length by
+
 
     public ReturnPath(ElementRepo repo, Heuristic distanceHeuristic,
                       Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator,
@@ -73,9 +76,9 @@ public class ReturnPath implements GraphSearch {
         Set<Long> visitedWays = new HashSet<>();
 
         double currentRouteLength;
-        double upperBound = distance + (distance * SCALE); // upper bound of
+        double upperBound = distance + (distance * UPPER_SCALE); // upper bound of
         // run length
-        double lowerBound = distance - (distance * SCALE); // lower bound of
+        double lowerBound = distance - (distance * LOWER_SCALE); // lower bound of
         // run length
 
         Node originNode = new Node(-1, coords[0], coords[1]);
@@ -106,7 +109,7 @@ public class ReturnPath implements GraphSearch {
             // for each Way reachable from the current Way
             for (ConnectionPair pair: repo.getConnectedWays(currentWay)) {
                 currentRouteLength = topTuple.getLength();
-                score = 0;
+                score = topTuple.getScore(); //       KEEP THIS WAY?
                 currentNode = topTuple.getPreviousNode();
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();

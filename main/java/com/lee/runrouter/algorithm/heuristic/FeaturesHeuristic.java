@@ -19,7 +19,7 @@ public class FeaturesHeuristic implements Heuristic {
 
     // Allocated scores for features
     static final double SURFACE_VALUE = 0.5;
-    static final double HIGHWAY_VALUE = 0.5;
+    static final double HIGHWAY_VALUE = 1;
 
     public FeaturesHeuristic(List<String> preferredSurfaces, List<String> preferredHighways) {
         this.preferredSurfaces = preferredSurfaces;

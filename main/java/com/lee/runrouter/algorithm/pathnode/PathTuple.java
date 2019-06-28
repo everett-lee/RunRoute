@@ -9,4 +9,5 @@ public interface PathTuple {
     public double getLength();
     public Node getPreviousNode();
     public Way getCurrentWay();
+    public void setPredecessor(PathTuple predecessor);
 }

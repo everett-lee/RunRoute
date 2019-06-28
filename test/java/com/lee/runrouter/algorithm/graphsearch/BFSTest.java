@@ -47,7 +47,7 @@ public class BFSTest {
     @Before
     public void setUp() {
         distanceCalculator = new HaversineCalculator();
-        distanceHeuristic = new DistanceFromOriginHeuristic(repo, distanceCalculator);
+        distanceHeuristic = new DistanceFromOriginToMidHeuristic(repo, distanceCalculator);
 
         List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("GRASS",
                 "DIRT", "GRAVEL"));
@@ -57,35 +57,39 @@ public class BFSTest {
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         elevationHeuristic = new ElevationHeuristicMain(true);
 
+
         bfs = new BFS(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, elevationHeuristic);
+
     }
 
-    @Test
-    public void bb() {
-        double[] coords = {51.446583, -0.125217};
+    @Test(timeout=3000)
+    public void testMorrishRoadShort() {
+
+        double[] coords = {51.446810, -0.125484};
         PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 2.5);
         System.out.println(x.getPredecessor() + " hello");
 
-        returnPath(x);
-
+        String str = "node(id:";
+        str = returnPath(x, str);
+        System.out.println(str);
     }
 
 
-    @Test
-    public void bb2() {
-        double[] coords = {51.446583, -0.125217};
+    @Test(timeout=3000)
+    public void testMorrishRoadLonger() {
+        double[] coords = {51.446810, -0.125484};
         PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 5);
         System.out.println(x.getPredecessor() + " hello");
 
-        returnPath(x);
-
+        String str = "node(id:";
+        str = returnPath(x, str);
+        System.out.println(str);
     }
 
-
-    @Test
-    public void cc() {
-        double[] coords = {51.439140, -0.117574};
+    @Test(timeout=3000)
+    public void testCraignairRoadShort() {
+        double[] coords = {51.448321, -0.114648};
 
         Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
                 .findFirst().get();
@@ -94,36 +98,37 @@ public class BFSTest {
         PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 2.5);
         System.out.println(x.getPredecessor() + " hello");
 
-        returnPath(x);
+        String str = "node(id:";
+        str = returnPath(x, str);
+        System.out.println(str);
 
     }
 
 
-    @Test
-    public void cc2() {
-        double[] coords = {51.439140, -0.117574};
-
+    @Test(timeout=3000)
+    public void testCraignairRoadLonger() {
+        double[] coords = {51.448321, -0.114648};
 
         Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
                 .findFirst().get();
+
         repo.setOriginWay(origin);
 
         PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 5);
         System.out.println(x.getPredecessor() + " hello");
 
-        returnPath(x);
-
+        String str = "node(id:";
+        str = returnPath(x, str);
+        System.out.println(str);
     }
 
 
-    @Test
+    @Test(timeout=3000)
     public void TulseHillTest10KM() {
         double[] coords = {51.441109, -0.106974};
 
-        List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("GRASS",
-                "DIRT", "GRAVEL"));
-        List<String> preferredHighways = new ArrayList<>(Arrays.asList("LIVING_STREET","PEDESTRIAN", "TRACK",
-                "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
+        List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("CONCRETE"));
+        List<String> preferredHighways = new ArrayList<>(Arrays.asList("FOOTWAY"));
         featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         elevationHeuristic = new ElevationHeuristicMain(true);
@@ -137,19 +142,35 @@ public class BFSTest {
         PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 5);
         System.out.println(x.getPredecessor() + " hello");
 
-        returnPath(x);
+        String str = "node(id:";
+        str = returnPath(x, str);
+        System.out.println(str);
 
-    }
-
-    static void returnPath(PathTuple tp) {
-        if (tp.getPredecessor() == null) {
-            System.out.println("(" + tp.getPreviousNode() + " distance: " + tp.getLength() + ") " + " way: " + tp.getCurrentWay().getId());
-            return;
+        int count = 0;
+        int y = 0;
+        while (x != null) {
+            if (x.getCurrentWay().getHighway().equals("FOOTWAY") || x.getCurrentWay().getHighway().equals("TRACK")) {
+                count ++;
+            }
+            if (x.getCurrentWay().getSurface() == "DIRT") {
+                y ++;
+            }
+            x = x.getPredecessor();
         }
-
-        System.out.println("(" + tp.getPreviousNode() + " distance: " + tp.getLength() + ") " + " way: " + tp.getCurrentWay().getId());
-        returnPath(tp.getPredecessor());
+        System.out.println(count);
+        System.out.println(y);
     }
 
+    static String returnPath(PathTuple tp, String acc) {
+        while (tp != null) {
+            acc += tp.getPreviousNode().getId() + ", ";
+            System.out.println("(" + tp.getPreviousNode() + " distance: "
+                    + tp.getLength() + ") " + " way: " + tp.getCurrentWay().getId());
+            tp = tp.getPredecessor();
 
+        }
+        acc = acc.substring(0, acc.length()-3);
+        acc += ");\nout;";
+        return acc;
+    }
 }

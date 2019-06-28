@@ -36,7 +36,7 @@ public class WayQueryBuilder implements QueryBuilder {
     private final String JOIN = "\tWHERE l.osm_id = w.id\n";
     private final String BB = "\tAND l.way && ST_Transform( ST_MakeEnvelope(?,?,?,?, 4326),4326)\n";
     private final String ROAD_OPTIONS = "\tAND (l.highway IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)) \n";
-    private final String END = "\tAND l.name IS NOT NULL";
+    private final String END = "\tAND (l.foot <> 'no' OR l.foot IS NULL)";
 
     public WayQueryBuilder() {
         conn = DBconnection.getInstance().getConnection();

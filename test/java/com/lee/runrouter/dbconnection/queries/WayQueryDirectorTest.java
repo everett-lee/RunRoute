@@ -27,7 +27,7 @@ public class WayQueryDirectorTest {
     private final String ROAD_OPTIONS = "\tAND (l.highway IN ('trunk', 'primary', 'secondary', 'tertiary'," +
             " 'unclassified', 'residential', 'living_street', 'service'," +
             " 'pedestrian', 'track', 'road', 'footway', 'bridleway', 'steps', 'path')) \n";
-    private final String END = "\tAND l.name IS NOT NULL";
+    private final String END = "\tAND (l.foot <> 'no' OR l.foot IS NULL)";
     private String sql;
 
     @Before

@@ -47,4 +47,10 @@ public class PathTupleMain implements PathTuple {
         return this.currentWay;
     }
 
+    @Override
+    public void setPredecessor(PathTuple predecessor) {
+        this.predecessor = predecessor;
+    }
+
+
 }

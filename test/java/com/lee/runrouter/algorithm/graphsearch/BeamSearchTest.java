@@ -1,37 +1,31 @@
-package com.lee.runrouter.algorithm;
+package com.lee.runrouter.algorithm.graphsearch;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
-import com.lee.runrouter.algorithm.graphsearch.*;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
 import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
-import com.lee.runrouter.graph.graphbuilder.node.Node;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
-public class IteratedLocalSearchMainTest {
+public class BeamSearchTest {
     ElementRepo repo;
-    GraphSearch bfs;
-    GraphSearch returnPath;
+    GraphSearch beamSearch;
     DistanceCalculator distanceCalculator;
     Heuristic distanceHeuristic;
     Heuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
     ElevationHeuristic elevationHeuristic;
-    IteratedLocalSearch ils;
 
     {
         // deserialise test repo used for testing.
@@ -49,6 +43,7 @@ public class IteratedLocalSearchMainTest {
         }
     }
 
+
     @Before
     public void setUp() {
         distanceCalculator = new HaversineCalculator();
@@ -63,99 +58,94 @@ public class IteratedLocalSearchMainTest {
         elevationHeuristic = new ElevationHeuristicMain(true);
 
 
-        bfs = new BeamSearch(repo, distanceHeuristic,
+        beamSearch = new BeamSearch(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, elevationHeuristic);
 
-        returnPath = new BeamSearchReturnPath(repo, distanceHeuristic,
-                featuresHeuristic, edgeDistanceCalculator, elevationHeuristic, distanceCalculator);
-
-        ils = new IteratedLocalSearchMain(bfs, returnPath, repo);
     }
 
-    @Test(timeout=5000)
-    public void testMorrishRoadShortRoundTrip() {
+    @Test(timeout=3000)
+    public void testMorrishRoadShort() {
+
         double[] coords = {51.446810, -0.125484};
-        PathTuple res = ils.generateCycle(coords, 5);
+        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 2.5);
+        System.out.println(x.getPredecessor() + " hello");
 
         String str = "node(id:";
-        str = returnPath(res, str);
-        System.out.println(str);
-    }
-
-    @Test(timeout=5000)
-    public void testMorrishRoadLongRoundTrip() {
-        double[] coords = {51.446810, -0.125484};
-        PathTuple res = ils.generateCycle(coords, 10);
-
-        String str = "node(id:";
-        str = returnPath(res, str);
+        str = returnPath(x, str);
         System.out.println(str);
     }
 
 
-    @Test(timeout=5000)
-    public void testCraignairRoadShortRoundTrip() {
+    @Test(timeout=3000)
+    public void testMorrishRoadLonger() {
+        double[] coords = {51.446810, -0.125484};
+        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 5);
+        System.out.println(x.getPredecessor() + " hello");
+
+        String str = "node(id:";
+        str = returnPath(x, str);
+        System.out.println(str);
+    }
+
+    @Test(timeout=3000)
+    public void testCraignairRoadShort() {
         double[] coords = {51.448321, -0.114648};
 
         Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
                 .findFirst().get();
         repo.setOriginWay(origin);
 
-        double[] originCoords = {51.448321, -0.114648};
-        Node originNode = new Node(-1, originCoords[0], originCoords[1]);
-        originNode = AlgoHelpers.findClosest(originNode, repo.getOriginWay().getNodeContainer().getNodes());
-        // update the repository origin node
-        repo.setOriginNode(originNode);
-
-        PathTuple res = ils.generateCycle(coords, 5);
+        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 2.5);
+        System.out.println(x.getPredecessor() + " hello");
 
         String str = "node(id:";
-        str = returnPath(res, str);
+        str = returnPath(x, str);
         System.out.println(str);
+
     }
 
-    @Test(timeout=5000)
-    public void testCraignairRoadLongerRoundTrip() {
+
+    @Test(timeout=3000)
+    public void testCraignairRoadLonger() {
         double[] coords = {51.448321, -0.114648};
 
         Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
                 .findFirst().get();
+
         repo.setOriginWay(origin);
 
-        double[] originCoords = {51.448321, -0.114648};
-        Node originNode = new Node(-1, originCoords[0], originCoords[1]);
-        originNode = AlgoHelpers.findClosest(originNode, repo.getOriginWay().getNodeContainer().getNodes());
-        // update the repository origin node
-        repo.setOriginNode(originNode);
-
-        PathTuple res = ils.generateCycle(coords, 10);
+        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 5);
+        System.out.println(x.getPredecessor() + " hello");
 
         String str = "node(id:";
-        str = returnPath(res, str);
+        str = returnPath(x, str);
         System.out.println(str);
     }
 
 
-    @Test(timeout=5000)
-    public void testTulseHillRoundTrip10KM() {
+    @Test(timeout=3000)
+    public void TulseHillTest10KM() {
         double[] coords = {51.441109, -0.106974};
+
+        List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("CONCRETE"));
+        List<String> preferredHighways = new ArrayList<>(Arrays.asList("FOOTWAY"));
+        featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
+        edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
+        elevationHeuristic = new ElevationHeuristicMain(true);
+        beamSearch = new BFS(repo, distanceHeuristic,
+                featuresHeuristic, edgeDistanceCalculator, elevationHeuristic);
 
         Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 4004611L)
                 .findFirst().get();
         repo.setOriginWay(origin);
 
-        Node originNode = new Node(-1, coords[0], coords[1]);
-        originNode = AlgoHelpers.findClosest(originNode, repo.getOriginWay().getNodeContainer().getNodes());
-        // update the repository origin node
-        repo.setOriginNode(originNode);
-
-        PathTuple res = ils.generateCycle(coords, 10);
+        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 5);
+        System.out.println(x.getPredecessor() + " hello");
 
         String str = "node(id:";
-        str = returnPath(res, str);
+        str = returnPath(x, str);
         System.out.println(str);
     }
-
 
     static String returnPath(PathTuple tp, String acc) {
         while (tp != null) {
@@ -169,6 +159,4 @@ public class IteratedLocalSearchMainTest {
         acc += ");\nout;";
         return acc;
     }
-
-
 }

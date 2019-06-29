@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
 @Component
 public class ElementRepo implements Serializable {
     private Way originWay;
-    private final Way start; // starting node of the route
+    private Node originNode; // starting node of the route
     private final Map<Long, List<Way>> nodeToWay; // the Ways associated
     // with each node ID
     private final List<Way> wayRepo; // contains all generated Ways
 
     public ElementRepo() {
-        this.start = null;
+        this.originNode = null;
         this.nodeToWay = new HashMap<>();
         this.wayRepo = new ArrayList<>();
     }
@@ -47,14 +47,12 @@ public class ElementRepo implements Serializable {
                 // for each way in the list of returned ways, add it to the list of connected Ways
                 // along with the connected Node
                 for (Way w: ways) {
-                    connectedWays.add((new ConnectionPair(n, w)));
+                    if (w.getId() != way.getId()) {
+                        connectedWays.add((new ConnectionPair(n, w)));
+                    }
                 }
             }
         }
-
-        connectedWays = connectedWays.stream()
-                .filter(pair -> pair.getConnectingWay().getId() != way.getId())
-                .collect(Collectors.toList());
 
         return connectedWays;
     }
@@ -84,5 +82,13 @@ public class ElementRepo implements Serializable {
 
     public void setOriginWay(Way originWay) {
         this.originWay = originWay;
+    }
+
+    public Node getOriginNode() {
+        return originNode;
+    }
+
+    public void setOriginNode(Node originNode) {
+        this.originNode = originNode;
     }
 }

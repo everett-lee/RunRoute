@@ -2,10 +2,12 @@ package com.lee.runrouter.algorithm;
 
 import com.lee.runrouter.algorithm.graphsearch.GraphSearch;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
+import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 
 import java.util.Arrays;
+
 
 public abstract class IteratedLocalSearch {
     private GraphSearch initialOutwardsPather; // generates the initial path
@@ -34,16 +36,40 @@ public abstract class IteratedLocalSearch {
         double[] lastVisitedCoords = {outwardPath.getPreviousNode().getLat(),
         outwardPath.getPreviousNode().getLon()};
 
+        System.out.println(Arrays.toString(lastVisitedCoords));
+
         PathTuple returnPath = initialReturnPather.searchGraph(lastVisited, lastVisitedCoords, distance);
-//
-//        PathTuple tail = returnPath;
-//        while (tail.getPredecessor() != null) {
-//            tail = tail.getPredecessor();
-//        }
-//
-//        // link outbound and return journeys
-//        tail.setPredecessor(outwardPath);
+
+
+        if (returnPath.getLength() == -1) {
+            System.out.println("it happended");
+            return makeReverseRoute(outwardPath);
+        }
+
+        PathTuple tail = returnPath;
+        while (tail.getPredecessor() != null) {
+            tail = tail.getPredecessor();
+        }
+
+        // link outbound and return journeys
+        tail.setPredecessor(outwardPath);
 
         return returnPath;
+    }
+
+    public PathTuple makeReverseRoute(PathTuple outwardPath) {
+        PathTuple head = outwardPath;
+        PathTuple current = outwardPath;
+
+        double distance = head.getLength();
+        while (current != null) {
+            PathTuple toAdd = new PathTupleMain(head, current.getPreviousNode(),
+                    current.getCurrentWay(), current.getScore(), distance + current.getLength());
+
+            head = toAdd;
+            current = current.getPredecessor();
+        }
+
+        return head;
     }
 }

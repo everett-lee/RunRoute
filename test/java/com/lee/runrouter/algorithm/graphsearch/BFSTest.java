@@ -145,20 +145,6 @@ public class BFSTest {
         String str = "node(id:";
         str = returnPath(x, str);
         System.out.println(str);
-
-        int count = 0;
-        int y = 0;
-        while (x != null) {
-            if (x.getCurrentWay().getHighway().equals("FOOTWAY") || x.getCurrentWay().getHighway().equals("TRACK")) {
-                count ++;
-            }
-            if (x.getCurrentWay().getSurface() == "DIRT") {
-                y ++;
-            }
-            x = x.getPredecessor();
-        }
-        System.out.println(count);
-        System.out.println(y);
     }
 
     static String returnPath(PathTuple tp, String acc) {

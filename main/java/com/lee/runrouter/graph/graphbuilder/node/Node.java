@@ -30,7 +30,7 @@ public class Node implements Serializable {
     }
 
     public String toString() {
-        return String.format("id: %d, coordinates: (%.3f, %.3f)", id, lat, lon);
+        return String.format("id: %d, coordinates: (%.5f, %.5f)", id, lat, lon);
     }
 
 }

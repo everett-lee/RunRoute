@@ -12,10 +12,7 @@ import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Variant of the BFS algorithm that restricts the next selected Way
@@ -23,7 +20,7 @@ import java.util.Set;
  * to complete the circuit and return to the route's starting position
  * following execution of the BFS.
  */
-public class ReturnPath implements GraphSearch {
+public class BeamSearchReturnPath implements GraphSearch {
     private ElementRepo repo; // the repository of Ways and Nodes
     private Heuristic distanceFromOriginHeursitic;
     private Heuristic featuresHeuristic;
@@ -35,14 +32,14 @@ public class ReturnPath implements GraphSearch {
     private final double RANDOM_REDUCER = 5; // divides into random number added to the
     // score
 
-    private PriorityQueue<PathTuple> queue;
-    private final double LOWER_SCALE = 0.8; // amount to scale upper lower bound on
+    private List<PathTuple> queue;
+    private final double LOWER_SCALE = 0.7; // amount to scale upper lower bound on
     // run length by
-    private final double UPPER_SCALE = 0.3; // amount to scale upper bound on
+    private final double UPPER_SCALE = 0.15; // amount to scale upper bound on
     // run length by
 
 
-    public ReturnPath(ElementRepo repo, Heuristic distanceHeuristic,
+    public BeamSearchReturnPath(ElementRepo repo, Heuristic distanceHeuristic,
                       Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator,
                       ElevationHeuristic elevationHeuristic, DistanceCalculator distanceCalculator) {
         this.repo = repo;
@@ -51,9 +48,7 @@ public class ReturnPath implements GraphSearch {
         this.edgeDistanceCalculator = edgeDistanceCalculator;
         this.elevationHeuristic = elevationHeuristic;
 
-        // compare priority queue items by their assigned score in descending order
-        this.queue = new PriorityQueue<>(Comparator
-                .comparing((PathTuple tuple) -> tuple.getScore()).reversed());
+        this.queue = new ArrayList<>();
     }
 
     /**
@@ -86,12 +81,20 @@ public class ReturnPath implements GraphSearch {
         queue.add(new PathTupleMain(null, originNode, root, 0, 0));
 
         while (!queue.isEmpty()) {
-            PathTuple topTuple = queue.poll();
+            queue.sort(Comparator
+                    .comparing((PathTuple tuple) -> tuple.getScore()).reversed());
 
+            if (queue.size() > 10) {
+                queue = queue.subList(0, 10);
+            }
+
+            PathTuple topTuple = queue.get(0);
+            queue.remove(0);
+
+            currentRouteLength = topTuple.getLength();
             Way currentWay = topTuple.getCurrentWay();
             Node currentNode  = topTuple.getPreviousNode();
             double score;
-            currentRouteLength = topTuple.getLength();
 
             // return the first route to exceed the minimum length requirement.
             if (currentRouteLength > lowerBound) {
@@ -125,7 +128,7 @@ public class ReturnPath implements GraphSearch {
                     continue; // skip to next where max length exceeded
                 }
 
-                if (distanceToNext < 25) {
+                if (distanceToNext < 5) {
                     continue; // skip short connections. Used to cull shorter sections and force
                     // failure if necessary to move to next stage of algorithm.
                 }
@@ -167,4 +170,4 @@ public class ReturnPath implements GraphSearch {
         return new PathTupleMain(null, null, null,
                 -1, -1);
     }
- }
+}

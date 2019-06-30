@@ -71,14 +71,14 @@ public class BeamSearch implements GraphSearch {
 
         Node originNode = new Node(-1, coords[0], coords[1]);
         originNode = AlgoHelpers.findClosest(originNode, repo.getOriginWay().getNodeContainer().getNodes());
-        queue.add(new PathTupleMain(null, originNode, root, 0, 0));
+        queue.add(new PathTupleMain(null, originNode, root, 0, 0, 0));
 
         // update the repository origin node
         repo.setOriginNode(originNode);
 
         while (!queue.isEmpty()) {
             queue.sort(Comparator
-                    .comparing((PathTuple tuple) -> tuple.getScore()).reversed());
+                    .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
 
             if (queue.size() > 5) {
                 queue = queue.subList(0, 5);
@@ -90,7 +90,7 @@ public class BeamSearch implements GraphSearch {
             Node currentNode  = topTuple.getPreviousNode();
             double score;
 
-            currentRouteLength = topTuple.getLength();
+            currentRouteLength = topTuple.getTotalLength();
 
             // return the first route to exceed the minimum length requirement.
             if (currentRouteLength > lowerBound) {
@@ -99,7 +99,7 @@ public class BeamSearch implements GraphSearch {
 
             // for each Way reachable from the the current Way
             for (ConnectionPair pair: repo.getConnectedWays(currentWay)) {
-                currentRouteLength = topTuple.getLength();
+                currentRouteLength = topTuple.getTotalLength();
                 score = 0;
                 currentNode = topTuple.getPreviousNode();
                 Node connectingNode = pair.getConnectingNode();
@@ -140,13 +140,13 @@ public class BeamSearch implements GraphSearch {
                 score += (Math.random() / RANDOM_REDUCER);
 
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
-                        score, currentRouteLength + distanceToNext);
+                        score, distanceToNext, currentRouteLength + distanceToNext);
                 queue.add(toAdd);
             }
         }
 
         // null object returned in the event of an error
-        return new PathTupleMain(null, null, null,
+        return new PathTupleMain(null, null, null, -1,
                 -1, -1);
     }
 }

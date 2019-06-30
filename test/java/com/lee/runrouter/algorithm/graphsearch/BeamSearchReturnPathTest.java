@@ -9,17 +9,15 @@ import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
+import com.lee.runrouter.graph.graphbuilder.node.Node;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.lee.runrouter.graph.graphbuilder.node.Node;
+import static com.lee.runrouter.testhelpers.TestHelpers.*;
 import static org.junit.Assert.*;
 
 public class BeamSearchReturnPathTest {
@@ -32,19 +30,7 @@ public class BeamSearchReturnPathTest {
     ElevationHeuristic elevationHeuristic;
 
     {
-        // deserialise test repo used for testing.
-        try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/repo.ser");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            repo = (ElementRepo) in.readObject();
-            in.close();
-            fileIn.close();
-        } catch (IOException i) {
-            i.printStackTrace();
-        } catch (ClassNotFoundException c) {
-            System.out.println("Repo class not found");
-            c.printStackTrace();
-        }
+        repo = getRepo();
     }
 
     @Before
@@ -79,7 +65,7 @@ public class BeamSearchReturnPathTest {
         PathTuple x = returnPath.searchGraph(w, coords, 2.5);
         System.out.println(x.getPredecessor() + " hello");
 
-        String str = "node(id:";
+        String str = "";
         str = returnPath(x, str);
         System.out.println(str);
     }
@@ -99,11 +85,9 @@ public class BeamSearchReturnPathTest {
         PathTuple x = returnPath.searchGraph(w, coords, 5);
         System.out.println(x.getPredecessor() + " hello");
 
-        String str = "node(id:";
+        String str = "";
         str = returnPath(x, str);
         System.out.println(str);
-
-
     }
 
     @Test(timeout=3000)
@@ -125,7 +109,7 @@ public class BeamSearchReturnPathTest {
         PathTuple x = returnPath.searchGraph(w, coords, 2.5);
         System.out.println(x.getPredecessor() + " hello");
 
-        String str = "node(id:";
+        String str = "";
         str = returnPath(x, str);
         System.out.println(str);
 
@@ -150,7 +134,7 @@ public class BeamSearchReturnPathTest {
         PathTuple x = returnPath.searchGraph(w, coords, 5);
         System.out.println(x.getPredecessor() + " hello");
 
-        String str = "node(id:";
+        String str = "";
         str = returnPath(x, str);
         System.out.println(str);
 
@@ -173,23 +157,10 @@ public class BeamSearchReturnPathTest {
         PathTuple x = returnPath.searchGraph(w, coords, 5);
         System.out.println(x.getPredecessor() + " hello");
 
-        String str = "node(id:";
+        String str = "";
         str = returnPath(x, str);
         System.out.println(str);
 
-    }
-
-    static String returnPath(PathTuple tp, String acc) {
-        while (tp.getPredecessor() != null) {
-            acc += tp.getPreviousNode().getId() + ", ";
-            System.out.println("(" + tp.getPreviousNode() + " distance: "
-                    + tp.getLength() + ") " + " way: " + tp.getCurrentWay().getId());
-            tp = tp.getPredecessor();
-
-        }
-        acc = acc.substring(0, acc.length()-3);
-        acc += ");\nout;";
-        return acc;
     }
 
 }

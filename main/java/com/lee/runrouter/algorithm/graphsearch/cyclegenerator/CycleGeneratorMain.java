@@ -1,4 +1,4 @@
-package com.lee.runrouter.algorithm;
+package com.lee.runrouter.algorithm.graphsearch.cyclegenerator;
 
 import com.lee.runrouter.algorithm.graphsearch.GraphSearch;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
@@ -8,16 +8,15 @@ import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 
 import java.util.Arrays;
 
-
-public abstract class IteratedLocalSearch {
+public class CycleGeneratorMain implements CycleGenerator {
     private GraphSearch initialOutwardsPather; // generates the initial path
     // away from the origin point
     private GraphSearch initialReturnPather; // generates the initial path
     // back to the origin point
     private ElementRepo repo;
 
-    public IteratedLocalSearch(GraphSearch initialOutwardsPather, GraphSearch initialReturnPather,
-                               ElementRepo repo) {
+    public CycleGeneratorMain(GraphSearch initialOutwardsPather, GraphSearch initialReturnPather,
+                          ElementRepo repo) {
         this.initialOutwardsPather = initialOutwardsPather;
         this.initialReturnPather = initialReturnPather;
         this.repo = repo;
@@ -34,20 +33,23 @@ public abstract class IteratedLocalSearch {
         System.out.println("first half done");
 
         double[] lastVisitedCoords = {outwardPath.getPreviousNode().getLat(),
-        outwardPath.getPreviousNode().getLon()};
+                outwardPath.getPreviousNode().getLon()};
 
         System.out.println(Arrays.toString(lastVisitedCoords));
 
         PathTuple returnPath = initialReturnPather.searchGraph(lastVisited, lastVisitedCoords, distance);
 
 
-        if (returnPath.getLength() == -1) {
+
+        if (returnPath.getTotalLength() == -1) {
             System.out.println("it happended");
             return makeReverseRoute(outwardPath);
         }
 
+        double halfDistance = outwardPath.getTotalLength();
         PathTuple tail = returnPath;
-        while (tail.getPredecessor() != null) {
+        while (tail.getPredecessor().getPredecessor() != null) {
+            tail.setTotalLength(tail.getTotalLength() + halfDistance);
             tail = tail.getPredecessor();
         }
 
@@ -61,14 +63,28 @@ public abstract class IteratedLocalSearch {
         PathTuple head = outwardPath;
         PathTuple current = outwardPath;
 
-        double distance = head.getLength();
+        double distance = head.getTotalLength();
         while (current != null) {
-            PathTuple toAdd = new PathTupleMain(head, current.getPreviousNode(),
-                    current.getCurrentWay(), current.getScore(), distance + current.getLength());
 
-            head = toAdd;
+            // skip duplicating the connecting node between outward and return path
+            if (current.getPreviousNode().getId() != head.getPreviousNode().getId()) {
+
+                distance += current.getSegmentLength();
+
+                PathTuple toAdd = new PathTupleMain(head, current.getPreviousNode(),
+                        current.getCurrentWay(),
+                        current.getSegmentScore(), current.getSegmentLength(), distance
+                );
+
+                head = toAdd;
+            }
             current = current.getPredecessor();
         }
+
+        // Head's length must be updated to reflect final stretch of the journey
+        head = new PathTupleMain(head.getPredecessor(), head.getPreviousNode(), head.getCurrentWay(),
+        head.getSegmentScore(), head.getPredecessor().getSegmentLength(),
+                head.getPredecessor().getSegmentLength() + head.getPredecessor().getTotalLength());
 
         return head;
     }

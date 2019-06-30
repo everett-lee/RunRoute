@@ -1,8 +1,8 @@
 package com.lee.runrouter.algorithm;
 
-import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
-import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
+import com.lee.runrouter.algorithm.distanceCalculator.*;
 import com.lee.runrouter.algorithm.graphsearch.*;
+import com.lee.runrouter.algorithm.graphsearch.cyclegenerator.*;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
 import com.lee.runrouter.algorithm.heuristic.*;
@@ -10,43 +10,29 @@ import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
+import static com.lee.runrouter.testhelpers.TestHelpers.*;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
-
-public class IteratedLocalSearchMainTest {
+public class CycleGeneratorMainTest {
     ElementRepo repo;
-    GraphSearch bfs;
+    GraphSearch beamSearch;
     GraphSearch returnPath;
     DistanceCalculator distanceCalculator;
     Heuristic distanceHeuristic;
     Heuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
     ElevationHeuristic elevationHeuristic;
-    IteratedLocalSearch ils;
+    CycleGenerator ils;
 
     {
-        // deserialise test repo used for testing.
-        try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/repo.ser");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            repo = (ElementRepo) in.readObject();
-            in.close();
-            fileIn.close();
-        } catch (IOException i) {
-            i.printStackTrace();
-        } catch (ClassNotFoundException c) {
-            System.out.println("Repo class not found");
-            c.printStackTrace();
-        }
+        repo = getRepo();
     }
 
     @Before
@@ -63,13 +49,13 @@ public class IteratedLocalSearchMainTest {
         elevationHeuristic = new ElevationHeuristicMain(true);
 
 
-        bfs = new BeamSearch(repo, distanceHeuristic,
+        beamSearch = new BeamSearch(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, elevationHeuristic);
 
         returnPath = new BeamSearchReturnPath(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, elevationHeuristic, distanceCalculator);
 
-        ils = new IteratedLocalSearchMain(bfs, returnPath, repo);
+        ils = new CycleGeneratorMain(beamSearch, returnPath, repo);
     }
 
     @Test(timeout=5000)
@@ -77,17 +63,18 @@ public class IteratedLocalSearchMainTest {
         double[] coords = {51.446810, -0.125484};
         PathTuple res = ils.generateCycle(coords, 5);
 
-        String str = "node(id:";
+        String str = "";
         str = returnPath(res, str);
         System.out.println(str);
-    }
+
+   }
 
     @Test(timeout=5000)
     public void testMorrishRoadLongRoundTrip() {
         double[] coords = {51.446810, -0.125484};
         PathTuple res = ils.generateCycle(coords, 10);
 
-        String str = "node(id:";
+        String str = "";
         str = returnPath(res, str);
         System.out.println(str);
     }
@@ -101,17 +88,17 @@ public class IteratedLocalSearchMainTest {
                 .findFirst().get();
         repo.setOriginWay(origin);
 
-        double[] originCoords = {51.448321, -0.114648};
-        Node originNode = new Node(-1, originCoords[0], originCoords[1]);
+        Node originNode = new Node(-1, coords[0], coords[1]);
         originNode = AlgoHelpers.findClosest(originNode, repo.getOriginWay().getNodeContainer().getNodes());
         // update the repository origin node
         repo.setOriginNode(originNode);
 
         PathTuple res = ils.generateCycle(coords, 5);
 
-        String str = "node(id:";
+        String str = "";
         str = returnPath(res, str);
         System.out.println(str);
+
     }
 
     @Test(timeout=5000)
@@ -122,15 +109,14 @@ public class IteratedLocalSearchMainTest {
                 .findFirst().get();
         repo.setOriginWay(origin);
 
-        double[] originCoords = {51.448321, -0.114648};
-        Node originNode = new Node(-1, originCoords[0], originCoords[1]);
+        Node originNode = new Node(-1, coords[0], coords[1]);
         originNode = AlgoHelpers.findClosest(originNode, repo.getOriginWay().getNodeContainer().getNodes());
         // update the repository origin node
         repo.setOriginNode(originNode);
 
         PathTuple res = ils.generateCycle(coords, 10);
 
-        String str = "node(id:";
+        String str = "";
         str = returnPath(res, str);
         System.out.println(str);
     }
@@ -151,24 +137,8 @@ public class IteratedLocalSearchMainTest {
 
         PathTuple res = ils.generateCycle(coords, 10);
 
-        String str = "node(id:";
+        String str = "";
         str = returnPath(res, str);
         System.out.println(str);
     }
-
-
-    static String returnPath(PathTuple tp, String acc) {
-        while (tp != null) {
-            acc += tp.getPreviousNode().getId() + ", ";
-            System.out.println("(" + tp.getPreviousNode() + " distance: "
-                    + tp.getLength() + ") " + " way: " + tp.getCurrentWay().getId());
-            tp = tp.getPredecessor();
-
-        }
-        acc = acc.substring(0, acc.length()-3);
-        acc += ");\nout;";
-        return acc;
-    }
-
-
 }

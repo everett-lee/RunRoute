@@ -53,7 +53,7 @@ public class ReturnPath implements GraphSearch {
 
         // compare priority queue items by their assigned score in descending order
         this.queue = new PriorityQueue<>(Comparator
-                .comparing((PathTuple tuple) -> tuple.getScore()).reversed());
+                .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
     }
 
     /**
@@ -83,7 +83,7 @@ public class ReturnPath implements GraphSearch {
 
         Node originNode = new Node(-1, coords[0], coords[1]);
         originNode = AlgoHelpers.findClosest(originNode, root.getNodeContainer().getNodes());
-        queue.add(new PathTupleMain(null, originNode, root, 0, 0));
+        queue.add(new PathTupleMain(null, originNode, root,0, 0, 0));
 
         while (!queue.isEmpty()) {
             PathTuple topTuple = queue.poll();
@@ -91,7 +91,7 @@ public class ReturnPath implements GraphSearch {
             Way currentWay = topTuple.getCurrentWay();
             Node currentNode  = topTuple.getPreviousNode();
             double score;
-            currentRouteLength = topTuple.getLength();
+            currentRouteLength = topTuple.getTotalLength();
 
             // return the first route to exceed the minimum length requirement.
             if (currentRouteLength > lowerBound) {
@@ -102,7 +102,7 @@ public class ReturnPath implements GraphSearch {
                             .calculateDistance(currentNode, repo.getOriginNode(), repo.getOriginWay());
                     // create a new tuple representing the journey from the previous node to the final node
                     PathTuple returnTuple = new PathTupleMain(topTuple, repo.getOriginNode(),
-                            repo.getOriginWay(), 0, topTuple.getLength() + finalDistance);
+                            repo.getOriginWay(), 0, finalDistance, topTuple.getTotalLength() + finalDistance);
                     return returnTuple;
                 }
             }
@@ -112,7 +112,7 @@ public class ReturnPath implements GraphSearch {
 
             // for each Way reachable from the current Way
             for (ConnectionPair pair: repo.getConnectedWays(currentWay)) {
-                currentRouteLength = topTuple.getLength();
+                currentRouteLength = topTuple.getTotalLength();
                 score = 0;
                 currentNode = topTuple.getPreviousNode();
                 Node connectingNode = pair.getConnectingNode();
@@ -159,12 +159,12 @@ public class ReturnPath implements GraphSearch {
                 score += (Math.random() / RANDOM_REDUCER);
 
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
-                        score, currentRouteLength + distanceToNext);
+                        score, distanceToNext, currentRouteLength + distanceToNext);
                 queue.add(toAdd);
             }
         }
 
-        return new PathTupleMain(null, null, null,
+        return new PathTupleMain(null, null, null, -1,
                 -1, -1);
     }
  }

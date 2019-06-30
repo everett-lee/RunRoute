@@ -79,14 +79,14 @@ public class DistanceFromOriginHeuristicTestRealData {
         Way w1 = repo.getWayRepo().stream().filter(x -> x.getId() == 385587247L).findFirst().get();
 
         PriorityQueue<PathTuple> queue = new PriorityQueue<>(Comparator
-                .comparing((PathTuple tuple) -> tuple.getScore()).reversed());
+                .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
 
 
         repo.getConnectedWays(w1).forEach(x ->
         {
             double score = distanceFromOriginHeuristic.getScore(x.getConnectingWay());
             PathTupleMain pt = new PathTupleMain(null, x.getConnectingNode()
-                    , x.getConnectingWay(), score, 0);
+                    , x.getConnectingWay(), score, 0, 0);
             queue.add(pt);
         });
 

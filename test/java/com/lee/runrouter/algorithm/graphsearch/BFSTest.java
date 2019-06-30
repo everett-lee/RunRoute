@@ -151,7 +151,7 @@ public class BFSTest {
         while (tp != null) {
             acc += tp.getPreviousNode().getId() + ", ";
             System.out.println("(" + tp.getPreviousNode() + " distance: "
-                    + tp.getLength() + ") " + " way: " + tp.getCurrentWay().getId());
+                    + tp.getSegmentLength() + ") " + " way: " + tp.getCurrentWay().getId());
             tp = tp.getPredecessor();
 
         }

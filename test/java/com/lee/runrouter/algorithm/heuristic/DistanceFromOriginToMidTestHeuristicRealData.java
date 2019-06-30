@@ -76,14 +76,14 @@ public class DistanceFromOriginToMidTestHeuristicRealData {
         Way w1 = repo.getWayRepo().stream().filter(x -> x.getId() == 385587247L).findFirst().get();
 
         PriorityQueue<PathTuple> queue = new PriorityQueue<>(Comparator
-                .comparing((PathTuple tuple) -> tuple.getScore()).reversed());
+                .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
 
 
         repo.getConnectedWays(w1).forEach(x ->
         {
             double score = distanceFromOriginHeuristic.getScore(x.getConnectingWay());
             PathTupleMain pt = new PathTupleMain(null, x.getConnectingNode()
-                    , x.getConnectingWay(), score, 0);
+                    , x.getConnectingWay(), score, 0, 0);
             queue.add(pt);
         });
 
@@ -102,21 +102,21 @@ public class DistanceFromOriginToMidTestHeuristicRealData {
         Way w4 = repo.getWayRepo().stream().filter(x -> x.getId() == 5045573L).findFirst().get();
 
         PriorityQueue<PathTuple> queue = new PriorityQueue<>(Comparator
-                .comparing((PathTuple tuple) -> tuple.getScore()).reversed());
+                .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
 
         List<Way> outQueue = new ArrayList<>();
 
         PathTupleMain pt = new PathTupleMain(null, n1
-                , w1, distanceFromOriginHeuristic.getScore(w1), 0);
+                , w1, distanceFromOriginHeuristic.getScore(w1), 0, 0);
         queue.add(pt);
         pt = new PathTupleMain(null, n1
-                , w2, distanceFromOriginHeuristic.getScore(w2), 0);
+                , w2, distanceFromOriginHeuristic.getScore(w2), 0, 0);
         queue.add(pt);
         pt = new PathTupleMain(null, n1
-                , w3, distanceFromOriginHeuristic.getScore(w3), 0);
+                , w3, distanceFromOriginHeuristic.getScore(w3), 0, 0);
         queue.add(pt);
         pt = new PathTupleMain(null, n1
-                , w4, distanceFromOriginHeuristic.getScore(w4), 0);
+                , w4, distanceFromOriginHeuristic.getScore(w4), 0, 0);
         queue.add(pt);
 
         while (!queue.isEmpty()) {

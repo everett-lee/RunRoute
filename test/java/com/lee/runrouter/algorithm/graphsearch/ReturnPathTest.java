@@ -185,7 +185,7 @@ public class ReturnPathTest {
         while (tp.getPredecessor() != null) {
             acc += tp.getPreviousNode().getId() + ", ";
             System.out.println("(" + tp.getPreviousNode() + " distance: "
-                    + tp.getLength() + ") " + " way: " + tp.getCurrentWay().getId());
+                    + tp.getSegmentLength() + ") " + " way: " + tp.getCurrentWay().getId());
             tp = tp.getPredecessor();
 
         }

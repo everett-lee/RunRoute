@@ -5,6 +5,8 @@ import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearchReturnPath;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.GraphSearch;
 import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
@@ -18,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.lee.runrouter.testhelpers.TestHelpers.*;
-import static org.junit.Assert.*;
 
 public class BeamSearchReturnPathTest {
     ElementRepo repo;
@@ -62,7 +63,7 @@ public class BeamSearchReturnPathTest {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
-        PathTuple x = returnPath.searchGraph(w, coords, 2.5);
+        PathTuple x = returnPath.searchGraph(w, coords, 2500);
         System.out.println(x.getPredecessor() + " hello");
 
         String str = "";
@@ -82,7 +83,7 @@ public class BeamSearchReturnPathTest {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
-        PathTuple x = returnPath.searchGraph(w, coords, 5);
+        PathTuple x = returnPath.searchGraph(w, coords, 5000);
         System.out.println(x.getPredecessor() + " hello");
 
         String str = "";
@@ -106,7 +107,7 @@ public class BeamSearchReturnPathTest {
         repo.setOriginNode(originNode);
 
 
-        PathTuple x = returnPath.searchGraph(w, coords, 2.5);
+        PathTuple x = returnPath.searchGraph(w, coords, 2500);
         System.out.println(x.getPredecessor() + " hello");
 
         String str = "";
@@ -131,7 +132,7 @@ public class BeamSearchReturnPathTest {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
-        PathTuple x = returnPath.searchGraph(w, coords, 5);
+        PathTuple x = returnPath.searchGraph(w, coords, 5000);
         System.out.println(x.getPredecessor() + " hello");
 
         String str = "";
@@ -154,7 +155,7 @@ public class BeamSearchReturnPathTest {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
-        PathTuple x = returnPath.searchGraph(w, coords, 5);
+        PathTuple x = returnPath.searchGraph(w, coords, 5000);
         System.out.println(x.getPredecessor() + " hello");
 
         String str = "";

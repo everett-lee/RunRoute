@@ -1,4 +1,4 @@
-package com.lee.runrouter.algorithm.graphsearch;
+package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;

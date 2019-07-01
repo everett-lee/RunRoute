@@ -4,6 +4,9 @@ import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BFS;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearch;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.GraphSearch;
 import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
@@ -14,7 +17,6 @@ import org.junit.Test;
 import java.util.*;
 
 import static com.lee.runrouter.testhelpers.TestHelpers.*;
-import static org.junit.Assert.*;
 
 
 public class BeamSearchTest {
@@ -54,7 +56,7 @@ public class BeamSearchTest {
     public void testMorrishRoadShort() {
 
         double[] coords = {51.446810, -0.125484};
-        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 2.5);
+        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 2500);
         System.out.println(x.getPredecessor() + " hello");
 
         String str = "";
@@ -66,7 +68,7 @@ public class BeamSearchTest {
     @Test(timeout=3000)
     public void testMorrishRoadLonger() {
         double[] coords = {51.446810, -0.125484};
-        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 5);
+        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
         System.out.println(x.getPredecessor() + " hello");
 
         String str = "";
@@ -82,7 +84,7 @@ public class BeamSearchTest {
                 .findFirst().get();
         repo.setOriginWay(origin);
 
-        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 2.5);
+        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 2500);
         System.out.println(x.getPredecessor() + " hello");
 
         String str = "";
@@ -101,7 +103,7 @@ public class BeamSearchTest {
 
         repo.setOriginWay(origin);
 
-        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 5);
+        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
         System.out.println(x.getPredecessor() + " hello");
 
         String str = "";
@@ -126,7 +128,7 @@ public class BeamSearchTest {
                 .findFirst().get();
         repo.setOriginWay(origin);
 
-        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 5);
+        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
         System.out.println(x.getPredecessor() + " hello");
 
         String str = "";

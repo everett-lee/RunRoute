@@ -1,4 +1,4 @@
-package com.lee.runrouter.algorithm.graphsearch;
+package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 import com.lee.runrouter.algorithm.AlgoHelpers;
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
@@ -23,33 +23,32 @@ import java.util.Set;
  * to complete the circuit and return to the route's starting position
  * following execution of the BFS.
  */
-public class ReturnPath implements GraphSearch {
+public class BFSConnectPath implements ConnectPathGraphSearch {
     private ElementRepo repo; // the repository of Ways and Nodes
     private Heuristic distanceFromOriginHeursitic;
     private Heuristic featuresHeuristic;
     private EdgeDistanceCalculator edgeDistanceCalculator;
     private ElevationHeuristic elevationHeuristic;
-    private double maxGradient = 0.8; // is used-defined
+    private double currentRouteLength;
+
+    private double maxGradient = 0.8; // is user-defined
     private final double REPEATED_EDGE_PENALTY = 2; // deducted from score where
     // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 5; // divides into random number added to the
     // score
 
     private PriorityQueue<PathTuple> queue;
-    private final double LOWER_SCALE = 0.8; // amount to scale upper lower bound on
-    // run length by
-    private final double UPPER_SCALE = 0.3; // amount to scale upper bound on
-    // run length by
 
 
-    public ReturnPath(ElementRepo repo, Heuristic distanceHeuristic,
-                      Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator,
-                      ElevationHeuristic elevationHeuristic, DistanceCalculator distanceCalculator) {
+    public BFSConnectPath(ElementRepo repo, Heuristic distanceHeuristic,
+                          Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator,
+                          ElevationHeuristic elevationHeuristic, DistanceCalculator distanceCalculator) {
         this.repo = repo;
         this.distanceFromOriginHeursitic = distanceHeuristic;
         this.featuresHeuristic = featuresHeuristic;
         this.edgeDistanceCalculator = edgeDistanceCalculator;
         this.elevationHeuristic = elevationHeuristic;
+        this.currentRouteLength = 0;
 
         // compare priority queue items by their assigned score in descending order
         this.queue = new PriorityQueue<>(Comparator
@@ -63,56 +62,49 @@ public class ReturnPath implements GraphSearch {
      * The method returns when it connects back to the origin
      * Way after exceeding the minimum required run length.
      *
-     * @param root the Way at which the run begins
-     * @param coords the coordinates at which the run begins
+     * @param root     the Way at which the run begins
+     * @param coords   the coordinates at which the run begins
      * @param distance the required distance for the run
      * @return a PathTuple containing links to previous PathTuples,
-     *  the final Node and Way, their score, and the total length
-     *  of the path
+     * the final Node and Way, their score, and the total length
+     * of the path
      */
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double distance) {
-        distance *= 1000; // distance in meters
         Set<Long> visitedWays = new HashSet<>();
 
-        double currentRouteLength;
-        double upperBound = distance + (distance * UPPER_SCALE); // upper bound of
-        // run length
-        double lowerBound = distance - (distance * LOWER_SCALE); // lower bound of
-        // run length
+        double upperBound = distance;
 
         Node originNode = new Node(-1, coords[0], coords[1]);
         originNode = AlgoHelpers.findClosest(originNode, root.getNodeContainer().getNodes());
-        queue.add(new PathTupleMain(null, originNode, root,0, 0, 0));
+        queue.add(new PathTupleMain(null, originNode, root,
+                0, 0, 0));
 
         while (!queue.isEmpty()) {
             PathTuple topTuple = queue.poll();
 
             Way currentWay = topTuple.getCurrentWay();
-            Node currentNode  = topTuple.getPreviousNode();
+            Node currentNode = topTuple.getPreviousNode();
             double score;
             currentRouteLength = topTuple.getTotalLength();
 
-            // return the first route to exceed the minimum length requirement.
-            if (currentRouteLength > lowerBound) {
-                // the route has returned to the origin
-                if (topTuple.getCurrentWay().getId() == repo.getOriginWay().getId()) {
+            // the route has reached the target
+            if (topTuple.getCurrentWay().getId() == repo.getOriginWay().getId()) {
 
-                    double finalDistance = edgeDistanceCalculator
-                            .calculateDistance(currentNode, repo.getOriginNode(), repo.getOriginWay());
-                    // create a new tuple representing the journey from the previous node to the final node
-                    PathTuple returnTuple = new PathTupleMain(topTuple, repo.getOriginNode(),
-                            repo.getOriginWay(), 0, finalDistance, topTuple.getTotalLength() + finalDistance);
-                    return returnTuple;
-                }
+                double finalDistance = edgeDistanceCalculator
+                        .calculateDistance(currentNode, repo.getOriginNode(), repo.getOriginWay());
+                // create a new tuple representing the journey from the previous node to the final node
+                PathTuple returnTuple = new PathTupleMain(topTuple, repo.getOriginNode(),
+                        repo.getOriginWay(), 0, finalDistance, topTuple.getTotalLength() + finalDistance);
+                return returnTuple;
             }
 
             // distance to origin point from the last explored way
             double lastDist = distanceFromOriginHeursitic.getScore(currentWay);
 
             // for each Way reachable from the current Way
-            for (ConnectionPair pair: repo.getConnectedWays(currentWay)) {
-                currentRouteLength = topTuple.getTotalLength();
+            for (ConnectionPair pair : repo.getConnectedWays(currentWay)) {
+                 currentRouteLength = topTuple.getTotalLength();
                 score = 0;
                 currentNode = topTuple.getPreviousNode();
                 Node connectingNode = pair.getConnectingNode();
@@ -123,11 +115,6 @@ public class ReturnPath implements GraphSearch {
 
                 if (currentRouteLength + distanceToNext > upperBound) {
                     continue; // skip to next where max length exceeded
-                }
-
-                if (distanceToNext < 25) {
-                    continue; // skip short connections. Used to cull shorter sections and force
-                    // failure if necessary to move to next stage of algorithm.
                 }
 
                 double currentDistanceScore
@@ -144,13 +131,12 @@ public class ReturnPath implements GraphSearch {
                     score -= REPEATED_EDGE_PENALTY;
                 }
 
+
+                if (distanceToNext < 100) {
+                    score -= 1;
+                }
+
                 visitedWays.add(currentWay.getId());
-
-                double gradient = elevationHeuristic.getScore(currentNode, connectingNode,
-                        currentWay, selectedWay, distanceToNext);
-
-                if (Math.abs(gradient) > this.maxGradient) {
-                    continue; }
 
                 // add score reflecting correspondence of terrain features to user selectionss
                 score += featuresHeuristic.getScore(selectedWay);
@@ -167,4 +153,15 @@ public class ReturnPath implements GraphSearch {
         return new PathTupleMain(null, null, null, -1,
                 -1, -1);
     }
- }
+
+    @Override
+    public void setCurrentDistance(double distance) {
+        this.currentRouteLength = distance;
+    }
+
+    @Override
+    public void setTarget(Node targetNode, Way targetWay) {
+        repo.setOriginWay(targetWay);
+        repo.setOriginNode(targetNode);
+    }
+}

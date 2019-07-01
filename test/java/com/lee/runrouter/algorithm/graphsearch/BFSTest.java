@@ -4,6 +4,8 @@ import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BFS;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.GraphSearch;
 import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
@@ -15,8 +17,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.*;
-
-import static org.junit.Assert.*;
 
 public class BFSTest {
     ElementRepo repo;
@@ -67,7 +67,7 @@ public class BFSTest {
     public void testMorrishRoadShort() {
 
         double[] coords = {51.446810, -0.125484};
-        PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 2.5);
+        PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 2500);
         System.out.println(x.getPredecessor() + " hello");
 
         String str = "node(id:";
@@ -79,7 +79,7 @@ public class BFSTest {
     @Test(timeout=3000)
     public void testMorrishRoadLonger() {
         double[] coords = {51.446810, -0.125484};
-        PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 5);
+        PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 5000);
         System.out.println(x.getPredecessor() + " hello");
 
         String str = "node(id:";
@@ -95,7 +95,7 @@ public class BFSTest {
                 .findFirst().get();
         repo.setOriginWay(origin);
 
-        PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 2.5);
+        PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 2500);
         System.out.println(x.getPredecessor() + " hello");
 
         String str = "node(id:";
@@ -114,7 +114,7 @@ public class BFSTest {
 
         repo.setOriginWay(origin);
 
-        PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 5);
+        PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 5000);
         System.out.println(x.getPredecessor() + " hello");
 
         String str = "node(id:";
@@ -139,7 +139,7 @@ public class BFSTest {
                 .findFirst().get();
         repo.setOriginWay(origin);
 
-        PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 5);
+        PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 5000);
         System.out.println(x.getPredecessor() + " hello");
 
         String str = "node(id:";

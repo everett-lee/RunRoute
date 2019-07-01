@@ -1,6 +1,6 @@
 package com.lee.runrouter.algorithm.graphsearch.cyclegenerator;
 
-import com.lee.runrouter.algorithm.graphsearch.GraphSearch;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.GraphSearch;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;

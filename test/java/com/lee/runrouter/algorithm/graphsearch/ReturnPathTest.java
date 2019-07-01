@@ -5,9 +5,10 @@ import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.GraphSearch;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ReturnPath;
 import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
-import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import org.junit.Before;
@@ -21,7 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.lee.runrouter.graph.graphbuilder.node.Node;
-import static org.junit.Assert.*;
 
 public class ReturnPathTest {
     ElementRepo repo;
@@ -78,7 +78,7 @@ public class ReturnPathTest {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
-        PathTuple x = returnPath.searchGraph(w, coords, 2.5);
+        PathTuple x = returnPath.searchGraph(w, coords, 2500);
         System.out.println(x.getPredecessor() + " hello");
 
         String str = "node(id:";
@@ -98,7 +98,7 @@ public class ReturnPathTest {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
-        PathTuple x = returnPath.searchGraph(w, coords, 5);
+        PathTuple x = returnPath.searchGraph(w, coords, 5000);
         System.out.println(x.getPredecessor() + " hello");
 
         String str = "node(id:";
@@ -124,7 +124,7 @@ public class ReturnPathTest {
         repo.setOriginNode(originNode);
 
 
-        PathTuple x = returnPath.searchGraph(w, coords, 2.5);
+        PathTuple x = returnPath.searchGraph(w, coords, 2500);
         System.out.println(x.getPredecessor() + " hello");
 
         String str = "node(id:";
@@ -149,7 +149,7 @@ public class ReturnPathTest {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
-        PathTuple x = returnPath.searchGraph(w, coords, 5);
+        PathTuple x = returnPath.searchGraph(w, coords, 5000);
         System.out.println(x.getPredecessor() + " hello");
 
         String str = "node(id:";
@@ -172,7 +172,7 @@ public class ReturnPathTest {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
-        PathTuple x = returnPath.searchGraph(w, coords, 5);
+        PathTuple x = returnPath.searchGraph(w, coords, 5000);
         System.out.println(x.getPredecessor() + " hello");
 
         String str = "node(id:";

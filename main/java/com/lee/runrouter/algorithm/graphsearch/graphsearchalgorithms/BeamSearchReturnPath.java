@@ -1,4 +1,4 @@
-package com.lee.runrouter.algorithm.graphsearch;
+package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 import com.lee.runrouter.algorithm.AlgoHelpers;
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
@@ -67,7 +67,6 @@ public class BeamSearchReturnPath implements GraphSearch {
      */
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double distance) {
-        distance *= 1000; // distance in meters
         Set<Long> visitedWays = new HashSet<>();
 
         double currentRouteLength;
@@ -147,7 +146,6 @@ public class BeamSearchReturnPath implements GraphSearch {
                 if (visitedWays.contains(currentWay.getId())) {
                     score -= REPEATED_EDGE_PENALTY;
                 }
-
                 visitedWays.add(currentWay.getId());
 
                 double gradient = elevationHeuristic.getScore(currentNode, connectingNode,

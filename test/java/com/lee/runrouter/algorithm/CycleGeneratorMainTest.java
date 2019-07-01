@@ -1,10 +1,12 @@
 package com.lee.runrouter.algorithm;
 
 import com.lee.runrouter.algorithm.distanceCalculator.*;
-import com.lee.runrouter.algorithm.graphsearch.*;
 import com.lee.runrouter.algorithm.graphsearch.cyclegenerator.*;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearch;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearchReturnPath;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.GraphSearch;
 import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
@@ -15,7 +17,6 @@ import static com.lee.runrouter.testhelpers.TestHelpers.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

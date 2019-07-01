@@ -1,4 +1,4 @@
-package com.lee.runrouter.algorithm.graphsearch;
+package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 
 import com.lee.runrouter.algorithm.AlgoHelpers;
@@ -16,23 +16,23 @@ import java.util.*;
  * to explore the neighbouring node with the highest score (as assessed
  * by the heuristics) at each stage.
  */
-public class BeamSearch implements GraphSearch {
+public class BFS implements GraphSearch {
     private ElementRepo repo; // the repository of Ways and Nodes
     private Heuristic distanceFromOriginHeursitic;
     private Heuristic featuresHeuristic;
     private EdgeDistanceCalculator edgeDistanceCalculator;
     private ElevationHeuristic elevationHeuristic;
     private double maxGradient = 0.6; // is used-defined
-    private final double REPEATED_EDGE_PENALTY = 20; // deducted from score where
+    private final double REPEATED_EDGE_PENALTY = 2; // deducted from score where
     // edge/Way has been previously visited
-    private final double RANDOM_REDUCER = 500; // divides into random number added to the
+    private final double RANDOM_REDUCER = 50; // divides into random number added to the
     // score
 
-    private List<PathTuple> queue;
+    private PriorityQueue<PathTuple> queue;
     private final double SCALE = 0.15; // amount to scale upper and lower bound on
     // run length by
 
-    public BeamSearch(ElementRepo repo, Heuristic distanceHeuristic,
+    public BFS(ElementRepo repo, Heuristic distanceHeuristic,
                Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator,
                ElevationHeuristic elevationHeuristic) {
         this.repo = repo;
@@ -42,7 +42,8 @@ public class BeamSearch implements GraphSearch {
         this.elevationHeuristic = elevationHeuristic;
 
         // sort priority queue items by their assigned score in descending order
-        this.queue = new ArrayList<>();
+        this.queue = new PriorityQueue<>(Comparator
+                .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
     }
 
     /**
@@ -60,7 +61,6 @@ public class BeamSearch implements GraphSearch {
      */
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double distance) {
-        distance *= 1000; // distance in meters
         Set<Long> visitedWays = new HashSet<>();
 
         double currentRouteLength;
@@ -73,19 +73,12 @@ public class BeamSearch implements GraphSearch {
         originNode = AlgoHelpers.findClosest(originNode, repo.getOriginWay().getNodeContainer().getNodes());
         queue.add(new PathTupleMain(null, originNode, root, 0, 0, 0));
 
+
         // update the repository origin node
         repo.setOriginNode(originNode);
 
         while (!queue.isEmpty()) {
-            queue.sort(Comparator
-                    .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
-
-            if (queue.size() > 5) {
-                queue = queue.subList(0, 5);
-            }
-
-            PathTuple topTuple = queue.get(0);
-            queue.remove(0);
+            PathTuple topTuple = queue.poll();
             Way currentWay = topTuple.getCurrentWay();
             Node currentNode  = topTuple.getPreviousNode();
             double score;
@@ -112,10 +105,6 @@ public class BeamSearch implements GraphSearch {
 
                 if (currentRouteLength + distanceToNext > upperBound) {
                     continue; // skip to next where maximum length exceeded
-                }
-
-                if (distanceToNext < 10) {
-                    continue;
                 }
 
                 // drop the score where this way has already been explored

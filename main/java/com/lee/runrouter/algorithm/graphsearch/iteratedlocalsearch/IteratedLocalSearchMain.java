@@ -1,11 +1,13 @@
 package com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch;
 
-import com.lee.runrouter.algorithm.graphsearch.GraphSearch;
-import com.lee.runrouter.algorithm.graphsearch.cyclegenerator.CycleGenerator;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ConnectPathGraphSearch;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 
 public class IteratedLocalSearchMain implements IteratedLocalSearch {
-    public IteratedLocalSearchMain() {
+    private ConnectPathGraphSearch graphSearch;
+
+    public IteratedLocalSearchMain(ConnectPathGraphSearch graphSearch) {
+        this.graphSearch = graphSearch;
     }
 
     @Override

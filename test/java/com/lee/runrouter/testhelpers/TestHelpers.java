@@ -32,7 +32,9 @@ public class TestHelpers {
         while (tp != null) {
             acc += tp.getPreviousNode().getId() + ", ";
             System.out.println("(" + tp.getPreviousNode() + " distance: "
-                    + tp.getTotalLength() + ") " + " way: " + tp.getCurrentWay().getId());
+                    + tp.getTotalLength() + " score: " + tp.getSegmentScore() +
+                    ") " + " way: " + tp.getCurrentWay().getId());
+            System.out.println("Segment length: " + tp.getSegmentLength());
             tp = tp.getPredecessor();
 
         }
@@ -75,5 +77,16 @@ public class TestHelpers {
             c.printStackTrace();
         }
         return tulseHillLong;
+    }
+
+    public static double calculateScore(PathTuple head) {
+        double score = 0;
+
+        while (head != null) {
+            score += head.getSegmentScore();
+            head = head.getPredecessor();
+        }
+
+        return score;
     }
 }

@@ -12,10 +12,7 @@ import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Variant of the BFS algorithm that restricts the next selected Way
@@ -23,7 +20,7 @@ import java.util.Set;
  * to complete the circuit and return to the route's starting position
  * following execution of the BFS.
  */
-public class BFSConnectPath implements ConnectPathGraphSearch {
+public class BFSConnectionPath implements ILSGraphSearch {
     private ElementRepo repo; // the repository of Ways and Nodes
     private Heuristic distanceFromOriginHeursitic;
     private Heuristic featuresHeuristic;
@@ -36,13 +33,15 @@ public class BFSConnectPath implements ConnectPathGraphSearch {
     // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 5; // divides into random number added to the
     // score
+    private final long TIME_LIMIT = 1000;
+
 
     private PriorityQueue<PathTuple> queue;
 
 
-    public BFSConnectPath(ElementRepo repo, Heuristic distanceHeuristic,
-                          Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator,
-                          ElevationHeuristic elevationHeuristic, DistanceCalculator distanceCalculator) {
+    public BFSConnectionPath(ElementRepo repo, Heuristic distanceHeuristic,
+                             Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator,
+                             ElevationHeuristic elevationHeuristic, DistanceCalculator distanceCalculator) {
         this.repo = repo;
         this.distanceFromOriginHeursitic = distanceHeuristic;
         this.featuresHeuristic = featuresHeuristic;
@@ -55,47 +54,37 @@ public class BFSConnectPath implements ConnectPathGraphSearch {
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
     }
 
-    /**
-     * Method for generating a route of the specified length,
-     * connecting the initial position back to the origin point
-     * of th route.
-     * The method returns when it connects back to the origin
-     * Way after exceeding the minimum required run length.
-     *
-     * @param root     the Way at which the run begins
-     * @param coords   the coordinates at which the run begins
-     * @param distance the required distance for the run
-     * @return a PathTuple containing links to previous PathTuples,
-     * the final Node and Way, their score, and the total length
-     * of the path
-     */
     @Override
-    public PathTuple searchGraph(Way root, double[] coords, double distance) {
+    public PathTuple connectPath(Node originNode, Way originWay, Node targetNode, Way targetWay,
+                                 double distance) {
         Set<Long> visitedWays = new HashSet<>();
-
+        long startTime = System.currentTimeMillis();
+        long elapsedTime = 0L;
         double upperBound = distance;
+        repo.setOriginNode(targetNode);
+        repo.setOriginWay(targetWay);
 
-        Node originNode = new Node(-1, coords[0], coords[1]);
-        originNode = AlgoHelpers.findClosest(originNode, root.getNodeContainer().getNodes());
-        queue.add(new PathTupleMain(null, originNode, root,
+        queue.add(new PathTupleMain(null, originNode, originWay,
                 0, 0, 0));
 
-        while (!queue.isEmpty()) {
-            PathTuple topTuple = queue.poll();
+        while (!queue.isEmpty() && elapsedTime <= TIME_LIMIT) {
 
+            PathTuple topTuple = queue.poll();
             Way currentWay = topTuple.getCurrentWay();
             Node currentNode = topTuple.getPreviousNode();
             double score;
             currentRouteLength = topTuple.getTotalLength();
 
             // the route has reached the target
-            if (topTuple.getCurrentWay().getId() == repo.getOriginWay().getId()) {
-
+            if (topTuple.getCurrentWay().getId() == targetWay.getId()) {
                 double finalDistance = edgeDistanceCalculator
-                        .calculateDistance(currentNode, repo.getOriginNode(), repo.getOriginWay());
+                        .calculateDistance(currentNode, targetNode, targetWay);
+
                 // create a new tuple representing the journey from the previous node to the final node
                 PathTuple returnTuple = new PathTupleMain(topTuple, repo.getOriginNode(),
-                        repo.getOriginWay(), 0, finalDistance, topTuple.getTotalLength() + finalDistance);
+                        repo.getOriginWay(), topTuple.getSegmentScore(),
+                        finalDistance,
+                        topTuple.getTotalLength() + finalDistance);
                 return returnTuple;
             }
 
@@ -131,7 +120,6 @@ public class BFSConnectPath implements ConnectPathGraphSearch {
                     score -= REPEATED_EDGE_PENALTY;
                 }
 
-
                 if (distanceToNext < 100) {
                     score -= 1;
                 }
@@ -147,21 +135,12 @@ public class BFSConnectPath implements ConnectPathGraphSearch {
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext);
                 queue.add(toAdd);
+
+                elapsedTime = (new Date()).getTime() - startTime;
             }
         }
 
-        return new PathTupleMain(null, null, null, -1,
+        return new PathTupleMain(null, null, null, -10000000,
                 -1, -1);
-    }
-
-    @Override
-    public void setCurrentDistance(double distance) {
-        this.currentRouteLength = distance;
-    }
-
-    @Override
-    public void setTarget(Node targetNode, Way targetWay) {
-        repo.setOriginWay(targetWay);
-        repo.setOriginNode(targetNode);
     }
 }

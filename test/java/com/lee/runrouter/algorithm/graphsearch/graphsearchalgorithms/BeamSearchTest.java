@@ -1,11 +1,9 @@
-package com.lee.runrouter.algorithm.graphsearch;
+package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
-import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BFS;
-import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.GraphSearch;
 import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
@@ -13,14 +11,14 @@ import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.*;
 
-public class BFSTest {
+import static com.lee.runrouter.testhelpers.TestHelpers.*;
+
+
+public class BeamSearchTest {
     ElementRepo repo;
-    GraphSearch bfs;
+    GraphSearch beamSearch;
     DistanceCalculator distanceCalculator;
     Heuristic distanceHeuristic;
     Heuristic featuresHeuristic;
@@ -28,19 +26,7 @@ public class BFSTest {
     ElevationHeuristic elevationHeuristic;
 
     {
-        // deserialise test repo used for testing.
-        try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/repo.ser");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            repo = (ElementRepo) in.readObject();
-            in.close();
-            fileIn.close();
-        } catch (IOException i) {
-            i.printStackTrace();
-        } catch (ClassNotFoundException c) {
-            System.out.println("Repo class not found");
-            c.printStackTrace();
-        }
+       repo = getRepo();
     }
 
 
@@ -58,7 +44,7 @@ public class BFSTest {
         elevationHeuristic = new ElevationHeuristicMain(true);
 
 
-        bfs = new BFS(repo, distanceHeuristic,
+        beamSearch = new BeamSearch(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, elevationHeuristic);
 
     }
@@ -67,10 +53,10 @@ public class BFSTest {
     public void testMorrishRoadShort() {
 
         double[] coords = {51.446810, -0.125484};
-        PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 2500);
+        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 2500);
         System.out.println(x.getPredecessor() + " hello");
 
-        String str = "node(id:";
+        String str = "";
         str = returnPath(x, str);
         System.out.println(str);
     }
@@ -79,10 +65,10 @@ public class BFSTest {
     @Test(timeout=3000)
     public void testMorrishRoadLonger() {
         double[] coords = {51.446810, -0.125484};
-        PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 5000);
+        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
         System.out.println(x.getPredecessor() + " hello");
 
-        String str = "node(id:";
+        String str = "";
         str = returnPath(x, str);
         System.out.println(str);
     }
@@ -95,10 +81,10 @@ public class BFSTest {
                 .findFirst().get();
         repo.setOriginWay(origin);
 
-        PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 2500);
+        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 2500);
         System.out.println(x.getPredecessor() + " hello");
 
-        String str = "node(id:";
+        String str = "";
         str = returnPath(x, str);
         System.out.println(str);
 
@@ -114,10 +100,10 @@ public class BFSTest {
 
         repo.setOriginWay(origin);
 
-        PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 5000);
+        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
         System.out.println(x.getPredecessor() + " hello");
 
-        String str = "node(id:";
+        String str = "";
         str = returnPath(x, str);
         System.out.println(str);
     }
@@ -132,31 +118,18 @@ public class BFSTest {
         featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         elevationHeuristic = new ElevationHeuristicMain(true);
-        bfs = new BFS(repo, distanceHeuristic,
+        beamSearch = new BFS(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, elevationHeuristic);
 
         Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 4004611L)
                 .findFirst().get();
         repo.setOriginWay(origin);
 
-        PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 5000);
+        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
         System.out.println(x.getPredecessor() + " hello");
 
-        String str = "node(id:";
+        String str = "";
         str = returnPath(x, str);
         System.out.println(str);
-    }
-
-    static String returnPath(PathTuple tp, String acc) {
-        while (tp != null) {
-            acc += tp.getPreviousNode().getId() + ", ";
-            System.out.println("(" + tp.getPreviousNode() + " distance: "
-                    + tp.getSegmentLength() + ") " + " way: " + tp.getCurrentWay().getId());
-            tp = tp.getPredecessor();
-
-        }
-        acc = acc.substring(0, acc.length()-3);
-        acc += ");\nout;";
-        return acc;
     }
 }

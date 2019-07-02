@@ -133,6 +133,11 @@ public class BeamSearchReturnPath implements GraphSearch {
                     // failure if necessary to move to next stage of algorithm.
                 }
 
+
+                if (distanceToNext < 100) {
+                    score -= 1;
+                }
+
                 double currentDistanceScore
                         = distanceFromOriginHeursitic.getScore(selectedWay);
 

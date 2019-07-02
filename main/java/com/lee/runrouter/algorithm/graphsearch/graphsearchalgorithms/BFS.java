@@ -135,7 +135,7 @@ public class BFS implements GraphSearch {
         }
 
         // null object returned in the event of an error
-        return new PathTupleMain(null, null, null, -1,
+        return new PathTupleMain(null, null, null, Double.MIN_VALUE,
                 -1, -1);
     }
 }

@@ -163,7 +163,7 @@ public class ReturnPath implements GraphSearch {
             }
         }
 
-        return new PathTupleMain(null, null, null, -1,
+        return new PathTupleMain(null, null, null, Double.MIN_VALUE,
                 -1, -1);
     }
  }

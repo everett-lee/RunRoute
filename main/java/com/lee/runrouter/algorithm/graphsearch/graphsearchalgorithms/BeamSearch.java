@@ -117,6 +117,10 @@ public class BeamSearch implements GraphSearch {
                     continue;
                 }
 
+                if (distanceToNext < 100) {
+                    score -= 1;
+                }
+
                 // drop the score where this way has already been explored
                 if (visitedWays.contains(currentWay.getId())) {
                     score -= REPEATED_EDGE_PENALTY;
@@ -145,7 +149,7 @@ public class BeamSearch implements GraphSearch {
         }
 
         // null object returned in the event of an error
-        return new PathTupleMain(null, null, null, -1,
+        return new PathTupleMain(null, null, null, Double.MIN_VALUE,
                 -1, -1);
     }
 }

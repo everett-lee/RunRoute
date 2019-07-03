@@ -68,15 +68,13 @@ public class IteratedLocalSearchMainAlgorithmTest {
 
         System.out.println(calculateScore(tulseHillLong));
 
-        //PathTuple res = ilsBeamSearch.iterate(morrishRoadShort, 1000);
-        PathTuple res2 = ilsBFS.iterate(tulseHillLong, 1000);
-
-        //System.out.println(calculateScore(res));
-        //System.out.println(calculateScore(res2));
+        //PathTuple res = ilsBeamSearch.iterate(morrishRoadShort, 2000);
+        PathTuple res2 = ilsBFS.iterate(tulseHillLong, 2000);
 
         System.out.println("AHTT");
-        System.out.println(calculateScore(tulseHillLong));
 
+        double x = calculateScore(res2);
+        System.out.println(x);
     }
 
     static double calculateScore(PathTuple head) {

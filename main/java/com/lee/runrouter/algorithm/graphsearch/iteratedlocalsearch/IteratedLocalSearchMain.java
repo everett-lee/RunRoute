@@ -27,7 +27,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         double remainingDistance = targetDistance; // distance left available
         // to add to route
 
-        int a = 1; // the starting node, indexed from 1
+        int a = 3; // the starting node, indexed from 1
         int r = 2; // number of nodes to remove
         while (elapsedTime <= TIME_LIMIT && remainingDistance > 0) {
             elapsedTime = (new Date()).getTime() - startTime;
@@ -54,9 +54,19 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             // start , includes end
             remainingDistance += exisitingSegmentLength;
 
+            System.out.println("CHECKING !!");
+            System.out.println("START PREV NODE " + start.getPreviousNode() );
+            System.out.println("START CURR WAY " + start.getCurrentWay().getId());
+            System.out.println("END PREV NODE " + end.getPreviousNode() );
+            System.out.println("END CURR WAY " + end.getCurrentWay().getId());
+
             // generate the new segment
             PathTuple newSegment = graphSearch.connectPath(start.getPreviousNode(), start.getCurrentWay(),
                     end.getPreviousNode(), end.getCurrentWay(), remainingDistance);
+
+            System.out.println("PRINTING HTE NEW SEG");
+            PRINTIT(newSegment);
+            System.out.println("ABOVE IS THE NEW SEG");
 
             double oldSegmentScore = calculateScore(start, end);
             double newSegmentScore = calculateScore(newSegment, null);
@@ -72,9 +82,23 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             } else {
                 remainingDistance -= calculateDistance(newSegment, null);
 
+                System.out.println("\n\n");
+                System.out.println("THE START : " + start.getPreviousNode());
+                System.out.println("THE END : " + end.getPreviousNode());
+                PRINTIT(newSegment);
+                System.out.println("WILL BE ADDED TO !!! \n\n ");
+                PRINTIT(head);
+                System.out.println(" THE END !!!!!");
+
                 insertSegment(start, end, newSegment);
-                a = 1;
+                a = 2;
                 r = 2;
+
+                System.out.println();
+                System.out.println("THE RESULT");
+                PRINTIT(head);
+                System.out.println("!!!!!!");
+                System.out.println();
             }
         }
 
@@ -177,7 +201,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
     private void PRINTIT(PathTuple head) {
         while (head != null) {
-            System.out.println(head.getPreviousNode());
+            System.out.println(head.getPreviousNode() + " LENGTH " + head.getSegmentLength());
             head = head.getPredecessor();
         }
     }

@@ -11,6 +11,7 @@ import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 import static com.lee.runrouter.testhelpers.TestHelpers.*;
 
@@ -59,33 +60,53 @@ public class IteratedLocalSearchTestAppendPath {
 
     @Test
     public void testInsertSingleNode() {
-        PathTuple start = reverseList(morrishWayShort);
+        PathTuple head = reverseList(morrishWayShort);
 
-       start = getStartPathSegment(start, 1);
+//        String out1 = "";
+//        out1 = returnPath(head, out1);
+
+        long originalLength = getPathSize(head);
+        PathTuple originalHead = head;
+        PathTuple originalTail = getTail(head);
+
+        PathTuple start = getStartPathSegment(head, 1);
         PathTuple end = getEndPathSegment(start, 1);
-
 
         PathTuple newSegment = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
                 end.getPreviousNode(), end.getCurrentWay(), 2000);
+        long newSegmentLength = getPathSize(newSegment);
 
-        PathTuple res = insertSegment(start, end,  newSegment);
-
+        returnPath(newSegment, "");
+        System.out.println("NEW SEGMENT LEN " + newSegmentLength);
+        System.out.println("START " + start.getPreviousNode());
+        System.out.println("END " + end.getPreviousNode());
     }
 
     @Test
     public void testInsertSeveralNodes() {
-        PathTuple start = reverseList(morrishWayShort);
+        PathTuple head = reverseList(morrishWayShort);
 
-        start = getStartPathSegment(start, 2);
-        PathTuple end = getEndPathSegment(start, 18);
+        long originalLength = getPathSize(head);
+        PathTuple originalHead = head;
+        PathTuple originalTail = getTail(head);
 
+        PathTuple start = getStartPathSegment(head, 4);
+        PathTuple end = getEndPathSegment(start, 12);
 
         PathTuple newSegment = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
                 end.getPreviousNode(), end.getCurrentWay(), 2000);
+        long newSegmentLength = getPathSize(newSegment);
 
-        PathTuple res = insertSegment(start, end,  newSegment);
 
+        insertSegment(start, end,  newSegment);
+        PathTuple newTail = getTail(head);
+
+        assertEquals(originalHead, head);
+        assertEquals(originalTail, newTail);
     }
+
+
+
 
     private PathTuple reverseList(PathTuple head) {
         PathTuple prev = null;
@@ -131,6 +152,13 @@ public class IteratedLocalSearchTestAppendPath {
         return count;
     }
 
+    private PathTuple getTail(PathTuple head) {
+        while (head.getPredecessor() != null) {
+            head = head.getPredecessor();
+        }
+        return head;
+    }
+
     private PathTuple insertSegment(PathTuple start, PathTuple end, PathTuple newSegment) {
         newSegment = reverseList(newSegment); // reverse the segment to be added, as it
         // is currently in the wrong order
@@ -148,6 +176,8 @@ public class IteratedLocalSearchTestAppendPath {
 
         newSegmentTail.setPredecessor(end.getPredecessor()); // tail of new segment is linked
         // to next link of the head of the remaining existing path.
+        end.setPredecessor(null);
+
 
         return start;
     }

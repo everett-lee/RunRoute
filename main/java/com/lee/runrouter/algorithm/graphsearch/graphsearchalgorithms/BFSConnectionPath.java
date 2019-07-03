@@ -64,8 +64,15 @@ public class BFSConnectionPath implements ILSGraphSearch {
         repo.setOriginNode(targetNode);
         repo.setOriginWay(targetWay);
 
-        queue.add(new PathTupleMain(null, originNode, originWay,
-                0, 0, 0));
+        Node OG = originNode;
+        System.out.println("------------->  STARTING THIS SHIT AT NODE " + OG);
+        System.out.println("------------->  STARTING THIS SHIT AT WAY " + originWay.getId());
+
+        System.out.println("------------->  AND AGAIN START IS  " + OG);
+        queue.add(new PathTupleMain(null, OG, originWay,
+                0, 666, 0));
+
+        System.out.println("------------->  AFTER ADDING NODE TO QUEUE IT I S" + OG);
 
         while (!queue.isEmpty() && elapsedTime <= TIME_LIMIT) {
 

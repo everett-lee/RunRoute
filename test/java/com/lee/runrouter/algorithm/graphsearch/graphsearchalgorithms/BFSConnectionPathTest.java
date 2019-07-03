@@ -62,6 +62,10 @@ public class BFSConnectionPathTest {
         PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
                 end.getPreviousNode(), end.getCurrentWay(), 2000);
 
+        PathTuple resFinal = getEndTuple(res);
+
+        assertEquals(end.getPreviousNode(), res.getPreviousNode());
+        assertEquals(start.getPreviousNode(), resFinal.getPreviousNode());
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
     }
@@ -86,13 +90,44 @@ public class BFSConnectionPathTest {
     public void testMorrishLongSegment() {
         PathTuple start = reverseList(morrishWayShort);
 
-        start = getStartPathSegment(start, 5);
-        PathTuple end = getEndPathSegment(start, 15);
+        start = getStartPathSegment(start, 3);
+        PathTuple end = getEndPathSegment(start, 4);
 
         PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
                 end.getPreviousNode(), end.getCurrentWay(), 2000);
 
-        returnPath(res, "");
+
+        assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
+        assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
+    }
+
+
+
+    @Test
+    public void testMorrishLongSegmentII() {
+        PathTuple start = reverseList(morrishWayShort);
+
+        start = getStartPathSegment(start, 1);
+        PathTuple end = getEndPathSegment(start, 32);
+
+        PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
+                end.getPreviousNode(), end.getCurrentWay(), 2000);
+
+
+        assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
+        assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
+    }
+
+    @Test
+    public void testTulseLongSegmentII() {
+        PathTuple start = reverseList(tulseHillLonger);
+
+        start = getStartPathSegment(start, 1);
+        PathTuple end = getEndPathSegment(start, 63);
+
+        PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
+                end.getPreviousNode(), end.getCurrentWay(), 2000);
+
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());

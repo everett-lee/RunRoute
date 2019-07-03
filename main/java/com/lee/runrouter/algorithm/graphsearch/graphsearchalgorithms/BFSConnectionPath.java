@@ -49,14 +49,17 @@ public class BFSConnectionPath implements ILSGraphSearch {
         this.elevationHeuristic = elevationHeuristic;
         this.currentRouteLength = 0;
 
-        // compare priority queue items by their assigned score in descending order
-        this.queue = new PriorityQueue<>(Comparator
-                .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
+
     }
 
     @Override
     public PathTuple connectPath(Node originNode, Way originWay, Node targetNode, Way targetWay,
                                  double distance) {
+
+        // compare priority queue items by their assigned score in descending order
+        this.queue = new PriorityQueue<>(Comparator
+                .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
+
         Set<Long> visitedWays = new HashSet<>();
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
@@ -64,15 +67,8 @@ public class BFSConnectionPath implements ILSGraphSearch {
         repo.setOriginNode(targetNode);
         repo.setOriginWay(targetWay);
 
-        Node OG = originNode;
-        System.out.println("------------->  STARTING THIS SHIT AT NODE " + OG);
-        System.out.println("------------->  STARTING THIS SHIT AT WAY " + originWay.getId());
-
-        System.out.println("------------->  AND AGAIN START IS  " + OG);
-        queue.add(new PathTupleMain(null, OG, originWay,
-                0, 666, 0));
-
-        System.out.println("------------->  AFTER ADDING NODE TO QUEUE IT I S" + OG);
+        queue.add(new PathTupleMain(null, originNode, originWay,
+                0, 0, 0));
 
         while (!queue.isEmpty() && elapsedTime <= TIME_LIMIT) {
 

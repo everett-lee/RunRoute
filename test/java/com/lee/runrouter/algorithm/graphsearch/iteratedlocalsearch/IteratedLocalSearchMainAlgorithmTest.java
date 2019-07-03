@@ -5,6 +5,7 @@ import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BFSConnectionPath;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearchConnectionPath;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ILSGraphSearch;
 import com.lee.runrouter.algorithm.heuristic.DistanceFromOriginToMidHeuristic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristicMain;
@@ -55,6 +56,8 @@ public class IteratedLocalSearchMainAlgorithmTest {
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         elevationHeuristic = new ElevationHeuristicMain(true);
 
+        connectPathBeamSearch = new BeamSearchConnectionPath(repo, distanceHeuristic,
+                featuresHeuristic, edgeDistanceCalculator, elevationHeuristic, distanceCalculator);
         connectPathBFS = new BFSConnectionPath(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, elevationHeuristic, distanceCalculator);
 
@@ -68,7 +71,7 @@ public class IteratedLocalSearchMainAlgorithmTest {
 
         System.out.println(calculateScore(tulseHillLong));
 
-        //PathTuple res = ilsBeamSearch.iterate(morrishRoadShort, 2000);
+        //PathTuple res = ilsBeamSearch.iterate(tulseHillLong, 3000);
         PathTuple res2 = ilsBFS.iterate(tulseHillLong, 2000);
 
         System.out.println("AHTT");

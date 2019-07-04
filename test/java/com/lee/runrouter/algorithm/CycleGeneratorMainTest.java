@@ -16,7 +16,11 @@ import static com.lee.runrouter.testhelpers.TestHelpers.*;
 
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +34,7 @@ public class CycleGeneratorMainTest {
     Heuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
     ElevationHeuristic elevationHeuristic;
-    CycleGenerator ils;
+    CycleGenerator cycleGenerator;
 
     {
         repo = getRepo();
@@ -56,33 +60,35 @@ public class CycleGeneratorMainTest {
         returnPath = new BeamSearchReturnPath(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, elevationHeuristic, distanceCalculator);
 
-        ils = new CycleGeneratorMain(beamSearch, returnPath, repo);
+        cycleGenerator = new CycleGeneratorMain(beamSearch, returnPath, repo);
     }
 
     @Test(timeout=5000)
-    public void testMorrishRoadShortRoundTrip() {
+    public void testMorrishRoadShortRoundTrip() throws Exception {
         double[] coords = {51.446810, -0.125484};
-        PathTuple res = ils.generateCycle(coords, 5);
+        PathTuple res = cycleGenerator.generateCycle(coords, 5000);
 
-        String str = "";
-        str = returnPath(res, str);
-        System.out.println(str);
+        double length = calculateDistance(res);
+        assertTrue(calculateScore(res) > 0);
+        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
 
    }
 
     @Test(timeout=5000)
-    public void testMorrishRoadLongRoundTrip() {
+    public void testMorrishRoadLongRoundTrip() throws Exception {
         double[] coords = {51.446810, -0.125484};
-        PathTuple res = ils.generateCycle(coords, 10);
+        PathTuple res = cycleGenerator.generateCycle(coords, 10000);
 
-        String str = "";
-        str = returnPath(res, str);
-        System.out.println(str);
+        double length = calculateDistance(res);
+        assertTrue(calculateScore(res) > 0);
+        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
     }
 
 
     @Test(timeout=5000)
-    public void testCraignairRoadShortRoundTrip() {
+    public void testCraignairRoadShortRoundTrip() throws Exception {
         double[] coords = {51.448321, -0.114648};
 
         Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
@@ -94,16 +100,17 @@ public class CycleGeneratorMainTest {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
-        PathTuple res = ils.generateCycle(coords, 5);
+        PathTuple res = cycleGenerator.generateCycle(coords, 5000);
 
-        String str = "";
-        str = returnPath(res, str);
-        System.out.println(str);
+        double length = calculateDistance(res);
+        assertTrue(calculateScore(res) > 0);
+        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
 
     }
 
     @Test(timeout=5000)
-    public void testCraignairRoadLongerRoundTrip() {
+    public void testCraignairRoadLongerRoundTrip() throws Exception {
         double[] coords = {51.448321, -0.114648};
 
         Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
@@ -115,16 +122,18 @@ public class CycleGeneratorMainTest {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
-        PathTuple res = ils.generateCycle(coords, 10);
+        PathTuple res = cycleGenerator.generateCycle(coords, 10000);
 
-        String str = "";
-        str = returnPath(res, str);
-        System.out.println(str);
+
+        double length = calculateDistance(res);
+        assertTrue(calculateScore(res) > 0);
+        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
     }
 
 
     @Test(timeout=5000)
-    public void testTulseHillRoundTrip10KM() {
+    public void testTulseHillRoundTrip10KM() throws Exception {
         double[] coords = {51.441109, -0.106974};
 
         Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 4004611L)
@@ -136,10 +145,50 @@ public class CycleGeneratorMainTest {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
-        PathTuple res = ils.generateCycle(coords, 10);
+        PathTuple res = cycleGenerator.generateCycle(coords, 10000);
 
-        String str = "";
-        str = returnPath(res, str);
-        System.out.println(str);
+        double length = calculateDistance(res);
+        assertTrue(calculateScore(res) > 0);
+        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+
+    }
+
+    private double calculateDistance(PathTuple root) {
+        double distance = 0;
+
+        while (root != null) {
+            distance += root.getSegmentLength();
+            root = root.getPredecessor();
+        }
+
+        return distance;
+    }
+
+    private double calculateScore(PathTuple root) {
+        double score = 0;
+
+        while (root != null) {
+            score += root.getSegmentLength();
+            root = root.getPredecessor();
+        }
+
+        return score;
+    }
+
+    static void serialize(PathTuple head) {
+        try {
+            System.out.println("Starting... ");
+            FileOutputStream fileOut =
+                    new FileOutputStream("/home/lee/project/app/runrouter/src/craignair.ser");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(head);
+            out.close();
+            fileOut.close();
+            System.out.printf("/home/lee/project/app/runrouter/src/craignair.ser");
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+
     }
 }

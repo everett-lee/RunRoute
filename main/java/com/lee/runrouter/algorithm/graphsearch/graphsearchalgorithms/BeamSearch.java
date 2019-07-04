@@ -12,9 +12,10 @@ import com.lee.runrouter.graph.graphbuilder.node.Node;
 import java.util.*;
 
 /**
- * A greedy Best-First Search algorithm that utilises a priority queue
- * to explore the neighbouring node with the highest score (as assessed
- * by the heuristics) at each stage.
+ * A greedy Search algorithm that utilises a restricted List.
+ * Neghbouring nodes are explored and only those with the
+ * highest score (as assessed by the heuristics) at each stage
+ * are kept in the list.
  */
 public class BeamSearch implements GraphSearch {
     private ElementRepo repo; // the repository of Ways and Nodes
@@ -22,12 +23,21 @@ public class BeamSearch implements GraphSearch {
     private Heuristic featuresHeuristic;
     private EdgeDistanceCalculator edgeDistanceCalculator;
     private ElevationHeuristic elevationHeuristic;
-    private double maxGradient = 0.6; // is used-defined
+    private double maxGradient = 0.8; // is used-defined
+
+    private final int BEAM_SIZE = 10; // the max number of possible Nodes under review
     private final double REPEATED_EDGE_PENALTY = 20; // deducted from score where
     // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
+    private final double MINIMUM_LENGTH = 10; // minimum length of way to avoid
+    // skipping
+    private final double PREFERRED_LENGTH = 100; // preferred minimum travel distance between
+    // nodes
+    private final double PREFERRED_LENGTH_PENALTY = 1; // penalty if distance is below
+    // preferred
 
+    private final Set<Long> visitedWays;
     private List<PathTuple> queue;
     private final double SCALE = 0.15; // amount to scale upper and lower bound on
     // run length by
@@ -43,6 +53,7 @@ public class BeamSearch implements GraphSearch {
 
         // sort priority queue items by their assigned score in descending order
         this.queue = new ArrayList<>();
+        visitedWays = new HashSet<>();
     }
 
     /**
@@ -60,7 +71,7 @@ public class BeamSearch implements GraphSearch {
      */
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double distance) {
-        Set<Long> visitedWays = new HashSet<>();
+
 
         double currentRouteLength;
         double upperBound = distance + (distance * SCALE); // upper bound of
@@ -79,12 +90,13 @@ public class BeamSearch implements GraphSearch {
             queue.sort(Comparator
                     .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
 
-            if (queue.size() > 5) {
-                queue = queue.subList(0, 5);
+            if (queue.size() > BEAM_SIZE) {
+                queue = queue.subList(0, BEAM_SIZE);
             }
 
             PathTuple topTuple = queue.get(0);
             queue.remove(0);
+
             Way currentWay = topTuple.getCurrentWay();
             Node currentNode  = topTuple.getPreviousNode();
             double score;
@@ -113,20 +125,13 @@ public class BeamSearch implements GraphSearch {
                     continue; // skip to next where maximum length exceeded
                 }
 
-                if (distanceToNext < 10) {
+                if (distanceToNext < MINIMUM_LENGTH) {
                     continue;
                 }
 
-                if (distanceToNext < 100) {
-                    score -= 1;
+                if (distanceToNext < PREFERRED_LENGTH) {
+                    score -= PREFERRED_LENGTH_PENALTY;
                 }
-
-                // drop the score where this way has already been explored
-                if (visitedWays.contains(currentWay.getId())) {
-                    score -= REPEATED_EDGE_PENALTY;
-                }
-
-                visitedWays.add(currentWay.getId());
 
                 double gradient = elevationHeuristic.getScore(currentNode, connectingNode,
                         currentWay, selectedWay, distanceToNext);
@@ -136,20 +141,34 @@ public class BeamSearch implements GraphSearch {
                 if (Math.abs(gradient) > this.maxGradient) {
                     continue; }
 
-                // add score reflecting correspondence of terrain features to user selections
-                score += featuresHeuristic.getScore(selectedWay);
-
-                // add a small random value to break ties
-                score += (Math.random() / RANDOM_REDUCER);
+                score += addScores(selectedWay);
 
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext);
                 queue.add(toAdd);
+                visitedWays.add(currentWay.getId());
             }
         }
 
         // null object returned in the event of an error
         return new PathTupleMain(null, null, null, Double.MIN_VALUE,
                 -1, -1);
+    }
+
+    private double addScores(Way selectedWay) {
+        double score = 0;
+
+        // drop the score where this way has already been explored
+        if (visitedWays.contains(selectedWay.getId())) {
+            score -= REPEATED_EDGE_PENALTY;
+        }
+
+        // add score reflecting correspondence of terrain features to user selectionss
+        score += featuresHeuristic.getScore(selectedWay);
+
+        // add a small random value to break ties
+        score += (Math.random() / RANDOM_REDUCER);
+
+        return score;
     }
 }

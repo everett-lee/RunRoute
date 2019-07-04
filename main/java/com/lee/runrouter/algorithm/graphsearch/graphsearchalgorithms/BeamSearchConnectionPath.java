@@ -1,6 +1,5 @@
 package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
-import com.lee.runrouter.algorithm.AlgoHelpers;
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
@@ -15,10 +14,10 @@ import com.lee.runrouter.graph.graphbuilder.node.Node;
 import java.util.*;
 
 /**
- * Variant of the BFS algorithm that restricts the next selected Way
- * to those closer to the starting point than the previous. It is used
- * to complete the circuit and return to the route's starting position
- * following execution of the BFS.
+ * A variant of the BeamSearch Algorithm for finding paths
+ * between two specified points. This algorithm is used to
+ * fill gaps created by removing path edges as part of the iterated
+ * local search metaheuristic.
  */
 public class BeamSearchConnectionPath implements ILSGraphSearch {
     private ElementRepo repo; // the repository of Ways and Nodes
@@ -27,40 +26,59 @@ public class BeamSearchConnectionPath implements ILSGraphSearch {
     private EdgeDistanceCalculator edgeDistanceCalculator;
     private ElevationHeuristic elevationHeuristic;
     private double currentRouteLength;
-
     private double maxGradient = 0.8; // is user-defined
-    private final double REPEATED_EDGE_PENALTY = 2; // deducted from score where
+
+    private final int BEAM_SIZE = 15; // the max number of possible Nodes under review
+    private final double REPEATED_EDGE_PENALTY = 1; // deducted from score where
     // edge/Way has been previously visited
-    private final double RANDOM_REDUCER = 5; // divides into random number added to the
+    private final double DISTANCE_FROM_ORIGIN_PENALTY = 5;
+    private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
+    private final double PREFERRED_LENGTH = 100; // minimum length of way to avoid
+    // subtracting a score penalty
+    private final double PREFERRED_LENGTH_PENALTY = 0.5;
     private final long TIME_LIMIT = 1000;
 
-
+    private final Set<Long> visitedWays;
     private List<PathTuple> queue;
 
 
     public BeamSearchConnectionPath(ElementRepo repo, Heuristic distanceHeuristic,
-                             Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator,
-                             ElevationHeuristic elevationHeuristic, DistanceCalculator distanceCalculator) {
+                                    Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator,
+                                    ElevationHeuristic elevationHeuristic, DistanceCalculator distanceCalculator) {
         this.repo = repo;
         this.distanceFromOriginHeursitic = distanceHeuristic;
         this.featuresHeuristic = featuresHeuristic;
         this.edgeDistanceCalculator = edgeDistanceCalculator;
         this.elevationHeuristic = elevationHeuristic;
         this.currentRouteLength = 0;
+        this.visitedWays = new HashSet<>();
     }
 
+    /**
+     * Method for generating a route of the specified length,
+     * that selects a path based on the given preferences.
+     * The method returns as soon as the target way is reached.
+     *
+     * @param originNode the starting node of of the connecting path
+     * @param originWay the starting way of the connecting path
+     * @param targetNode the target node of the connecting path
+     * @param targetWay the target way of the connecting path
+     * @param distance the total distance available to travel
+     * @return a PathTuple that is the head of the linked list
+     * of PathTuples containing hte path back to the origin point
+     */
     @Override
     public PathTuple connectPath(Node originNode, Way originWay, Node targetNode, Way targetWay,
                                  double distance) {
         this.queue = new ArrayList<>();
-        Set<Long> visitedWays = new HashSet<>();
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
         double upperBound = distance;
         repo.setOriginNode(targetNode);
         repo.setOriginWay(targetWay);
 
+        // add the starting PathTuple of the chain, with no link
         queue.add(new PathTupleMain(null, originNode, originWay,
                 0, 0, 0));
 
@@ -68,8 +86,9 @@ public class BeamSearchConnectionPath implements ILSGraphSearch {
             queue.sort(Comparator
                     .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
 
-            if (queue.size() > 10) {
-                queue = queue.subList(0, 10);
+            // reduce the size of the queue where it exceeds beam size
+            if (queue.size() > BEAM_SIZE) {
+                queue = queue.subList(0, BEAM_SIZE);
             }
 
             PathTuple topTuple = queue.get(0);
@@ -82,15 +101,7 @@ public class BeamSearchConnectionPath implements ILSGraphSearch {
 
             // the route has reached the target
             if (topTuple.getCurrentWay().getId() == targetWay.getId()) {
-                double finalDistance = edgeDistanceCalculator
-                        .calculateDistance(currentNode, targetNode, targetWay);
-
-                // create a new tuple representing the journey from the previous node to the final node
-                PathTuple returnTuple = new PathTupleMain(topTuple, repo.getOriginNode(),
-                        repo.getOriginWay(), topTuple.getSegmentScore(),
-                        finalDistance,
-                        topTuple.getTotalLength() + finalDistance);
-                return returnTuple;
+                return topTuple;
             }
 
             // distance to origin point from the last explored way
@@ -98,6 +109,7 @@ public class BeamSearchConnectionPath implements ILSGraphSearch {
 
             // for each Way reachable from the current Way
             for (ConnectionPair pair : repo.getConnectedWays(currentWay)) {
+
                 currentRouteLength = topTuple.getTotalLength();
                 score = 0;
                 currentNode = topTuple.getPreviousNode();
@@ -115,37 +127,44 @@ public class BeamSearchConnectionPath implements ILSGraphSearch {
                         = distanceFromOriginHeursitic.getScore(selectedWay);
 
                 // if the current distance score is less than the previous Way's, that
-                // is it is further away, then skip this iteration
+                // is it is further away, then reduce the score
                 if (currentDistanceScore < lastDist) {
-                    continue;
+                    score -= DISTANCE_FROM_ORIGIN_PENALTY;
                 }
 
-                // drop the score where this way has already been explored
-                if (visitedWays.contains(currentWay.getId())) {
-                    score -= REPEATED_EDGE_PENALTY;
+                if (distanceToNext < PREFERRED_LENGTH) {
+                    score -= PREFERRED_LENGTH_PENALTY;
                 }
 
-                if (distanceToNext < 100) {
-                    score -= 1;
-                }
-
-                visitedWays.add(currentWay.getId());
-
-                // add score reflecting correspondence of terrain features to user selectionss
-                score += featuresHeuristic.getScore(selectedWay);
-
-                // add a small random value to break ties
-                score += (Math.random() / RANDOM_REDUCER);
+                // call private method to add scores
+                score += addScores(selectedWay);
 
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext);
                 queue.add(toAdd);
-
+                visitedWays.add(currentWay.getId());
                 elapsedTime = (new Date()).getTime() - startTime;
             }
         }
 
         return new PathTupleMain(null, null, null, -10000000,
                 -1, -1);
+    }
+
+    private double addScores(Way selectedWay) {
+        double score = 0;
+
+        // drop the score where this way has already been explored
+        if (visitedWays.contains(selectedWay.getId())) {
+            score -= REPEATED_EDGE_PENALTY;
+        }
+
+        // add score reflecting correspondence of terrain features to user selectionss
+        score += featuresHeuristic.getScore(selectedWay);
+
+        // add a small random value to break ties
+        score += (Math.random() / RANDOM_REDUCER);
+
+        return score;
     }
 }

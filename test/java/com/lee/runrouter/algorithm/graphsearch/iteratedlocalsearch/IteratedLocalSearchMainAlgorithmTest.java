@@ -16,16 +16,17 @@ import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import static org.junit.Assert.*;
 
 import static com.lee.runrouter.testhelpers.TestHelpers.*;
 
 public class IteratedLocalSearchMainAlgorithmTest {
     PathTuple morrishRoadShort;
     PathTuple tulseHillLong;
+    PathTuple craignair;
     DistanceCalculator distanceCalculator;
     Heuristic distanceHeuristic;
     ElementRepo repo;
@@ -40,6 +41,7 @@ public class IteratedLocalSearchMainAlgorithmTest {
     {
         morrishRoadShort = getMorrishShort();
         tulseHillLong = getTulseLong();
+        craignair = getCraignair();
         repo = getRepo();
     }
 
@@ -50,7 +52,7 @@ public class IteratedLocalSearchMainAlgorithmTest {
 
         List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("GRASS",
                 "DIRT", "GRAVEL"));
-        List<String> preferredHighways = new ArrayList<>(Arrays.asList("LIVING_STREET","PEDESTRIAN", "TRACK",
+        List<String> preferredHighways = new ArrayList<>(Arrays.asList("TRACK",
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
         featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
@@ -67,18 +69,81 @@ public class IteratedLocalSearchMainAlgorithmTest {
     }
 
     @Test
-    public void a(){
+    public void testScoreGreaterOrEqualBeam(){
+        double originalScore = calculateScore(morrishRoadShort);
 
-        System.out.println(calculateScore(tulseHillLong));
+        PathTuple res = ilsBeamSearch.iterate(morrishRoadShort, 2000);
 
-        //PathTuple res = ilsBeamSearch.iterate(tulseHillLong, 3000);
-        PathTuple res2 = ilsBFS.iterate(tulseHillLong, 2000);
+        double postScore = calculateScore(res);
 
-        System.out.println("AHTT");
-
-        double x = calculateScore(res2);
-        System.out.println(x);
+        assertTrue(postScore >= originalScore);
     }
+
+    @Test
+    public void testScoreGreaterOrEqualBFS() {
+        double originalScore = calculateScore(morrishRoadShort);
+
+        PathTuple res = ilsBFS.iterate(morrishRoadShort, 2000);
+
+        double postScore = calculateScore(res);
+
+        assertTrue(postScore >= originalScore);
+    }
+
+
+    @Test
+    public void testScoreGreaterOrEqualBeamCraignair() {
+        double originalScore = calculateScore(craignair);
+
+
+        PathTuple res = ilsBeamSearch.iterate(craignair, 2000);
+
+        double postScore = calculateScore(res);
+
+        System.out.println(originalScore);
+        System.out.println(postScore);
+        assertTrue(postScore >= originalScore);
+
+
+        String x = returnPath(res, "");
+        System.out.println(x);
+
+        System.out.println(originalScore);
+        System.out.println(postScore);
+
+    }
+
+    @Test
+    public void testScoreGreaterOrEqualBeamTulse() {
+        double originalScore = calculateScore(tulseHillLong);
+
+
+        PathTuple res = ilsBeamSearch.iterate(tulseHillLong, 2000);
+
+        double postScore = calculateScore(res);
+
+        System.out.println(originalScore);
+        System.out.println(postScore);
+        assertTrue(postScore >= originalScore);
+
+    }
+
+    @Test
+    public void testHighwayReflectedTulse() {
+        double originalScore = calculateScore(tulseHillLong);
+
+
+        PathTuple res = ilsBeamSearch.iterate(tulseHillLong, 2000);
+
+        double postScore = calculateScore(res);
+
+        System.out.println(originalScore);
+        System.out.println(postScore);
+        assertTrue(postScore >= originalScore);
+
+    }
+
+
 
     static double calculateScore(PathTuple head) {
         double score = 0;
@@ -91,6 +156,8 @@ public class IteratedLocalSearchMainAlgorithmTest {
 
         return score;
     }
+
+
 
 
 

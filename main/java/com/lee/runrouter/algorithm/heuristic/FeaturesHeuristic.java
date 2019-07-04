@@ -1,7 +1,6 @@
 package com.lee.runrouter.algorithm.heuristic;
 
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
-import com.lee.runrouter.graph.graphbuilder.node.Node;
 
 import java.util.List;
 
@@ -10,7 +9,7 @@ import java.util.List;
  * The scores reflect matches against user-supplied preferences.
  */
 public class FeaturesHeuristic implements Heuristic {
-    private double score = 0.0;
+    private double score;
     private Way selectedWay;
 
     private List<String> preferredSurfaces;
@@ -19,7 +18,7 @@ public class FeaturesHeuristic implements Heuristic {
 
     // Allocated scores for features
     static final double SURFACE_VALUE = 0.5;
-    static final double HIGHWAY_VALUE = 1;
+    static final double HIGHWAY_VALUE = 6;
 
     public FeaturesHeuristic(List<String> preferredSurfaces, List<String> preferredHighways) {
         this.preferredSurfaces = preferredSurfaces;
@@ -43,7 +42,7 @@ public class FeaturesHeuristic implements Heuristic {
     @Override
     public double getScore (Way selectedWay) {
         this.selectedWay = selectedWay;
-
+        score = 0;
         calculateScore();
         return this.score;
     }

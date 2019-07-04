@@ -4,7 +4,7 @@ import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
-import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BFSConnectionPath;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearchConnectionPath;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ILSGraphSearch;
 import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
@@ -54,7 +54,7 @@ public class IteratedLocalSearchTestAppendPath {
         elevationHeuristic = new ElevationHeuristicMain(true);
 
 
-        connectPath = new BFSConnectionPath(repo, distanceHeuristic,
+        connectPath = new BeamSearchConnectionPath(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, elevationHeuristic, distanceCalculator);
     }
 
@@ -62,10 +62,7 @@ public class IteratedLocalSearchTestAppendPath {
     public void testInsertSingleNode() {
         PathTuple head = reverseList(morrishWayShort);
 
-//        String out1 = "";
-//        out1 = returnPath(head, out1);
 
-        long originalLength = getPathSize(head);
         PathTuple originalHead = head;
         PathTuple originalTail = getTail(head);
 
@@ -74,19 +71,16 @@ public class IteratedLocalSearchTestAppendPath {
 
         PathTuple newSegment = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
                 end.getPreviousNode(), end.getCurrentWay(), 2000);
-        long newSegmentLength = getPathSize(newSegment);
+        PathTuple newTail = getTail(head);
 
-        returnPath(newSegment, "");
-        System.out.println("NEW SEGMENT LEN " + newSegmentLength);
-        System.out.println("START " + start.getPreviousNode());
-        System.out.println("END " + end.getPreviousNode());
+        assertEquals(originalHead, head);
+        assertEquals(originalTail, newTail);
     }
 
     @Test
     public void testInsertSeveralNodes() {
         PathTuple head = reverseList(morrishWayShort);
 
-        long originalLength = getPathSize(head);
         PathTuple originalHead = head;
         PathTuple originalTail = getTail(head);
 
@@ -95,8 +89,7 @@ public class IteratedLocalSearchTestAppendPath {
 
         PathTuple newSegment = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
                 end.getPreviousNode(), end.getCurrentWay(), 2000);
-        long newSegmentLength = getPathSize(newSegment);
-
+        returnPath(newSegment, "");
 
         insertSegment(start, end,  newSegment);
         PathTuple newTail = getTail(head);
@@ -160,24 +153,17 @@ public class IteratedLocalSearchTestAppendPath {
     }
 
     private PathTuple insertSegment(PathTuple start, PathTuple end, PathTuple newSegment) {
+        PathTuple theTail = newSegment;
         newSegment = reverseList(newSegment); // reverse the segment to be added, as it
         // is currently in the wrong order
-
 
         start.setPredecessor(newSegment.getPredecessor()); // start of segment links to
         // new segment's next link (head of new segment is currently the same as the start
         // head
 
-
-        PathTuple newSegmentTail = newSegment;
-        while (newSegmentTail.getPredecessor() != null) {
-            newSegmentTail = newSegmentTail.getPredecessor();
-        }
-
-        newSegmentTail.setPredecessor(end.getPredecessor()); // tail of new segment is linked
+        theTail.setPredecessor(end.getPredecessor()); // tail of new segment is linked
         // to next link of the head of the remaining existing path.
         end.setPredecessor(null);
-
 
         return start;
     }

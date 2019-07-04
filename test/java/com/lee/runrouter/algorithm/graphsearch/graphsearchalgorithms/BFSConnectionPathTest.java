@@ -64,7 +64,7 @@ public class BFSConnectionPathTest {
 
         PathTuple resFinal = getEndTuple(res);
 
-        assertEquals(end.getPreviousNode(), res.getPreviousNode());
+        //assertEquals(end.getPreviousNode(), res.getPreviousNode());
         assertEquals(start.getPreviousNode(), resFinal.getPreviousNode());
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
@@ -109,7 +109,7 @@ public class BFSConnectionPathTest {
         PathTuple start = reverseList(morrishWayShort);
 
         start = getStartPathSegment(start, 1);
-        PathTuple end = getEndPathSegment(start, 32);
+        PathTuple end = getEndPathSegment(start, 16);
 
         PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
                 end.getPreviousNode(), end.getCurrentWay(), 2000);
@@ -124,12 +124,12 @@ public class BFSConnectionPathTest {
     public void testTulseLongSegmentII() {
         PathTuple start = reverseList(tulseHillLonger);
 
+
         start = getStartPathSegment(start, 1);
-        PathTuple end = getEndPathSegment(start, 63);
+        PathTuple end = getEndPathSegment(start, 80);
 
         PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
                 end.getPreviousNode(), end.getCurrentWay(), 2000);
-
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
@@ -137,7 +137,7 @@ public class BFSConnectionPathTest {
 
     private PathTuple getStartPathSegment(PathTuple head, int a) {
         int i = 0;
-        while (i < a-1) {
+        while (i < a - 1) {
             head = head.getPredecessor();
             i++;
         }
@@ -146,6 +146,10 @@ public class BFSConnectionPathTest {
 
     private PathTuple getEndPathSegment(PathTuple endNode, int r) {
         int i = 0;
+
+        if (endNode.getPreviousNode() == null) {
+            return endNode;
+        }
 
         while (i < r) {
             endNode = endNode.getPredecessor();

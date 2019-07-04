@@ -15,10 +15,10 @@ import com.lee.runrouter.graph.graphbuilder.node.Node;
 import java.util.*;
 
 /**
- * Variant of the BFS algorithm that restricts the next selected Way
- * to those closer to the starting point than the previous. It is used
- * to complete the circuit and return to the route's starting position
- * following execution of the BFS.
+ * A greedy Search algorithm that utilises a restricted List.
+ * Neghbouring nodes are explored and only those with the
+ * highest score (as assessed by the heuristics) at each stage
+ * are kept in the list.
  */
 public class BeamSearchReturnPath implements GraphSearch {
     private ElementRepo repo; // the repository of Ways and Nodes
@@ -27,17 +27,27 @@ public class BeamSearchReturnPath implements GraphSearch {
     private EdgeDistanceCalculator edgeDistanceCalculator;
     private ElevationHeuristic elevationHeuristic;
     private double maxGradient = 0.8; // is used-defined
-    private final double REPEATED_EDGE_PENALTY = 2; // deducted from score where
-    // edge/Way has been previously visited
-    private final double RANDOM_REDUCER = 5; // divides into random number added to the
-    // score
 
+    private final int BEAM_SIZE = 25; // the max number of possible Nodes under review
+    private final double REPEATED_EDGE_PENALTY = 1; // deducted from score where
+    // edge/Way has been previously visited
+    private final double RANDOM_REDUCER = 50; // divides into random number added to the
+    // score
+    private final double MINIMUM_LENGTH = 5; // minimum length of way to avoid
+    // skipping
+    private final double PREFERRED_LENGTH = 25; // preferred minimum travel distance between
+    // nodes
+    private final double PREFERRED_LENGTH_PENALTY = 0.5; // penalty if distance is below
+    // preferred
+    private final double DISTANCE_FROM_ORIGIN_PENALTY = 10;
+
+    private final Set<Long> visitedWays;
     private List<PathTuple> queue;
+
     private final double LOWER_SCALE = 0.7; // amount to scale upper lower bound on
     // run length by
     private final double UPPER_SCALE = 0.05; // amount to scale upper bound on
     // run length by
-
 
     public BeamSearchReturnPath(ElementRepo repo, Heuristic distanceHeuristic,
                       Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator,
@@ -49,6 +59,7 @@ public class BeamSearchReturnPath implements GraphSearch {
         this.elevationHeuristic = elevationHeuristic;
 
         this.queue = new ArrayList<>();
+        visitedWays = new HashSet<>();
     }
 
     /**
@@ -67,7 +78,6 @@ public class BeamSearchReturnPath implements GraphSearch {
      */
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double distance) {
-        Set<Long> visitedWays = new HashSet<>();
 
         double currentRouteLength;
         double upperBound = distance + (distance * UPPER_SCALE); // upper bound of
@@ -83,8 +93,8 @@ public class BeamSearchReturnPath implements GraphSearch {
             queue.sort(Comparator
                     .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
 
-            if (queue.size() > 10) {
-                queue = queue.subList(0, 10);
+            if (queue.size() > BEAM_SIZE) {
+                queue = queue.subList(0, BEAM_SIZE);
             }
 
             PathTuple topTuple = queue.get(0);
@@ -104,8 +114,7 @@ public class BeamSearchReturnPath implements GraphSearch {
                             .calculateDistance(currentNode, repo.getOriginNode(), repo.getOriginWay());
                     // create a new tuple representing the journey from the previous node to the final node
                     PathTuple returnTuple = new PathTupleMain(topTuple, repo.getOriginNode(),
-                            repo.getOriginWay(), 0, finalDistance,
-                            topTuple.getTotalLength() + finalDistance);
+                            repo.getOriginWay(), 0, finalDistance, topTuple.getTotalLength() + finalDistance);
                     return returnTuple;
                 }
             }
@@ -128,14 +137,13 @@ public class BeamSearchReturnPath implements GraphSearch {
                     continue; // skip to next where max length exceeded
                 }
 
-                if (distanceToNext < 5) {
+                if (distanceToNext < MINIMUM_LENGTH) {
                     continue; // skip short connections. Used to cull shorter sections and force
                     // failure if necessary to move to next stage of algorithm.
                 }
 
-
-                if (distanceToNext < 100) {
-                    score -= 1;
+                if (distanceToNext < PREFERRED_LENGTH) {
+                    score -= PREFERRED_LENGTH_PENALTY;
                 }
 
                 double currentDistanceScore
@@ -144,13 +152,9 @@ public class BeamSearchReturnPath implements GraphSearch {
                 // if the current distance score is less than the previous Way's, that
                 // is it is further away, then skip this iteration
                 if (currentDistanceScore < lastDist) {
-                    continue;
+                    score -= DISTANCE_FROM_ORIGIN_PENALTY;
                 }
 
-                // drop the score where this way has already been explored
-                if (visitedWays.contains(currentWay.getId())) {
-                    score -= REPEATED_EDGE_PENALTY;
-                }
                 visitedWays.add(currentWay.getId());
 
                 double gradient = elevationHeuristic.getScore(currentNode, connectingNode,
@@ -159,11 +163,7 @@ public class BeamSearchReturnPath implements GraphSearch {
                 if (Math.abs(gradient) > this.maxGradient) {
                     continue; }
 
-                // add score reflecting correspondence of terrain features to user selectionss
-                score += featuresHeuristic.getScore(selectedWay);
-
-                // add a small random value to break ties
-                score += (Math.random() / RANDOM_REDUCER);
+                score += addScores(selectedWay);
 
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext);
@@ -173,5 +173,23 @@ public class BeamSearchReturnPath implements GraphSearch {
 
         return new PathTupleMain(null, null, null, -1,
                 -1, -1);
+    }
+
+
+    private double addScores(Way selectedWay) {
+        double score = 0;
+
+        // drop the score where this way has already been explored
+        if (visitedWays.contains(selectedWay.getId())) {
+            score -= REPEATED_EDGE_PENALTY;
+        }
+
+        // add score reflecting correspondence of terrain features to user selectionss
+        score += featuresHeuristic.getScore(selectedWay);
+
+        // add a small random value to break ties
+        score += (Math.random() / RANDOM_REDUCER);
+
+        return score;
     }
 }

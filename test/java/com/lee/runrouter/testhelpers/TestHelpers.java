@@ -61,6 +61,24 @@ public class TestHelpers {
         return morrishRoadShort;
     }
 
+    static public PathTuple getCraignair() {
+        PathTuple morrishRoadShort = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/craignair.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            morrishRoadShort = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return morrishRoadShort;
+    }
+
     static public PathTuple getTulseLong() {
         PathTuple tulseHillLong = null;
         // deserialise test repo used for testing.
@@ -88,5 +106,12 @@ public class TestHelpers {
         }
 
         return score;
+    }
+
+    public static PathTuple getTail(PathTuple head) {
+        while (head.getPredecessor() != null) {
+            head = head.getPredecessor();
+        }
+        return head;
     }
 }

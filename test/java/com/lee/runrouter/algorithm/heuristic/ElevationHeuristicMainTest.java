@@ -2,6 +2,8 @@ package com.lee.runrouter.algorithm.heuristic;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
+import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
+import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
@@ -22,7 +24,8 @@ import java.io.ObjectInputStream;
 public class ElevationHeuristicMainTest {
     private ElementRepo repo;
     private DistanceCalculator distanceCalculator = new HaversineCalculator();
-    private ElevationHeuristic elevationHeuristic = new ElevationHeuristicMain(false);
+    private GradientCalculator gradientCalculator = new SimpleGradientCalculator();
+    private ElevationHeuristic elevationHeuristic = new ElevationHeuristicMain(true);
     private EdgeDistanceCalculator edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
 
     {
@@ -42,7 +45,7 @@ public class ElevationHeuristicMainTest {
     }
 
     @Test
-    public void calculateEndNodeToStartNode() {
+    public void testNegativeGradientGivesZeroWhereUphillPreferred() {
         Way wayUnderTest1 = repo.getWayRepo().stream().filter(x -> x.getId() == 51436348L)
                 .findFirst().get();
 
@@ -53,84 +56,106 @@ public class ElevationHeuristicMainTest {
 
         Node n2 = wayUnderTest2.getNodeContainer().getEndNode();
 
+
         double distance = edgeDistanceCalculator.calculateDistance(n1,n2, wayUnderTest2);
 
-        double expected = -0.017;
-        double res = elevationHeuristic.getScore(n1, n2, wayUnderTest1, wayUnderTest2, distance);
+        double expected = 0;
+        double gradient = gradientCalculator.calculateGradient(n1, wayUnderTest1, n2, wayUnderTest2, distance);
+        double score = elevationHeuristic.getScore(gradient);
 
-        assertEquals(expected, res, 0.001);
+        assertEquals(expected, score, 0.001);
     }
 
-
     @Test
-    public void calculateStartNodeToEndNode() {
-        Way wayUnderTest1 = repo.getWayRepo().stream().filter(x -> x.getId() == 4439919L)
+    public void testNegativeGradientGivesPositiveWhereFlatPreferred() {
+        elevationHeuristic = new ElevationHeuristicMain(false);
+
+        Way wayUnderTest1 = repo.getWayRepo().stream().filter(x -> x.getId() == 51436348L)
                 .findFirst().get();
 
-        Way wayUnderTest2 = repo.getWayRepo().stream().filter(x -> x.getId() == 4439920L)
+        Way wayUnderTest2 = repo.getWayRepo().stream().filter(x -> x.getId() == 474810158L)
                 .findFirst().get();
 
         Node n1 = wayUnderTest1.getNodeContainer().getStartNode();
-
-        Node n2 = wayUnderTest2.getNodeContainer().getStartNode();
-
-        double distance = edgeDistanceCalculator.calculateDistance(n1,n2, wayUnderTest2);
-
-
-        double expected = 0.0077;
-        double res = elevationHeuristic.getScore(n1, n2, wayUnderTest1, wayUnderTest2, distance);
-
-        assertEquals(expected, res, 0.001);
-    }
-
-
-    @Test
-    public void calculateStartNodeToEndNodeTwo() {
-        Way wayUnderTest1 = repo.getWayRepo().stream().filter(x -> x.getId() == 3382093L)
-                .findFirst().get();
-
-        Way wayUnderTest2 = repo.getWayRepo().stream().filter(x -> x.getId() == 3215772L)
-                .findFirst().get();
-
-        Node n1 = wayUnderTest1.getNodeContainer().getNodes().stream()
-                .filter(x -> x.getId() == 15657646L).findFirst().get();
 
         Node n2 = wayUnderTest2.getNodeContainer().getEndNode();
 
 
         double distance = edgeDistanceCalculator.calculateDistance(n1,n2, wayUnderTest2);
 
-        double expected = 0.017;
-        double res = elevationHeuristic.getScore(n1, n2, wayUnderTest1, wayUnderTest2, distance);
+        double gradient = gradientCalculator.calculateGradient(n1, wayUnderTest1, n2, wayUnderTest2, distance);
+        double score = elevationHeuristic.getScore(gradient);
+       assertTrue(score > 0);
 
-        assertEquals(expected, res, 0.001);
+
+        System.out.println(gradient);
+        System.out.println(score);
+    }
+
+    @Test
+    public void testSteepPathUpHillPreferred() {
+        Way wayUnderTest1 = repo.getWayRepo().stream().filter(x -> x.getId() == 4898590)
+                .findFirst().get(); // tulse hill
+
+        Way wayUnderTest2 = repo.getWayRepo().stream().filter(x -> x.getId() == 4898590)
+                .findFirst().get();
+
+        Node n1 = wayUnderTest1.getNodeContainer().getNodes().get(15);
+        Node n2 = wayUnderTest2.getNodeContainer().getNodes().get(2);
+        System.out.println(n1);
+        System.out.println(n2);
+
+
+        double distance = edgeDistanceCalculator.calculateDistance(n1,n2, wayUnderTest2);
+
+
+        double gradient = gradientCalculator.calculateGradient(n1, wayUnderTest1, n2, wayUnderTest2, distance);
+        double score = elevationHeuristic.getScore(gradient);
+        assertTrue(score > 0);
+        System.out.println(score);
+    }
+
+    @Test
+    public void testSteepPathFlatPreferred() {
+        elevationHeuristic = new ElevationHeuristicMain(false);
+        Way wayUnderTest1 = repo.getWayRepo().stream().filter(x -> x.getId() == 4898590)
+                .findFirst().get(); // tulse hill
+
+        Way wayUnderTest2 = repo.getWayRepo().stream().filter(x -> x.getId() == 4898590)
+                .findFirst().get();
+
+        Node n1 = wayUnderTest1.getNodeContainer().getNodes().get(15);
+        Node n2 = wayUnderTest2.getNodeContainer().getNodes().get(2);
+        System.out.println(n1);
+        System.out.println(n2);
+
+
+        double distance = edgeDistanceCalculator.calculateDistance(n1,n2, wayUnderTest2);
+
+
+        double gradient = gradientCalculator.calculateGradient(n1, wayUnderTest1, n2, wayUnderTest2, distance);
+        double score = elevationHeuristic.getScore(gradient);
+        assertTrue(score < 0.48);
     }
 
 
     @Test
-    public void calculateNumeratorIsZero() {
-        Node n1 = mock(Node.class);
-        Way way1 = mock(Way.class);
-        NodeContainer nc1 = mock(NodeContainer.class);
-        when(way1.getNodeContainer()).thenReturn(nc1);
-        when(nc1.getStartNode()).thenReturn(n1);
-        ElevationPair ep1 = mock(ElevationPair.class);
-        when(ep1.getStartElevation()).thenReturn(30L);
-        when(way1.getElevationPair()).thenReturn(ep1);
+    public void testVerySteepWay() {
+        Node n1 = new Node(1, 1, 1);
+        Node n2 = new Node( 2, 2, 2);
+        NodeContainer nc = mock(NodeContainer.class);
+        when(nc.getStartNode()).thenReturn(n1);
+        when(nc.getEndNode()).thenReturn(n2);
+        ElevationPair ep = mock(ElevationPair.class);
+        when(ep.getStartElevation()).thenReturn(10l);
+        when(ep.getEndElevation()).thenReturn(35l);
+        Way startingWay = mock(Way.class);
+        when(startingWay.getNodeContainer()).thenReturn(nc);
+        when(startingWay.getElevationPair()).thenReturn(ep);
 
-        Node n2 = mock(Node.class);
-        Way way2 = mock(Way.class);
-        NodeContainer nc2 = mock(NodeContainer.class);
-        when(way2.getNodeContainer()).thenReturn(nc2);
-        when(nc2.getEndNode()).thenReturn(n2);
-        ElevationPair ep2 = mock(ElevationPair.class);
-        when(ep2.getEndElevation()).thenReturn(30L);
-        when(way2.getElevationPair()).thenReturn(ep2);
-
-        double expected = 0;
-        double res = elevationHeuristic.getScore(n1, n2, way1, way2, 15);
-
-        assertEquals(expected, res, 0.001);
+        double gradient = gradientCalculator.calculateGradient(n1, startingWay, n2, startingWay, 50);
+        double score = elevationHeuristic.getScore(gradient);
+        assertTrue(score >= 5);
     }
 
 

@@ -17,17 +17,14 @@ public class PathTupleMain implements PathTuple, Serializable {
     private double segmentScore;
     private double segmentLength;
     private double totalLength;
-    private double totalScore;
 
-    public PathTupleMain(PathTuple predecessor, Node previousNode, Way currentWay, double segmentScore,
-                         double totalScore, double segmentLength, double totalLength) {
+    public PathTupleMain(PathTuple predecessor, Node previousNode, Way currentWay, double segmentScore, double segmentLength, double totalLength) {
         this.predecessor = predecessor;
         this.previousNode = previousNode;
         this.currentWay = currentWay;
         this.segmentScore = segmentScore;
         this.segmentLength = segmentLength;
         this.totalLength = totalLength;
-        this.totalScore = totalScore;
     }
 
     @Override
@@ -78,15 +75,7 @@ public class PathTupleMain implements PathTuple, Serializable {
     @Override
     public void setTotalLength(double totalLength) {
         this.totalLength = totalLength;
-    }
 
-    @Override
-    public double getTotalScore() {
-        return this.totalScore;
-    }
-
-    @Override
-    public void setTotalScore(double score) {
-        this.totalScore = score;
     }
 }
+

@@ -2,6 +2,7 @@ package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 import com.lee.runrouter.algorithm.AlgoHelpers;
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
+import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.Heuristic;
@@ -25,8 +26,9 @@ public class BeamSearchReturnPath implements GraphSearch {
     private Heuristic distanceFromOriginHeursitic;
     private Heuristic featuresHeuristic;
     private EdgeDistanceCalculator edgeDistanceCalculator;
+    private GradientCalculator gradientCalculator;
     private ElevationHeuristic elevationHeuristic;
-    private double maxGradient = 0.8; // is used-defined
+    private double maxGradient = 2; // is used-defined
 
     private final int BEAM_SIZE = 25; // the max number of possible Nodes under review
     private final double REPEATED_EDGE_PENALTY = 1; // deducted from score where
@@ -51,11 +53,12 @@ public class BeamSearchReturnPath implements GraphSearch {
 
     public BeamSearchReturnPath(ElementRepo repo, Heuristic distanceHeuristic,
                       Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator,
-                      ElevationHeuristic elevationHeuristic, DistanceCalculator distanceCalculator) {
+                      GradientCalculator gradientCalculator, ElevationHeuristic elevationHeuristic) {
         this.repo = repo;
         this.distanceFromOriginHeursitic = distanceHeuristic;
         this.featuresHeuristic = featuresHeuristic;
         this.edgeDistanceCalculator = edgeDistanceCalculator;
+        this.gradientCalculator = gradientCalculator;
         this.elevationHeuristic = elevationHeuristic;
 
         this.queue = new ArrayList<>();
@@ -157,11 +160,14 @@ public class BeamSearchReturnPath implements GraphSearch {
 
                 visitedWays.add(currentWay.getId());
 
-                double gradient = elevationHeuristic.getScore(currentNode, connectingNode,
-                        currentWay, selectedWay, distanceToNext);
+                double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
+                        selectedWay, distanceToNext);
 
-                if (Math.abs(gradient) > this.maxGradient) {
+                // skip to next where the gradient of this way exceeds
+                // the maximum
+                if (gradient > this.maxGradient) {
                     continue; }
+
 
                 score += addScores(selectedWay);
 

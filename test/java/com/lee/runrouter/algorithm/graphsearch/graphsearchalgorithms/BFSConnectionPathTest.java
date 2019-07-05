@@ -2,6 +2,8 @@ package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
+import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
+import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
 import com.lee.runrouter.algorithm.heuristic.*;
@@ -24,6 +26,7 @@ public class BFSConnectionPathTest {
     Heuristic distanceHeuristic;
     Heuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
+    GradientCalculator gradientCalculator;
     ElevationHeuristic elevationHeuristic;
     ElementRepo repo;
 
@@ -44,11 +47,12 @@ public class BFSConnectionPathTest {
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
         featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
+        gradientCalculator = new SimpleGradientCalculator();
         elevationHeuristic = new ElevationHeuristicMain(true);
 
 
         connectPath = new BFSConnectionPath(repo, distanceHeuristic,
-                featuresHeuristic, edgeDistanceCalculator, elevationHeuristic, distanceCalculator);
+                featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
     }
 
 

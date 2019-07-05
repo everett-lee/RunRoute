@@ -3,6 +3,8 @@ package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 import com.lee.runrouter.algorithm.AlgoHelpers;
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
+import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
+import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.GraphSearch;
@@ -30,6 +32,7 @@ public class ReturnPathTest {
     Heuristic distanceHeuristic;
     Heuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
+    GradientCalculator gradientCalculator;
     ElevationHeuristic elevationHeuristic;
 
     {
@@ -59,11 +62,12 @@ public class ReturnPathTest {
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
         featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
+        gradientCalculator = new SimpleGradientCalculator();
         elevationHeuristic = new ElevationHeuristicMain(false);
 
 
         returnPath = new ReturnPath(repo, distanceHeuristic,
-                featuresHeuristic, edgeDistanceCalculator, elevationHeuristic, distanceCalculator);
+                featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
     }
 
     @Test(timeout=3000)

@@ -2,6 +2,7 @@ package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 
 import com.lee.runrouter.algorithm.AlgoHelpers;
+import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.pathnode.*;
@@ -19,22 +20,22 @@ import java.util.*;
  */
 public class BeamSearch implements GraphSearch {
     private ElementRepo repo; // the repository of Ways and Nodes
-    private Heuristic distanceFromOriginHeursitic;
     private Heuristic featuresHeuristic;
     private EdgeDistanceCalculator edgeDistanceCalculator;
+    private GradientCalculator gradientCalculator;
     private ElevationHeuristic elevationHeuristic;
-    private double maxGradient = 0.8; // is used-defined
+    private double maxGradient = 2; // is used-defined
 
-    private final int BEAM_SIZE = 20; // the max number of possible Nodes under review
+    private final int BEAM_SIZE = 25; // the max number of possible Nodes under review
     private final double REPEATED_EDGE_PENALTY = 20; // deducted from score where
     // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
-    private final double MINIMUM_LENGTH = 10; // minimum length of way to avoid
+    private final double MINIMUM_LENGTH = 5; // minimum length of way to avoid
     // skipping
-    private final double PREFERRED_LENGTH = 100; // preferred minimum travel distance between
+    private final double PREFERRED_LENGTH = 50; // preferred minimum travel distance between
     // nodes
-    private final double PREFERRED_LENGTH_PENALTY = 1; // penalty if distance is below
+    private final double PREFERRED_LENGTH_BONUS = 1; // penalty if distance is below
     // preferred
 
     private final Set<Long> visitedWays;
@@ -43,10 +44,10 @@ public class BeamSearch implements GraphSearch {
     // run length by
 
     public BeamSearch(ElementRepo repo, Heuristic distanceHeuristic,
-               Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator,
-               ElevationHeuristic elevationHeuristic) {
+                      Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator,
+                      GradientCalculator gradientCalculator, ElevationHeuristic elevationHeuristic) {
         this.repo = repo;
-        this.distanceFromOriginHeursitic = distanceHeuristic;
+        this.gradientCalculator = gradientCalculator;
         this.featuresHeuristic = featuresHeuristic;
         this.edgeDistanceCalculator = edgeDistanceCalculator;
         this.elevationHeuristic = elevationHeuristic;
@@ -128,19 +129,19 @@ public class BeamSearch implements GraphSearch {
                     continue;
                 }
 
-                if (distanceToNext < PREFERRED_LENGTH) {
-                    score -= PREFERRED_LENGTH_PENALTY;
+                if (distanceToNext >= PREFERRED_LENGTH) {
+                    score += PREFERRED_LENGTH_BONUS;
                 }
 
-                double gradient = elevationHeuristic.getScore(currentNode, connectingNode,
-                        currentWay, selectedWay, distanceToNext);
+                double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
+                        selectedWay, distanceToNext);
 
                 // skip to next where the gradient of this way exceeds
                 // the maximum
-                if (Math.abs(gradient) > this.maxGradient) {
+                if (gradient > this.maxGradient) {
                     continue; }
 
-                score += addScores(selectedWay);
+                score += addScores(selectedWay, gradient);
 
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext);
@@ -154,7 +155,7 @@ public class BeamSearch implements GraphSearch {
                 -1, -1);
     }
 
-    private double addScores(Way selectedWay) {
+    private double addScores(Way selectedWay, double gradient) {
         double score = 0;
 
         // drop the score where this way has already been explored
@@ -165,8 +166,12 @@ public class BeamSearch implements GraphSearch {
         // add score reflecting correspondence of terrain features to user selectionss
         score += featuresHeuristic.getScore(selectedWay);
 
+        score += elevationHeuristic.getScore(gradient);
+
         // add a small random value to break ties
         score += (Math.random() / RANDOM_REDUCER);
+
+        System.out.println("final score " + score);
 
         return score;
     }

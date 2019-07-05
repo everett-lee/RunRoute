@@ -1,6 +1,7 @@
 package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
+import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.Heuristic;
@@ -24,11 +25,12 @@ public class BFSConnectionPath implements ILSGraphSearch {
     private Heuristic distanceFromOriginHeursitic;
     private Heuristic featuresHeuristic;
     private EdgeDistanceCalculator edgeDistanceCalculator;
+    private GradientCalculator gradientCalculator;
     private ElevationHeuristic elevationHeuristic;
     private double currentRouteLength;
     Set<Long> visitedWays;
 
-    private double maxGradient = 0.8; // is user-defined
+    private double maxGradient = 2; // is user-defined
     private final double REPEATED_EDGE_PENALTY = 5; // deducted from score where
     // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 5; // divides into random number added to the
@@ -44,7 +46,7 @@ public class BFSConnectionPath implements ILSGraphSearch {
 
     public BFSConnectionPath(ElementRepo repo, Heuristic distanceHeuristic,
                              Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator,
-                             ElevationHeuristic elevationHeuristic, DistanceCalculator distanceCalculator) {
+                             GradientCalculator gradientCalculator, ElevationHeuristic elevationHeuristic) {
         this.repo = repo;
         this.distanceFromOriginHeursitic = distanceHeuristic;
         this.featuresHeuristic = featuresHeuristic;
@@ -108,6 +110,16 @@ public class BFSConnectionPath implements ILSGraphSearch {
                 if (currentDistanceScore < lastDist) {
                     score -= 5;
                 }
+
+
+                double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
+                        selectedWay, distanceToNext);
+
+                // skip to next where the gradient of this way exceeds
+                // the maximum
+                if (gradient > this.maxGradient) {
+                    continue; }
+
 
                 if (distanceToNext < MINIMUM_LENGTH) {
                     score -= MINIMUM_LENGTH_PENALTY;

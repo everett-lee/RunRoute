@@ -2,6 +2,8 @@ package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
+import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
+import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BFS;
@@ -25,6 +27,7 @@ public class BFSTest {
     Heuristic distanceHeuristic;
     Heuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
+    GradientCalculator gradientCalculator;
     ElevationHeuristic elevationHeuristic;
 
     {
@@ -55,11 +58,12 @@ public class BFSTest {
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
         featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
+        gradientCalculator = new SimpleGradientCalculator();
         elevationHeuristic = new ElevationHeuristicMain(true);
 
 
         bfs = new BFS(repo, distanceHeuristic,
-                featuresHeuristic, edgeDistanceCalculator, elevationHeuristic);
+                featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
     }
 
@@ -133,7 +137,7 @@ public class BFSTest {
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         elevationHeuristic = new ElevationHeuristicMain(true);
         bfs = new BFS(repo, distanceHeuristic,
-                featuresHeuristic, edgeDistanceCalculator, elevationHeuristic);
+                featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
         Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 4004611L)
                 .findFirst().get();

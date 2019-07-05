@@ -2,6 +2,7 @@ package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 
 import com.lee.runrouter.algorithm.AlgoHelpers;
+import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.pathnode.*;
@@ -21,8 +22,9 @@ public class BFS implements GraphSearch {
     private Heuristic distanceFromOriginHeursitic;
     private Heuristic featuresHeuristic;
     private EdgeDistanceCalculator edgeDistanceCalculator;
+    private GradientCalculator gradientCalculator;
     private ElevationHeuristic elevationHeuristic;
-    private double maxGradient = 0.6; // is used-defined
+    private double maxGradient = 2; // is used-defined
     private final double REPEATED_EDGE_PENALTY = 2; // deducted from score where
     // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 50; // divides into random number added to the
@@ -34,11 +36,12 @@ public class BFS implements GraphSearch {
 
     public BFS(ElementRepo repo, Heuristic distanceHeuristic,
                Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator,
-               ElevationHeuristic elevationHeuristic) {
+               GradientCalculator gradientCalculator, ElevationHeuristic elevationHeuristic) {
         this.repo = repo;
         this.distanceFromOriginHeursitic = distanceHeuristic;
         this.featuresHeuristic = featuresHeuristic;
         this.edgeDistanceCalculator = edgeDistanceCalculator;
+        this.gradientCalculator = gradientCalculator;
         this.elevationHeuristic = elevationHeuristic;
 
         // sort priority queue items by their assigned score in descending order
@@ -114,12 +117,12 @@ public class BFS implements GraphSearch {
 
                 visitedWays.add(currentWay.getId());
 
-                double gradient = elevationHeuristic.getScore(currentNode, connectingNode,
-                        currentWay, selectedWay, distanceToNext);
+                double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
+                        selectedWay, distanceToNext);
 
                 // skip to next where the gradient of this way exceeds
                 // the maximum
-                if (Math.abs(gradient) > this.maxGradient) {
+                if (gradient > this.maxGradient) {
                     continue; }
 
                 // add score reflecting correspondence of terrain features to user selections

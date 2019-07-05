@@ -2,6 +2,8 @@ package com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
+import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
+import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BFSConnectionPath;
@@ -32,6 +34,7 @@ public class IteratedLocalSearchMainAlgorithmTest {
     ElementRepo repo;
     Heuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
+    GradientCalculator gradientCalculator;
     ElevationHeuristicMain elevationHeuristic;
     ILSGraphSearch connectPathBFS;
     ILSGraphSearch connectPathBeamSearch;
@@ -56,12 +59,13 @@ public class IteratedLocalSearchMainAlgorithmTest {
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
         featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
+        gradientCalculator = new SimpleGradientCalculator();
         elevationHeuristic = new ElevationHeuristicMain(true);
 
         connectPathBeamSearch = new BeamSearchConnectionPath(repo, distanceHeuristic,
-                featuresHeuristic, edgeDistanceCalculator, elevationHeuristic, distanceCalculator);
+                featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         connectPathBFS = new BFSConnectionPath(repo, distanceHeuristic,
-                featuresHeuristic, edgeDistanceCalculator, elevationHeuristic, distanceCalculator);
+                featuresHeuristic, edgeDistanceCalculator,  gradientCalculator, elevationHeuristic);
 
         this.ilsBFS = new IteratedLocalSearchMain(connectPathBFS);
         this.ilsBeamSearch = new IteratedLocalSearchMain(connectPathBeamSearch);

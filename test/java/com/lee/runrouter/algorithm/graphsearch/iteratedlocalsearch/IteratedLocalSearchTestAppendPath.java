@@ -2,6 +2,8 @@ package com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
+import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
+import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearchConnectionPath;
@@ -32,6 +34,7 @@ public class IteratedLocalSearchTestAppendPath {
     Heuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
     ElevationHeuristic elevationHeuristic;
+    GradientCalculator gradientCalculator;
     ElementRepo repo;
 
     {
@@ -51,11 +54,12 @@ public class IteratedLocalSearchTestAppendPath {
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
         featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
+        gradientCalculator = new SimpleGradientCalculator();
         elevationHeuristic = new ElevationHeuristicMain(true);
 
 
         connectPath = new BeamSearchConnectionPath(repo, distanceHeuristic,
-                featuresHeuristic, edgeDistanceCalculator, elevationHeuristic, distanceCalculator);
+                featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
     }
 
     @Test

@@ -1,6 +1,8 @@
 package com.lee.runrouter.algorithm;
 
 import com.lee.runrouter.algorithm.distanceCalculator.*;
+import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
+import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.cyclegenerator.*;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
@@ -33,6 +35,7 @@ public class CycleGeneratorMainTest {
     Heuristic distanceHeuristic;
     Heuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
+    GradientCalculator gradientCalculator;
     ElevationHeuristic elevationHeuristic;
     CycleGenerator cycleGenerator;
 
@@ -51,14 +54,15 @@ public class CycleGeneratorMainTest {
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
         featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
+        gradientCalculator = new SimpleGradientCalculator();
         elevationHeuristic = new ElevationHeuristicMain(true);
 
 
         beamSearch = new BeamSearch(repo, distanceHeuristic,
-                featuresHeuristic, edgeDistanceCalculator, elevationHeuristic);
+                featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
         returnPath = new BeamSearchReturnPath(repo, distanceHeuristic,
-                featuresHeuristic, edgeDistanceCalculator, elevationHeuristic, distanceCalculator);
+                featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
         cycleGenerator = new CycleGeneratorMain(beamSearch, returnPath, repo);
     }

@@ -2,6 +2,7 @@ package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 import com.lee.runrouter.algorithm.AlgoHelpers;
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
+import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.Heuristic;
@@ -28,8 +29,9 @@ public class ReturnPath implements GraphSearch {
     private Heuristic distanceFromOriginHeursitic;
     private Heuristic featuresHeuristic;
     private EdgeDistanceCalculator edgeDistanceCalculator;
+    private GradientCalculator gradientCalculator;
     private ElevationHeuristic elevationHeuristic;
-    private double maxGradient = 0.8; // is used-defined
+    private double maxGradient = 2; // is used-defined
     private final double REPEATED_EDGE_PENALTY = 2; // deducted from score where
     // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 5; // divides into random number added to the
@@ -44,11 +46,12 @@ public class ReturnPath implements GraphSearch {
 
     public ReturnPath(ElementRepo repo, Heuristic distanceHeuristic,
                       Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator,
-                      ElevationHeuristic elevationHeuristic, DistanceCalculator distanceCalculator) {
+                      GradientCalculator gradientCalculator, ElevationHeuristic elevationHeuristic) {
         this.repo = repo;
         this.distanceFromOriginHeursitic = distanceHeuristic;
         this.featuresHeuristic = featuresHeuristic;
         this.edgeDistanceCalculator = edgeDistanceCalculator;
+        this.gradientCalculator = gradientCalculator;
         this.elevationHeuristic = elevationHeuristic;
 
         // compare priority queue items by their assigned score in descending order
@@ -143,12 +146,12 @@ public class ReturnPath implements GraphSearch {
                     score -= REPEATED_EDGE_PENALTY;
                 }
 
-                visitedWays.add(currentWay.getId());
+                double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
+                        selectedWay, distanceToNext);
 
-                double gradient = elevationHeuristic.getScore(currentNode, connectingNode,
-                        currentWay, selectedWay, distanceToNext);
-
-                if (Math.abs(gradient) > this.maxGradient) {
+                // skip to next where the gradient of this way exceeds
+                // the maximum
+                if (gradient > this.maxGradient) {
                     continue; }
 
                 // add score reflecting correspondence of terrain features to user selectionss
@@ -160,6 +163,8 @@ public class ReturnPath implements GraphSearch {
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext);
                 queue.add(toAdd);
+
+                visitedWays.add(currentWay.getId());
             }
         }
 

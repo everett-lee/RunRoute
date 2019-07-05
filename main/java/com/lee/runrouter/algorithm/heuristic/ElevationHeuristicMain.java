@@ -1,51 +1,33 @@
 package com.lee.runrouter.algorithm.heuristic;
 
-import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
-import com.lee.runrouter.graph.graphbuilder.node.Node;
-
+/**
+ * Returns a score corresponding to the gradient of the path travelled.
+ * This score either represents the 'flatness' of the route
+ * , where flatter routes are preferred, or correlates to the route's
+ * steepness.
+ */
 public class ElevationHeuristicMain implements ElevationHeuristic {
-    boolean preferDownhill;
+    private boolean preferUphill;
+    private final double MULTIPLIER = 10; // number to scale
+    // gradient by in increase its share of heuristic score
 
-    public ElevationHeuristicMain(boolean preferDownhill) {
-        this.preferDownhill = preferDownhill;
+    public ElevationHeuristicMain(boolean preferUphill) {
+        this.preferUphill = preferUphill;
     }
 
     @Override
-    public double getScore(Node currentNode, Node visitedNode, Way startingWay, Way selectedWay, double distance) {
-
-        double startElevation = getStartElevation(currentNode, startingWay);
-        double endElevation = getEndElevation(visitedNode, selectedWay);
-
-        return calculateGradient(startElevation, endElevation, distance);
-    }
-
-    private double getStartElevation(Node currentNode, Way startingWay) {
-        return currentNode == startingWay.getNodeContainer().getStartNode()?
-                startingWay.getElevationPair().getStartElevation(): // if the Node is the start of this Way
-                startingWay.getElevationPair().getEndElevation(); // if the Node is the end of this Way
-    }
-
-    public double getEndElevation(Node visitedNode, Way selectedWay) {
-        return visitedNode == selectedWay.getNodeContainer().getStartNode()?
-                selectedWay.getElevationPair().getStartElevation(): // if the Node is the start of this Way
-                selectedWay.getElevationPair().getEndElevation(); // if the Node is the end of this Way
-    }
-
-    // simple rise over run calculation
-    private double calculateGradient(double startElevation, double endElevation, double distance) {
-        double modifier = 1; // where uphill is preferred
-
-        if (preferDownhill) {
-            modifier = -1;
+    public double getScore(double gradient) {
+        // flatter routes are preferred, so increase score where gradient is lower
+        if (!preferUphill) {
+            return 0.5 - Math.abs(gradient * MULTIPLIER);
         }
 
-        double elevationDelta = endElevation - startElevation;
-
-        if (elevationDelta == 0) {
-            return 0;
+        // score increases in line with the gradient
+        if (gradient > 0) {
+            return gradient * MULTIPLIER;
         }
 
-        return ((endElevation - startElevation) / distance) * modifier;
-    }
-
+        // return 0 where uphill preferred and gradient is negative
+        return 0;
+     }
 }

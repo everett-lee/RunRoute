@@ -3,6 +3,8 @@ package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 import com.lee.runrouter.algorithm.AlgoHelpers;
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
+import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
+import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
 import com.lee.runrouter.algorithm.heuristic.*;
@@ -26,6 +28,7 @@ public class BeamSearchReturnPathTest {
     Heuristic distanceHeuristic;
     Heuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
+    GradientCalculator gradientCalculator;
     ElevationHeuristic elevationHeuristic;
 
     {
@@ -43,11 +46,12 @@ public class BeamSearchReturnPathTest {
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
         featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
-        elevationHeuristic = new ElevationHeuristicMain(false);
+        gradientCalculator = new SimpleGradientCalculator();
+        elevationHeuristic = new ElevationHeuristicMain(true);
 
 
         returnPath = new BeamSearchReturnPath(repo, distanceHeuristic,
-                featuresHeuristic, edgeDistanceCalculator, elevationHeuristic, distanceCalculator);
+                featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
     }
 
     @Test(timeout=3000)

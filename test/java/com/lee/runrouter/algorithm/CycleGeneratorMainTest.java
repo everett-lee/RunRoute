@@ -129,6 +129,7 @@ public class CycleGeneratorMainTest {
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+
     }
 
 
@@ -151,6 +152,7 @@ public class CycleGeneratorMainTest {
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+
 
     }
 
@@ -180,7 +182,7 @@ public class CycleGeneratorMainTest {
         try {
             System.out.println("Starting... ");
             FileOutputStream fileOut =
-                    new FileOutputStream("/home/lee/project/app/runrouter/src/craignair.ser");
+                    new FileOutputStream("/home/lee/project/app/runrouter/src/tulsehilllong.ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(head);
             out.close();

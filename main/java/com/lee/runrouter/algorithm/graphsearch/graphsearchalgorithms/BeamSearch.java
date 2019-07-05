@@ -25,7 +25,7 @@ public class BeamSearch implements GraphSearch {
     private ElevationHeuristic elevationHeuristic;
     private double maxGradient = 0.8; // is used-defined
 
-    private final int BEAM_SIZE = 10; // the max number of possible Nodes under review
+    private final int BEAM_SIZE = 20; // the max number of possible Nodes under review
     private final double REPEATED_EDGE_PENALTY = 20; // deducted from score where
     // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
@@ -71,8 +71,6 @@ public class BeamSearch implements GraphSearch {
      */
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double distance) {
-
-
         double currentRouteLength;
         double upperBound = distance + (distance * SCALE); // upper bound of
         // run length
@@ -87,6 +85,7 @@ public class BeamSearch implements GraphSearch {
         repo.setOriginNode(originNode);
 
         while (!queue.isEmpty()) {
+
             queue.sort(Comparator
                     .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
 

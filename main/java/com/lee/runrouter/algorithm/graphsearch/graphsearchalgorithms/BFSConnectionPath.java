@@ -63,8 +63,6 @@ public class BFSConnectionPath implements ILSGraphSearch {
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
         double upperBound = distance;
-        repo.setOriginNode(targetNode);
-        repo.setOriginWay(targetWay);
 
         queue.add(new PathTupleMain(null, originNode, originWay,
                 0, 0, 0));

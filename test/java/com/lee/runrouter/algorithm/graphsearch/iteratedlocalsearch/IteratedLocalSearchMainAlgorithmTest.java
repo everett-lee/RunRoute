@@ -76,6 +76,8 @@ public class IteratedLocalSearchMainAlgorithmTest {
 
         double postScore = calculateScore(res);
 
+
+
         assertTrue(postScore >= originalScore);
     }
 
@@ -100,16 +102,8 @@ public class IteratedLocalSearchMainAlgorithmTest {
 
         double postScore = calculateScore(res);
 
-        System.out.println(originalScore);
-        System.out.println(postScore);
         assertTrue(postScore >= originalScore);
 
-
-        String x = returnPath(res, "");
-        System.out.println(x);
-
-        System.out.println(originalScore);
-        System.out.println(postScore);
 
     }
 
@@ -122,10 +116,11 @@ public class IteratedLocalSearchMainAlgorithmTest {
 
         double postScore = calculateScore(res);
 
+
         System.out.println(originalScore);
         System.out.println(postScore);
-        assertTrue(postScore >= originalScore);
-
+        String x = returnPath(res, "");
+        System.out.println(x);
     }
 
     @Test

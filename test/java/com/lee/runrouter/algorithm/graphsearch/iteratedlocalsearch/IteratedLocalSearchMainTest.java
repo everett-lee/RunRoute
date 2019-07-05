@@ -50,37 +50,48 @@ public class IteratedLocalSearchMainTest {
 
 
     @Test
-    public void testGetStartPathSegmentSixthIn() throws InvocationTargetException, IllegalAccessException {
+    public void testGetStartPathSegmentThirdIn() throws InvocationTargetException, IllegalAccessException {
+        PathTuple a  = new PathTupleMain(null, null,
+                null, 1, 0, 0);
+        PathTuple b  = new PathTupleMain(a, null,
+                null, 2, 0, 0);
+        PathTuple c  = new PathTupleMain(b, null,
+                null, 3, 0, 0);
+        PathTuple d  = new PathTupleMain(c, null,
+                null, 4, 0, 0);
+        PathTuple e  = new PathTupleMain (d, null,
+                null, 5, 0, 0);
+
+
+
         Method getStartPathSegment = Arrays.stream(ils.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("getStartPathSegment")).findFirst().get();
         getStartPathSegment.setAccessible(true);
-        PathTuple result = (PathTuple) getStartPathSegment.invoke(ils, morrishRoadShort, 6);
-        long resultid = result.getPreviousNode().getId();
-        long expected = 115967131;
+        PathTuple result = (PathTuple) getStartPathSegment.invoke(ils, e, 3);
+        double resultScore = result.getSegmentScore();
+        double expected = 3;
 
-        assertEquals(expected, resultid);
-    }
-
-
-    @Test
-    public void testGetStartPathSegmentFifteenthIn() throws InvocationTargetException, IllegalAccessException {
-        Method getStartPathSegment = Arrays.stream(ils.getClass().getDeclaredMethods())
-                .filter(x -> x.getName().equals("getStartPathSegment")).findFirst().get();
-        getStartPathSegment.setAccessible(true);
-        PathTuple result = (PathTuple) getStartPathSegment.invoke(ils, morrishRoadShort, 15);
-        long resultid = result.getPreviousNode().getId();
-        long expected = 4918954452L;
-
-        assertEquals(expected, resultid);
+        assertEquals(expected, resultScore, 0.0001);
     }
 
 
     @Test
     public void testGetEndPathSegmentTwoLong() throws InvocationTargetException, IllegalAccessException {
+        PathTuple a  = new PathTupleMain(null, null,
+                null, 1, 0, 0);
+        PathTuple b  = new PathTupleMain(a, null,
+                null, 2, 0, 0);
+        PathTuple c  = new PathTupleMain(b, null,
+                null, 3, 0, 0);
+        PathTuple d  = new PathTupleMain(c, null,
+                null, 4, 0, 0);
+        PathTuple e  = new PathTupleMain (d, null,
+                null, 5, 0, 0);
+
         Method getStartPathSegment = Arrays.stream(ils.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("getStartPathSegment")).findFirst().get();
         getStartPathSegment.setAccessible(true);
-        PathTuple start = (PathTuple) getStartPathSegment.invoke(ils, morrishRoadShort, 2);
+        PathTuple start = (PathTuple) getStartPathSegment.invoke(ils, e, 2);
 
         Method getEndPathSegment = Arrays.stream(ils.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("getEndPathSegment")).findFirst().get();
@@ -88,62 +99,62 @@ public class IteratedLocalSearchMainTest {
         PathTuple end = (PathTuple) getEndPathSegment.invoke(ils, start, 2);
 
 
-        long resultid = end.getPreviousNode().getId();
-        long expected = 115966799;
-        assertEquals(resultid, expected);
+        double resultid = end.getSegmentScore();
+        double expected = 4;
+        assertEquals(resultid, expected, 0.00001);
     }
 
     @Test
-    public void testGetEndPathSegmentElevenLong() throws InvocationTargetException, IllegalAccessException {
-        Method getStartPathSegment = Arrays.stream(ils.getClass().getDeclaredMethods())
-                .filter(x -> x.getName().equals("getStartPathSegment")).findFirst().get();
-        getStartPathSegment.setAccessible(true);
-        PathTuple start = (PathTuple) getStartPathSegment.invoke(ils, morrishRoadShort, 6);
+    public void testGetPathSizeSingle() throws InvocationTargetException, IllegalAccessException {
+        int expected = 1;
 
+        PathTupleMain a = new PathTupleMain(null, null, null, 0, 0 ,0);
 
-        Method getEndPathSegment = Arrays.stream(ils.getClass().getDeclaredMethods())
-                .filter(x -> x.getName().equals("getEndPathSegment")).findFirst().get();
-        getEndPathSegment.setAccessible(true);
-        PathTuple end = (PathTuple) getEndPathSegment.invoke(ils, start, 11);
-
-        long resultid = end.getPreviousNode().getId();
-        long expected = 115968733;
-        assertEquals(resultid, expected);
-    }
-
-    @Test
-    public void testGetLastEndPathSegment() throws InvocationTargetException, IllegalAccessException {
-        Method getStartPathSegment = Arrays.stream(ils.getClass().getDeclaredMethods())
-                .filter(x -> x.getName().equals("getStartPathSegment")).findFirst().get();
-        getStartPathSegment.setAccessible(true);
-        PathTuple start = (PathTuple) getStartPathSegment.invoke(ils, morrishRoadShort, 1);
-
-        Method getEndPathSegment = Arrays.stream(ils.getClass().getDeclaredMethods())
-                .filter(x -> x.getName().equals("getEndPathSegment")).findFirst().get();
-        getEndPathSegment.setAccessible(true);
-        PathTuple end = (PathTuple) getEndPathSegment.invoke(ils, start, 32);
-
-        System.out.println(start.getPreviousNode().getId() + " !!! START NODE !!! ");
-        long resultid = end.getPreviousNode().getId();
-        long expected = 114280020;
-        assertEquals(resultid, expected);
-    }
-
-    @Test
-    public void testGetPathSize() throws InvocationTargetException, IllegalAccessException {
-        int expected = 33;
+        returnPath(morrishRoadShort, "");
 
         Method getPathsize = Arrays.stream(ils.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("getPathSize")).findFirst().get();
         getPathsize.setAccessible(true);
-        int result = (int) getPathsize.invoke(ils, morrishRoadShort);
+        int result = (int) getPathsize.invoke(ils, a);
+
+        assertEquals(expected, result);
+    }
+
+
+    @Test
+    public void testGetPathSizeTriple() throws InvocationTargetException, IllegalAccessException {
+        int expected = 3;
+
+        PathTupleMain a = new PathTupleMain(null, null, null, 0, 0 ,0);
+        PathTupleMain b = new PathTupleMain(a, null, null, 0, 0 ,0);
+        PathTupleMain c = new PathTupleMain(b, null, null, 0, 0 ,0);
+
+
+        returnPath(morrishRoadShort, "");
+
+        Method getPathsize = Arrays.stream(ils.getClass().getDeclaredMethods())
+                .filter(x -> x.getName().equals("getPathSize")).findFirst().get();
+        getPathsize.setAccessible(true);
+        int result = (int) getPathsize.invoke(ils, c);
 
         assertEquals(expected, result);
     }
 
     @Test
-    public void testGetScoreMorrish() throws InvocationTargetException, IllegalAccessException {
-       PathTuple head = morrishRoadShort;
+    public void testGetScoreFiveNodes() throws InvocationTargetException, IllegalAccessException {
+        PathTuple a  = new PathTupleMain(null, null,
+                null, 1, 0, 0);
+        PathTuple b  = new PathTupleMain(a, null,
+                null, 2, 0, 0);
+        PathTuple c  = new PathTupleMain(b, null,
+                null, 3, 0, 0);
+        PathTuple d  = new PathTupleMain(c, null,
+                null, 4, 0, 0);
+        PathTuple e  = new PathTupleMain (d, null,
+                null, 5, 0, 0);
+
+
+        PathTuple head = e;
         PathTuple tail = head.getPredecessor()
                 .getPredecessor().getPredecessor().getPredecessor();
 
@@ -151,7 +162,7 @@ public class IteratedLocalSearchMainTest {
                 .filter(x -> x.getName().equals("calculateScore")).findFirst().get();
         calculateScore.setAccessible(true);
         double result = (double) calculateScore.invoke(ils, head, tail);
-        double expected = 68.3;
+        double expected = 10;
 
         assertEquals(expected, result, 0.1);
     }
@@ -259,35 +270,4 @@ public class IteratedLocalSearchMainTest {
         assertEquals(expected, 290017288L);
     }
 
-    @Test
-    public void testInsertSegmentOne() throws InvocationTargetException, IllegalAccessException {
-        Method reverseList = Arrays.stream(ils.getClass().getDeclaredMethods())
-                .filter(x -> x.getName().equals("reverseList")).findFirst().get();
-        reverseList.setAccessible(true);
-        PathTuple result = (PathTuple) reverseList.invoke(ils, morrishRoadShort);
-
-        Method getStartPathSegment = Arrays.stream(ils.getClass().getDeclaredMethods())
-                .filter(x -> x.getName().equals("getStartPathSegment")).findFirst().get();
-        getStartPathSegment.setAccessible(true);
-        PathTuple start = (PathTuple) getStartPathSegment.invoke(ils, result, 2);
-
-        Method getEndPathSegment = Arrays.stream(ils.getClass().getDeclaredMethods())
-                .filter(x -> x.getName().equals("getEndPathSegment")).findFirst().get();
-        getEndPathSegment.setAccessible(true);
-        PathTuple end = (PathTuple) getEndPathSegment.invoke(ils, start, 4);
-
-        PathTuple newSegmentTail = new PathTupleMain(null, new Node(1, 1, 1),
-                getRepo().getOriginWay(),
-                -1, -1, -1);
-        PathTuple newSegmentHead = new PathTupleMain(newSegmentTail, new Node(2, 2, 2),
-                getRepo().getOriginWay(),
-                -1, -1, -1);
-
-        Method insertSegment = Arrays.stream(ils.getClass().getDeclaredMethods())
-                .filter(x -> x.getName().equals("insertSegment")).findFirst().get();
-        insertSegment.setAccessible(true);
-        PathTuple combined = (PathTuple) insertSegment.invoke(ils, start, end, newSegmentHead);
-
-        assertEquals(newSegmentHead.getPredecessor().getPreviousNode().getId(), 1226775264);
-    }
 }

@@ -31,7 +31,7 @@ public class BeamSearchConnectionPath implements ILSGraphSearch {
     private final int BEAM_SIZE = 15; // the max number of possible Nodes under review
     private final double REPEATED_EDGE_PENALTY = 1; // deducted from score where
     // edge/Way has been previously visited
-    private final double DISTANCE_FROM_ORIGIN_PENALTY = 5;
+    private final double DISTANCE_FROM_ORIGIN_PENALTY = 1;
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
     private final double PREFERRED_LENGTH = 100; // minimum length of way to avoid
@@ -75,8 +75,6 @@ public class BeamSearchConnectionPath implements ILSGraphSearch {
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
         double upperBound = distance;
-        repo.setOriginNode(targetNode);
-        repo.setOriginWay(targetWay);
 
         // add the starting PathTuple of the chain, with no link
         queue.add(new PathTupleMain(null, originNode, originWay,

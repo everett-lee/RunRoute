@@ -17,37 +17,30 @@ import java.util.*;
  * to explore the neighbouring node with the highest score (as assessed
  * by the heuristics) at each stage.
  */
-public class BFS implements GraphSearch {
-    private ElementRepo repo; // the repository of Ways and Nodes
-    private Heuristic distanceFromOriginHeursitic;
-    private Heuristic featuresHeuristic;
-    private EdgeDistanceCalculator edgeDistanceCalculator;
-    private GradientCalculator gradientCalculator;
-    private ElevationHeuristic elevationHeuristic;
-    private double maxGradient = 2; // is used-defined
-    private final double REPEATED_EDGE_PENALTY = 2; // deducted from score where
+public class BFS extends SearchAlgorithm implements GraphSearch {
+    private final double REPEATED_EDGE_PENALTY = 20; // deducted from score where
     // edge/Way has been previously visited
-    private final double RANDOM_REDUCER = 50; // divides into random number added to the
+    private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
-
-    private PriorityQueue<PathTuple> queue;
+    private final double MINIMUM_LENGTH = 5; // minimum length of way to avoid
+    // skipping
+    private final double PREFERRED_LENGTH = 50; // preferred minimum travel distance between
+    // nodes
+    private final double PREFERRED_LENGTH_BONUS = 1; // penalty if distance is below
+    // preferred
     private final double SCALE = 0.15; // amount to scale upper and lower bound on
     // run length by
 
-    public BFS(ElementRepo repo, Heuristic distanceHeuristic,
-               Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator,
-               GradientCalculator gradientCalculator, ElevationHeuristic elevationHeuristic) {
-        this.repo = repo;
-        this.distanceFromOriginHeursitic = distanceHeuristic;
-        this.featuresHeuristic = featuresHeuristic;
-        this.edgeDistanceCalculator = edgeDistanceCalculator;
-        this.gradientCalculator = gradientCalculator;
-        this.elevationHeuristic = elevationHeuristic;
 
-        // sort priority queue items by their assigned score in descending order
+    private PriorityQueue<PathTuple> queue;
+    private double maxGradient = 2; // is used-defined
+
+    public BFS(ElementRepo repo, Heuristic distanceHeuristic, Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator, GradientCalculator gradientCalculator, ElevationHeuristic elevationHeuristic) {
+        super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
     }
+
 
     /**
      * Method for generating a route of the specified length,
@@ -110,12 +103,13 @@ public class BFS implements GraphSearch {
                     continue; // skip to next where maximum length exceeded
                 }
 
-                // drop the score where this way has already been explored
-                if (visitedWays.contains(currentWay.getId())) {
-                    score -= REPEATED_EDGE_PENALTY;
+                if (distanceToNext < MINIMUM_LENGTH) {
+                    continue;
                 }
 
-                visitedWays.add(currentWay.getId());
+                if (distanceToNext >= PREFERRED_LENGTH) {
+                    score += PREFERRED_LENGTH_BONUS;
+                }
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
@@ -125,15 +119,12 @@ public class BFS implements GraphSearch {
                 if (gradient > this.maxGradient) {
                     continue; }
 
-                // add score reflecting correspondence of terrain features to user selections
-                score += featuresHeuristic.getScore(selectedWay);
-
-                // add a small random value to break ties
-                score += (Math.random() / RANDOM_REDUCER);
+                score += super.addScores(selectedWay, gradient, REPEATED_EDGE_PENALTY, RANDOM_REDUCER);
 
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext);
                 queue.add(toAdd);
+                visitedWays.add(currentWay.getId());
             }
         }
 

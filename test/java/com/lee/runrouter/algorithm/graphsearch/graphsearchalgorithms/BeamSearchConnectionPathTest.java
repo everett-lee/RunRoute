@@ -112,12 +112,21 @@ public class BeamSearchConnectionPathTest {
     public void testMorrishLongSegmentII() {
         PathTuple start = reverseList(morrishWayShort);
 
+        returnPath(start, "");
+
+
         start = getStartPathSegment(start, 1);
         PathTuple end = getEndPathSegment(start, 16);
+
+        System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<");
+        System.out.println("END " + end.getPreviousNode());
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>");
 
         PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
                 end.getPreviousNode(), end.getCurrentWay(), 2000);
 
+
+        returnPath(res, "");
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());

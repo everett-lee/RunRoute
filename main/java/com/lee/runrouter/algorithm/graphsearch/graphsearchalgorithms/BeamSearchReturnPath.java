@@ -21,15 +21,7 @@ import java.util.*;
  * highest score (as assessed by the heuristics) at each stage
  * are kept in the list.
  */
-public class BeamSearchReturnPath implements GraphSearch {
-    private ElementRepo repo; // the repository of Ways and Nodes
-    private Heuristic distanceFromOriginHeursitic;
-    private Heuristic featuresHeuristic;
-    private EdgeDistanceCalculator edgeDistanceCalculator;
-    private GradientCalculator gradientCalculator;
-    private ElevationHeuristic elevationHeuristic;
-    private double maxGradient = 2; // is used-defined
-
+public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch {
     private final int BEAM_SIZE = 25; // the max number of possible Nodes under review
     private final double REPEATED_EDGE_PENALTY = 1; // deducted from score where
     // edge/Way has been previously visited
@@ -43,26 +35,17 @@ public class BeamSearchReturnPath implements GraphSearch {
     // preferred
     private final double DISTANCE_FROM_ORIGIN_PENALTY = 10;
 
-    private final Set<Long> visitedWays;
     private List<PathTuple> queue;
+    private double maxGradient = 2; // is used-defined
 
     private final double LOWER_SCALE = 0.7; // amount to scale upper lower bound on
     // run length by
     private final double UPPER_SCALE = 0.05; // amount to scale upper bound on
     // run length by
 
-    public BeamSearchReturnPath(ElementRepo repo, Heuristic distanceHeuristic,
-                      Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator,
-                      GradientCalculator gradientCalculator, ElevationHeuristic elevationHeuristic) {
-        this.repo = repo;
-        this.distanceFromOriginHeursitic = distanceHeuristic;
-        this.featuresHeuristic = featuresHeuristic;
-        this.edgeDistanceCalculator = edgeDistanceCalculator;
-        this.gradientCalculator = gradientCalculator;
-        this.elevationHeuristic = elevationHeuristic;
-
+    public BeamSearchReturnPath(ElementRepo repo, Heuristic distanceHeuristic, Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator, GradientCalculator gradientCalculator, ElevationHeuristic elevationHeuristic) {
+        super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new ArrayList<>();
-        visitedWays = new HashSet<>();
     }
 
     /**
@@ -123,7 +106,7 @@ public class BeamSearchReturnPath implements GraphSearch {
             }
 
             // distance to origin point from the last explored way
-            double lastDist = distanceFromOriginHeursitic.getScore(currentWay);
+            double lastDist = distanceFromOriginHeuristic.getScore(currentWay);
 
             // for each Way reachable from the current Way
             for (ConnectionPair pair: repo.getConnectedWays(currentWay)) {
@@ -150,7 +133,7 @@ public class BeamSearchReturnPath implements GraphSearch {
                 }
 
                 double currentDistanceScore
-                        = distanceFromOriginHeursitic.getScore(selectedWay);
+                        = distanceFromOriginHeuristic.getScore(selectedWay);
 
                 // if the current distance score is less than the previous Way's, that
                 // is it is further away, then skip this iteration
@@ -169,7 +152,7 @@ public class BeamSearchReturnPath implements GraphSearch {
                     continue; }
 
 
-                score += addScores(selectedWay);
+                score += addScores(selectedWay, gradient, REPEATED_EDGE_PENALTY, RANDOM_REDUCER);
 
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext);
@@ -179,23 +162,5 @@ public class BeamSearchReturnPath implements GraphSearch {
 
         return new PathTupleMain(null, null, null, -1,
                 -1, -1);
-    }
-
-
-    private double addScores(Way selectedWay) {
-        double score = 0;
-
-        // drop the score where this way has already been explored
-        if (visitedWays.contains(selectedWay.getId())) {
-            score -= REPEATED_EDGE_PENALTY;
-        }
-
-        // add score reflecting correspondence of terrain features to user selectionss
-        score += featuresHeuristic.getScore(selectedWay);
-
-        // add a small random value to break ties
-        score += (Math.random() / RANDOM_REDUCER);
-
-        return score;
     }
 }

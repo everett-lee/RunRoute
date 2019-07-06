@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class HaversineCalculator implements DistanceCalculator {
-    private final double EARTH_RADIUS_M = 6371000;
+    private final double EARTH_RADIUS_METRES = 6371000;
 
     /**
      *
@@ -31,6 +31,6 @@ public class HaversineCalculator implements DistanceCalculator {
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-        return EARTH_RADIUS_M * c;
+        return EARTH_RADIUS_METRES * c;
     }
 }

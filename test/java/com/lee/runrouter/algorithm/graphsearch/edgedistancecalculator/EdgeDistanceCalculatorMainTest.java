@@ -108,4 +108,6 @@ public class EdgeDistanceCalculatorMainTest {
 
         assertEquals(expected, res, 10);
     }
+
+
 }

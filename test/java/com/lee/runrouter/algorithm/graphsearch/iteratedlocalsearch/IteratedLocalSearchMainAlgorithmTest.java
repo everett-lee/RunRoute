@@ -79,10 +79,8 @@ public class IteratedLocalSearchMainAlgorithmTest {
         PathTuple res = ilsBeamSearch.iterate(morrishRoadShort, 2000);
 
         double postScore = calculateScore(res);
-
-
-
         assertTrue(postScore >= originalScore);
+
     }
 
     @Test
@@ -94,6 +92,9 @@ public class IteratedLocalSearchMainAlgorithmTest {
         double postScore = calculateScore(res);
 
         assertTrue(postScore >= originalScore);
+
+        System.out.println(originalScore);
+        System.out.println(postScore);
     }
 
 
@@ -107,6 +108,18 @@ public class IteratedLocalSearchMainAlgorithmTest {
         double postScore = calculateScore(res);
 
         assertTrue(postScore >= originalScore);
+    }
+
+
+    @Test
+    public void testScoreGreaterOrEqualBFSCraignair() {
+        double originalScore = calculateScore(craignair);
+
+        PathTuple res = ilsBFS.iterate(craignair, 2000);
+
+
+
+        double postScore = calculateScore(res);
 
 
     }
@@ -120,15 +133,23 @@ public class IteratedLocalSearchMainAlgorithmTest {
 
         double postScore = calculateScore(res);
 
-
-        System.out.println(originalScore);
-        System.out.println(postScore);
-        String x = returnPath(res, "");
-        System.out.println(x);
+        assertTrue(postScore - originalScore >= -0.01);
     }
 
     @Test
-    public void testHighwayReflectedTulse() {
+    public void testScoreGreaterOrEqualBFSTulse() {
+        double originalScore = calculateScore(tulseHillLong);
+
+
+        PathTuple res = ilsBFS.iterate(tulseHillLong, 2000);
+
+        double postScore = calculateScore(res);
+
+        assertTrue(postScore - originalScore >= -0.01);
+    }
+
+    @Test
+    public void testScoreGreaterOrEqualTulseHillBeam() {
         double originalScore = calculateScore(tulseHillLong);
 
 
@@ -136,10 +157,19 @@ public class IteratedLocalSearchMainAlgorithmTest {
 
         double postScore = calculateScore(res);
 
-        System.out.println(originalScore);
-        System.out.println(postScore);
-        assertTrue(postScore >= originalScore);
+        assertTrue(postScore - originalScore >= -0.01);
+    }
 
+    @Test
+    public void testScoreGreaterOrEqualTulseHillBFS() {
+        double originalScore = calculateScore(tulseHillLong);
+
+
+        PathTuple res = ilsBFS.iterate(tulseHillLong, 2000);
+
+        double postScore = calculateScore(res);
+
+        assertTrue(postScore - originalScore >= -0.01);
     }
 
 

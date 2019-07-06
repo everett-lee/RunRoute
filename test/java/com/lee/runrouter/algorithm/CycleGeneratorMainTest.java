@@ -76,7 +76,6 @@ public class CycleGeneratorMainTest {
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
-
    }
 
     @Test(timeout=5000)
@@ -133,7 +132,6 @@ public class CycleGeneratorMainTest {
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
-
     }
 
 
@@ -171,22 +169,11 @@ public class CycleGeneratorMainTest {
         return distance;
     }
 
-    private double calculateScore(PathTuple root) {
-        double score = 0;
-
-        while (root != null) {
-            score += root.getSegmentLength();
-            root = root.getPredecessor();
-        }
-
-        return score;
-    }
-
     static void serialize(PathTuple head) {
         try {
             System.out.println("Starting... ");
             FileOutputStream fileOut =
-                    new FileOutputStream("/home/lee/project/app/runrouter/src/tulsehilllong.ser");
+                    new FileOutputStream("/home/lee/project/app/runrouter/src/craignair.ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(head);
             out.close();

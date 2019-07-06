@@ -1,6 +1,5 @@
 package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
-import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
@@ -21,15 +20,17 @@ import java.util.*;
  * local search metaheuristic.
  */
 public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
-    private final int BEAM_SIZE = 15; // the max number of possible Nodes under review
+    private final int BEAM_SIZE = 20; // the max number of possible Nodes under review
     private final double REPEATED_EDGE_PENALTY = 1; // deducted from score where
     // edge/Way has been previously visited
     private final double DISTANCE_FROM_ORIGIN_PENALTY = 1;
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
-    private final double PREFERRED_LENGTH = 100; // minimum length of way to avoid
+    private final double PREFERRED_MIN_LENGTH = 50; // minimum length of way to avoid
     // subtracting a score penalty
-    private final double PREFERRED_LENGTH_PENALTY = 0.5;
+    private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
+    private final double PREFERRED_LENGTH = 100;
+    private final double PREFERRED_LENGTH_BONUS = 1;
     private final long TIME_LIMIT = 1000;
 
     private double maxGradient = 2; // is used-defined
@@ -54,7 +55,7 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
      * @param targetWay the target way of the connecting path
      * @param distance the total distance available to travel
      * @return a PathTuple that is the head of the linked list
-     * of PathTuples containing hte path back to the origin point
+     * of PathTuples containing the path back to the origin point
      */
     @Override
     public PathTuple connectPath(Node originNode, Way originWay, Node targetNode, Way targetWay,
@@ -87,8 +88,13 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
             currentRouteLength = topTuple.getTotalLength();
 
             // the route has reached the target
-            if (topTuple.getCurrentWay().getId() == targetWay.getId()) {
-                return topTuple;
+            if (currentWay.getId() == targetWay.getId()) {
+                double finalDistance = edgeDistanceCalculator
+                        .calculateDistance(currentNode, targetNode, targetWay);
+                // create a new tuple representing the journey from the previous node to the final node
+                PathTuple returnTuple = new PathTupleMain(topTuple, targetNode,
+                        targetWay, 0, finalDistance, topTuple.getTotalLength() + finalDistance);
+                return returnTuple;
             }
 
             // distance to origin point from the last explored way
@@ -119,10 +125,13 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                     score -= DISTANCE_FROM_ORIGIN_PENALTY;
                 }
 
-                if (distanceToNext < PREFERRED_LENGTH) {
-                    score -= PREFERRED_LENGTH_PENALTY;
+                if (distanceToNext < PREFERRED_MIN_LENGTH) {
+                    score -= PREFERRED_MIN_LENGTH_PENALTY;
                 }
 
+                if (distanceToNext >= PREFERRED_LENGTH) {
+                    score += PREFERRED_LENGTH_BONUS;
+                }
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);

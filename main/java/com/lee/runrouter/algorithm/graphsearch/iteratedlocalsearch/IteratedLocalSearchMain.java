@@ -26,7 +26,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         // to add to route
 
         int a = 1; // the starting node, indexed from 1
-        int r = 2; // number of nodes to remove
+        int r = 3; // number of nodes to remove
         while (elapsedTime <= TIME_LIMIT && remainingDistance > 0) {
             elapsedTime = (new Date()).getTime() - startTime;
 
@@ -34,7 +34,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             int pathSize = getPathSize(head);
             // reset if r greater than pathLength minus the start and end node
             if (r > pathSize - 2) {
-                r = 2;
+                r = 3;
             }
 
             // reset r if removed section plus index of the
@@ -47,7 +47,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             // extends past the final node
             if (a >= pathSize - 2) {
                 a = 1;
-                r = 2;
+                r = 3;
             }
 
             System.out.println("a ->>>> " + a);
@@ -69,6 +69,9 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
             double oldSegmentScore = calculateScore(start, end);
             double newSegmentScore = calculateScore(newSegment, null);
+
+            System.out.println("OLDSCORE "+ oldSegmentScore);
+            System.out.println("NEW SCORE " + newSegmentScore);
 
             if (oldSegmentScore > newSegmentScore || (newSegment == null)
                     || newSegment.getSegmentLength() == -1) {

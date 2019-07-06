@@ -14,6 +14,7 @@ import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
 import org.junit.Before;
 import org.junit.Test;
+import static  org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,11 +67,9 @@ public class BeamSearchReturnPathTest {
         repo.setOriginNode(originNode);
 
         PathTuple x = returnPath.searchGraph(w, coords, 2500);
-        System.out.println(x.getPredecessor() + " hello");
 
-        String str = "";
-        str = returnPath(x, str);
-        System.out.println(str);
+        assertEquals(originNode, x.getPreviousNode());
+
     }
 
 
@@ -86,11 +85,7 @@ public class BeamSearchReturnPathTest {
         repo.setOriginNode(originNode);
 
         PathTuple x = returnPath.searchGraph(w, coords, 5000);
-        System.out.println(x.getPredecessor() + " hello");
-
-        String str = "";
-        str = returnPath(x, str);
-        System.out.println(str);
+        assertEquals(originNode, x.getPreviousNode());
     }
 
     @Test(timeout=3000)
@@ -110,13 +105,7 @@ public class BeamSearchReturnPathTest {
 
 
         PathTuple x = returnPath.searchGraph(w, coords, 2500);
-        System.out.println(x.getPredecessor() + " hello");
-
-        String str = "";
-        str = returnPath(x, str);
-        System.out.println(str);
-
-
+        assertEquals(originNode, x.getPreviousNode());
     }
 
     @Test(timeout=3000)
@@ -135,12 +124,7 @@ public class BeamSearchReturnPathTest {
         repo.setOriginNode(originNode);
 
         PathTuple x = returnPath.searchGraph(w, coords, 5000);
-        System.out.println(x.getPredecessor() + " hello");
-
-        String str = "";
-        str = returnPath(x, str);
-        System.out.println(str);
-
+        assertEquals(originNode, x.getPreviousNode());
     }
 
     @Test(timeout=3000)
@@ -158,12 +142,7 @@ public class BeamSearchReturnPathTest {
         repo.setOriginNode(originNode);
 
         PathTuple x = returnPath.searchGraph(w, coords, 5000);
-        System.out.println(x.getPredecessor() + " hello");
-
-        String str = "";
-        str = returnPath(x, str);
-        System.out.println(str);
-
+        assertEquals(originNode, x.getPreviousNode());
     }
 
 }

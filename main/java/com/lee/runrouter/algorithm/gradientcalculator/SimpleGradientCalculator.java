@@ -16,11 +16,7 @@ public class SimpleGradientCalculator implements GradientCalculator {
 
         double elevationDelta = endElevation - startElevation;
 
-        if (elevationDelta == 0) {
-            return 0;
-        }
-
-        return ((endElevation - startElevation) / distance);
+        return ((elevationDelta) / distance);
     }
 
 

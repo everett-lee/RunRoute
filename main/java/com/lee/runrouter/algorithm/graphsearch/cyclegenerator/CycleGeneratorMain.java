@@ -7,7 +7,7 @@ import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 
 /**
- * Combines results of two greedy searhc algorithms to form a cycle.
+ * Combines results of two greedy search algorithms to form a cycle.
  * Where the return path algorithm fails to produce a valid result,
  * the outbound route is reversed and appended to form a cycle.
  * The resulting cycle is used as input for the iterated local search
@@ -32,7 +32,8 @@ public class CycleGeneratorMain implements CycleGenerator {
      * @param coords starting positon of the route
      * @param distance distance to travel
      * @return a PathTuple, which is the head of a linked list
-     * // of visited locations
+     * // containing PathTuples corresponding to previously
+     * visited locations
      */
     public PathTuple generateCycle(double[] coords, double distance) throws Exception {
         distance /= 2; // half distance for outward and return paths
@@ -43,19 +44,22 @@ public class CycleGeneratorMain implements CycleGenerator {
         if (outwardPath.getSegmentLength() == -1) {
             throw new Exception("No valid path was generated");
         }
+
+        // the head of the generated outward path is the last  visited
+        // location
         Way lastVisited = outwardPath.getCurrentWay();
         double[] lastVisitedCoords = {outwardPath.getPreviousNode().getLat(),
                 outwardPath.getPreviousNode().getLon()};
 
+        // find a path from the last visited location back to the origin
         PathTuple returnPath = initialReturnPather.searchGraph(lastVisited, lastVisitedCoords, distance);
 
         // if the returned PathTuple has a length of -1, the algorithm failed to find
-        // a valid return route
+        // a valid return route, so the initial route is reversed and appended
         if (returnPath.getTotalLength() == -1) {
             System.out.println("Failed to generate return route");
             return makeReverseRoute(outwardPath);
         }
-
 
         // update the distance of the return route by adding
         // distance of outbound route

@@ -18,6 +18,10 @@ import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import org.junit.Before;
 import org.junit.Test;
 
+import static com.lee.runrouter.testhelpers.TestHelpers.*;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +44,7 @@ public class IteratedLocalSearchMainAlgorithmTest {
     ILSGraphSearch connectPathBeamSearch;
     IteratedLocalSearch ilsBFS;
     IteratedLocalSearch ilsBeamSearch;
+
 
     {
         morrishRoadShort = getMorrishShort();
@@ -73,65 +78,93 @@ public class IteratedLocalSearchMainAlgorithmTest {
     }
 
     @Test
-    public void testScoreGreaterOrEqualBeam(){
+    public void testMorrishScoreGreaterOrEqualBeam(){
         double originalScore = calculateScore(morrishRoadShort);
+        double originalLength = calculateDistance(morrishRoadShort);
 
         PathTuple res = ilsBeamSearch.iterate(morrishRoadShort, 2000);
 
         double postScore = calculateScore(res);
+        double postDistance = calculateDistance(res);
+        assertTrue(postScore - originalScore >= -0.01);
+    }
+
+    @Test
+    public void testCountIterationsBFS(){
+        List<Integer> iterations = new ArrayList<>();
+        List<Integer> improvements = new ArrayList<>();
+
+        for (int i= 0; i < 50; i++) {
+            System.out.println(i);
+            craignair = getCraignair();
+            PathTuple res = ilsBeamSearch.iterate(getCraignair(), 2000);
+            iterations.add(ilsBeamSearch.getIterations());
+            improvements.add(ilsBeamSearch.getImprovements());
+        }
+
+        System.out.println(iterations.stream().mapToDouble(x -> x).average());
+        System.out.println(improvements.stream().mapToDouble(x -> x).average());
+        System.out.println(iterations);
+        System.out.println(improvements);
+    }
+
+    @Test
+    public void testMorrishScoreGreaterOrEqualBFS() {
+        double originalScore = calculateScore(morrishRoadShort);
+        double originalLength = calculateDistance(morrishRoadShort);
+
+
+        PathTuple res = ilsBFS.iterate(morrishRoadShort, 1000);
+
+        double postScore = calculateScore(res);
+        double postDistance = calculateDistance(res);
+        assertTrue(postScore - originalScore >= -0.01);
+
+    }
+
+
+    @Test
+    public void testCraignairScoreGreaterOrEqualBeam() {
+        double originalScore = calculateScore(craignair);
+        double originalLength = calculateDistance(craignair);
+
+        PathTuple res = ilsBeamSearch.iterate(craignair, 1000);
+
+        double postScore = calculateScore(res);
+        double postDistance = calculateDistance(res);
+
         assertTrue(postScore >= originalScore);
 
     }
 
-    @Test
-    public void testScoreGreaterOrEqualBFS() {
-        double originalScore = calculateScore(morrishRoadShort);
 
-        PathTuple res = ilsBFS.iterate(morrishRoadShort, 2000);
+    @Test
+    public void testCraignairScoreGreaterOrEqualBFS() {
+        double originalScore = calculateScore(craignair);
+        double originalLength = calculateDistance(craignair);
+
+        PathTuple res = ilsBeamSearch.iterate(craignair, 1000);
 
         double postScore = calculateScore(res);
+        double postDistance = calculateDistance(res);
 
         assertTrue(postScore >= originalScore);
 
         System.out.println(originalScore);
         System.out.println(postScore);
-    }
-
-
-    @Test
-    public void testScoreGreaterOrEqualBeamCraignair() {
-        double originalScore = calculateScore(craignair);
-
-
-        PathTuple res = ilsBeamSearch.iterate(craignair, 2000);
-
-        double postScore = calculateScore(res);
-
-        assertTrue(postScore >= originalScore);
-    }
-
-
-    @Test
-    public void testScoreGreaterOrEqualBFSCraignair() {
-        double originalScore = calculateScore(craignair);
-
-        PathTuple res = ilsBFS.iterate(craignair, 2000);
-
-
-
-        double postScore = calculateScore(res);
-
-
+        System.out.println(originalLength);
+        System.out.println(postDistance);
     }
 
     @Test
     public void testScoreGreaterOrEqualBeamTulse() {
         double originalScore = calculateScore(tulseHillLong);
-
+        double originalLength = calculateDistance(tulseHillLong);
 
         PathTuple res = ilsBeamSearch.iterate(tulseHillLong, 2000);
 
         double postScore = calculateScore(res);
+        double postDistance = calculateDistance(res);
 
         assertTrue(postScore - originalScore >= -0.01);
     }
@@ -139,13 +172,19 @@ public class IteratedLocalSearchMainAlgorithmTest {
     @Test
     public void testScoreGreaterOrEqualBFSTulse() {
         double originalScore = calculateScore(tulseHillLong);
+        double originalLength = calculateDistance(tulseHillLong);
 
 
-        PathTuple res = ilsBFS.iterate(tulseHillLong, 2000);
-
+        PathTuple res = ilsBFS.iterate(tulseHillLong, 1400);
         double postScore = calculateScore(res);
+        double postDistance = calculateDistance(res);
 
         assertTrue(postScore - originalScore >= -0.01);
+
+        System.out.println(originalScore);
+        System.out.println(postScore);
+        System.out.println(originalLength);
+        System.out.println(postDistance);
     }
 
     @Test
@@ -171,23 +210,5 @@ public class IteratedLocalSearchMainAlgorithmTest {
 
         assertTrue(postScore - originalScore >= -0.01);
     }
-
-
-
-    static double calculateScore(PathTuple head) {
-        double score = 0;
-
-        PathTuple g = head;
-        while (head != null) {
-            score += head.getSegmentScore();
-            head = head.getPredecessor();
-        }
-
-        return score;
-    }
-
-
-
-
 
 }

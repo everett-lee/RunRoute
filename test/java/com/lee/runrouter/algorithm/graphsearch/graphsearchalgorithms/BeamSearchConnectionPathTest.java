@@ -11,7 +11,9 @@ import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import org.junit.Before;
 import org.junit.Test;
+
 import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +47,7 @@ public class BeamSearchConnectionPathTest {
 
         List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("GRASS",
                 "DIRT", "GRAVEL"));
-        List<String> preferredHighways = new ArrayList<>(Arrays.asList("LIVING_STREET","PEDESTRIAN", "TRACK",
+        List<String> preferredHighways = new ArrayList<>(Arrays.asList("LIVING_STREET", "PEDESTRIAN", "TRACK",
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
         featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
@@ -59,14 +61,17 @@ public class BeamSearchConnectionPathTest {
 
 
     @Test
+    // route A
     public void testMorrishShortSegment() {
         PathTuple start = reverseList(morrishWayShort);
 
         start = getStartPathSegment(start, 3);
         PathTuple end = getEndPathSegment(start, 7);
 
+
         PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
                 end.getPreviousNode(), end.getCurrentWay(), 2000);
+
 
         PathTuple resFinal = getEndTuple(res);
 
@@ -108,7 +113,6 @@ public class BeamSearchConnectionPathTest {
     }
 
 
-
     @Test
     public void testMorrishLongSegmentII() {
         PathTuple start = reverseList(morrishWayShort);
@@ -116,6 +120,7 @@ public class BeamSearchConnectionPathTest {
 
         start = getStartPathSegment(start, 1);
         PathTuple end = getEndPathSegment(start, 16);
+
 
         PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
                 end.getPreviousNode(), end.getCurrentWay(), 2000);
@@ -139,9 +144,9 @@ public class BeamSearchConnectionPathTest {
     }
 
     @Test
+    // Route B
     public void testCraignairLongerSegment() {
         PathTuple start = reverseList(craignair);
-
 
         start = getStartPathSegment(start, 5);
         PathTuple end = getEndPathSegment(start, 16);

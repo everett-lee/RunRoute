@@ -19,18 +19,17 @@ import java.util.*;
  * are kept in the list.
  */
 public class BeamSearch extends SearchAlgorithm implements GraphSearch {
-    private final int BEAM_SIZE = 25; // the max number of possible Nodes under review
-    private final double REPEATED_EDGE_PENALTY = 20; // deducted from score where
+    private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
+    private final double REPEATED_EDGE_PENALTY = 1.5; // deducted from score where
     // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
-    private final double MINIMUM_LENGTH = 5; // minimum length of way to avoid
-    // skipping
-    private final double PREFERRED_LENGTH = 50; // preferred minimum travel distance between
-    // nodes
-    private final double PREFERRED_LENGTH_BONUS = 1; // penalty if distance is below
-    // preferred
-    private final double SCALE = 0.15; // amount to scale upper and lower bound on
+    private final double PREFERRED_MIN_LENGTH = 50; // minimum length of way to avoid
+    // subtracting a score penalty
+    private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
+    private final double PREFERRED_LENGTH = 100;
+    private final double PREFERRED_LENGTH_BONUS = 1;
+    private final double SCALE = 0.05; // amount to scale upper and lower bound on
     // run length by
 
     private double maxGradient = 2; // is used-defined
@@ -109,14 +108,13 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
                     continue; // skip to next where maximum length exceeded
                 }
 
-                if (distanceToNext < MINIMUM_LENGTH) {
-                    continue;
+                if (distanceToNext < PREFERRED_MIN_LENGTH) {
+                    score -= PREFERRED_MIN_LENGTH_PENALTY;
                 }
 
                 if (distanceToNext >= PREFERRED_LENGTH) {
                     score += PREFERRED_LENGTH_BONUS;
                 }
-
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
 

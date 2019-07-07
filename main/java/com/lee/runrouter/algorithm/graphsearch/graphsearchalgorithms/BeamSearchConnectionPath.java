@@ -20,10 +20,10 @@ import java.util.*;
  * local search metaheuristic.
  */
 public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
-    private final int BEAM_SIZE = 20; // the max number of possible Nodes under review
-    private final double REPEATED_EDGE_PENALTY = 1; // deducted from score where
+    private final int BEAM_SIZE = 7500; // the max number of possible Nodes under review
+    private final double REPEATED_EDGE_PENALTY = 1.5; // deducted from score where
     // edge/Way has been previously visited
-    private final double DISTANCE_FROM_ORIGIN_PENALTY = 1;
+    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.75;
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
     private final double PREFERRED_MIN_LENGTH = 50; // minimum length of way to avoid
@@ -119,10 +119,10 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                 double currentDistanceScore
                         = distanceFromOriginHeuristic.getScore(selectedWay);
 
-                // if the current distance score is less than the previous Way's, that
-                // is it is further away, then reduce the score
-                if (currentDistanceScore < lastDist) {
-                    score -= DISTANCE_FROM_ORIGIN_PENALTY;
+                // if the current distance score is higher the previous Way's, that
+                // is it is closer, increase the score
+                if (currentDistanceScore > lastDist) {
+                    score += DISTANCE_FROM_ORIGIN_BONUS;
                 }
 
                 if (distanceToNext < PREFERRED_MIN_LENGTH) {

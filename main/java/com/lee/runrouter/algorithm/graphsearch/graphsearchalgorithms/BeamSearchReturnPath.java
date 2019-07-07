@@ -17,12 +17,12 @@ import java.util.*;
 
 /**
  * A greedy Search algorithm that utilises a restricted List.
- * Neghbouring nodes are explored and only those with the
+ * Neighbouring nodes are explored and only those with the
  * highest score (as assessed by the heuristics) at each stage
  * are kept in the list.
  */
 public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch {
-    private final int BEAM_SIZE = 25; // the max number of possible Nodes under review
+    private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
     private final double REPEATED_EDGE_PENALTY = 1; // deducted from score where
     // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 50; // divides into random number added to the
@@ -33,7 +33,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
     // nodes
     private final double PREFERRED_LENGTH_PENALTY = 0.5; // penalty if distance is below
     // preferred
-    private final double DISTANCE_FROM_ORIGIN_PENALTY = 10;
+    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.75;
 
     private List<PathTuple> queue;
     private double maxGradient = 2; // is used-defined
@@ -135,10 +135,10 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
                 double currentDistanceScore
                         = distanceFromOriginHeuristic.getScore(selectedWay);
 
-                // if the current distance score is less than the previous Way's, that
-                // is it is further away, then skip this iteration
-                if (currentDistanceScore < lastDist) {
-                    score -= DISTANCE_FROM_ORIGIN_PENALTY;
+                // if the current distance score is higher the previous Way's, that
+                // is it is closer, increase the score
+                if (currentDistanceScore > lastDist) {
+                    score += DISTANCE_FROM_ORIGIN_BONUS;
                 }
 
                 visitedWays.add(currentWay.getId());

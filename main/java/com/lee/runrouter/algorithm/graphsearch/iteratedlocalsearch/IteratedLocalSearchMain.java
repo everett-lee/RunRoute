@@ -2,11 +2,14 @@ package com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch;
 
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ILSGraphSearch;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
+
 import java.util.Date;
 
 public class IteratedLocalSearchMain implements IteratedLocalSearch {
     private ILSGraphSearch graphSearch;
     private final long TIME_LIMIT = 5000L;
+    private int iterations;
+    private int improvements;
 
     public IteratedLocalSearchMain(ILSGraphSearch graphSearch) {
         this.graphSearch = graphSearch;
@@ -14,6 +17,9 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
     @Override
     public PathTuple iterate(PathTuple head, double targetDistance) {
+        setIterations(0);
+        setImprovements(0);
+
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
         PathTuple start = null;
@@ -50,9 +56,6 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
                 r = 3;
             }
 
-            System.out.println("a ->>>> " + a);
-            System.out.println("r ->>>> " + r);
-
             start = getStartPathSegment(head, a);
             end = getEndPathSegment(start, r);
 
@@ -66,12 +69,10 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             // generate the new segment
             PathTuple newSegment = graphSearch.connectPath(start.getPreviousNode(), start.getCurrentWay(),
                     end.getPreviousNode(), end.getCurrentWay(), remainingDistance);
+            setIterations(getIterations() + 1);
 
             double oldSegmentScore = calculateScore(start, end);
             double newSegmentScore = calculateScore(newSegment, null);
-
-            System.out.println("OLDSCORE "+ oldSegmentScore);
-            System.out.println("NEW SCORE " + newSegmentScore);
 
             if (oldSegmentScore > newSegmentScore || (newSegment == null)
                     || newSegment.getSegmentLength() == -1) {
@@ -83,6 +84,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
                 // new segment score is higher, so replace old path segment with the new one
             } else {
+                setImprovements(getImprovements() + 1);
                 // remove the added distance from the remaining
                 remainingDistance -= calculateDistance(newSegment, null);
 
@@ -199,4 +201,19 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
     }
 
 
+    public int getIterations() {
+        return iterations;
+    }
+
+    public void setIterations(int iterations) {
+        this.iterations = iterations;
+    }
+
+    public int getImprovements() {
+        return improvements;
+    }
+
+    public void setImprovements(int improvements) {
+        this.improvements = improvements;
+    }
 }

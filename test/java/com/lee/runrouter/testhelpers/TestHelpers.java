@@ -108,6 +108,17 @@ public class TestHelpers {
         return score;
     }
 
+    public static double calculateDistance(PathTuple head) {
+        double distance = 0;
+
+        while (head != null) {
+            distance += head.getSegmentLength();
+            head = head.getPredecessor();
+        }
+
+        return distance;
+    }
+
     public static PathTuple getTail(PathTuple head) {
         while (head.getPredecessor() != null) {
             head = head.getPredecessor();

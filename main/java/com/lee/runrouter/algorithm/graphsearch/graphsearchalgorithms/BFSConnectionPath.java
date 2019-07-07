@@ -21,9 +21,9 @@ import java.util.*;
  * following execution of the BFS.
  */
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
-    private final double REPEATED_EDGE_PENALTY = 1; // deducted from score where
+    private final double REPEATED_EDGE_PENALTY = 1.5; // deducted from score where
     // edge/Way has been previously visited
-    private final double DISTANCE_FROM_ORIGIN_PENALTY = 1;
+    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.75;
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
     private final double PREFERRED_MIN_LENGTH = 50; // minimum length of way to avoid
@@ -100,8 +100,8 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
                 // if the current distance score is less than the previous Way's, that
                 // is it is further away, then reduce the score
-                if (currentDistanceScore < lastDist) {
-                    score -= DISTANCE_FROM_ORIGIN_PENALTY;
+                if (currentDistanceScore > lastDist) {
+                    score += DISTANCE_FROM_ORIGIN_BONUS;
                 }
 
                 if (distanceToNext < PREFERRED_MIN_LENGTH) {

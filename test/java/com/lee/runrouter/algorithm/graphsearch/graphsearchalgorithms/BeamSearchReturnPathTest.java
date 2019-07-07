@@ -14,7 +14,8 @@ import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
 import org.junit.Before;
 import org.junit.Test;
-import static  org.junit.Assert.*;
+
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +44,7 @@ public class BeamSearchReturnPathTest {
 
         List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("GRASS",
                 "DIRT", "GRAVEL"));
-        List<String> preferredHighways = new ArrayList<>(Arrays.asList("LIVING_STREET","PEDESTRIAN", "TRACK",
+        List<String> preferredHighways = new ArrayList<>(Arrays.asList("LIVING_STREET", "PEDESTRIAN", "TRACK",
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
         featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
@@ -55,7 +56,7 @@ public class BeamSearchReturnPathTest {
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
     }
 
-    @Test(timeout=3000)
+    @Test(timeout = 1000)
     public void testMorrishRoadShortReturn() {
         double[] coords = {51.442, -0.109};
         Way w = repo.getWayRepo().stream().filter(x -> x.getId() == 26446121L).findFirst().get();
@@ -66,14 +67,13 @@ public class BeamSearchReturnPathTest {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
-        PathTuple x = returnPath.searchGraph(w, coords, 2500);
+        PathTuple x = returnPath.searchGraph(w, coords, 5000);
 
         assertEquals(originNode, x.getPreviousNode());
-
     }
 
 
-    @Test(timeout=3000)
+    @Test(timeout = 1000)
     public void testMorrishRoadLongerReturn() {
         double[] coords = {51.445, -0.112};
         Way w = repo.getWayRepo().stream().filter(x -> x.getId() == 4898590L).findFirst().get();
@@ -88,7 +88,7 @@ public class BeamSearchReturnPathTest {
         assertEquals(originNode, x.getPreviousNode());
     }
 
-    @Test(timeout=3000)
+    @Test(timeout = 1000)
     public void testCraignairRoadShortReturn() {
         double[] coords = {51.448321, -0.114648};
         Way w = repo.getWayRepo().stream().filter(x -> x.getId() == 12694843L).findFirst().get();
@@ -103,12 +103,12 @@ public class BeamSearchReturnPathTest {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
-
         PathTuple x = returnPath.searchGraph(w, coords, 2500);
+
         assertEquals(originNode, x.getPreviousNode());
     }
 
-    @Test(timeout=3000)
+    @Test(timeout = 1000)
     public void testCraignairRoadLongerReturn() {
         double[] coords = {51.448321, -0.114648};
         Way w = repo.getWayRepo().stream().filter(x -> x.getId() == 22751151L).findFirst().get();
@@ -127,7 +127,7 @@ public class BeamSearchReturnPathTest {
         assertEquals(originNode, x.getPreviousNode());
     }
 
-    @Test(timeout=3000)
+    @Test(timeout = 1000)
     public void testTulseHillReturn() {
         double[] coords = {51.441109, -0.106974};
         Way w = repo.getWayRepo().stream().filter(x -> x.getId() == 12538762L).findFirst().get();
@@ -142,6 +142,8 @@ public class BeamSearchReturnPathTest {
         repo.setOriginNode(originNode);
 
         PathTuple x = returnPath.searchGraph(w, coords, 5000);
+
+        assertEquals(originNode, x.getPreviousNode());
         assertEquals(originNode, x.getPreviousNode());
     }
 

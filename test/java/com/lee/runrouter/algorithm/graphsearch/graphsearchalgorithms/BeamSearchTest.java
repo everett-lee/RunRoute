@@ -29,7 +29,7 @@ public class BeamSearchTest {
     ElevationHeuristic elevationHeuristic;
 
     {
-       repo = getRepo();
+        repo = getRepo();
     }
 
 
@@ -40,7 +40,7 @@ public class BeamSearchTest {
 
         List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("GRASS",
                 "DIRT", "GRAVEL"));
-        List<String> preferredHighways = new ArrayList<>(Arrays.asList("LIVING_STREET","PEDESTRIAN", "TRACK",
+        List<String> preferredHighways = new ArrayList<>(Arrays.asList("LIVING_STREET", "PEDESTRIAN", "TRACK",
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
         featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
@@ -53,27 +53,21 @@ public class BeamSearchTest {
 
     }
 
-    @Test(timeout=3000)
+    @Test(timeout = 1000)
     public void testMorrishRoadShort() {
-
         double[] coords = {51.446810, -0.125484};
         PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 2500);
-
     }
 
 
-    @Test(timeout=3000)
+    @Test(timeout = 1000)
     public void testMorrishRoadLonger() {
+
         double[] coords = {51.446810, -0.125484};
         PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
-
-
-        String out = returnPath(x, "");
-        System.out.println(out);
-
     }
 
-    @Test(timeout=3000)
+    @Test(timeout = 1000)
     public void testCraignairRoadShort() {
         double[] coords = {51.448321, -0.114648};
 
@@ -82,16 +76,16 @@ public class BeamSearchTest {
         repo.setOriginWay(origin);
 
         PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 2500);
+
     }
 
 
-    @Test(timeout=3000)
+    @Test(timeout = 1000)
     public void testCraignairRoadLonger() {
         double[] coords = {51.448321, -0.114648};
 
         Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
                 .findFirst().get();
-
         repo.setOriginWay(origin);
 
         PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
@@ -99,7 +93,7 @@ public class BeamSearchTest {
     }
 
 
-    @Test(timeout=3000)
+    @Test(timeout = 1000)
     public void TulseHillTest10KM() {
         double[] coords = {51.441109, -0.106974};
 
@@ -116,13 +110,5 @@ public class BeamSearchTest {
         repo.setOriginWay(origin);
 
         PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
-        System.out.println(x.getPredecessor() + " hello");
-
-
-        String res = returnPath(x, "");
-        System.out.println(res);
-
-
-        System.out.println(calculateScore(x));
     }
 }

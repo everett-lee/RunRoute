@@ -18,7 +18,7 @@ import java.util.*;
  * by the heuristics) at each stage.
  */
 public class BFS extends SearchAlgorithm implements GraphSearch {
-    private final double REPEATED_EDGE_PENALTY = 20; // deducted from score where
+    private final double REPEATED_EDGE_PENALTY = 1.5; // deducted from score where
     // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score

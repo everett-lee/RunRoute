@@ -88,8 +88,6 @@ public class BFSConnectionPathTest {
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
-
-
     }
 
 
@@ -106,7 +104,6 @@ public class BFSConnectionPathTest {
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
-
     }
 
 
@@ -124,7 +121,6 @@ public class BFSConnectionPathTest {
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
-
     }
 
     @Test
@@ -139,10 +135,6 @@ public class BFSConnectionPathTest {
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
-
-
-
-
     }
 
     @Test
@@ -158,8 +150,6 @@ public class BFSConnectionPathTest {
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
-
-        System.out.println(calculateScore(res));
     }
 
 

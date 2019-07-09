@@ -6,12 +6,12 @@ import org.springframework.stereotype.Component;
  * For (rough) calculations of offset latitude and longitude from
  * the origin position. This is used as an input for the bounding box
  * query in PostGIS. The total size of the bounding box scaled down,
- * so contained area < run distance ^ 2.
+ * so resulting area is less than run distance squared.
  */
 @Component
 public class ScaledBBCalculator implements BBCalculator {
     private final double EARTH_RADIUS_KM = 6371;
-    private final double SCALE_DOWN = 0.8;
+    private final double SCALE_DOWN = 0.65;
 
     public double[] calcBoundingBox(double startLat, double startLon, double runLength) {
         double minLon = getMinLon(startLon, startLat, runLength/2);

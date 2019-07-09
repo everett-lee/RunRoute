@@ -35,14 +35,14 @@ public class CycleGeneratorMain implements CycleGenerator {
      * // containing PathTuples corresponding to previously
      * visited locations
      */
-    public PathTuple generateCycle(double[] coords, double distance) throws Exception {
+    public PathTuple generateCycle(double[] coords, double distance) throws PathNotGeneratedException {
         distance /= 2; // half distance for outward and return paths
 
         PathTuple outwardPath =
                 initialOutwardsPather.searchGraph(repo.getOriginWay(), coords, distance);
 
         if (outwardPath.getSegmentLength() == -1) {
-            throw new Exception("No valid path was generated");
+            throw new PathNotGeneratedException("No valid path was generated");
         }
 
         // the head of the generated outward path is the last  visited

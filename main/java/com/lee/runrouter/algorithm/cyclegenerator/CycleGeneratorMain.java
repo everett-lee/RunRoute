@@ -1,10 +1,15 @@
-package com.lee.runrouter.algorithm.graphsearch.cyclegenerator;
+package com.lee.runrouter.algorithm.cyclegenerator;
 
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.GraphSearch;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 /**
  * Combines results of two greedy search algorithms to form a cycle.
@@ -13,6 +18,8 @@ import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
  * The resulting cycle is used as input for the iterated local search
  * algorithm.
  */
+@Component
+@Qualifier("CycleGeneratorMain")
 public class CycleGeneratorMain implements CycleGenerator {
     private GraphSearch initialOutwardsPather; // generates the initial path
     // away from the origin point
@@ -20,8 +27,9 @@ public class CycleGeneratorMain implements CycleGenerator {
     // back to the origin point
     private ElementRepo repo; // the repository of created Ways and Nodes
 
-    public CycleGeneratorMain(GraphSearch initialOutwardsPather, GraphSearch initialReturnPather,
-                          ElementRepo repo) {
+    @Autowired
+    public CycleGeneratorMain(@Qualifier("BeamSearch") GraphSearch initialOutwardsPather, @Qualifier("BeamSearchReturnPath")  GraphSearch initialReturnPather,
+                              ElementRepo repo) {
         this.initialOutwardsPather = initialOutwardsPather;
         this.initialReturnPather = initialReturnPather;
         this.repo = repo;
@@ -38,7 +46,7 @@ public class CycleGeneratorMain implements CycleGenerator {
     public PathTuple generateCycle(double[] coords, double distance) throws PathNotGeneratedException {
         distance /= 2; // half distance for outward and return paths
 
-        PathTuple outwardPath =
+       PathTuple outwardPath =
                 initialOutwardsPather.searchGraph(repo.getOriginWay(), coords, distance);
 
         if (outwardPath.getSegmentLength() == -1) {

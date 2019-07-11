@@ -23,10 +23,11 @@ import java.io.ObjectInputStream;
 
 public class ElevationHeuristicMainTest {
     private ElementRepo repo;
-    private DistanceCalculator distanceCalculator = new HaversineCalculator();
-    private GradientCalculator gradientCalculator = new SimpleGradientCalculator();
-    private ElevationHeuristic elevationHeuristic = new ElevationHeuristicMain(true);
-    private EdgeDistanceCalculator edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
+    private DistanceCalculator distanceCalculator;
+    private GradientCalculator gradientCalculator;
+    private ElevationHeuristic elevationHeuristic;
+    private EdgeDistanceCalculator edgeDistanceCalculator;
+
 
     {
         // deserialise test repo used for testing.
@@ -42,6 +43,15 @@ public class ElevationHeuristicMainTest {
             System.out.println("Repo class not found");
             c.printStackTrace();
         }
+    }
+
+    @Before
+    public void setUp() {
+        distanceCalculator = new HaversineCalculator();
+        gradientCalculator = new SimpleGradientCalculator();
+        elevationHeuristic = new ElevationHeuristicMain();
+        edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
+        elevationHeuristic.setOptions(true);
     }
 
     @Test
@@ -68,7 +78,8 @@ public class ElevationHeuristicMainTest {
 
     @Test
     public void testNegativeGradientGivesPositiveWhereFlatPreferred() {
-        elevationHeuristic = new ElevationHeuristicMain(false);
+        elevationHeuristic = new ElevationHeuristicMain();
+        elevationHeuristic.setOptions(false);
 
         Way wayUnderTest1 = repo.getWayRepo().stream().filter(x -> x.getId() == 51436348L)
                 .findFirst().get();
@@ -117,7 +128,9 @@ public class ElevationHeuristicMainTest {
 
     @Test
     public void testSteepPathFlatPreferred() {
-        elevationHeuristic = new ElevationHeuristicMain(false);
+        elevationHeuristic = new ElevationHeuristicMain();
+        elevationHeuristic.setOptions(false);
+
         Way wayUnderTest1 = repo.getWayRepo().stream().filter(x -> x.getId() == 4898590)
                 .findFirst().get(); // tulse hill
 

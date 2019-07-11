@@ -28,15 +28,16 @@ public class WayQueryBuilder implements QueryBuilder {
     private final String SELECT_CORDS = "\tST_AsText(l.way) AS coords, \n";
     private final String SELECT_START_ELEVATION = "\t(SELECT ST_Value(rast, ST_SetSRID(ST_StartPoint(l.way),4326)) as startElevation\n" +
             "\tFROM elevation\n" +
-            "\tWHERE ST_Intersects(rast, ST_SetSRID(ST_StartPoint(l.way),4326))), \n";
+            "\tWHERE ST_Intersects(rast, ST_SetSRID(ST_StartPoint(l.way),4326)) limit 1), \n";
     private final String SELECT_END_ELEVATION = "\t(SELECT ST_Value(rast, ST_SetSRID(ST_EndPoint(l.way),4326)) as endElevation \n" +
             "\tFROM elevation\n" +
-            "\tWHERE ST_Intersects(rast, ST_SetSRID(ST_EndPoint(l.way),4326))) \n";
+            "\tWHERE ST_Intersects(rast, ST_SetSRID(ST_EndPoint(l.way),4326)) limit 1) \n";
     private final String FROM = "\tFROM planet_osm_ways w, planet_osm_line l \n";
     private final String JOIN = "\tWHERE l.osm_id = w.id\n";
     private final String BB = "\tAND l.way && ST_Transform( ST_MakeEnvelope(?,?,?,?, 4326),4326)\n";
-    private final String ROAD_OPTIONS = "\tAND (l.highway IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)) \n";
-    private final String END = "\tAND (l.foot <> 'no' OR l.foot IS NULL)";
+    private final String ROAD_OPTIONS = "\tAND ((l.highway IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) \n";
+    private final String FOOT = "\tAND (l.foot <> 'no' OR l.foot IS NULL))";
+    private final String END = "\tOR (l.highway='cycleway' and l.foot='yes'))";
 
     public WayQueryBuilder() {
         conn = DBconnection.getInstance().getConnection();
@@ -47,7 +48,7 @@ public class WayQueryBuilder implements QueryBuilder {
     public void reset() {
         sql = SELECT_ID_TAGS_NODES + SELECT_LENGTH + SELECT_CORDS +
                 SELECT_START_ELEVATION + SELECT_END_ELEVATION + FROM + JOIN + BB +
-                ROAD_OPTIONS + END;
+                ROAD_OPTIONS + FOOT + END;
         try {
             preparedStatement =
                     conn.prepareStatement(sql);

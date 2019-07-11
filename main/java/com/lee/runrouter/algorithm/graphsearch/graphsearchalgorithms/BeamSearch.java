@@ -9,6 +9,9 @@ import com.lee.runrouter.algorithm.pathnode.*;
 import com.lee.runrouter.graph.elementrepo.*;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -18,6 +21,8 @@ import java.util.*;
  * highest score (as assessed by the heuristics) at each stage
  * are kept in the list.
  */
+@Component
+@Qualifier("BeamSearch")
 public class BeamSearch extends SearchAlgorithm implements GraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
     private final double REPEATED_EDGE_PENALTY = 1.5; // deducted from score where
@@ -35,7 +40,13 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
     private double maxGradient = 2; // is used-defined
     private List<PathTuple> queue;
 
-    public BeamSearch(ElementRepo repo, Heuristic distanceHeuristic, Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator, GradientCalculator gradientCalculator, ElevationHeuristic elevationHeuristic) {
+    @Autowired
+    public BeamSearch(ElementRepo repo,
+                      @Qualifier("DistanceFromOriginToMidHeuristic") Heuristic distanceHeuristic,
+                      @Qualifier("FeaturesHeuristic") Heuristic featuresHeuristic,
+                      @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
+                      @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
+                      @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new ArrayList<>();
     }
@@ -55,6 +66,8 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
      */
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double distance) {
+        this.queue = new ArrayList<>();
+
         double currentRouteLength;
         double upperBound = distance + (distance * SCALE); // upper bound of
         // run length
@@ -69,7 +82,6 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
         repo.setOriginNode(originNode);
 
         while (!queue.isEmpty()) {
-
             queue.sort(Comparator
                     .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
 

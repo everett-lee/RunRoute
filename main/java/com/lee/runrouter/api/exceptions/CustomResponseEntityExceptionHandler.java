@@ -41,4 +41,13 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(PathGenerationFailureException.class)
+    public final ResponseEntity<Object> handlePassGenerationFailureException(Exception ex, WebRequest request) {
+
+        ExceptionResponse exceptionResponse =
+                new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
+
+        return new ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }

@@ -3,15 +3,24 @@ package com.lee.runrouter.algorithm.gradientcalculator;
 import com.lee.runrouter.algorithm.AlgoHelpers;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
+@Qualifier("SimpleGradientCalculator")
 public class SimpleGradientCalculator implements GradientCalculator {
     // simple rise over run calculation
     public double calculateGradient(Node currentNode, Way startingWay,
                                     Node visitedNode, Way selectedWay, double distance) {
+        if (distance == 0) {
+            return 0;
+        }
+
         double startElevation = getStartElevation(currentNode, startingWay);
+
         double endElevation = getEndElevation(visitedNode, selectedWay);
 
         double elevationDelta = endElevation - startElevation;

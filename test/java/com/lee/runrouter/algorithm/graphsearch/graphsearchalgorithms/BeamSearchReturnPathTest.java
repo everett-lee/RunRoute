@@ -46,10 +46,14 @@ public class BeamSearchReturnPathTest {
                 "DIRT", "GRAVEL"));
         List<String> preferredHighways = new ArrayList<>(Arrays.asList("LIVING_STREET", "PEDESTRIAN", "TRACK",
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
-        featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
+        featuresHeuristic = new FeaturesHeuristic();
+        ((FeaturesHeuristic) featuresHeuristic).setPreferredSurfaces(preferredSurfaces);
+        ((FeaturesHeuristic) featuresHeuristic).setPreferredHighways(preferredHighways);
+
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         gradientCalculator = new SimpleGradientCalculator();
-        elevationHeuristic = new ElevationHeuristicMain(true);
+        elevationHeuristic = new ElevationHeuristicMain();
+        elevationHeuristic.setOptions(true);
 
 
         returnPath = new BeamSearchReturnPath(repo, distanceHeuristic,

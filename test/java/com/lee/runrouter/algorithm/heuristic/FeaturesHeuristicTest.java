@@ -17,7 +17,9 @@ public class FeaturesHeuristicTest {
     public void testHighwayAndSurface() {
         List<String> highOpts = new ArrayList<>(Arrays.asList("PRIMARY", "SECONDARY", "TRUNK"));
         List<String> surfaceOpts = new ArrayList<>(Arrays.asList("GRAVEL", "ASPHALT", "PEBBLED"));
-        featuresHeuristic = new FeaturesHeuristic(surfaceOpts, highOpts);
+        featuresHeuristic = new FeaturesHeuristic();
+        featuresHeuristic.setPreferredHighways(highOpts);
+        featuresHeuristic.setPreferredSurfaces(surfaceOpts);
 
         Way wayUnderTest = new Way(21);
         wayUnderTest.setHighway("Primary");
@@ -34,7 +36,9 @@ public class FeaturesHeuristicTest {
     public void testHighwayAndSurfaceWithLower() {
         List<String> highOpts = new ArrayList<>(Arrays.asList("Primary", "SECONDARY", "TRUNK"));
         List<String> surfaceOpts = new ArrayList<>(Arrays.asList("Gravel", "ASPHALT", "PEBBLED"));
-        featuresHeuristic = new FeaturesHeuristic(surfaceOpts, highOpts);
+        featuresHeuristic = new FeaturesHeuristic();
+        featuresHeuristic.setPreferredSurfaces(surfaceOpts);
+        featuresHeuristic.setPreferredHighways(highOpts);
 
         Way wayUnderTest = new Way(21);
         wayUnderTest.setHighway("Primary");
@@ -52,7 +56,9 @@ public class FeaturesHeuristicTest {
     public void testHighwayAndSurfaceNoScore() {
         List<String> highOpts = new ArrayList<>(Arrays.asList("PATHWAY", "SECONDARY", "TRUNK"));
         List<String> surfaceOpts = new ArrayList<>(Arrays.asList("GOLD", "ASPHALT", "PEBBLED"));
-        featuresHeuristic = new FeaturesHeuristic(surfaceOpts, highOpts);
+        featuresHeuristic = new FeaturesHeuristic();
+        featuresHeuristic.setPreferredSurfaces(surfaceOpts);
+        featuresHeuristic.setPreferredHighways(highOpts);
 
         Way wayUnderTest = new Way(21);
         wayUnderTest.setHighway("Primary");

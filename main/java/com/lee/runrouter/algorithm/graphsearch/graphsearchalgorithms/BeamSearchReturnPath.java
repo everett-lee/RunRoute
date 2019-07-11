@@ -12,6 +12,9 @@ import com.lee.runrouter.graph.elementrepo.ConnectionPair;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -21,6 +24,8 @@ import java.util.*;
  * highest score (as assessed by the heuristics) at each stage
  * are kept in the list.
  */
+@Component
+@Qualifier("BeamSearchReturnPath")
 public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
     private final double REPEATED_EDGE_PENALTY = 1; // deducted from score where
@@ -34,6 +39,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
     private final double PREFERRED_LENGTH_PENALTY = 0.5; // penalty if distance is below
     // preferred
     private final double DISTANCE_FROM_ORIGIN_BONUS = 0.75;
+    private final long TIME_LIMIT = 1000;
 
     private List<PathTuple> queue;
     private double maxGradient = 2; // is used-defined
@@ -43,7 +49,13 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
     private final double UPPER_SCALE = 0.05; // amount to scale upper bound on
     // run length by
 
-    public BeamSearchReturnPath(ElementRepo repo, Heuristic distanceHeuristic, Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator, GradientCalculator gradientCalculator, ElevationHeuristic elevationHeuristic) {
+    @Autowired
+    public BeamSearchReturnPath(ElementRepo repo,
+                                @Qualifier("DistanceFromOriginToMidHeuristic") Heuristic distanceHeuristic,
+                                @Qualifier("FeaturesHeuristic") Heuristic featuresHeuristic,
+                                @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
+                                @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
+                                @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new ArrayList<>();
     }
@@ -64,8 +76,10 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
      */
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double distance) {
-
+        this.queue = new ArrayList<>();
         double currentRouteLength;
+        long startTime = System.currentTimeMillis();
+        long elapsedTime = 0L;
         double upperBound = distance + (distance * UPPER_SCALE); // upper bound of
         // run length
         double lowerBound = distance - (distance * LOWER_SCALE); // lower bound of
@@ -73,9 +87,10 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
 
         Node originNode = new Node(-1, coords[0], coords[1]);
         originNode = AlgoHelpers.findClosest(originNode, root.getNodeContainer().getNodes());
+
         queue.add(new PathTupleMain(null, originNode, root, 0, 0, 0));
 
-        while (!queue.isEmpty()) {
+        while (!queue.isEmpty()  && elapsedTime <= TIME_LIMIT) {
             queue.sort(Comparator
                     .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
 
@@ -157,6 +172,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext);
                 queue.add(toAdd);
+                elapsedTime = (new Date()).getTime() - startTime;
             }
         }
 

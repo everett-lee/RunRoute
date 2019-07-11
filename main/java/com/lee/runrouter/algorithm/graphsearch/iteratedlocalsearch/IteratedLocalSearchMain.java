@@ -2,16 +2,22 @@ package com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch;
 
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ILSGraphSearch;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+@Component
+@Qualifier("IteratedLocalSearchMain")
 public class IteratedLocalSearchMain implements IteratedLocalSearch {
     private ILSGraphSearch graphSearch;
     private final long TIME_LIMIT = 5000L;
     private int iterations;
     private int improvements;
 
-    public IteratedLocalSearchMain(ILSGraphSearch graphSearch) {
+    @Autowired
+    public IteratedLocalSearchMain(@Qualifier("BFSConnectionPath") ILSGraphSearch graphSearch) {
         this.graphSearch = graphSearch;
     }
 
@@ -199,7 +205,6 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
         return start;
     }
-
 
     public int getIterations() {
         return iterations;

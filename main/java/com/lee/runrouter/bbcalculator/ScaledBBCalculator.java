@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ScaledBBCalculator implements BBCalculator {
-    private final double EARTH_RADIUS_KM = 6371;
+    private final double EARTH_RADIUS_M = 6371000;
     private final double SCALE_DOWN = 0.65;
 
     public double[] calcBoundingBox(double startLat, double startLon, double runLength) {
@@ -23,20 +23,20 @@ public class ScaledBBCalculator implements BBCalculator {
     }
 
     private double getMaxLat(double startLat, double runLength) {
-        return startLat + Math.toDegrees((runLength * SCALE_DOWN) / EARTH_RADIUS_KM);
+        return startLat + Math.toDegrees((runLength * SCALE_DOWN) / EARTH_RADIUS_M);
     }
 
     private double getMinLat(double startLat, double runLength) {
-        return startLat - Math.toDegrees((runLength * SCALE_DOWN) / EARTH_RADIUS_KM);
+        return startLat - Math.toDegrees((runLength * SCALE_DOWN) / EARTH_RADIUS_M);
     }
 
     private double getMaxLon(double startLon, double startLat, double runLength) {
-        return startLon + Math.toDegrees(((runLength * SCALE_DOWN) / EARTH_RADIUS_KM))
+        return startLon + Math.toDegrees(((runLength * SCALE_DOWN) / EARTH_RADIUS_M))
                 / Math.cos(Math.toRadians(startLat));
     }
 
     private double getMinLon(double startLon, double startLat, double runLength) {
-        return startLon - Math.toDegrees((runLength * SCALE_DOWN) / EARTH_RADIUS_KM)
+        return startLon - Math.toDegrees((runLength * SCALE_DOWN) / EARTH_RADIUS_M)
                 / Math.cos(Math.toRadians(startLat));
     }
 }

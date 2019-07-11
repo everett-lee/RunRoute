@@ -3,7 +3,7 @@ package com.lee.runrouter.algorithm;
 import com.lee.runrouter.algorithm.distanceCalculator.*;
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
-import com.lee.runrouter.algorithm.graphsearch.cyclegenerator.*;
+import com.lee.runrouter.algorithm.cyclegenerator.*;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearch;
@@ -52,10 +52,13 @@ public class CycleGeneratorMainTest {
                 "DIRT", "GRAVEL"));
         List<String> preferredHighways = new ArrayList<>(Arrays.asList("LIVING_STREET","PEDESTRIAN", "TRACK",
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
-        featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
+        featuresHeuristic = new FeaturesHeuristic();
+        ((FeaturesHeuristic) featuresHeuristic).setPreferredSurfaces(preferredSurfaces);
+        ((FeaturesHeuristic) featuresHeuristic).setPreferredHighways(preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         gradientCalculator = new SimpleGradientCalculator();
-        elevationHeuristic = new ElevationHeuristicMain(true);
+        elevationHeuristic = new ElevationHeuristicMain();
+        elevationHeuristic.setOptions(true);
 
 
         beamSearch = new BeamSearch(repo, distanceHeuristic,
@@ -67,8 +70,8 @@ public class CycleGeneratorMainTest {
         cycleGenerator = new CycleGeneratorMain(beamSearch, returnPath, repo);
     }
 
-    @Test(timeout=5000)
-    public void testMorrishRoadShortRoundTrip() throws Exception {
+    @Test(timeout=2000)
+    public void testMorrishRoadShortRoundTrip() throws PathNotGeneratedException {
         double[] coords = {51.446810, -0.125484};
         PathTuple res = cycleGenerator.generateCycle(coords, 5000);
 
@@ -78,8 +81,8 @@ public class CycleGeneratorMainTest {
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
    }
 
-    @Test(timeout=5000)
-    public void testMorrishRoadLongRoundTrip() throws Exception {
+    @Test(timeout=2000)
+    public void testMorrishRoadLongRoundTrip() throws PathNotGeneratedException {
         double[] coords = {51.446810, -0.125484};
         PathTuple res = cycleGenerator.generateCycle(coords, 10000);
 
@@ -90,8 +93,8 @@ public class CycleGeneratorMainTest {
     }
 
 
-    @Test(timeout=5000)
-    public void testCraignairRoadShortRoundTrip() throws Exception {
+    @Test(timeout=2000)
+    public void testCraignairRoadShortRoundTrip() throws PathNotGeneratedException {
         double[] coords = {51.448321, -0.114648};
 
         Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
@@ -112,8 +115,8 @@ public class CycleGeneratorMainTest {
 
     }
 
-    @Test(timeout=5000)
-    public void testCraignairRoadLongerRoundTrip() throws Exception {
+    @Test(timeout=2000)
+    public void testCraignairRoadLongerRoundTrip() throws PathNotGeneratedException {
         double[] coords = {51.448321, -0.114648};
 
         Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
@@ -137,8 +140,8 @@ public class CycleGeneratorMainTest {
     }
 
 
-    @Test(timeout=5000)
-    public void testTulseHillRoundTrip10KM() throws Exception {
+    @Test(timeout=2000)
+    public void testTulseHillRoundTrip10KM() throws PathNotGeneratedException {
         double[] coords = {51.441109, -0.106974};
 
         Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 4004611L)

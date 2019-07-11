@@ -1,13 +1,18 @@
 package com.lee.runrouter.algorithm.heuristic;
 
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Scores Way under consideration based on its features and attributes.
  * The scores reflect matches against user-supplied preferences.
  */
+@Component
+@Qualifier("FeaturesHeuristic")
 public class FeaturesHeuristic implements Heuristic {
     private double score;
     private Way selectedWay;
@@ -15,14 +20,13 @@ public class FeaturesHeuristic implements Heuristic {
     private List<String> preferredSurfaces;
     private List<String> preferredHighways;
 
-
     // Allocated scores for features
     static final double SURFACE_VALUE = 0.25;
     static final double HIGHWAY_VALUE = 0.5;
 
-    public FeaturesHeuristic(List<String> preferredSurfaces, List<String> preferredHighways) {
-        this.preferredSurfaces = preferredSurfaces;
-        this.preferredHighways = preferredHighways;
+    public FeaturesHeuristic() {
+        this.preferredSurfaces = new ArrayList<>();
+        this.preferredHighways = new ArrayList<>();
     }
 
     private void calculateScore() {
@@ -47,4 +51,11 @@ public class FeaturesHeuristic implements Heuristic {
         return this.score;
     }
 
+    public void setPreferredSurfaces(List<String> preferredSurfaces) {
+        this.preferredSurfaces = preferredSurfaces;
+    }
+
+    public void setPreferredHighways(List<String> preferredHighways) {
+        this.preferredHighways = preferredHighways;
+    }
 }

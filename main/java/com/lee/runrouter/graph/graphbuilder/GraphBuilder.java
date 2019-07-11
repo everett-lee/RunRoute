@@ -41,7 +41,7 @@ public class GraphBuilder {
     /**
      * @param coords an Array containing the starting latitude and longitude
      * @param distance the distance of the run in KM
-     * @param options an Array of booleans representing options such as preferred terrain types
+     * @param options an Array of booleans representing options such as acceptable terrain types
      */
     public void buildGraph(double[] coords, double distance, boolean[] options) {
         Long originID = originParser.getOriginWayID(coords, options);
@@ -73,17 +73,23 @@ public class GraphBuilder {
 
                     // the type of road (eg primary or pathway)
                     if (tagArray[t].equals("highway")) {
-                        wayBuilder.setHighWay(tagArray[t+1]);
+                        if (t+1 < tagArray.length) {
+                            wayBuilder.setHighWay(tagArray[t + 1]);
+                        }
                     }
 
                     // the name of the Way
                     if (tagArray[t].equals("name")) {
-                        wayBuilder.setName(tagArray[t+1]);
+                        if (t+1 < tagArray.length) {
+                            wayBuilder.setName(tagArray[t + 1]);
+                        }
                     }
 
                     // the surface type (eg asphalt or paved)
                     if (tagArray[t].equals("surface")) {
-                        wayBuilder.setSurface(tagArray[t+1]);
+                        if (t+1 < tagArray.length) {
+                            wayBuilder.setSurface(tagArray[t + 1]);
+                        }
                     }
                 }
 

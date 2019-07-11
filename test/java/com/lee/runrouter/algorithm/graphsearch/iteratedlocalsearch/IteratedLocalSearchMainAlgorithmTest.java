@@ -62,10 +62,13 @@ public class IteratedLocalSearchMainAlgorithmTest {
                 "DIRT", "GRAVEL"));
         List<String> preferredHighways = new ArrayList<>(Arrays.asList("TRACK",
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
-        featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
+        featuresHeuristic = new FeaturesHeuristic();
+        ((FeaturesHeuristic) featuresHeuristic).setPreferredSurfaces(preferredSurfaces);
+        ((FeaturesHeuristic) featuresHeuristic).setPreferredHighways(preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         gradientCalculator = new SimpleGradientCalculator();
-        elevationHeuristic = new ElevationHeuristicMain(true);
+        elevationHeuristic = new ElevationHeuristicMain();
+        elevationHeuristic.setOptions(true);
 
         connectPathBeamSearch = new BeamSearchConnectionPath(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);

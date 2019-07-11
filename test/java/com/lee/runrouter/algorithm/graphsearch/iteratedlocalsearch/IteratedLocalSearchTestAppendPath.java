@@ -52,10 +52,13 @@ public class IteratedLocalSearchTestAppendPath {
                 "DIRT", "GRAVEL"));
         List<String> preferredHighways = new ArrayList<>(Arrays.asList("LIVING_STREET","PEDESTRIAN", "TRACK",
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
-        featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
+        featuresHeuristic = new FeaturesHeuristic();
+        ((FeaturesHeuristic) featuresHeuristic).setPreferredHighways(preferredHighways);
+        ((FeaturesHeuristic) featuresHeuristic).setPreferredSurfaces(preferredSurfaces);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         gradientCalculator = new SimpleGradientCalculator();
-        elevationHeuristic = new ElevationHeuristicMain(true);
+        elevationHeuristic = new ElevationHeuristicMain();
+        elevationHeuristic.setOptions(true);
 
 
         connectPath = new BeamSearchConnectionPath(repo, distanceHeuristic,

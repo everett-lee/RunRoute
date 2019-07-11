@@ -9,6 +9,9 @@ import com.lee.runrouter.algorithm.pathnode.*;
 import com.lee.runrouter.graph.elementrepo.*;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -17,6 +20,8 @@ import java.util.*;
  * to explore the neighbouring node with the highest score (as assessed
  * by the heuristics) at each stage.
  */
+@Component
+@Qualifier("BFS")
 public class BFS extends SearchAlgorithm implements GraphSearch {
     private final double REPEATED_EDGE_PENALTY = 1.5; // deducted from score where
     // edge/Way has been previously visited
@@ -35,7 +40,13 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
     private PriorityQueue<PathTuple> queue;
     private double maxGradient = 2; // is used-defined
 
-    public BFS(ElementRepo repo, Heuristic distanceHeuristic, Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator, GradientCalculator gradientCalculator, ElevationHeuristic elevationHeuristic) {
+    @Autowired
+    public BFS(ElementRepo repo,
+               @Qualifier("DistanceFromOriginToMidHeuristic") Heuristic distanceHeuristic,
+               @Qualifier("FeaturesHeuristic") Heuristic featuresHeuristic,
+               @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
+               @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
+               @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());

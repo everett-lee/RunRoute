@@ -58,13 +58,16 @@ public class ReturnPathTest {
                 "DIRT", "GRAVEL"));
         List<String> preferredHighways = new ArrayList<>(Arrays.asList("LIVING_STREET","PEDESTRIAN", "TRACK",
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
-        featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
+        featuresHeuristic = new FeaturesHeuristic();
+        ((FeaturesHeuristic) featuresHeuristic).setPreferredHighways(preferredHighways);
+        ((FeaturesHeuristic) featuresHeuristic).setPreferredSurfaces(preferredSurfaces);
+
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         gradientCalculator = new SimpleGradientCalculator();
-        elevationHeuristic = new ElevationHeuristicMain(false);
+        elevationHeuristic = new ElevationHeuristicMain();
+        elevationHeuristic.setOptions(false);
 
-
-        returnPath = new ReturnPath(repo, distanceHeuristic,
+        returnPath = new BFSReturnPath(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
     }
 

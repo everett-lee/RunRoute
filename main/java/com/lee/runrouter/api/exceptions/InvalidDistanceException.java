@@ -16,6 +16,6 @@ public class InvalidDistanceException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return String.format("%s is invalid", this.message);
+        return String.format("%s is invalid. It must be within 500 and 21,000 metres", this.message);
     }
 }

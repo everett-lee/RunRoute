@@ -1,14 +1,19 @@
 package com.lee.runrouter;
 
+import com.lee.runrouter.algorithm.cyclegenerator.PathNotGeneratedException;
+import com.lee.runrouter.api.ResponseGeneratorController;
+import com.lee.runrouter.executor.Executor;
+import com.lee.runrouter.executor.ExecutorMain;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
-import com.lee.runrouter.graph.graphbuilder.GraphBuilder;
+import com.lee.runrouter.graph.graphbuilder.node.Node;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
-
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.List;
 
 @SpringBootApplication
 public class RunrouterApplication {
@@ -18,13 +23,18 @@ public class RunrouterApplication {
 
         boolean[] opts = {true, true, true, true, true, true, true,
                 true, true, true, true, true, true, true, true};
-        double[] coords = {51.446583, -0.125217};
+        double[] coords = {51.889757, 0.900319};
 
         final long startTime = System.currentTimeMillis();
         ElementRepo repo = ctx.getBean(ElementRepo.class);
-        GraphBuilder gb = ctx.getBean(GraphBuilder.class);
-        gb.buildGraph(coords, 1, opts);
+        Executor executor = ctx.getBean(ExecutorMain.class);
+
+
         final long endTime = System.currentTimeMillis();
+
+        System.out.println(repo.getWayRepo().size());
+
+        ResponseGeneratorController gc = ctx.getBean(ResponseGeneratorController.class);
 
         System.out.println("Total execution time: " + (endTime - startTime));
 

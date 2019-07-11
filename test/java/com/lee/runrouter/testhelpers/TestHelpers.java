@@ -125,4 +125,14 @@ public class TestHelpers {
         }
         return head;
     }
+
+    public static int getNumberofNodes(PathTuple head) {
+        int total = 0;
+
+        while (head != null) {
+            total++;
+            head = head.getPredecessor();
+        }
+        return total;
+    }
 }

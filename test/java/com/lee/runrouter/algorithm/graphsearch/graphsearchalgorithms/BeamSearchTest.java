@@ -42,9 +42,12 @@ public class BeamSearchTest {
                 "DIRT", "GRAVEL"));
         List<String> preferredHighways = new ArrayList<>(Arrays.asList("LIVING_STREET", "PEDESTRIAN", "TRACK",
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
-        featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
+        featuresHeuristic = new FeaturesHeuristic();
+        ((FeaturesHeuristic) featuresHeuristic).setPreferredHighways(preferredHighways);
+        ((FeaturesHeuristic) featuresHeuristic).setPreferredSurfaces(preferredSurfaces);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
-        elevationHeuristic = new ElevationHeuristicMain(true);
+        elevationHeuristic = new ElevationHeuristicMain();
+        elevationHeuristic.setOptions(true);
         gradientCalculator = new SimpleGradientCalculator();
 
 
@@ -99,9 +102,12 @@ public class BeamSearchTest {
 
         List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("CONCRETE"));
         List<String> preferredHighways = new ArrayList<>(Arrays.asList("FOOTWAY"));
-        featuresHeuristic = new FeaturesHeuristic(preferredSurfaces, preferredHighways);
+        featuresHeuristic = new FeaturesHeuristic();
+        ((FeaturesHeuristic) featuresHeuristic).setPreferredSurfaces(preferredSurfaces);
+        ((FeaturesHeuristic) featuresHeuristic).setPreferredHighways(preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
-        elevationHeuristic = new ElevationHeuristicMain(true);
+        elevationHeuristic = new ElevationHeuristicMain();
+        elevationHeuristic.setOptions(true);
         beamSearch = new BeamSearch(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 

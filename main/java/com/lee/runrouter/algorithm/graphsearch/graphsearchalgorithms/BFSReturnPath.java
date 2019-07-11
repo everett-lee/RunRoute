@@ -12,6 +12,9 @@ import com.lee.runrouter.graph.elementrepo.ConnectionPair;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -21,8 +24,9 @@ import java.util.*;
  * to complete the circuit and return to the route's starting position
  * following execution of the BFS.
  */
-public class ReturnPath extends SearchAlgorithm implements GraphSearch {
-    private final int BEAM_SIZE = 25; // the max number of possible Nodes under review
+@Component
+@Qualifier("BFSReturnPath")
+public class BFSReturnPath extends SearchAlgorithm implements GraphSearch {
     private final double REPEATED_EDGE_PENALTY = 1; // deducted from score where
     // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 50; // divides into random number added to the
@@ -43,7 +47,13 @@ public class ReturnPath extends SearchAlgorithm implements GraphSearch {
     private final double UPPER_SCALE = 0.05; // amount to scale upper bound on
     // run length by
 
-    public ReturnPath(ElementRepo repo, Heuristic distanceHeuristic, Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator, GradientCalculator gradientCalculator, ElevationHeuristic elevationHeuristic) {
+    @Autowired
+    public BFSReturnPath(ElementRepo repo,
+                         @Qualifier("DistanceFromOriginToMidHeuristic") Heuristic distanceHeuristic,
+                         @Qualifier("FeaturesHeuristic") Heuristic featuresHeuristic,
+                         @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
+                         @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
+                         @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         // compare priority queue items by their assigned score in descending order
         this.queue = new PriorityQueue<>(Comparator

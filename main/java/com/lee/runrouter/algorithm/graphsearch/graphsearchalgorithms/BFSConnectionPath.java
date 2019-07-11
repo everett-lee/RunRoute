@@ -11,6 +11,9 @@ import com.lee.runrouter.graph.elementrepo.ConnectionPair;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -20,6 +23,8 @@ import java.util.*;
  * to complete the circuit and return to the route's starting position
  * following execution of the BFS.
  */
+@Component
+@Qualifier("BFSConnectionPath")
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final double REPEATED_EDGE_PENALTY = 1.5; // deducted from score where
     // edge/Way has been previously visited
@@ -36,7 +41,13 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     private double maxGradient = 2; // is used-defined
     private PriorityQueue<PathTuple> queue;
 
-    public BFSConnectionPath(ElementRepo repo, Heuristic distanceHeuristic, Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator, GradientCalculator gradientCalculator, ElevationHeuristic elevationHeuristic) {
+    @Autowired
+    public BFSConnectionPath(ElementRepo repo,
+                             @Qualifier("DistanceFromOriginToMidHeuristic") Heuristic distanceHeuristic,
+                             @Qualifier("FeaturesHeuristic") Heuristic featuresHeuristic,
+                             @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
+                             @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
+                             @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());

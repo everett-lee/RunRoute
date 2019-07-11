@@ -10,6 +10,9 @@ import com.lee.runrouter.graph.elementrepo.ConnectionPair;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -19,6 +22,8 @@ import java.util.*;
  * fill gaps created by removing path edges as part of the iterated
  * local search metaheuristic.
  */
+@Component
+@Qualifier("BeamSearchConnectionpath")
 public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final int BEAM_SIZE = 7500; // the max number of possible Nodes under review
     private final double REPEATED_EDGE_PENALTY = 1.5; // deducted from score where
@@ -36,9 +41,13 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
     private double maxGradient = 2; // is used-defined
     private List<PathTuple> queue;
 
-    public BeamSearchConnectionPath(ElementRepo repo, Heuristic distanceHeuristic, Heuristic featuresHeuristic,
-                                    EdgeDistanceCalculator edgeDistanceCalculator, GradientCalculator gradientCalculator,
-                                    ElevationHeuristic elevationHeuristic) {
+    @Autowired
+    public BeamSearchConnectionPath(ElementRepo repo,
+                                    @Qualifier("DistanceFromOriginToMidHeuristic") Heuristic distanceHeuristic,
+                                    @Qualifier("FeaturesHeuristic") Heuristic featuresHeuristic,
+                                    @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
+                                    @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
+                                    @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new ArrayList<>();
     }

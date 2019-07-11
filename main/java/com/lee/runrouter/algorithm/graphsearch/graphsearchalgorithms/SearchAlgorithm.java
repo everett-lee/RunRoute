@@ -6,6 +6,7 @@ import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.Heuristic;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
+import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,6 +15,7 @@ import java.util.Set;
  * A template for the various graph search algorithms.
  * Encapsulates dependencies and the scoring method.
  */
+@Component
 public abstract class SearchAlgorithm {
     ElementRepo repo; // the repository of Ways and Nodes
     Heuristic featuresHeuristic;
@@ -23,9 +25,12 @@ public abstract class SearchAlgorithm {
     Heuristic distanceFromOriginHeuristic;
     final Set<Long> visitedWays;
 
-    public SearchAlgorithm(ElementRepo repo, Heuristic distanceHeuristic,
-                      Heuristic featuresHeuristic, EdgeDistanceCalculator edgeDistanceCalculator,
-                      GradientCalculator gradientCalculator, ElevationHeuristic elevationHeuristic) {
+    public SearchAlgorithm(ElementRepo repo,
+                           Heuristic distanceHeuristic,
+                           Heuristic featuresHeuristic,
+                           EdgeDistanceCalculator edgeDistanceCalculator,
+                           GradientCalculator gradientCalculator,
+                           ElevationHeuristic elevationHeuristic) {
         this.repo = repo;
         this.distanceFromOriginHeuristic = distanceHeuristic;
         this.gradientCalculator = gradientCalculator;
@@ -40,26 +45,18 @@ public abstract class SearchAlgorithm {
                                double RANDOM_REDUCER) {
         double score = 0;
 
-        double repeaetedEdgescore = 0;
         // drop the score where this way has already been explored
         if (visitedWays.contains(selectedWay.getId())) {
-            repeaetedEdgescore = REPEATED_EDGE_PENALTY;
-            score -= repeaetedEdgescore;
+            score += REPEATED_EDGE_PENALTY;
         }
 
         // add score reflecting correspondence of terrain features to user selectionss
-        double featureScore = featuresHeuristic.getScore(selectedWay);
-        score += featureScore;
+        score += featuresHeuristic.getScore(selectedWay);
 
-        double elevationScore = elevationHeuristic.getScore(gradient);
-        score += elevationScore;
+        score += elevationHeuristic.getScore(gradient);
 
         // add a small random value to break ties
-        double random = (Math.random() / RANDOM_REDUCER);
-        score += random;
-
-        //System.out.println("SCORE: " + score + "\n made up of way pen: " + repeaetedEdgescore +
-        //        " elevation: " + elevationScore + " features: " + featureScore + " random: "+ random);
+        score+= (Math.random() / RANDOM_REDUCER);
 
         return score;
     }

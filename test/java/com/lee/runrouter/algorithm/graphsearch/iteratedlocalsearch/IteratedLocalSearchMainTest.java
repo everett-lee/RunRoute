@@ -260,14 +260,17 @@ public class IteratedLocalSearchMainTest {
     @Test
     public void testReverseList() throws InvocationTargetException, IllegalAccessException {
         PathTuple head = morrishRoadShort;
+        PathTuple tail = head;
 
+        while (tail.getPredecessor() != null) {
+            tail = tail.getPredecessor();
+        }
         Method reverseList = Arrays.stream(ils.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("reverseList")).findFirst().get();
         reverseList.setAccessible(true);
         PathTuple result = (PathTuple) reverseList.invoke(ils, head);
 
-        long expected = result.getPredecessor().getPredecessor().getPreviousNode().getId();
-        assertEquals(expected, 290017288L);
+        assertEquals(result, tail);
     }
 
 }

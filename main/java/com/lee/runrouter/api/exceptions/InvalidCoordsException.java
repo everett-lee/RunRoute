@@ -16,6 +16,6 @@ public class InvalidCoordsException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return String.format("Coordinates: %s are invalid", this.message);
+        return String.format("%s are invalid", this.message);
     }
 }

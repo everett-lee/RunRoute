@@ -1,12 +1,13 @@
 package com.lee.runrouter.routegenerator;
 
-import com.lee.runrouter.algorithm.graphsearch.cyclegenerator.CycleGenerator;
-import com.lee.runrouter.algorithm.graphsearch.cyclegenerator.PathNotGeneratedException;
+import com.lee.runrouter.algorithm.cyclegenerator.CycleGenerator;
+import com.lee.runrouter.algorithm.cyclegenerator.PathNotGeneratedException;
 import com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch.IteratedLocalSearch;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
-import com.lee.runrouter.graph.graphbuilder.node.Node;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Arrays;
 
 /**
  * Uses the starting coordinates, run length and options sent
@@ -14,25 +15,32 @@ import java.util.List;
  * then used provided as input to the iterated local search
  * to yield the improved final route.
  */
+@Component
+@Qualifier("RouteGeneratorMain")
 public class RouteGeneratorMain implements RouteGenerator {
     private CycleGenerator cycleGenerator;
     private IteratedLocalSearch ils;
 
-    public RouteGeneratorMain(CycleGenerator cycleGenerator, IteratedLocalSearch iteratedLocalSearch) {
+    public RouteGeneratorMain(@Qualifier("CycleGeneratorMain") CycleGenerator cycleGenerator,
+                              @Qualifier("IteratedLocalSearchMain")IteratedLocalSearch iteratedLocalSearch) {
         this.cycleGenerator = cycleGenerator;
         this.ils = iteratedLocalSearch;
     }
 
     /**
+     * Generates the required circular route
      *
-     * @param coords
-     * @param distance
-     * @return
-     * @throws PathNotGeneratedException
+     * @param coords the coordinates of the route's starting point
+     * @param distance the distance to run
+     * @return a PathTuple which is the head of a linked list of
+     *         visited locations
+     * @throws PathNotGeneratedException where the cycle generator
+     *         is unable to generate the initial route
      */
     @Override
     public PathTuple generateRoute(double[] coords, double distance) throws PathNotGeneratedException {
         PathTuple initialCycle = cycleGenerator.generateCycle(coords, distance);
+        System.out.println("INITIAL CYCLE DONE");
         double remainingDistance = distance - initialCycle.getTotalLength();
 
         return ils.iterate(initialCycle, remainingDistance);

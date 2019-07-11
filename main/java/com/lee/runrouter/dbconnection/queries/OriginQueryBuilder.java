@@ -33,7 +33,7 @@ public class OriginQueryBuilder implements QueryBuilder {
     private final String FROM = "FROM planet_osm_line l\n";
     private final String BB = "WHERE l.way && ST_Transform( ST_MakeEnvelope(?, ?, " +
             "?, ?, 4326),4326)\n";
-    private final String ROAD_OPTIONS = "AND (l.highway IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?))\n";
+    private final String ROAD_OPTIONS = "AND (l.highway IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'bicycle'))\n";
     private final String NOT_NULL = "AND l.name IS NOT NULL\n";
     private final String ORDER_BY = "ORDER BY ST_Distance(l.way, ST_MakePoint(?, ?)::geography) limit 1;";
 
@@ -69,7 +69,6 @@ public class OriginQueryBuilder implements QueryBuilder {
     public void setHighWayOptions(boolean[] bools) {
 
         try {
-
             for (int i = 5, j = 0; j < ROAD_OPTIONS_ARR.length; i++, j++) {
                 if (bools[j]) {
                     this.preparedStatement.setString(i, ROAD_OPTIONS_ARR[j]);

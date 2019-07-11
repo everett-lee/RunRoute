@@ -1,6 +1,7 @@
 package com.lee.runrouter.algorithm.distanceCalculator;
 
 import com.lee.runrouter.graph.graphbuilder.node.Node;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /***
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
  * Sourced from https://www.movable-type.co.uk/scripts/latlong.html
  */
 @Component
+@Qualifier("HaversineCalculator")
 public class HaversineCalculator implements DistanceCalculator {
     private final double EARTH_RADIUS_METRES = 6371000;
 

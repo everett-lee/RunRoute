@@ -4,6 +4,8 @@ import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -11,6 +13,8 @@ import java.util.List;
  * Scores the Way under consideration based on the distance from the starting/origin Way.
  * This is used to favour returning routes.
  */
+@Component
+@Qualifier("DistanceFromOriginToMidHeuristic")
 public class DistanceFromOriginToMidHeuristic implements Heuristic {
     private ElementRepo repo;
     private DistanceCalculator distanceCalculator;
@@ -25,8 +29,6 @@ public class DistanceFromOriginToMidHeuristic implements Heuristic {
 
     /**
      *
-     * @param currentNode the current Node
-     * @param visitedNode the Node connecting the current Way to the selectedWay
      * @param selectedWay the Way being assessed
      * @return a score corresponding to the distance from either endpoint of the way
      * back to the route origin

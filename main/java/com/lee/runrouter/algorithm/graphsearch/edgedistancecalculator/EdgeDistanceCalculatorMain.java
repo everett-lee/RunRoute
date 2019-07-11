@@ -3,6 +3,9 @@ package com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,11 +14,15 @@ import java.util.stream.Collectors;
  * For calculating the great-circle distance between each of the points/Nodes
  * making up a given Way.
  */
+@Component
+@Qualifier("EdgeDistanceCalculatorMain")
 public class EdgeDistanceCalculatorMain implements EdgeDistanceCalculator {
     DistanceCalculator distanceCalculator; // the calculator used to
     // estimate the graph-circle distance between points
 
-    public EdgeDistanceCalculatorMain(DistanceCalculator distanceCalculator) {
+    @Autowired
+    public EdgeDistanceCalculatorMain(
+            @Qualifier("HaversineCalculator") DistanceCalculator distanceCalculator) {
         this.distanceCalculator = distanceCalculator;
     }
 

@@ -1,4 +1,4 @@
-package com.lee.runrouter.algorithm.graphsearch.cyclegenerator;
+package com.lee.runrouter.algorithm.cyclegenerator;
 
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 

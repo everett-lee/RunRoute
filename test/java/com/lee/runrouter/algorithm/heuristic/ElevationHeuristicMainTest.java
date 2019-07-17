@@ -77,7 +77,7 @@ public class ElevationHeuristicMainTest {
     }
 
     @Test
-    public void testNegativeGradientGivesPositiveWhereFlatPreferred() {
+    public void testMildNegativeGradientGivesPositiveWhereFlatPreferred() {
         elevationHeuristic = new ElevationHeuristicMain();
         elevationHeuristic.setOptions(false);
 
@@ -97,10 +97,6 @@ public class ElevationHeuristicMainTest {
         double gradient = gradientCalculator.calculateGradient(n1, wayUnderTest1, n2, wayUnderTest2, distance);
         double score = elevationHeuristic.getScore(gradient);
        assertTrue(score > 0);
-
-
-        System.out.println(gradient);
-        System.out.println(score);
     }
 
     @Test
@@ -113,8 +109,6 @@ public class ElevationHeuristicMainTest {
 
         Node n1 = wayUnderTest1.getNodeContainer().getNodes().get(15);
         Node n2 = wayUnderTest2.getNodeContainer().getNodes().get(2);
-        System.out.println(n1);
-        System.out.println(n2);
 
 
         double distance = edgeDistanceCalculator.calculateDistance(n1,n2, wayUnderTest2);
@@ -123,7 +117,6 @@ public class ElevationHeuristicMainTest {
         double gradient = gradientCalculator.calculateGradient(n1, wayUnderTest1, n2, wayUnderTest2, distance);
         double score = elevationHeuristic.getScore(gradient);
         assertTrue(score > 0);
-        System.out.println(score);
     }
 
     @Test
@@ -139,12 +132,8 @@ public class ElevationHeuristicMainTest {
 
         Node n1 = wayUnderTest1.getNodeContainer().getNodes().get(15);
         Node n2 = wayUnderTest2.getNodeContainer().getNodes().get(2);
-        System.out.println(n1);
-        System.out.println(n2);
-
 
         double distance = edgeDistanceCalculator.calculateDistance(n1,n2, wayUnderTest2);
-
 
         double gradient = gradientCalculator.calculateGradient(n1, wayUnderTest1, n2, wayUnderTest2, distance);
         double score = elevationHeuristic.getScore(gradient);
@@ -161,6 +150,26 @@ public class ElevationHeuristicMainTest {
         when(nc.getEndNode()).thenReturn(n2);
         ElevationPair ep = mock(ElevationPair.class);
         when(ep.getStartElevation()).thenReturn(10l);
+        when(ep.getEndElevation()).thenReturn(34l);
+        Way startingWay = mock(Way.class);
+        when(startingWay.getNodeContainer()).thenReturn(nc);
+        when(startingWay.getElevationPair()).thenReturn(ep);
+
+        double gradient = gradientCalculator.calculateGradient(n1, startingWay, n2, startingWay, 50);
+        double score = elevationHeuristic.getScore(gradient);
+        assertTrue(score >= 1);
+    }
+
+    @Test
+    // the gradient exceeds default max
+    public void testTooSteepWay() {
+        Node n1 = new Node(1, 1, 1);
+        Node n2 = new Node( 2, 2, 2);
+        NodeContainer nc = mock(NodeContainer.class);
+        when(nc.getStartNode()).thenReturn(n1);
+        when(nc.getEndNode()).thenReturn(n2);
+        ElevationPair ep = mock(ElevationPair.class);
+        when(ep.getStartElevation()).thenReturn(10l);
         when(ep.getEndElevation()).thenReturn(35l);
         Way startingWay = mock(Way.class);
         when(startingWay.getNodeContainer()).thenReturn(nc);
@@ -168,8 +177,15 @@ public class ElevationHeuristicMainTest {
 
         double gradient = gradientCalculator.calculateGradient(n1, startingWay, n2, startingWay, 50);
         double score = elevationHeuristic.getScore(gradient);
-        assertTrue(score >= 5);
+        assertTrue(score < 0);
     }
 
+    @Test
+    public void testScoreReductionSetSteep() {
+        double gradient = 0.011;
+        elevationHeuristic.setMaxGradient(0.01);
+        double score = elevationHeuristic.getScore(gradient);
+        assertTrue(score < 0);
+    }
 
 }

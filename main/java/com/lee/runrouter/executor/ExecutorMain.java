@@ -116,6 +116,7 @@ public class ExecutorMain implements Executor {
 
         // user selected prefer backroads and pathways
         if (options[7]) {
+            preferredHighways.add(Way.Highway.CYCLEWAY.toString());
             preferredHighways.add(Way.Highway.BRIDLEWAY.toString());
             preferredHighways.add(Way.Highway.FOOTWAY.toString());
             preferredHighways.add(Way.Highway.PATH.toString());

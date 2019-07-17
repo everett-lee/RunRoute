@@ -171,7 +171,7 @@ public class ResponseGeneratorControllerTest {
 
     @Test
     public void testBackroadsCorrect() throws NoSuchFieldException, IllegalAccessException {
-        boolean[] options = {false,false,false,false,false,false,true,false};
+        boolean[] options = {false,false,false,false,false,false,false,true};
 
         responseGeneratorController.receiveArgs(50, 1, 2000, 25, options);
 
@@ -179,9 +179,12 @@ public class ResponseGeneratorControllerTest {
         f.setAccessible(true);
         List<String> preferredSurfaces = (List<String>) f.get(featuresHeuristic);
 
+        assertTrue(preferredSurfaces.contains("CYCLEWAY"));
         assertTrue(preferredSurfaces.contains("BRIDLEWAY"));
-        assertTrue(preferredSurfaces.contains("RESIDENTIAL"));
-        assertTrue(preferredSurfaces.size() == 2);
+        assertTrue(preferredSurfaces.contains("FOOTWAY"));
+        assertTrue(preferredSurfaces.contains("PATH"));
+        assertTrue(preferredSurfaces.contains("TRACK"));
+        assertTrue(preferredSurfaces.size() == 5);
     }
 
 
@@ -196,8 +199,6 @@ public class ResponseGeneratorControllerTest {
         f.setAccessible(true);
         List<String> preferredSurfaces = (List<String>) f.get(featuresHeuristic);
 
-        assertFalse(preferredSurfaces.contains("LIVING_STREET"));
-        assertFalse(preferredSurfaces.contains("RESIDENTIAL"));
         assertTrue(preferredSurfaces.size() == 0);
     }
 }

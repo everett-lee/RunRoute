@@ -22,9 +22,11 @@ public class FeaturesHeuristicMain implements Heuristic, FeaturesHeuristic {
     private List<String> preferredHighways; // list of user-preferred highways
     private List<String> dislikedSurfaces; // list of surfaces to be avoided
 
-    // Allocated scores for features
+    // allocated scores for features
     static final double SURFACE_VALUE = 0.25;
     static final double HIGHWAY_VALUE = 0.5;
+    // score deduction for unlit ways
+    static final double UNLIT_PENALTY = 10000;
 
     public FeaturesHeuristicMain() {
         this.avoidUnlit = false;
@@ -33,16 +35,31 @@ public class FeaturesHeuristicMain implements Heuristic, FeaturesHeuristic {
         this.dislikedSurfaces = new ArrayList<>();
     }
 
+    // iterate over user-provided surface and highway types and
+    // adjust score for matching values
     private void calculateScore() {
-        for (String surface: preferredSurfaces) {
+        for (String surface: this.preferredSurfaces) {
             if (this.selectedWay.getSurface().equals(surface.toUpperCase())) {
                 this.score += SURFACE_VALUE;
             }
         }
 
-        for (String highway: preferredHighways) {
+        // lower score where surface should be avoided
+        for (String surface: this.dislikedSurfaces) {
+            if (this.selectedWay.getSurface().equals(surface.toUpperCase())) {
+                this.score -= SURFACE_VALUE;
+            }
+        }
+
+        for (String highway: this.preferredHighways) {
             if (this.selectedWay.getHighway().equals(highway.toUpperCase())) {
                 this.score += HIGHWAY_VALUE;
+            }
+        }
+
+        if (this.avoidUnlit) {
+            if (!selectedWay.isLit()) {
+                this.score -= UNLIT_PENALTY;
             }
         }
     }

@@ -32,7 +32,7 @@ public class ElevationHeuristicMain implements ElevationHeuristic {
 
         // flatter routes are preferred, so increase score where gradient is lower
         if (!preferUphill) {
-            return 0.5 - Math.abs(gradient * MULTIPLIER);
+            return 0.25 - Math.abs(gradient * MULTIPLIER);
         }
 
         // score increases in line with the gradient

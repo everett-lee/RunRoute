@@ -1,5 +1,9 @@
 package com.lee.runrouter.executor;
 
+import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
+import com.lee.runrouter.algorithm.heuristic.ElevationHeuristicMain;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristicMain;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.graphbuilder.GraphBuilder;
 import com.lee.runrouter.routegenerator.RouteGenerator;
@@ -22,6 +26,8 @@ public class ExecutorCreateListFromLinkedListTest {
     private Executor rgi;
     private RouteGenerator rg;
     private GraphBuilder gb;
+    private FeaturesHeuristic featuresHeuristic;
+    private ElevationHeuristic elevationHeuristic;
     Method convertList;
 
     {
@@ -33,7 +39,9 @@ public class ExecutorCreateListFromLinkedListTest {
     public void setUp() {
         rg = mock(RouteGeneratorMain.class);
         gb = mock(GraphBuilder.class);
-        rgi = new ExecutorMain(rg, gb);
+        featuresHeuristic = new FeaturesHeuristicMain();
+        elevationHeuristic = new ElevationHeuristicMain();
+        rgi = new ExecutorMain(rg, gb, featuresHeuristic, elevationHeuristic);
 
        convertList = Arrays.stream(rgi.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("convertLinkedListToList")).findFirst().get();
@@ -41,7 +49,7 @@ public class ExecutorCreateListFromLinkedListTest {
     }
 
     @Test
-    public void testMorrishConverstion() throws InvocationTargetException, IllegalAccessException {
+    public void testMorrishConversion() throws InvocationTargetException, IllegalAccessException {
         List<Node> result = (List<Node>) convertList.invoke(rgi, morrishRoad);
 
         long expectedId = morrishRoad.getPreviousNode().getId();
@@ -52,7 +60,7 @@ public class ExecutorCreateListFromLinkedListTest {
         assertEquals(expectedId, result.get(expectedSize-1).getId());
     }
     @Test
-    public void testCraignairConverstion() throws InvocationTargetException, IllegalAccessException {
+    public void testCraignairConversion() throws InvocationTargetException, IllegalAccessException {
         List<Node> result = (List<Node>) convertList.invoke(rgi, craigNair);
 
         long expectedId = craigNair.getPreviousNode().getId();

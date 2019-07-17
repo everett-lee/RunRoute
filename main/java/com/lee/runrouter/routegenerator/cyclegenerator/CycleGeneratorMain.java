@@ -1,4 +1,4 @@
-package com.lee.runrouter.algorithm.cyclegenerator;
+package com.lee.runrouter.routegenerator.cyclegenerator;
 
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.GraphSearch;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
@@ -8,8 +8,6 @@ import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
 
 /**
  * Combines results of two greedy search algorithms to form a cycle.

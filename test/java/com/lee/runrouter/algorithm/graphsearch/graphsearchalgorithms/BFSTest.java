@@ -54,9 +54,9 @@ public class BFSTest {
                 "DIRT", "GRAVEL"));
         List<String> preferredHighways = new ArrayList<>(Arrays.asList("LIVING_STREET","PEDESTRIAN", "TRACK",
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
-        featuresHeuristic = new FeaturesHeuristic();
-        ((FeaturesHeuristic) featuresHeuristic).setPreferredHighways(preferredHighways);
-        ((FeaturesHeuristic) featuresHeuristic).setPreferredSurfaces(preferredSurfaces);
+        featuresHeuristic = new FeaturesHeuristicMain();
+        ((FeaturesHeuristicMain) featuresHeuristic).setPreferredHighways(preferredHighways);
+        ((FeaturesHeuristicMain) featuresHeuristic).setPreferredSurfaces(preferredSurfaces);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         gradientCalculator = new SimpleGradientCalculator();
         elevationHeuristic = new ElevationHeuristicMain();
@@ -134,9 +134,9 @@ public class BFSTest {
 
         List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("CONCRETE"));
         List<String> preferredHighways = new ArrayList<>(Arrays.asList("FOOTWAY"));
-        featuresHeuristic = new FeaturesHeuristic();
-        ((FeaturesHeuristic) featuresHeuristic).setPreferredSurfaces(preferredSurfaces);
-        ((FeaturesHeuristic) featuresHeuristic).setPreferredHighways(preferredHighways);
+        featuresHeuristic = new FeaturesHeuristicMain();
+        ((FeaturesHeuristicMain) featuresHeuristic).setPreferredSurfaces(preferredSurfaces);
+        ((FeaturesHeuristicMain) featuresHeuristic).setPreferredHighways(preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         elevationHeuristic = new ElevationHeuristicMain();
         elevationHeuristic.setOptions(true);

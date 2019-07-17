@@ -37,13 +37,12 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
     private final double SCALE = 0.05; // amount to scale upper and lower bound on
     // run length by
 
-    private double maxGradient = 2; // is used-defined
     private List<PathTuple> queue;
 
     @Autowired
     public BeamSearch(ElementRepo repo,
                       @Qualifier("DistanceFromOriginToMidHeuristic") Heuristic distanceHeuristic,
-                      @Qualifier("FeaturesHeuristic") Heuristic featuresHeuristic,
+                      @Qualifier("FeaturesHeuristicMain") Heuristic featuresHeuristic,
                       @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
                       @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
                       @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
@@ -129,11 +128,6 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
                 }
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
-
-                // skip to next where the gradient of this way exceeds
-                // the maximum
-                if (gradient > this.maxGradient) {
-                    continue; }
 
                 score += super.addScores(selectedWay, gradient, REPEATED_EDGE_PENALTY, RANDOM_REDUCER);
 

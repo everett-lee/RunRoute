@@ -1,13 +1,11 @@
 package com.lee.runrouter.routegenerator;
 
-import com.lee.runrouter.algorithm.cyclegenerator.CycleGenerator;
-import com.lee.runrouter.algorithm.cyclegenerator.PathNotGeneratedException;
+import com.lee.runrouter.routegenerator.cyclegenerator.CycleGenerator;
+import com.lee.runrouter.routegenerator.cyclegenerator.PathNotGeneratedException;
 import com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch.IteratedLocalSearch;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
 
 /**
  * Uses the starting coordinates, run length and options sent

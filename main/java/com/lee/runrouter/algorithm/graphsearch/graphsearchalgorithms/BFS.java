@@ -38,12 +38,11 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
 
 
     private PriorityQueue<PathTuple> queue;
-    private double maxGradient = 2; // is used-defined
 
     @Autowired
     public BFS(ElementRepo repo,
                @Qualifier("DistanceFromOriginToMidHeuristic") Heuristic distanceHeuristic,
-               @Qualifier("FeaturesHeuristic") Heuristic featuresHeuristic,
+               @Qualifier("FeaturesHeuristicMain") Heuristic featuresHeuristic,
                @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
                @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
                @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
@@ -124,11 +123,6 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
-
-                // skip to next where the gradient of this way exceeds
-                // the maximum
-                if (gradient > this.maxGradient) {
-                    continue; }
 
                 score += super.addScores(selectedWay, gradient, REPEATED_EDGE_PENALTY, RANDOM_REDUCER);
 

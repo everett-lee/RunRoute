@@ -1,4 +1,4 @@
-package com.lee.runrouter.algorithm.cyclegenerator;
+package com.lee.runrouter.routegenerator.cyclegenerator;
 
 public class PathNotGeneratedException extends Throwable {
     public PathNotGeneratedException(String message) {

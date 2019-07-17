@@ -3,7 +3,7 @@ package com.lee.runrouter.algorithm;
 import com.lee.runrouter.algorithm.distanceCalculator.*;
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
-import com.lee.runrouter.algorithm.cyclegenerator.*;
+import com.lee.runrouter.routegenerator.cyclegenerator.*;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearch;
@@ -52,9 +52,9 @@ public class CycleGeneratorMainTest {
                 "DIRT", "GRAVEL"));
         List<String> preferredHighways = new ArrayList<>(Arrays.asList("LIVING_STREET","PEDESTRIAN", "TRACK",
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
-        featuresHeuristic = new FeaturesHeuristic();
-        ((FeaturesHeuristic) featuresHeuristic).setPreferredSurfaces(preferredSurfaces);
-        ((FeaturesHeuristic) featuresHeuristic).setPreferredHighways(preferredHighways);
+        featuresHeuristic = new FeaturesHeuristicMain();
+        ((FeaturesHeuristicMain) featuresHeuristic).setPreferredSurfaces(preferredSurfaces);
+        ((FeaturesHeuristicMain) featuresHeuristic).setPreferredHighways(preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         gradientCalculator = new SimpleGradientCalculator();
         elevationHeuristic = new ElevationHeuristicMain();

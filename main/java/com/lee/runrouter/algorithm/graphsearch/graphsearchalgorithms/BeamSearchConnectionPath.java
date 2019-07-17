@@ -38,13 +38,12 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
     private final double PREFERRED_LENGTH_BONUS = 1;
     private final long TIME_LIMIT = 1000;
 
-    private double maxGradient = 2; // is used-defined
     private List<PathTuple> queue;
 
     @Autowired
     public BeamSearchConnectionPath(ElementRepo repo,
                                     @Qualifier("DistanceFromOriginToMidHeuristic") Heuristic distanceHeuristic,
-                                    @Qualifier("FeaturesHeuristic") Heuristic featuresHeuristic,
+                                    @Qualifier("FeaturesHeuristicMain") Heuristic featuresHeuristic,
                                     @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
                                     @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
                                     @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
@@ -144,11 +143,6 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
-
-                // skip to next where the gradient of this way exceeds
-                // the maximum
-                if (gradient > this.maxGradient) {
-                    continue; }
 
                 // call private method to add scores
                 score += addScores(selectedWay, gradient, REPEATED_EDGE_PENALTY, RANDOM_REDUCER);

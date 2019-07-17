@@ -42,7 +42,6 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
     private final long TIME_LIMIT = 1000;
 
     private List<PathTuple> queue;
-    private double maxGradient = 2; // is used-defined
 
     private final double LOWER_SCALE = 0.7; // amount to scale upper lower bound on
     // run length by
@@ -52,7 +51,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
     @Autowired
     public BeamSearchReturnPath(ElementRepo repo,
                                 @Qualifier("DistanceFromOriginToMidHeuristic") Heuristic distanceHeuristic,
-                                @Qualifier("FeaturesHeuristic") Heuristic featuresHeuristic,
+                                @Qualifier("FeaturesHeuristicMain") Heuristic featuresHeuristic,
                                 @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
                                 @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
                                 @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
@@ -160,12 +159,6 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
-
-                // skip to next where the gradient of this way exceeds
-                // the maximum
-                if (gradient > this.maxGradient) {
-                    continue; }
-
 
                 score += addScores(selectedWay, gradient, REPEATED_EDGE_PENALTY, RANDOM_REDUCER);
 

@@ -11,7 +11,7 @@ import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearchC
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ILSGraphSearch;
 import com.lee.runrouter.algorithm.heuristic.DistanceFromOriginToMidHeuristic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristicMain;
-import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.Heuristic;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
@@ -20,14 +20,10 @@ import org.junit.Test;
 
 import static com.lee.runrouter.testhelpers.TestHelpers.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import static org.junit.Assert.*;
-
-import static com.lee.runrouter.testhelpers.TestHelpers.*;
 
 public class IteratedLocalSearchMainAlgorithmTest {
     PathTuple morrishRoadShort;
@@ -62,9 +58,9 @@ public class IteratedLocalSearchMainAlgorithmTest {
                 "DIRT", "GRAVEL"));
         List<String> preferredHighways = new ArrayList<>(Arrays.asList("TRACK",
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
-        featuresHeuristic = new FeaturesHeuristic();
-        ((FeaturesHeuristic) featuresHeuristic).setPreferredSurfaces(preferredSurfaces);
-        ((FeaturesHeuristic) featuresHeuristic).setPreferredHighways(preferredHighways);
+        featuresHeuristic = new FeaturesHeuristicMain();
+        ((FeaturesHeuristicMain) featuresHeuristic).setPreferredSurfaces(preferredSurfaces);
+        ((FeaturesHeuristicMain) featuresHeuristic).setPreferredHighways(preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         gradientCalculator = new SimpleGradientCalculator();
         elevationHeuristic = new ElevationHeuristicMain();

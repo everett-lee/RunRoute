@@ -1,13 +1,12 @@
 package com.lee.runrouter.api;
 
-
-import com.lee.runrouter.algorithm.cyclegenerator.PathNotGeneratedException;
 import com.lee.runrouter.api.exceptions.PathGenerationFailureException;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
 import com.lee.runrouter.api.exceptions.InvalidCoordsException;
 import com.lee.runrouter.api.exceptions.InvalidDistanceException;
 import com.lee.runrouter.executor.Executor;
 
+import com.lee.runrouter.routegenerator.cyclegenerator.PathNotGeneratedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * This controller class receives the HTTP request, checks if it is
- * of the correct form, then passes on the variables to the
- * executor class.
+ * This controller class receives the GET request, checks if it is
+ * of the correct form, then passes on the received
+ * variables to the executor class.
  */
 @RestController
 public class ResponseGeneratorController {
@@ -29,6 +28,8 @@ public class ResponseGeneratorController {
     final double MIN_LON = -6;
     final double MIN_RUN_LENGTH_M = 500;
     final double MAX_RUN_LENGTH_M = 21000;
+    final String PATH_STRING = "/route/coords=({lat},{lon}),distance={distance}" +
+                              ",maxGradient={maxGradient},options={options}";
     private Executor executor;
 
     @Autowired
@@ -37,10 +38,11 @@ public class ResponseGeneratorController {
      this.executor = executor;
     }
 
-
-    @GetMapping(path = "/route/coords=({lat},{lon}),distance={distance}")
+    @GetMapping(path = PATH_STRING)
     public List<Node> receiveArgs(@PathVariable double lat, @PathVariable double lon,
-                             @PathVariable double distance) {
+                                  @PathVariable double distance, @PathVariable double maxGradient,
+                                  @PathVariable boolean[] options) {
+
         if (!checkCoordInput(lat, lon)) {
             throw new InvalidCoordsException(String.format("Coordinates: (%s,%s)", lat, lon));
         }
@@ -49,19 +51,17 @@ public class ResponseGeneratorController {
         }
 
         double[] coords = {lat, lon};
-        boolean[] opts = {true, true, true, true, true, true, true,
-                true, true, true, true, true, true, true, true};
 
         try {
-            return executor.executeQuery(coords, distance, opts);
+            return executor.executeQuery(coords, maxGradient, distance, options);
         } catch (PathNotGeneratedException e) {
             throw new PathGenerationFailureException(String.format("Coordinates: (%s,%s), Distance: %s",
                     lat, lon, distance));
-            // actually throw server error here
         }
     }
 
-
+    // method for checking lower and upper bounds of coordinate
+    // parameters
     private boolean checkCoordInput(double lat, double lon) {
         if (lat > MAX_LAT || lat < MIN_LAT) {
             return false;
@@ -73,6 +73,9 @@ public class ResponseGeneratorController {
         return true;
     }
 
+
+    // method for checking lower and upper bounds of distance
+    // parameter
     private boolean checkLengthInput(double length){
         return length >= MIN_RUN_LENGTH_M &&
                 length <= MAX_RUN_LENGTH_M;

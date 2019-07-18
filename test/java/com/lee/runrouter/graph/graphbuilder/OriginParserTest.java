@@ -26,7 +26,7 @@ public class OriginParserTest {
     public void testReturnedIDMatchesSQL() {
         boolean[] opts = {true, true, true, true, true, true, true,
                 true, true, true, true, true, true, true, true};
-        double[] coords = {51.446586, -0.125309};
+        double[] coords = {51.446573, -0.125348};
         long id = op.getOriginWayID(coords, opts);
 
         // originWay closest to the giving coordinates
@@ -37,11 +37,29 @@ public class OriginParserTest {
     public void testkReturnedIDMatchesSQLTwo() {
         boolean[] opts = {true, true, true, true, true, true, true,
                 true, true, true, true, true, true, true, true};
+
+        //System.out.println(calc.calcBoundingBox());
+
         double[] coords = {51.919199, 1.045613};
         long id = op.getOriginWayID(coords, opts);
 
         // originWay closest to the giving coordinates
         assertEquals(60886410, id);
+    }
+
+
+    @Test
+    public void testkReturnedIDMatchesSQLThree() {
+        boolean[] opts = {true, true, true, true, true, true, true,
+                true, true, true, true, true, true, true, true};
+
+        //System.out.println(calc.calcBoundingBox());
+
+        double[] coords = {51.925080, 0.986514};
+        long id = op.getOriginWayID(coords, opts);
+
+        // originWay closest to the giving coordinates
+        assertEquals(42202876, id);
     }
 
 

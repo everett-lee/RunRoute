@@ -9,6 +9,10 @@ import com.lee.runrouter.executor.Executor;
 import com.lee.runrouter.routegenerator.cyclegenerator.PathNotGeneratedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +25,7 @@ import java.util.List;
  * variables to the executor class.
  */
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class ResponseGeneratorController {
     final double MAX_LAT = 52.7;
     final double MIN_LAT = 50;
@@ -39,9 +44,9 @@ public class ResponseGeneratorController {
     }
 
     @GetMapping(path = PATH_STRING)
-    public List<Node> receiveArgs(@PathVariable double lat, @PathVariable double lon,
-                                  @PathVariable double distance, @PathVariable double maxGradient,
-                                  @PathVariable boolean[] options) {
+    public ResponseEntity<List<Node>> receiveArgs(@PathVariable double lat, @PathVariable double lon,
+                                      @PathVariable double distance, @PathVariable double maxGradient,
+                                      @PathVariable boolean[] options) {
 
         if (!checkCoordInput(lat, lon)) {
             throw new InvalidCoordsException(String.format("Coordinates: (%s,%s)", lat, lon));
@@ -50,10 +55,15 @@ public class ResponseGeneratorController {
             throw new InvalidDistanceException(String.format("Distance: %s", distance));
         }
 
+        HttpHeaders responseHeaders = new HttpHeaders();
+        System.out.println("TODO : remove crossorigin");
+
         double[] coords = {lat, lon};
 
         try {
-            return executor.executeQuery(coords, maxGradient, distance, options);
+            List<Node> result = executor.executeQuery(coords, maxGradient, distance, options);
+            return new ResponseEntity<>(result, responseHeaders, HttpStatus.CREATED);
+
         } catch (PathNotGeneratedException e) {
             throw new PathGenerationFailureException(String.format("Coordinates: (%s,%s), Distance: %s",
                     lat, lon, distance));

@@ -100,10 +100,8 @@ public class BeamSearchTest {
     public void TulseHillTest10KM() {
         double[] coords = {51.441109, -0.106974};
 
-        List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("CONCRETE"));
         List<String> preferredHighways = new ArrayList<>(Arrays.asList("FOOTWAY"));
         featuresHeuristic = new FeaturesHeuristicMain();
-        ((FeaturesHeuristicMain) featuresHeuristic).setPreferredSurfaces(preferredSurfaces);
         ((FeaturesHeuristicMain) featuresHeuristic).setPreferredHighways(preferredHighways);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         elevationHeuristic = new ElevationHeuristicMain();

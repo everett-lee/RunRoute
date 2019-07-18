@@ -14,29 +14,39 @@ public class ScaledBBCalculator implements BBCalculator {
     private final double SCALE_DOWN = 0.65;
 
     public double[] calcBoundingBox(double startLat, double startLon, double runLength) {
-        double minLon = getMinLon(startLon, startLat, runLength/2);
-        double minLat = getMinLat(startLat, runLength/2);
-        double maxLon = getMaxLon(startLon, startLat, runLength/2);
-        double maxLat = getMaxLat(startLat, runLength/2);
+        runLength /= 2; // shift coordinates 0.5 * run length in each direction
+
+        double minLon = getMinLon(startLon, startLat, runLength);
+        double minLat = getMinLat(startLat, runLength);
+        double maxLon = getMaxLon(startLon, startLat, runLength);
+        double maxLat = getMaxLat(startLat, runLength);
 
         return new double[]{minLon,minLat,maxLon,maxLat};
     }
 
     private double getMaxLat(double startLat, double runLength) {
-        return startLat + Math.toDegrees((runLength * SCALE_DOWN) / EARTH_RADIUS_M);
+        double dLat = (runLength * SCALE_DOWN) / EARTH_RADIUS_M;
+
+        return startLat + Math.toDegrees(dLat);
     }
 
     private double getMinLat(double startLat, double runLength) {
-        return startLat - Math.toDegrees((runLength * SCALE_DOWN) / EARTH_RADIUS_M);
+        double dLat = (runLength * SCALE_DOWN) / EARTH_RADIUS_M;
+
+        return startLat - Math.toDegrees(dLat);
     }
 
     private double getMaxLon(double startLon, double startLat, double runLength) {
-        return startLon + Math.toDegrees(((runLength * SCALE_DOWN) / EARTH_RADIUS_M))
-                / Math.cos(Math.toRadians(startLat));
+        double dLon = (runLength * SCALE_DOWN)
+                / (EARTH_RADIUS_M * Math.cos(Math.PI * startLat / 180));
+
+        return startLon + Math.toDegrees(dLon);
     }
 
     private double getMinLon(double startLon, double startLat, double runLength) {
-        return startLon - Math.toDegrees((runLength * SCALE_DOWN) / EARTH_RADIUS_M)
-                / Math.cos(Math.toRadians(startLat));
+        double dLon = (runLength * SCALE_DOWN)
+                / (EARTH_RADIUS_M * Math.cos(Math.PI * startLat / 180));
+
+        return startLon - Math.toDegrees(dLon);
     }
 }

@@ -25,7 +25,7 @@ import java.util.*;
 @Qualifier("BeamSearch")
 public class BeamSearch extends SearchAlgorithm implements GraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
-    private final double REPEATED_EDGE_PENALTY = 1.5; // deducted from score where
+    private final double REPEATED_EDGE_PENALTY = 1; // deducted from score where
     // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score

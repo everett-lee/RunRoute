@@ -42,6 +42,9 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         while (elapsedTime <= TIME_LIMIT && remainingDistance > 0) {
             elapsedTime = (new Date()).getTime() - startTime;
 
+            System.out.println(a);
+            System.out.println(r);
+
             // get the number of nodes in the the path
             int pathSize = getPathSize(head);
             // reset if r greater than pathLength minus the start and end node

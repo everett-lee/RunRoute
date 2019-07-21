@@ -57,13 +57,43 @@ public class ExecutorMain implements Executor {
 
     // convert the returned route to an ArrayList, ready to be
     // sent to the client as JSON
-    private List<Node> convertLinkedListToList(PathTuple head) {
+    public List<Node> convertLinkedListToList(PathTuple head) {
         List<Node> nodes = new ArrayList<>();
 
-        while (head != null) {
-            nodes.add(head.getPreviousNode());
+        while (head.getPredecessor() != null) {
+            Way currentWay = head.getCurrentWay();
+            Node headNode = head.getPreviousNode();
+            List<Node> nodeContainer = currentWay.getNodeContainer().getNodes();
+
+            final long nextNodeID = head.getPredecessor().getPreviousNode().getId();
+
+            int startNodeIndex = 0;
+            int endNodeIndex = 0;
+            for (int i = 0; i < nodeContainer.size(); i++) {
+                if (nodeContainer.get(i).getId() == headNode.getId()) {
+                    startNodeIndex = i;
+                }
+                if (nodeContainer.get(i).getId() == nextNodeID) {
+                    endNodeIndex = i;
+                }
+            }
+
+            if (startNodeIndex < endNodeIndex) {
+                for (int i = startNodeIndex; i <= endNodeIndex; i++) {
+                    System.out.println(nodeContainer.get(i));
+                    nodes.add(nodeContainer.get(i));
+                }
+            } else {
+                for (int j = startNodeIndex; j >= endNodeIndex; j--) {
+                    System.out.println(nodeContainer.get(j));
+                    nodes.add(nodeContainer.get(j));
+                }
+            }
+
             head = head.getPredecessor();
+
         }
+
         return nodes;
     }
 

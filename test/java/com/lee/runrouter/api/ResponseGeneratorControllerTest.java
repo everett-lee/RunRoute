@@ -6,6 +6,8 @@ import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristicMain;
 import com.lee.runrouter.executor.Executor;
 import com.lee.runrouter.executor.ExecutorMain;
+import com.lee.runrouter.executor.LinkedListToArray;
+import com.lee.runrouter.executor.LinkedListToArrayHeadNodes;
 import com.lee.runrouter.graph.graphbuilder.GraphBuilder;
 import com.lee.runrouter.routegenerator.RouteGenerator;
 import com.lee.runrouter.routegenerator.RouteGeneratorMain;
@@ -25,6 +27,7 @@ public class ResponseGeneratorControllerTest {
     GraphBuilder graphBuilder;
     FeaturesHeuristic featuresHeuristic;
     ElevationHeuristic elevationHeuristic;
+    LinkedListToArray linkedListToArray;
 
     @Before
     public void setUp() {
@@ -32,8 +35,9 @@ public class ResponseGeneratorControllerTest {
         graphBuilder = mock(GraphBuilder.class);
         featuresHeuristic = new FeaturesHeuristicMain();
         elevationHeuristic = new ElevationHeuristicMain();
+        linkedListToArray = new LinkedListToArrayHeadNodes();
 
-        executor = new ExecutorMain(routeGenerator, graphBuilder, featuresHeuristic, elevationHeuristic);
+        executor = new ExecutorMain(routeGenerator, graphBuilder, featuresHeuristic, elevationHeuristic, linkedListToArray);
         responseGeneratorController = new ResponseGeneratorController(executor);
     }
 

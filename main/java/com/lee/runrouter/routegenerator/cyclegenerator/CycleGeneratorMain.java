@@ -79,6 +79,7 @@ public class CycleGeneratorMain implements CycleGenerator {
         // link outbound and return journeys
         tail.setPredecessor(outwardPath);
 
+        System.out.println(returnPath.getTotalLength());
         return returnPath;
     }
 
@@ -109,6 +110,7 @@ public class CycleGeneratorMain implements CycleGenerator {
         head.getSegmentScore(), head.getPredecessor().getSegmentLength(),
                 head.getPredecessor().getSegmentLength() + head.getPredecessor().getTotalLength());
 
+        System.out.println(head.getTotalLength());
         return head;
     }
 }

@@ -25,16 +25,19 @@ public class ExecutorMain implements Executor {
     private GraphBuilder graphBuilder;
     private FeaturesHeuristic featuresHeuristic;
     private ElevationHeuristic elevationHeuristic;
+    private LinkedListToArray linkedListToArray;
 
     public ExecutorMain(
             @Qualifier("RouteGeneratorMain") RouteGenerator routeGenerator,
             GraphBuilder graphBuilder,
             @Qualifier("FeaturesHeuristicMain") FeaturesHeuristic featuresHeuristic,
-            @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
+            @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic,
+            @Qualifier("LinkedListToArrayHeadNodes") LinkedListToArray linkedListToArray) {
         this.routeGenerator = routeGenerator;
         this.graphBuilder = graphBuilder;
         this.featuresHeuristic = featuresHeuristic;
         this.elevationHeuristic = elevationHeuristic;
+        this.linkedListToArray = linkedListToArray;
     }
 
     @Override
@@ -52,49 +55,8 @@ public class ExecutorMain implements Executor {
         System.out.println("GRAPH BUILT");
         PathTuple route = this.routeGenerator.generateRoute(coords, distance);
 
-        return convertLinkedListToList(route);
-    }
 
-    // convert the returned route to an ArrayList, ready to be
-    // sent to the client as JSON
-    public List<Node> convertLinkedListToList(PathTuple head) {
-        List<Node> nodes = new ArrayList<>();
-
-        while (head.getPredecessor() != null) {
-            Way currentWay = head.getCurrentWay();
-            Node headNode = head.getPreviousNode();
-            List<Node> nodeContainer = currentWay.getNodeContainer().getNodes();
-
-            final long nextNodeID = head.getPredecessor().getPreviousNode().getId();
-
-            int startNodeIndex = 0;
-            int endNodeIndex = 0;
-            for (int i = 0; i < nodeContainer.size(); i++) {
-                if (nodeContainer.get(i).getId() == headNode.getId()) {
-                    startNodeIndex = i;
-                }
-                if (nodeContainer.get(i).getId() == nextNodeID) {
-                    endNodeIndex = i;
-                }
-            }
-
-            if (startNodeIndex < endNodeIndex) {
-                for (int i = startNodeIndex; i <= endNodeIndex; i++) {
-                    System.out.println(nodeContainer.get(i));
-                    nodes.add(nodeContainer.get(i));
-                }
-            } else {
-                for (int j = startNodeIndex; j >= endNodeIndex; j--) {
-                    System.out.println(nodeContainer.get(j));
-                    nodes.add(nodeContainer.get(j));
-                }
-            }
-
-            head = head.getPredecessor();
-
-        }
-
-        return nodes;
+        return linkedListToArray.convert(route);
     }
 
     // create a boolean array reflecting the users preference selections

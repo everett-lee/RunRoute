@@ -5,6 +5,7 @@ import com.lee.runrouter.algorithm.heuristic.ElevationHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristicMain;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
+import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.GraphBuilder;
 import com.lee.runrouter.routegenerator.RouteGenerator;
 import com.lee.runrouter.routegenerator.RouteGeneratorMain;
@@ -23,49 +24,42 @@ import static org.mockito.Mockito.*;
 public class ExecutorCreateListFromLinkedListTest {
     private PathTuple morrishRoad;
     private PathTuple craigNair;
-    private Executor rgi;
-    private RouteGenerator rg;
-    private GraphBuilder gb;
-    private FeaturesHeuristic featuresHeuristic;
-    private ElevationHeuristic elevationHeuristic;
-    Method convertList;
+    private ElementRepo repo;
+    private LinkedListToArray linkedListToArray;
+    private LinkedListToArray linkedListToArrayNodes;
 
     {
         morrishRoad = getMorrishShort();
         craigNair = getCraignair();
+        repo = getRepo();
     }
 
     @Before
     public void setUp() {
-        rg = mock(RouteGeneratorMain.class);
-        gb = mock(GraphBuilder.class);
-        featuresHeuristic = new FeaturesHeuristicMain();
-        elevationHeuristic = new ElevationHeuristicMain();
-        rgi = new ExecutorMain(rg, gb, featuresHeuristic, elevationHeuristic);
-
-       convertList = Arrays.stream(rgi.getClass().getDeclaredMethods())
-                .filter(x -> x.getName().equals("convertLinkedListToList")).findFirst().get();
-        convertList.setAccessible(true);
+       linkedListToArray = new LinkedListToArrayAllNodes(repo);
+       linkedListToArrayNodes = new LinkedListToArrayHeadNodes();
     }
 
     @Test
     public void testMorrishConversion() throws InvocationTargetException, IllegalAccessException {
-        List<Node> result = (List<Node>) convertList.invoke(rgi, morrishRoad);
+        List<Node> result = linkedListToArray.convert(morrishRoad);
+        //result = linkedListToArrayNodes.convert(morrishRoad);
 
-        long expectedId = morrishRoad.getPreviousNode().getId();
-        int expectedSize = getNumberofNodes(morrishRoad);
+
+        result.forEach(x -> System.out.println(x.getId()));
+
+        assertTrue(result.get(0).getId() == result.get(result.size()-1).getId());
+
+
 
     }
     @Test
     public void testCraignairConversion() throws InvocationTargetException, IllegalAccessException {
-        List<Node> result = (List<Node>) convertList.invoke(rgi, craigNair);
+        List<Node> result = (List<Node>) linkedListToArray.convert(craigNair);
 
-        long expectedId = craigNair.getPreviousNode().getId();
-        int expectedSize = getNumberofNodes(craigNair);
 
-        assertEquals(expectedSize, result.size());
-        assertEquals(expectedId, result.get(0).getId());
-        assertEquals(expectedId, result.get(expectedSize-1).getId());
+        assertTrue(result.get(0).getId() == result.get(result.size()-1).getId());
+
     }
 
 

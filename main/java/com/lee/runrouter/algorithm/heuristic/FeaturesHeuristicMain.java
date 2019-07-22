@@ -24,7 +24,7 @@ public class FeaturesHeuristicMain implements Heuristic, FeaturesHeuristic {
 
     // allocated scores for features
     static final double SURFACE_VALUE = 0.5;
-    static final double HIGHWAY_VALUE = 1;
+    static final double HIGHWAY_VALUE = 1.5;
     // score deduction for unlit ways
     static final double UNLIT_PENALTY = 10000;
 

@@ -18,6 +18,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.*;
 
+import static com.lee.runrouter.testhelpers.TestHelpers.calculateScore;
+
 public class BFSTest {
     ElementRepo repo;
     GraphSearch bfs;
@@ -73,11 +75,11 @@ public class BFSTest {
 
         double[] coords = {51.446810, -0.125484};
         PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 2500);
-        System.out.println(x.getPredecessor() + " hello");
 
         String str = "node(id:";
         str = returnPath(x, str);
         System.out.println(str);
+
     }
 
 

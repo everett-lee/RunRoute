@@ -23,14 +23,12 @@ import java.util.*;
 @Component
 @Qualifier("BFS")
 public class BFS extends SearchAlgorithm implements GraphSearch {
-    private final double REPEATED_EDGE_PENALTY = 1.5; // deducted from score where
-    // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
-    private final double PREFERRED_MIN_LENGTH = 25; // minimum length of way to avoid
+    private final double PREFERRED_MIN_LENGTH = 50; // minimum length of way to avoid
     // subtracting a score penalty
-    private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
-    private final double PREFERRED_LENGTH = 100; // preferred minimum travel distance between
+    private final double PREFERRED_MIN_LENGTH_PENALTY = 0;
+    private final double PREFERRED_LENGTH = 250; // preferred minimum travel distance between
     // nodes
     private final double PREFERRED_LENGTH_BONUS = 1; // penalty if distance is below
     // preferred

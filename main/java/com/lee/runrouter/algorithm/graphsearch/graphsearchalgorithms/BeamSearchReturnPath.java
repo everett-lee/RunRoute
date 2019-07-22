@@ -34,17 +34,18 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
     // score
     private final double MINIMUM_LENGTH = 5; // minimum length of way to avoid
     // skipping
-    private final double PREFERRED_LENGTH = 50; // preferred minimum travel distance between
-    // nodes
-    private final double PREFERRED_LENGTH_PENALTY = 0.5; // penalty if distance is below
-    // preferred
+    private final double PREFERRED_MIN_LENGTH = 200; // minimum length of way to avoid
+    // subtracting a score penalty
+    private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
+    private final double PREFERRED_LENGTH = 500;
+    private final double PREFERRED_LENGTH_BONUS = 1;
     private final double DISTANCE_FROM_ORIGIN_BONUS = 0.75;
     private final long TIME_LIMIT = 1000;
 
     private List<PathTuple> queue;
     private Set<Long> visitedWays;
 
-    private final double LOWER_SCALE = 0.7; // amount to scale upper lower bound on
+    private final double LOWER_SCALE = 0.9; // amount to scale upper lower bound on
     // run length by
     private final double UPPER_SCALE = 0.05; // amount to scale upper bound on
     // run length by
@@ -148,13 +149,12 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
                     continue; // skip to next where max length exceeded
                 }
 
-                if (distanceToNext < MINIMUM_LENGTH) {
-                    continue; // skip short connections. Used to cull shorter sections and force
-                    // failure if necessary to move to next stage of algorithm.
+                if (distanceToNext < PREFERRED_MIN_LENGTH) {
+                    score -= PREFERRED_MIN_LENGTH_PENALTY;
                 }
 
-                if (distanceToNext < PREFERRED_LENGTH) {
-                    score -= PREFERRED_LENGTH_PENALTY;
+                if (distanceToNext >= PREFERRED_LENGTH) {
+                    score += PREFERRED_LENGTH_BONUS;
                 }
 
                 double currentDistanceScore

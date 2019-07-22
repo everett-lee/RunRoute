@@ -26,7 +26,8 @@ public class CycleGeneratorMain implements CycleGenerator {
     private ElementRepo repo; // the repository of created Ways and Nodes
 
     @Autowired
-    public CycleGeneratorMain(@Qualifier("BeamSearch") GraphSearch initialOutwardsPather, @Qualifier("BeamSearchReturnPath")  GraphSearch initialReturnPather,
+    public CycleGeneratorMain(@Qualifier("BeamSearch") GraphSearch initialOutwardsPather,
+                              @Qualifier("BeamSearchReturnPath")  GraphSearch initialReturnPather,
                               ElementRepo repo) {
         this.initialOutwardsPather = initialOutwardsPather;
         this.initialReturnPather = initialReturnPather;

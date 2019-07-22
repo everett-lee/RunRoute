@@ -61,6 +61,7 @@ public class BeamSearchTest {
         double[] coords = {51.446810, -0.125484};
         PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 2500);
 
+
     }
 
 

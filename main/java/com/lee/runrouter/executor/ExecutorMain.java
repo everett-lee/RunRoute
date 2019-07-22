@@ -93,17 +93,18 @@ public class ExecutorMain implements Executor {
             this.featuresHeuristic.setAvoidUnlit(true);
         }
 
-        // user selected prefer grass or dirt surfaces
+        // user selected prefer residential roads
         if (options[5]) {
+            preferredHighways.add(Way.Highway.LIVING_STREET.toString());
+            preferredHighways.add(Way.Highway.RESIDENTIAL.toString());
+        }
+
+
+        // user selected prefer grass or dirt surfaces
+        if (options[6]) {
             preferredSurfaces.add(Way.Surface.DIRT.toString());
             preferredSurfaces.add(Way.Surface.GRASS.toString());
             preferredSurfaces.add(Way.Surface.UNPAVED.toString());
-        }
-
-        // user selected prefer residential roads
-        if (options[6]) {
-            preferredHighways.add(Way.Highway.LIVING_STREET.toString());
-            preferredHighways.add(Way.Highway.RESIDENTIAL.toString());
         }
 
         // user selected prefer backroads and pathways

@@ -29,10 +29,10 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
     // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
-    private final double PREFERRED_MIN_LENGTH = 50; // minimum length of way to avoid
+    private final double PREFERRED_MIN_LENGTH = 200; // minimum length of way to avoid
     // subtracting a score penalty
     private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
-    private final double PREFERRED_LENGTH = 100;
+    private final double PREFERRED_LENGTH = 500;
     private final double PREFERRED_LENGTH_BONUS = 1;
     private final double SCALE = 0.05; // amount to scale upper and lower bound on
     // run length by

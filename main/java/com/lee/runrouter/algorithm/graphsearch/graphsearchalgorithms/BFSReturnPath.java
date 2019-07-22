@@ -33,10 +33,11 @@ public class BFSReturnPath extends SearchAlgorithm implements GraphSearch {
     // score
     private final double MINIMUM_LENGTH = 5; // minimum length of way to avoid
     // skipping
-    private final double PREFERRED_LENGTH = 25; // preferred minimum travel distance between
-    // nodes
-    private final double PREFERRED_LENGTH_PENALTY = 0.5; // penalty if distance is below
-    // preferred
+    private final double PREFERRED_MIN_LENGTH = 50; // minimum length of way to avoid
+    // subtracting a score penalty
+    private final double PREFERRED_MIN_LENGTH_PENALTY = 0;
+    private final double PREFERRED_LENGTH = 250;
+    private final double PREFERRED_LENGTH_BONUS = 1;
     private final double DISTANCE_FROM_ORIGIN_BONUS = 0.75;
 
     private PriorityQueue<PathTuple> queue;
@@ -138,13 +139,12 @@ public class BFSReturnPath extends SearchAlgorithm implements GraphSearch {
                     continue; // skip to next where max length exceeded
                 }
 
-                if (distanceToNext < MINIMUM_LENGTH) {
-                    continue; // skip short connections. Used to cull shorter sections and force
-                    // failure if necessary to move to next stage of algorithm.
+                if (distanceToNext < PREFERRED_MIN_LENGTH) {
+                    score -= PREFERRED_MIN_LENGTH_PENALTY;
                 }
 
-                if (distanceToNext < PREFERRED_LENGTH) {
-                    score -= PREFERRED_LENGTH_PENALTY;
+                if (distanceToNext >= PREFERRED_LENGTH) {
+                    score += PREFERRED_LENGTH_BONUS;
                 }
 
                 double currentDistanceScore

@@ -27,17 +27,18 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
     // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
-    private final double MINIMUM_LENGTH = 5; // minimum length of way to avoid
-    // skipping
-    private final double PREFERRED_LENGTH = 50; // preferred minimum travel distance between
+    private final double PREFERRED_MIN_LENGTH = 25; // minimum length of way to avoid
+    // subtracting a score penalty
+    private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
+    private final double PREFERRED_LENGTH = 100; // preferred minimum travel distance between
     // nodes
     private final double PREFERRED_LENGTH_BONUS = 1; // penalty if distance is below
     // preferred
     private final double SCALE = 0.15; // amount to scale upper and lower bound on
     // run length by
 
-
     private PriorityQueue<PathTuple> queue;
+    private Set<Long> visitedWays;
 
     @Autowired
     public BFS(ElementRepo repo,
@@ -49,6 +50,7 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
         super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
+        visitedWays = new HashSet<>();
     }
 
 
@@ -67,6 +69,9 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
      */
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double distance) {
+
+        this.queue = new PriorityQueue<>(Comparator
+                .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
         Set<Long> visitedWays = new HashSet<>();
 
         double currentRouteLength;
@@ -104,6 +109,11 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();
 
+                // skip where this way has already been explored
+                if (visitedWays.contains(selectedWay.getId())) {
+                    continue;
+                }
+
                 // calculates distance from the current Node to the Node connecting
                 // the current Way to the selected Way
                 double distanceToNext = edgeDistanceCalculator
@@ -113,8 +123,8 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                     continue; // skip to next where maximum length exceeded
                 }
 
-                if (distanceToNext < MINIMUM_LENGTH) {
-                    continue;
+                if (distanceToNext < PREFERRED_MIN_LENGTH) {
+                    score -= PREFERRED_MIN_LENGTH_PENALTY;
                 }
 
                 if (distanceToNext >= PREFERRED_LENGTH) {
@@ -124,11 +134,13 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
 
-                score += super.addScores(selectedWay, gradient, REPEATED_EDGE_PENALTY, RANDOM_REDUCER);
+                score += super.addScores(selectedWay, gradient, RANDOM_REDUCER);
 
+                // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext);
                 queue.add(toAdd);
+
                 visitedWays.add(currentWay.getId());
             }
         }

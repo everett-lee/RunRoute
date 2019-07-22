@@ -32,7 +32,7 @@ public class ExecutorMain implements Executor {
             GraphBuilder graphBuilder,
             @Qualifier("FeaturesHeuristicMain") FeaturesHeuristic featuresHeuristic,
             @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic,
-            @Qualifier("LinkedListToArrayHeadNodes") LinkedListToArray linkedListToArray) {
+            @Qualifier("LinkedListToArrayAllNodes") LinkedListToArray linkedListToArray) {
         this.routeGenerator = routeGenerator;
         this.graphBuilder = graphBuilder;
         this.featuresHeuristic = featuresHeuristic;

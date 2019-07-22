@@ -23,7 +23,6 @@ public abstract class SearchAlgorithm {
     GradientCalculator gradientCalculator;
     ElevationHeuristic elevationHeuristic;
     Heuristic distanceFromOriginHeuristic;
-    final Set<Long> visitedWays;
 
     public SearchAlgorithm(ElementRepo repo,
                            Heuristic distanceHeuristic,
@@ -37,26 +36,19 @@ public abstract class SearchAlgorithm {
         this.featuresHeuristic = featuresHeuristic;
         this.edgeDistanceCalculator = edgeDistanceCalculator;
         this.elevationHeuristic = elevationHeuristic;
-        this.visitedWays = new HashSet<>();
 
     }
 
-    protected double addScores(Way selectedWay, double gradient, double REPEATED_EDGE_PENALTY,
-                               double RANDOM_REDUCER) {
+    protected double addScores(Way selectedWay, double gradient, double RANDOM_REDUCER) {
         double score = 0;
 
-        // drop the score where this way has already been explored
-        if (visitedWays.contains(selectedWay.getId())) {
-            score += REPEATED_EDGE_PENALTY;
-        }
-
-        // add score reflecting correspondence of terrain features to user selectionss
+        // add score reflecting correspondence of terrain features to user selections
         score += featuresHeuristic.getScore(selectedWay);
 
         score += elevationHeuristic.getScore(gradient);
 
         // add a small random value to break ties
-        score+= (Math.random() / RANDOM_REDUCER);
+        score += (Math.random() / RANDOM_REDUCER);
 
         return score;
     }

@@ -23,8 +23,8 @@ public class FeaturesHeuristicMain implements Heuristic, FeaturesHeuristic {
     private List<String> dislikedSurfaces; // list of surfaces to be avoided
 
     // allocated scores for features
-    static final double SURFACE_VALUE = 0.25;
-    static final double HIGHWAY_VALUE = 0.5;
+    static final double SURFACE_VALUE = 0.5;
+    static final double HIGHWAY_VALUE = 1;
     // score deduction for unlit ways
     static final double UNLIT_PENALTY = 10000;
 

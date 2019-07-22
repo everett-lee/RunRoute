@@ -37,9 +37,10 @@ public class BFSReturnPath extends SearchAlgorithm implements GraphSearch {
     // nodes
     private final double PREFERRED_LENGTH_PENALTY = 0.5; // penalty if distance is below
     // preferred
-    private final double DISTANCE_FROM_ORIGIN_PENALTY = 10;
+    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.75;
 
     private PriorityQueue<PathTuple> queue;
+    private Set<Long> visitedWays;
 
     private final double LOWER_SCALE = 0.7; // amount to scale upper lower bound on
     // run length by
@@ -57,6 +58,7 @@ public class BFSReturnPath extends SearchAlgorithm implements GraphSearch {
         // compare priority queue items by their assigned score in descending order
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
+        visitedWays = new HashSet<>();
     }
 
 
@@ -76,6 +78,9 @@ public class BFSReturnPath extends SearchAlgorithm implements GraphSearch {
      */
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double distance) {
+
+        this.queue = new PriorityQueue<>(Comparator
+                .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
         Set<Long> visitedWays = new HashSet<>();
 
         double currentRouteLength;
@@ -121,6 +126,11 @@ public class BFSReturnPath extends SearchAlgorithm implements GraphSearch {
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();
 
+                // skip where this way has already been explored
+                if (visitedWays.contains(selectedWay.getId())) {
+                    continue;
+                }
+
                 double distanceToNext = edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
 
@@ -140,10 +150,10 @@ public class BFSReturnPath extends SearchAlgorithm implements GraphSearch {
                 double currentDistanceScore
                         = distanceFromOriginHeuristic.getScore(selectedWay);
 
-                // if the current distance score is less than the previous Way's, that
-                // is it is further away, then skip this iteration
-                if (currentDistanceScore < lastDist) {
-                    score -= DISTANCE_FROM_ORIGIN_PENALTY;
+                // if the current distance score is higher the previous Way's, that
+                // is it is closer, increase the score
+                if (currentDistanceScore > lastDist) {
+                    score += DISTANCE_FROM_ORIGIN_BONUS;
                 }
 
                 visitedWays.add(currentWay.getId());
@@ -151,10 +161,12 @@ public class BFSReturnPath extends SearchAlgorithm implements GraphSearch {
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
 
-                score += addScores(selectedWay, gradient, REPEATED_EDGE_PENALTY, RANDOM_REDUCER);
+                score += addScores(selectedWay, gradient, RANDOM_REDUCER);
 
+                // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext);
+
                 queue.add(toAdd);
             }
         }

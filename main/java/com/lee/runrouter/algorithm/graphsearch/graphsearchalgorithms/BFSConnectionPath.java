@@ -31,7 +31,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     private final double DISTANCE_FROM_ORIGIN_BONUS = 0.75;
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
-    private final double PREFERRED_MIN_LENGTH = 50; // minimum length of way to avoid
+    private final double PREFERRED_MIN_LENGTH = 25; // minimum length of way to avoid
     // subtracting a score penalty
     private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
     private final double PREFERRED_LENGTH = 100;
@@ -39,6 +39,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     private final long TIME_LIMIT = 1000;
 
     private PriorityQueue<PathTuple> queue;
+    private Set<Long> visitedWays;
 
     @Autowired
     public BFSConnectionPath(ElementRepo repo,
@@ -50,6 +51,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
+        visitedWays = new HashSet<>();
     }
 
 
@@ -59,6 +61,8 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
+        visitedWays = new HashSet<>();
+
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
         double currentRouteLength;
@@ -91,12 +95,16 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
             // for each Way reachable from the current Way
             for (ConnectionPair pair : repo.getConnectedWays(currentWay)) {
-
                 currentRouteLength = topTuple.getTotalLength();
                 score = 0;
                 currentNode = topTuple.getPreviousNode();
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();
+
+                // skip where this way has already been explored
+                if (visitedWays.contains(selectedWay.getId())) {
+                    continue;
+                }
 
                 double distanceToNext = edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
@@ -126,11 +134,13 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                         selectedWay, distanceToNext);
 
                 // call private method to add scores
-                score += addScores(selectedWay, gradient, REPEATED_EDGE_PENALTY, RANDOM_REDUCER);
+                score += addScores(selectedWay, gradient, RANDOM_REDUCER);
 
+                // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext);
                 queue.add(toAdd);
+
                 visitedWays.add(currentWay.getId());
                 elapsedTime = (new Date()).getTime() - startTime;
             }

@@ -38,6 +38,7 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
     // run length by
 
     private List<PathTuple> queue;
+    private Set<Long> visitedWays;
 
     @Autowired
     public BeamSearch(ElementRepo repo,
@@ -48,6 +49,7 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
                       @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new ArrayList<>();
+        this.visitedWays = new HashSet<>();
     }
 
     /**
@@ -66,6 +68,7 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double distance) {
         this.queue = new ArrayList<>();
+        this.visitedWays = new HashSet<>();
 
         double currentRouteLength;
         double upperBound = distance + (distance * SCALE); // upper bound of
@@ -82,6 +85,7 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
 
         while (!queue.isEmpty()) {
             queue.sort(Comparator
+                    // sort by route segment score
                     .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
 
             if (queue.size() > BEAM_SIZE) {
@@ -110,6 +114,11 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();
 
+                // skip where this way has already been explored
+                if (visitedWays.contains(selectedWay.getId())) {
+                    continue;
+                }
+
                 // calculates distance from the current Node to the Node connecting
                 // the current Way to the selected Way
                 double distanceToNext = edgeDistanceCalculator
@@ -126,14 +135,17 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
                 if (distanceToNext >= PREFERRED_LENGTH) {
                     score += PREFERRED_LENGTH_BONUS;
                 }
+
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
 
-                score += super.addScores(selectedWay, gradient, REPEATED_EDGE_PENALTY, RANDOM_REDUCER);
+                score += super.addScores(selectedWay, gradient, RANDOM_REDUCER);
 
+                // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext);
                 queue.add(toAdd);
+
                 visitedWays.add(currentWay.getId());
             }
         }

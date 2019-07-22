@@ -26,7 +26,7 @@ import java.util.*;
 @Qualifier("BeamSearchConnectionpath")
 public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final int BEAM_SIZE = 7500; // the max number of possible Nodes under review
-    private final double REPEATED_EDGE_PENALTY = 1.5; // deducted from score where
+    private final double REPEATED_EDGE_PENALTY = 1000; // deducted from score where
     // edge/Way has been previously visited
     private final double DISTANCE_FROM_ORIGIN_BONUS = 0.75;
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
@@ -39,6 +39,7 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
     private final long TIME_LIMIT = 1000;
 
     private List<PathTuple> queue;
+    private Set<Long> visitedWays;
 
     @Autowired
     public BeamSearchConnectionPath(ElementRepo repo,
@@ -49,6 +50,7 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                                     @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new ArrayList<>();
+        visitedWays = new HashSet<>();
     }
 
 
@@ -69,6 +71,7 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
     public PathTuple connectPath(Node originNode, Way originWay, Node targetNode, Way targetWay,
                                  double distance) {
         double currentRouteLength;
+        visitedWays = new HashSet<>();
         this.queue = new ArrayList<>();
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
@@ -80,6 +83,7 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
 
         while (!queue.isEmpty() && elapsedTime <= TIME_LIMIT) {
             queue.sort(Comparator
+                    // sort by route segment score
                     .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
 
             // reduce the size of the queue where it exceeds beam size
@@ -110,12 +114,16 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
 
             // for each Way reachable from the current Way
             for (ConnectionPair pair : repo.getConnectedWays(currentWay)) {
-
                 currentRouteLength = topTuple.getTotalLength();
                 score = 0;
                 currentNode = topTuple.getPreviousNode();
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();
+
+                // skip where this way has already been explored
+                if (visitedWays.contains(selectedWay.getId())) {
+                    continue;
+                }
 
                 double distanceToNext = edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
@@ -145,12 +153,14 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                         selectedWay, distanceToNext);
 
                 // call private method to add scores
-                score += addScores(selectedWay, gradient, REPEATED_EDGE_PENALTY, RANDOM_REDUCER);
+                score += addScores(selectedWay, gradient, RANDOM_REDUCER);
 
+                // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext);
                 queue.add(toAdd);
                 visitedWays.add(currentWay.getId());
+
                 elapsedTime = (new Date()).getTime() - startTime;
             }
         }

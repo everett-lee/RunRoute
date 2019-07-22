@@ -28,13 +28,13 @@ import java.util.*;
 @Qualifier("BeamSearchReturnPath")
 public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
-    private final double REPEATED_EDGE_PENALTY = 1; // deducted from score where
+    private final double REPEATED_EDGE_PENALTY = 1000; // deducted from score where
     // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 50; // divides into random number added to the
     // score
     private final double MINIMUM_LENGTH = 5; // minimum length of way to avoid
     // skipping
-    private final double PREFERRED_LENGTH = 25; // preferred minimum travel distance between
+    private final double PREFERRED_LENGTH = 50; // preferred minimum travel distance between
     // nodes
     private final double PREFERRED_LENGTH_PENALTY = 0.5; // penalty if distance is below
     // preferred
@@ -42,6 +42,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
     private final long TIME_LIMIT = 1000;
 
     private List<PathTuple> queue;
+    private Set<Long> visitedWays;
 
     private final double LOWER_SCALE = 0.7; // amount to scale upper lower bound on
     // run length by
@@ -57,6 +58,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
                                 @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new ArrayList<>();
+        visitedWays = new HashSet<>();
     }
 
     /**
@@ -76,6 +78,8 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double distance) {
         this.queue = new ArrayList<>();
+        visitedWays = new HashSet<>();
+
         double currentRouteLength;
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
@@ -91,6 +95,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
 
         while (!queue.isEmpty()  && elapsedTime <= TIME_LIMIT) {
             queue.sort(Comparator
+                    // sort by route segment score
                     .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
 
             if (queue.size() > BEAM_SIZE) {
@@ -130,6 +135,12 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();
 
+
+                // skip where this way has already been explored
+                if (visitedWays.contains(selectedWay.getId())) {
+                    continue;
+                }
+
                 double distanceToNext = edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
 
@@ -160,11 +171,13 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
 
-                score += addScores(selectedWay, gradient, REPEATED_EDGE_PENALTY, RANDOM_REDUCER);
+                score += addScores(selectedWay, gradient, RANDOM_REDUCER);
 
+                // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext);
                 queue.add(toAdd);
+
                 elapsedTime = (new Date()).getTime() - startTime;
             }
         }

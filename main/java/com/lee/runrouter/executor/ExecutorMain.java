@@ -55,6 +55,7 @@ public class ExecutorMain implements Executor {
         System.out.println("GRAPH BUILT");
         PathTuple route = this.routeGenerator.generateRoute(coords, distance);
 
+        System.out.println(returnPath(route, ""));
 
         return linkedListToArray.convert(route);
     }
@@ -128,5 +129,22 @@ public class ExecutorMain implements Executor {
         if (booleans[4]) {
             elevationHeuristic.setOptions(true);
         }
+    }
+
+
+    static public String returnPath(PathTuple tp, String acc) {
+        acc += "node(id:";
+        while (tp != null) {
+            acc += tp.getPreviousNode().getId() + ", ";
+            System.out.println("(" + tp.getPreviousNode() + " distance: "
+                    + tp.getTotalLength() + " score: " + tp.getSegmentScore() +
+                    ") " + " way: " + tp.getCurrentWay().getId());
+            System.out.println("Segment length: " + tp.getSegmentLength());
+            tp = tp.getPredecessor();
+
+        }
+        acc = acc.substring(0, acc.length()-2);
+        acc += ");\nout;";
+        return acc;
     }
 }

@@ -29,34 +29,27 @@ public class LinkedListToArrayAllNodes implements LinkedListToArray{
     public List<Node> convert(PathTuple head) {
         List<Node> nodes = new ArrayList<>();
 
-        long nextNodeID = head.getPreviousNode().getId();
         while (head.getPredecessor() != null) {
-            final long startId = head.getPreviousNode().getId();
-            final long endId = head.getPredecessor().getPreviousNode().getId();
+            final long startId = head.getPreviousNode().getId(); // id of current node
+            final long endId = head.getPredecessor().getPreviousNode().getId(); // id of next node
 
-            Way currentWay = null;
+            Way currentWay = head.getCurrentWay();
+//            for (Way way: elementRepo.getNodeToWay().get(startId)) {
+//                // if the selected way contains the end node (in addition to the start node)
+//                if (way.getNodeContainer().getNodes().stream().anyMatch( node -> node.getId() == endId)) {
+//                    currentWay = way;
+//                }
+//            }
 
-            for (Way way: elementRepo.getNodeToWay().get(startId)) {
-                if (way.getNodeContainer().getNodes().stream().anyMatch( node -> node.getId() == endId)) {
-                    currentWay = way;
-                }
-            }
-
-            System.out.println(currentWay.getName());
-            Node headNode = head.getPreviousNode();
             List<Node> nodeContainer = currentWay.getNodeContainer().getNodes();
 
-            if (head.getPredecessor() != null) {
-                nextNodeID = head.getPredecessor().getPreviousNode().getId();
-            }
-
-            int startNodeIndex = 0;
-            int endNodeIndex = 0;
+            int startNodeIndex = -1;
+            int endNodeIndex = -1;
             for (int i = 0; i < nodeContainer.size(); i++) {
-                if (nodeContainer.get(i).getId() == headNode.getId()) {
+                if (nodeContainer.get(i).getId() == startId) {
                     startNodeIndex = i;
                 }
-                if (nodeContainer.get(i).getId() == nextNodeID) {
+                if (nodeContainer.get(i).getId() == endId) {
                     endNodeIndex = i;
                 }
             }
@@ -73,6 +66,8 @@ public class LinkedListToArrayAllNodes implements LinkedListToArray{
             head = head.getPredecessor();
 
         }
+
+
         return nodes;
     }
 }

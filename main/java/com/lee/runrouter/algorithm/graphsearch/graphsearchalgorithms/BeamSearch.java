@@ -25,8 +25,6 @@ import java.util.*;
 @Qualifier("BeamSearch")
 public class BeamSearch extends SearchAlgorithm implements GraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
-    private final double REPEATED_EDGE_PENALTY = 1; // deducted from score where
-    // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
     private final double PREFERRED_MIN_LENGTH = 300; // minimum length of way to avoid
@@ -39,6 +37,8 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
 
     private List<PathTuple> queue;
     private Set<Long> visitedWays;
+    private Set<Long> visitedNodes;
+
 
     @Autowired
     public BeamSearch(ElementRepo repo,
@@ -50,6 +50,7 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
         super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new ArrayList<>();
         this.visitedWays = new HashSet<>();
+        this.visitedNodes = new HashSet<>();
     }
 
     /**
@@ -69,6 +70,7 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
     public PathTuple searchGraph(Way root, double[] coords, double distance) {
         this.queue = new ArrayList<>();
         this.visitedWays = new HashSet<>();
+        this.visitedNodes = new HashSet<>();
 
         double currentRouteLength;
         double upperBound = distance + (distance * SCALE); // upper bound of
@@ -114,8 +116,9 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();
 
-                // skip where this way has already been explored
-                if (visitedWays.contains(selectedWay.getId())) {
+                // skip where this way or node has already been explored
+                if (visitedWays.contains(selectedWay.getId()) ||
+                        this.visitedNodes.contains(connectingNode.getId())) {
                     continue;
                 }
 
@@ -147,6 +150,9 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
                 queue.add(toAdd);
 
                 visitedWays.add(currentWay.getId());
+                if (!repo.getOriginWay().getNodeContainer().getNodes().contains(visitedNodes)) {
+                    this.visitedNodes.add(connectingNode.getId());
+                }
             }
         }
 

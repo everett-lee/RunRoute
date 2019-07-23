@@ -244,14 +244,15 @@ public class IteratedLocalSearchMainTest {
     @Test
     public void testcalculateDistanceThreeNodes() throws InvocationTargetException, IllegalAccessException {
         PathTuple tail = new PathTupleMain(null, null, null, 0, 2, 0);
-        PathTuple mid = new PathTupleMain(tail, null, null,0 , 40, 0);
-        PathTuple head = new PathTupleMain(mid, null, null,0 , 40, 0);
+        PathTuple midOne = new PathTupleMain(tail, null, null,0 , 40.55, 0);
+        PathTuple midTwo = new PathTupleMain(midOne, null, null,0 ,  60, 0);
+        PathTuple head = new PathTupleMain(midTwo, null, null,0 , 45.03, 0);
 
         Method calculateLen = Arrays.stream(ils.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("calculateDistance")).findFirst().get();
         calculateLen.setAccessible(true);
         double result = (double) calculateLen.invoke(ils, head, tail);
-        double expected = 42;
+        double expected = 102.55;
 
         assertEquals(expected, result, 0.001);
     }
@@ -272,5 +273,24 @@ public class IteratedLocalSearchMainTest {
 
         assertEquals(result, tail);
     }
+
+    @Test
+    public void tesUpdateDistancesOne() throws InvocationTargetException, IllegalAccessException {
+        PathTuple head = morrishRoadShort;
+        double originalLen = calculateDistance(head);
+        PathTuple originalPred = head.getPredecessor();
+
+        PathTuple newTwo = new PathTupleMain(originalPred, null, null, 0, 5, 0);
+        PathTuple newOne = new PathTupleMain(newTwo, null, null, 0, 7.5, 0);
+        head.setPredecessor(newOne);
+
+        Method updateDistances = Arrays.stream(ils.getClass().getDeclaredMethods())
+                .filter(x -> x.getName().equals("updateDistances")).findFirst().get();
+        updateDistances.setAccessible(true);
+        PathTuple result = (PathTuple) updateDistances.invoke(ils, head);
+
+        assertEquals(originalLen + 12.5, calculateDistance(head), 0.0001);
+    }
+
 
 }

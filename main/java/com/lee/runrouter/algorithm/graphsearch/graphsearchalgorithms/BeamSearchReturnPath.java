@@ -44,8 +44,9 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
 
     private List<PathTuple> queue;
     private Set<Long> visitedWays;
+    private Set<Long> visitedNodes;
 
-    private final double LOWER_SCALE = 0.9; // amount to scale upper lower bound on
+    private final double LOWER_SCALE = 0.35; // amount to scale upper lower bound on
     // run length by
     private final double UPPER_SCALE = 0.05; // amount to scale upper bound on
     // run length by
@@ -59,7 +60,8 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
                                 @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new ArrayList<>();
-        visitedWays = new HashSet<>();
+        this.visitedWays = new HashSet<>();
+        this.visitedNodes = new HashSet<>();
     }
 
     /**
@@ -79,7 +81,8 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double distance) {
         this.queue = new ArrayList<>();
-        visitedWays = new HashSet<>();
+        this.visitedWays = new HashSet<>();
+        this.visitedNodes = new HashSet<>();
 
         double currentRouteLength;
         long startTime = System.currentTimeMillis();
@@ -166,8 +169,6 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
                     score += DISTANCE_FROM_ORIGIN_BONUS;
                 }
 
-                visitedWays.add(currentWay.getId());
-
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
 
@@ -177,6 +178,12 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext);
                 queue.add(toAdd);
+
+                visitedWays.add(currentWay.getId());
+                if (!repo.getOriginWay().getNodeContainer().getNodes().contains(visitedNodes)) {
+                    this.visitedNodes.add(connectingNode.getId());
+                }
+
 
                 elapsedTime = (new Date()).getTime() - startTime;
             }

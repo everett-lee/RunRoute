@@ -67,7 +67,7 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
      */
     @Override
     public PathTuple connectPath(Node originNode, Way originWay, Node targetNode, Way targetWay,
-                                 double distance) {
+                                 double distance, double REPLACETWO) {
         double currentRouteLength;
         visitedWays = new HashSet<>();
         this.queue = new ArrayList<>();

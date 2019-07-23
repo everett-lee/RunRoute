@@ -113,8 +113,6 @@ public class BeamSearchReturnPathTest {
         PathTuple x = returnPath.searchGraph(w, coords, 2500);
 
         assertEquals(originNode, x.getPreviousNode());
-
-        System.out.println(returnPath(x, ""));
     }
 
     @Test(timeout = 1000)
@@ -134,6 +132,9 @@ public class BeamSearchReturnPathTest {
 
         PathTuple x = returnPath.searchGraph(w, coords, 5000);
         assertEquals(originNode, x.getPreviousNode());
+
+
+
     }
 
     @Test(timeout = 1000)

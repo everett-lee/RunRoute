@@ -39,6 +39,9 @@ public class RouteGeneratorMain implements RouteGenerator {
     public PathTuple generateRoute(double[] coords, double distance) throws PathNotGeneratedException {
         PathTuple initialCycle = cycleGenerator.generateCycle(coords, distance);
         System.out.println("INITIAL CYCLE DONE");
+
+        System.out.println("INITIAL CYCLE LEN " + initialCycle.getTotalLength());
+
         double remainingDistance = distance - initialCycle.getTotalLength();
 
         return ils.iterate(initialCycle, remainingDistance);

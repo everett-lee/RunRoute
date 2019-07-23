@@ -5,6 +5,6 @@ import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
 
 public interface ILSGraphSearch {
-    PathTuple connectPath(Node originNode, Way originWay, Node targetNode, Way targetWay,
-                          double distance);
+    public PathTuple connectPath(Node originNode, Way originWay, Node targetNode, Way targetWay,
+                                 double availableDistance, double initialDistance);
 }

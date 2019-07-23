@@ -5,6 +5,8 @@ import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
+import org.hibernate.tool.hbm2ddl.SchemaUpdateTask;
+import org.hibernate.tool.schema.internal.exec.ScriptTargetOutputToFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -76,11 +78,12 @@ public class CycleGeneratorMain implements CycleGenerator {
             tail.setTotalLength(tail.getTotalLength() + halfDistance);
             tail = tail.getPredecessor();
         }
+        // add length to final node
+        tail.setTotalLength(tail.getTotalLength() + halfDistance);
 
         // link outbound and return journeys
         tail.setPredecessor(outwardPath);
 
-        System.out.println(returnPath.getTotalLength());
         return returnPath;
     }
 

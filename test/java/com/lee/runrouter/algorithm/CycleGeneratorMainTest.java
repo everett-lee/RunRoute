@@ -79,7 +79,8 @@ public class CycleGeneratorMainTest {
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
-   }
+
+    }
 
     @Test(timeout=2000)
     public void testMorrishRoadLongRoundTrip() throws PathNotGeneratedException {
@@ -113,6 +114,7 @@ public class CycleGeneratorMainTest {
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
 
+
     }
 
     @Test(timeout=2000)
@@ -130,13 +132,10 @@ public class CycleGeneratorMainTest {
 
         PathTuple res = cycleGenerator.generateCycle(coords, 10000);
 
-
         double length = calculateDistance(res);
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
-
-
     }
 
 
@@ -160,9 +159,6 @@ public class CycleGeneratorMainTest {
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
 
-
-        System.out.println(returnPath(res,""));
-
     }
 
     private double calculateDistance(PathTuple root) {
@@ -180,7 +176,7 @@ public class CycleGeneratorMainTest {
         try {
             System.out.println("Starting... ");
             FileOutputStream fileOut =
-                    new FileOutputStream("/home/lee/project/app/runrouter/src/tulsehilllong.ser");
+                    new FileOutputStream("/home/lee/project/app/runrouter/src/morrishshort.ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(head);
             out.close();

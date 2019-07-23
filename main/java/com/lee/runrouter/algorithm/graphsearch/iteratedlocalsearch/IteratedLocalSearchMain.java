@@ -34,16 +34,16 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         // begin by reversing the path
         head = reverseList(head);
 
-        double remainingDistance = targetDistance; // distance left available
+        double availableDistance = targetDistance; // distance left available
         // to add to route
 
         int a = 1; // the starting node, indexed from 1
         int r = 3; // number of nodes to remove
-        while (elapsedTime <= TIME_LIMIT && remainingDistance > 0) {
+        while (elapsedTime <= TIME_LIMIT && availableDistance > 0) {
             elapsedTime = (new Date()).getTime() - startTime;
-
-            System.out.println(a);
-            System.out.println(r);
+//
+//            System.out.println(a);
+//            System.out.println(r);
 
             // get the number of nodes in the the path
             int pathSize = getPathSize(head);
@@ -72,12 +72,11 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             // add to remaining distance
             double exisitingSegmentLength = calculateDistance(start, end); // does not include
             // start, includes end
-            remainingDistance += exisitingSegmentLength;
-
+            availableDistance += exisitingSegmentLength;
 
             // generate the new segment
             PathTuple newSegment = graphSearch.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                    end.getPreviousNode(), end.getCurrentWay(), remainingDistance);
+                    end.getPreviousNode(), end.getCurrentWay(), availableDistance, start.getTotalLength());
             setIterations(getIterations() + 1);
 
             double oldSegmentScore = calculateScore(start, end);
@@ -88,21 +87,38 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
                 a++;
                 r++;
 
-                //add back the length in metres of the segment length as it was not removed
-                remainingDistance -= exisitingSegmentLength;
+                // minus the length in metres of the segment length as it was not removed
+                availableDistance -= exisitingSegmentLength;
 
                 // new segment score is higher, so replace old path segment with the new one
             } else {
                 setImprovements(getImprovements() + 1);
+                double newSegmentDistance = calculateDistance(newSegment, null);
+
                 // remove the added distance from the remaining
-                remainingDistance -= calculateDistance(newSegment, null);
+                availableDistance -= newSegmentDistance;
+                System.out.println("NEW SEG " + newSegmentDistance);
+                System.out.println("AVAIL " + availableDistance);
 
                 insertSegment(start, end, newSegment);
+
+                // update distances to reflect added segment
+                updateDistances(head);
                 a = 1;
                 r = 2;
             }
         }
         return head;
+    }
+
+    private void updateDistances(PathTuple head) {
+        double runningDistance = 0;
+
+        while (head != null) {
+            head.setTotalLength(runningDistance);
+            runningDistance += head.getSegmentLength();
+            head = head.getPredecessor();
+        }
     }
 
     private PathTuple reverseList(PathTuple head) {

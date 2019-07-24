@@ -38,8 +38,9 @@ public class LinkedListToArrayAllNodes implements LinkedListToArray{
             Way currentWay = head.getCurrentWay();
             for (Way way: elementRepo.getNodeToWay().get(startId)) {
                 // if the selected way contains the end node (in addition to the start node)
-                if (way.getNodeContainer().getNodes().stream().anyMatch( node -> node.getId() == endId)) {
+                if (way.getNodeContainer().getNodes().stream().anyMatch( node -> node.getId() == endId )) {
                     currentWay = way;
+                    break;
                 }
             }
 
@@ -56,20 +57,19 @@ public class LinkedListToArrayAllNodes implements LinkedListToArray{
                 }
             }
 
+            // traverse left to right
             if (startNodeIndex < endNodeIndex) {
                 for (int i = startNodeIndex; i <= endNodeIndex; i++) {
                     nodes.add(nodeContainer.get(i));
                 }
+            // traverse right to left
             } else {
                 for (int j = startNodeIndex; j >= endNodeIndex; j--) {
                     nodes.add(nodeContainer.get(j));
                 }
             }
             head = head.getPredecessor();
-
         }
-
-
         return nodes;
     }
 }

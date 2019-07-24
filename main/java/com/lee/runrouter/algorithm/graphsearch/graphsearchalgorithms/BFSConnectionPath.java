@@ -26,13 +26,13 @@ import java.util.*;
 @Component
 @Qualifier("BFSConnectionPath")
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
-    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.75;
+    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.25;
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
     private final double PREFERRED_MIN_LENGTH = 500; // minimum length of way to avoid
     // subtracting a score penalty
     private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
-    private final double PREFERRED_LENGTH = 1100;
+    private final double PREFERRED_LENGTH = 1000;
     private final double PREFERRED_LENGTH_BONUS = 1;
     private final long TIME_LIMIT = 1000;
 
@@ -69,7 +69,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
         double currentRouteLength;
-        double upperBound = availableDistance; // the remaining distance for the route
+        double upperBound = availableDistance + initialDistance; // the remaining distance for the route
 
         queue.add(new PathTupleMain(null, originNode, originWay,
                 0, 0, initialDistance));
@@ -121,7 +121,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
                 // if the current distance score is less than the previous Way's, that
                 // is it is further away, then reduce the score
-                if (currentDistanceScore > lastDist) {
+                if (currentDistanceScore < lastDist) {
                     score += DISTANCE_FROM_ORIGIN_BONUS;
                 }
 

@@ -43,7 +43,7 @@ public class BFSReturnPath extends SearchAlgorithm implements GraphSearch {
     private PriorityQueue<PathTuple> queue;
     private Set<Long> visitedWays;
 
-    private final double LOWER_SCALE = 0.7; // amount to scale upper lower bound on
+    private final double LOWER_SCALE = 0.5; // amount to scale upper lower bound on
     // run length by
     private final double UPPER_SCALE = 0.05; // amount to scale upper bound on
     // run length by

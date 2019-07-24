@@ -12,7 +12,7 @@ import java.util.Date;
 @Qualifier("IteratedLocalSearchMain")
 public class IteratedLocalSearchMain implements IteratedLocalSearch {
     private ILSGraphSearch graphSearch;
-    private final long TIME_LIMIT = 5000L;
+    private final long TIME_LIMIT = 3000L;
     private int iterations;
     private int improvements;
 
@@ -33,24 +33,25 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
         double targetDistance = head.getTotalLength() + distanceToAdd; // target is current route length
         // plus the remaining available distance
+
         double availableDistance = distanceToAdd; // distance left available to add to route
 
         // begin by reversing the path
         head = reverseList(head);
 
         int a = 1; // the starting node, indexed from 1
-        int r = 3; // number of nodes to remove
+        int r = 2; // number of nodes to remove
         while (elapsedTime <= TIME_LIMIT) {
             elapsedTime = (new Date()).getTime() - startTime;
 
-            System.out.println(a);
-            System.out.println(r);
+//            System.out.println(a);
+//            System.out.println(r);
 
             // get the number of nodes in the the path
             int pathSize = getPathSize(head);
             // reset if r greater than pathLength minus the start and end node
             if (r > pathSize - 2) {
-                r = 3;
+                r = 2;
             }
 
             // reset r if removed section plus index of the
@@ -63,7 +64,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             // extends past the final node
             if (a >= pathSize - 2) {
                 a = 1;
-                r = 3;
+                r = 2;
             }
 
             start = getStartPathSegment(head, a);
@@ -92,15 +93,15 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
                 // subtract the length in metres of the segment length as it was not removed
                 availableDistance -= existingSegmentLength;
 
-                // new segment score is higher, so replace old path segment with the new one
+            // new segment score is higher, so replace old path segment with the new one
             } else {
                 setImprovements(getImprovements() + 1);
-
                 insertSegment(start, end, newSegment);
 
                 // update current node distances and target distance to reflect added segment
                 double newDistance = updateDistances(head);
                 availableDistance = targetDistance - newDistance;
+
 
                 a = 1;
                 r = 2;
@@ -218,9 +219,10 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
     // insert the newSegment linked list into the main path linked list
     private PathTuple insertSegment(PathTuple start, PathTuple end, PathTuple newSegment) {
         PathTuple theTail = newSegment;
+        System.out.println("NEW SEGMENT START " + newSegment.getPreviousNode());
         newSegment = reverseList(newSegment); // reverse the segment to be added, as it
         // is currently in the wrong order
-
+        System.out.println("NEW SEGMENT END " + newSegment.getPreviousNode());
         start.setPredecessor(newSegment.getPredecessor()); // start of segment links to
         // new segment's next link (head of new segment is currently the same as the start
         // head

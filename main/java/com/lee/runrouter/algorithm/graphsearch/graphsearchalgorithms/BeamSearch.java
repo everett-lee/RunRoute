@@ -32,7 +32,10 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
     private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
     private final double PREFERRED_LENGTH = 1000;
     private final double PREFERRED_LENGTH_BONUS = 1;
-    private final double SCALE = 0.05; // amount to scale upper and lower bound on
+
+    private final double LOWER_SCALE = 0; // amount to scale upper lower bound on
+    // run length by
+    private final double UPPER_SCALE = 0.10; // amount to scale upper bound on
     // run length by
 
     private List<PathTuple> queue;
@@ -73,9 +76,9 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
         this.visitedNodes = new HashSet<>();
 
         double currentRouteLength;
-        double upperBound = distance + (distance * SCALE); // upper bound of
+        double upperBound = distance + (distance * UPPER_SCALE); // upper bound of
         // run length
-        double lowerBound = distance - (distance * SCALE); // lower bound of
+        double lowerBound = distance - (distance * LOWER_SCALE); // lower bound of
         // run length
 
         Node originNode = new Node(-1, coords[0], coords[1]);
@@ -146,7 +149,7 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
 
                 // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
-                        score, distanceToNext, currentRouteLength + distanceToNext);
+                        Math.max(0, score), distanceToNext, currentRouteLength + distanceToNext);
                 queue.add(toAdd);
 
                 visitedWays.add(currentWay.getId());

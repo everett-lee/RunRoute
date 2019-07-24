@@ -46,7 +46,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
     private Set<Long> visitedWays;
     private Set<Long> visitedNodes;
 
-    private final double LOWER_SCALE = 0.35; // amount to scale upper lower bound on
+    private final double LOWER_SCALE = 0.75; // amount to scale upper lower bound on
     // run length by
     private final double UPPER_SCALE = 0.05; // amount to scale upper bound on
     // run length by

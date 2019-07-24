@@ -61,6 +61,42 @@ public class TestHelpers {
         return morrishRoadShort;
     }
 
+    static public PathTuple getMorrishProblemOne() {
+        PathTuple morrishRoadProb = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/morrishProb1.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            morrishRoadProb = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return morrishRoadProb;
+    }
+
+    static public PathTuple getMorrishProblemTwo() {
+        PathTuple morrishRoadProb = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/morrishProb2.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            morrishRoadProb = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return morrishRoadProb;
+    }
+
     static public PathTuple getCraignair() {
         PathTuple morrishRoadShort = null;
         // deserialise test path used for testing.

@@ -22,7 +22,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
     }
 
     @Override
-    public PathTuple iterate(PathTuple head, double targetDistance) {
+    public PathTuple iterate(PathTuple head, double distanceToAdd) {
         setIterations(0);
         setImprovements(0);
 
@@ -31,19 +31,20 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         PathTuple start = null;
         PathTuple end = null;
 
+        double targetDistance = head.getTotalLength() + distanceToAdd; // target is current route length
+        // plus the remaining available distance
+        double availableDistance = distanceToAdd; // distance left available to add to route
+
         // begin by reversing the path
         head = reverseList(head);
 
-        double availableDistance = targetDistance; // distance left available
-        // to add to route
-
         int a = 1; // the starting node, indexed from 1
         int r = 3; // number of nodes to remove
-        while (elapsedTime <= TIME_LIMIT && availableDistance > 0) {
+        while (elapsedTime <= TIME_LIMIT) {
             elapsedTime = (new Date()).getTime() - startTime;
-//
-//            System.out.println(a);
-//            System.out.println(r);
+
+            System.out.println(a);
+            System.out.println(r);
 
             // get the number of nodes in the the path
             int pathSize = getPathSize(head);
@@ -74,8 +75,6 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             // start, includes end
             availableDistance += existingSegmentLength;
 
-            System.out.println("ADDED " + existingSegmentLength + "TO GET " + availableDistance);
-
             // generate the new segment
             PathTuple newSegment = graphSearch.connectPath(start.getPreviousNode(), start.getCurrentWay(),
                     end.getPreviousNode(), end.getCurrentWay(), availableDistance, start.getTotalLength());
@@ -84,7 +83,8 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             double oldSegmentScore = calculateScore(start, end);
             double newSegmentScore = calculateScore(newSegment, null);
 
-            if (oldSegmentScore > newSegmentScore || newSegment == null
+            // if old segment had a better score, or a new segment was not found
+            if (oldSegmentScore >= newSegmentScore || newSegment == null
                     || newSegment.getSegmentLength() == -1) {
                 a++;
                 r++;
@@ -92,25 +92,16 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
                 // subtract the length in metres of the segment length as it was not removed
                 availableDistance -= existingSegmentLength;
 
-
-                System.out.println("ADDED BAK " + existingSegmentLength + "TO GET " + availableDistance);
-
                 // new segment score is higher, so replace old path segment with the new one
             } else {
                 setImprovements(getImprovements() + 1);
-                double newSegmentDistance = calculateDistance(newSegment, null);
-
-                // remove the added distance from the remaining
-                availableDistance -= newSegmentDistance;
-
-                System.out.println("NEW SEGMENT ADDED >>>>>>>>>>>>>>>>>>");
-                System.out.println("ADDED BACK " + newSegmentDistance + "TO GET " + availableDistance);
-                System.out.println("NEW SEGMENT ADDED END >>>>>>>>>>>>>>>>>>");
 
                 insertSegment(start, end, newSegment);
 
-                // update distances to reflect added segment
-                updateDistances(head);
+                // update current node distances and target distance to reflect added segment
+                double newDistance = updateDistances(head);
+                availableDistance = targetDistance - newDistance;
+
                 a = 1;
                 r = 2;
             }
@@ -118,14 +109,23 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         return head;
     }
 
-    private void updateDistances(PathTuple head) {
+    private double updateDistances(PathTuple head) {
         double runningDistance = 0;
+        double finalDistance = 0;
 
         while (head != null) {
             head.setTotalLength(runningDistance);
             runningDistance += head.getSegmentLength();
+
+            // get the new final distance
+            if (head.getPredecessor() == null) {
+                finalDistance = head.getTotalLength();
+            }
+
             head = head.getPredecessor();
         }
+
+        return finalDistance;
     }
 
     private PathTuple reverseList(PathTuple head) {

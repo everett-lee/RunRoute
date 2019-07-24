@@ -69,7 +69,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
         double currentRouteLength;
-        double upperBound = availableDistance - initialDistance; // the remaining distance for the route
+        double upperBound = availableDistance; // the remaining distance for the route
 
         queue.add(new PathTupleMain(null, originNode, originWay,
                 0, 0, initialDistance));
@@ -86,12 +86,10 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                 double finalDistance = edgeDistanceCalculator
                         .calculateDistance(currentNode, targetNode, targetWay);
 
-                if (true) {
-                    // create a new tuple representing the journey from the previous node to the final node
-                    PathTuple returnTuple = new PathTupleMain(topTuple, targetNode,
-                            targetWay, 0, finalDistance, topTuple.getTotalLength() + finalDistance);
-                    return returnTuple;
-                }
+                // create a new tuple representing the journey from the previous node to the final node
+                PathTuple returnTuple = new PathTupleMain(topTuple, targetNode,
+                        targetWay, 0, finalDistance, topTuple.getTotalLength() + finalDistance);
+                return returnTuple;
             }
 
             // distance to origin point from the last explored way

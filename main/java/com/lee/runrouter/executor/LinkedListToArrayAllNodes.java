@@ -10,9 +10,11 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-
+/**
+ *  Used to convert a linked list of PathTuples to an array
+ *  of nodes visited in the course of the path
+ */
 @Component
 @Qualifier("LinkedListToArrayAllNodes")
 // returns list of all nodes
@@ -34,12 +36,12 @@ public class LinkedListToArrayAllNodes implements LinkedListToArray{
             final long endId = head.getPredecessor().getPreviousNode().getId(); // id of next node
 
             Way currentWay = head.getCurrentWay();
-//            for (Way way: elementRepo.getNodeToWay().get(startId)) {
-//                // if the selected way contains the end node (in addition to the start node)
-//                if (way.getNodeContainer().getNodes().stream().anyMatch( node -> node.getId() == endId)) {
-//                    currentWay = way;
-//                }
-//            }
+            for (Way way: elementRepo.getNodeToWay().get(startId)) {
+                // if the selected way contains the end node (in addition to the start node)
+                if (way.getNodeContainer().getNodes().stream().anyMatch( node -> node.getId() == endId)) {
+                    currentWay = way;
+                }
+            }
 
             List<Node> nodeContainer = currentWay.getNodeContainer().getNodes();
 

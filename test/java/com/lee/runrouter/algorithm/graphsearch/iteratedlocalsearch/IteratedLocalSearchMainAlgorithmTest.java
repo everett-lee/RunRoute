@@ -91,21 +91,21 @@ public class IteratedLocalSearchMainAlgorithmTest {
         assertTrue(postDistance <= originalLength + 2000);
     }
 
-    @Test
-    public void testCountIterationsBFS() {
-        List<Integer> iterations = new ArrayList<>();
-        List<Integer> improvements = new ArrayList<>();
-
-        craignair = getCraignair();
-        PathTuple res = ilsBeamSearch.iterate(getCraignair(), 2000);
-        iterations.add(ilsBeamSearch.getIterations());
-        improvements.add(ilsBeamSearch.getImprovements());
-
-        System.out.println(iterations.stream().mapToDouble(x -> x).average());
-        System.out.println(improvements.stream().mapToDouble(x -> x).average());
-        System.out.println(iterations);
-        System.out.println(improvements);
-    }
+//    @Test
+//    public void testCountIterationsBFS() {
+//        List<Integer> iterations = new ArrayList<>();
+//        List<Integer> improvements = new ArrayList<>();
+//
+//        craignair = getCraignair();
+//        PathTuple res = ilsBeamSearch.iterate(getCraignair(), 2000);
+//        iterations.add(ilsBeamSearch.getIterations());
+//        improvements.add(ilsBeamSearch.getImprovements());
+//
+//        System.out.println(iterations.stream().mapToDouble(x -> x).average());
+//        System.out.println(improvements.stream().mapToDouble(x -> x).average());
+//        System.out.println(iterations);
+//        System.out.println(improvements);
+//    }
 
     @Test
     public void testMorrishScoreGreaterOrEqualBFS() {
@@ -173,15 +173,9 @@ public class IteratedLocalSearchMainAlgorithmTest {
         double originalScore = calculateScore(tulseHillLong);
         double originalLength = calculateDistance(tulseHillLong);
 
-
         PathTuple res = ilsBFS.iterate(tulseHillLong, 1400);
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);
-
-        System.out.println(originalScore);
-        System.out.println(postScore);
-        System.out.println(originalLength);
-        System.out.println(postDistance);
 
         assertTrue(postScore >= originalScore);
         assertTrue(postDistance <= (originalLength + 1400));
@@ -191,7 +185,6 @@ public class IteratedLocalSearchMainAlgorithmTest {
     public void testScoreGreaterOrEqualTulseHillBeam() {
         double originalScore = calculateScore(tulseHillLong);
         double originalLength = calculateDistance(tulseHillLong);
-
 
         PathTuple res = ilsBeamSearch.iterate(tulseHillLong, 1400);
         double postScore = calculateScore(res);
@@ -210,7 +203,6 @@ public class IteratedLocalSearchMainAlgorithmTest {
         PathTuple res = ilsBFS.iterate(tulseHillLong, 2000);
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);
-
 
         assertTrue(postScore >= originalScore);
         assertTrue(postDistance <= originalLength + 2000);

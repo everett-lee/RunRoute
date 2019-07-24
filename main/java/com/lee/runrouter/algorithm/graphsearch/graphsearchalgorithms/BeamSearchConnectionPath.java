@@ -38,6 +38,7 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
 
     private List<PathTuple> queue;
     private Set<Long> visitedWays;
+    private Set<Long> visitedNodes;
 
     @Autowired
     public BeamSearchConnectionPath(ElementRepo repo,
@@ -48,7 +49,9 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                                     @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new ArrayList<>();
-        visitedWays = new HashSet<>();
+
+        this.visitedWays = new HashSet<>();
+        this.visitedNodes = new HashSet<>();
     }
 
 
@@ -61,23 +64,27 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
      * @param originWay the starting way of the connecting path
      * @param targetNode the target node of the connecting path
      * @param targetWay the target way of the connecting path
-     * @param distance the total distance available to travel
+     * @param availableDistance the total distance available to travel
      * @return a PathTuple that is the head of the linked list
      * of PathTuples containing the path back to the origin point
      */
     @Override
     public PathTuple connectPath(Node originNode, Way originWay, Node targetNode, Way targetWay,
-                                 double distance, double REPLACETWO) {
+                                 double availableDistance, double initialDistance) {
         double currentRouteLength;
-        visitedWays = new HashSet<>();
+
+        this.visitedWays = new HashSet<>();
+        this.visitedNodes = new HashSet<>();
+
         this.queue = new ArrayList<>();
+
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
-        double upperBound = distance;
+        double upperBound = availableDistance;  // the remaining distance for the route
 
         // add the starting PathTuple of the chain, with no link
         queue.add(new PathTupleMain(null, originNode, originWay,
-                0, 0, 0));
+                0, 0, initialDistance));
 
         while (!queue.isEmpty() && elapsedTime <= TIME_LIMIT) {
             queue.sort(Comparator
@@ -95,7 +102,6 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
             Way currentWay = topTuple.getCurrentWay();
             Node currentNode = topTuple.getPreviousNode();
             double score;
-            currentRouteLength = topTuple.getTotalLength();
 
             // the route has reached the target
             if (currentWay.getId() == targetWay.getId()) {
@@ -118,8 +124,9 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();
 
-                // skip where this way has already been explored
-                if (visitedWays.contains(selectedWay.getId())) {
+                // skip where this way or node has already been explored
+                if (visitedWays.contains(selectedWay.getId()) ||
+                        this.visitedNodes.contains(connectingNode.getId())) {
                     continue;
                 }
 

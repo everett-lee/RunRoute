@@ -69,10 +69,12 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             end = getEndPathSegment(start, r);
 
             // calculate the length in metres of the segment to be removed, and
-            // add to remaining distance
-            double exisitingSegmentLength = calculateDistance(start, end); // does not include
+            // add to available distance
+            double existingSegmentLength = calculateDistance(start, end); // does not include
             // start, includes end
-            availableDistance += exisitingSegmentLength;
+            availableDistance += existingSegmentLength;
+
+            System.out.println("ADDED " + existingSegmentLength + "TO GET " + availableDistance);
 
             // generate the new segment
             PathTuple newSegment = graphSearch.connectPath(start.getPreviousNode(), start.getCurrentWay(),
@@ -82,13 +84,16 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             double oldSegmentScore = calculateScore(start, end);
             double newSegmentScore = calculateScore(newSegment, null);
 
-            if (oldSegmentScore > newSegmentScore || (newSegment == null)
+            if (oldSegmentScore > newSegmentScore || newSegment == null
                     || newSegment.getSegmentLength() == -1) {
                 a++;
                 r++;
 
-                // minus the length in metres of the segment length as it was not removed
-                availableDistance -= exisitingSegmentLength;
+                // subtract the length in metres of the segment length as it was not removed
+                availableDistance -= existingSegmentLength;
+
+
+                System.out.println("ADDED BAK " + existingSegmentLength + "TO GET " + availableDistance);
 
                 // new segment score is higher, so replace old path segment with the new one
             } else {
@@ -97,8 +102,10 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
                 // remove the added distance from the remaining
                 availableDistance -= newSegmentDistance;
-                System.out.println("NEW SEG " + newSegmentDistance);
-                System.out.println("AVAIL " + availableDistance);
+
+                System.out.println("NEW SEGMENT ADDED >>>>>>>>>>>>>>>>>>");
+                System.out.println("ADDED BACK " + newSegmentDistance + "TO GET " + availableDistance);
+                System.out.println("NEW SEGMENT ADDED END >>>>>>>>>>>>>>>>>>");
 
                 insertSegment(start, end, newSegment);
 

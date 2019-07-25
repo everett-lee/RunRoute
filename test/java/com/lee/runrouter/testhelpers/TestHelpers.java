@@ -43,11 +43,46 @@ public class TestHelpers {
         return acc;
     }
 
-    static public PathTuple getMorrishShort() {
+    static public PathTuple getMorrish5k() {
         PathTuple morrishRoadShort = null;
         // deserialise test path used for testing.
         try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/morrishshort.ser");
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/morrish5k.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            morrishRoadShort = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return morrishRoadShort;
+    }
+
+    static public PathTuple getMorrish14k() {
+        PathTuple morrishRoadShort = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/morrish14k.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            morrishRoadShort = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return morrishRoadShort;
+    }
+    static public PathTuple getMorrish21k() {
+        PathTuple morrishRoadShort = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/morrish21k.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             morrishRoadShort = (PathTuple) in.readObject();
             in.close();
@@ -65,7 +100,7 @@ public class TestHelpers {
         PathTuple morrishRoadProb = null;
         // deserialise test path used for testing.
         try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/morrishProb1.ser");
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/morrishProblem1.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             morrishRoadProb = (PathTuple) in.readObject();
             in.close();
@@ -83,7 +118,7 @@ public class TestHelpers {
         PathTuple morrishRoadProb = null;
         // deserialise test path used for testing.
         try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/morrishProb2.ser");
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/morrishProblem2.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             morrishRoadProb = (PathTuple) in.readObject();
             in.close();
@@ -97,11 +132,11 @@ public class TestHelpers {
         return morrishRoadProb;
     }
 
-    static public PathTuple getCraignair() {
+    static public PathTuple getCraignair5k() {
         PathTuple morrishRoadShort = null;
         // deserialise test path used for testing.
         try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/craignair.ser");
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/craignair5k.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             morrishRoadShort = (PathTuple) in.readObject();
             in.close();
@@ -115,11 +150,82 @@ public class TestHelpers {
         return morrishRoadShort;
     }
 
-    static public PathTuple getTulseLong() {
+    static public PathTuple getCraignair14k() {
+        PathTuple morrishRoadShort = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/craignair14k.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            morrishRoadShort = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return morrishRoadShort;
+    }
+    static public PathTuple getCraignair21k() {
+        PathTuple morrishRoadShort = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/craignair21k.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            morrishRoadShort = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return morrishRoadShort;
+    }
+
+    static public PathTuple getTulse5k() {
         PathTuple tulseHillLong = null;
         // deserialise test repo used for testing.
         try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/tulsehilllong.ser");
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/tulse5k.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            tulseHillLong = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return tulseHillLong;
+    }
+
+    static public PathTuple getTulse14k() {
+        PathTuple tulseHillLong = null;
+        // deserialise test repo used for testing.
+        try {
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/tulse14k.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            tulseHillLong = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return tulseHillLong;
+    }
+
+    static public PathTuple getTulse21k() {
+        PathTuple tulseHillLong = null;
+        // deserialise test repo used for testing.
+        try {
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/tulse21k.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             tulseHillLong = (PathTuple) in.readObject();
             in.close();

@@ -22,15 +22,15 @@ import static com.lee.runrouter.testhelpers.TestHelpers.*;
 import static org.mockito.Mockito.*;
 
 public class ExecutorCreateListFromLinkedListTest {
-    private PathTuple morrishRoad;
-    private PathTuple craigNair;
+    private PathTuple morrish5k;
+    private PathTuple craigNair14k;
     private ElementRepo repo;
     private LinkedListToArray linkedListToArray;
     private LinkedListToArray linkedListToArrayNodes;
 
     {
-        morrishRoad = getMorrishShort();
-        craigNair = getCraignair();
+        morrish5k = getMorrish5k();
+        craigNair14k = getCraignair14k();
         repo = getRepo();
     }
 
@@ -42,7 +42,7 @@ public class ExecutorCreateListFromLinkedListTest {
 
     @Test
     public void testMorrishConversion() throws InvocationTargetException, IllegalAccessException {
-        List<Node> result = linkedListToArray.convert(morrishRoad);
+        List<Node> result = linkedListToArray.convert(morrish5k);
         //result = linkedListToArrayNodes.convert(morrishRoad);
 
 
@@ -55,7 +55,7 @@ public class ExecutorCreateListFromLinkedListTest {
     }
     @Test
     public void testCraignairConversion() throws InvocationTargetException, IllegalAccessException {
-        List<Node> result = (List<Node>) linkedListToArray.convert(craigNair);
+        List<Node> result = (List<Node>) linkedListToArray.convert(craigNair14k);
 
 
         assertTrue(result.get(0).getId() == result.get(result.size()-1).getId());

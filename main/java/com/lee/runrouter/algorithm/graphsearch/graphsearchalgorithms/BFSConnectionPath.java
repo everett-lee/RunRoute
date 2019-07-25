@@ -33,7 +33,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
     private final double PREFERRED_LENGTH = 1100;
     private final double PREFERRED_LENGTH_BONUS = 1;
-    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.5;
+    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.725;
     private final long TIME_LIMIT = 1000;
 
     private PriorityQueue<PathTuple> queue;
@@ -55,10 +55,9 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         this.visitedNodes = new HashSet<>();
     }
 
-
     @Override
     public PathTuple connectPath(Node originNode, Way originWay, Node targetNode, Way targetWay,
-                                 double availableDistance, double initialDistance) {
+                                 double availableDistance, double initialDistance, double targetDistance) {
 
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
@@ -86,10 +85,13 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                 double finalDistance = edgeDistanceCalculator
                         .calculateDistance(currentNode, targetNode, targetWay);
 
-                // create a new tuple representing the journey from the previous node to the final node
-                PathTuple returnTuple = new PathTupleMain(topTuple, targetNode,
-                        targetWay, 0, finalDistance, topTuple.getTotalLength() + finalDistance);
-                return returnTuple;
+                // the route is at least as long as the one it replaces
+                if (topTuple.getTotalLength() >= targetDistance) {
+                    // create a new tuple representing the journey from the previous node to the final node
+                    PathTuple returnTuple = new PathTupleMain(topTuple, targetNode,
+                            targetWay, 0, finalDistance, topTuple.getTotalLength() + finalDistance);
+                    return returnTuple;
+                }
             }
 
             // distance to origin point from the last explored way

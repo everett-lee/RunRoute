@@ -21,13 +21,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.lee.runrouter.testhelpers.TestHelpers.getMorrishShort;
-import static com.lee.runrouter.testhelpers.TestHelpers.getRepo;
-import static com.lee.runrouter.testhelpers.TestHelpers.getTulseLong;
+import static com.lee.runrouter.testhelpers.TestHelpers.*;
 
 public class IteratedLocalSearchTestAppendPath {
-    PathTuple morrishWayShort;
-    PathTuple tulseHillLonger;
+    PathTuple morrishWay5k;
+    PathTuple tulse14k;
     ILSGraphSearch connectPath;
     DistanceCalculator distanceCalculator;
     Heuristic distanceHeuristic;
@@ -38,8 +36,8 @@ public class IteratedLocalSearchTestAppendPath {
     ElementRepo repo;
 
     {
-        morrishWayShort = getMorrishShort();
-        tulseHillLonger = getTulseLong();
+        morrishWay5k = getMorrish5k();
+        tulse14k = getTulse14k();
         repo = getRepo();
     }
 
@@ -67,7 +65,7 @@ public class IteratedLocalSearchTestAppendPath {
 
     @Test
     public void testInsertSingleNode() {
-        PathTuple head = reverseList(morrishWayShort);
+        PathTuple head = reverseList(morrishWay5k);
 
 
         PathTuple originalHead = head;
@@ -77,7 +75,8 @@ public class IteratedLocalSearchTestAppendPath {
         PathTuple end = getEndPathSegment(start, 1);
 
         PathTuple newSegment = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 2000, start.getTotalLength());
+                end.getPreviousNode(), end.getCurrentWay(), 2000, start.getTotalLength(),
+                2000);
         PathTuple newTail = getTail(head);
 
         assertEquals(originalHead, head);
@@ -86,7 +85,7 @@ public class IteratedLocalSearchTestAppendPath {
 
     @Test
     public void testInsertSeveralNodes() {
-        PathTuple head = reverseList(morrishWayShort);
+        PathTuple head = reverseList(morrishWay5k);
 
         PathTuple originalHead = head;
         PathTuple originalTail = getTail(head);
@@ -95,7 +94,8 @@ public class IteratedLocalSearchTestAppendPath {
         PathTuple end = getEndPathSegment(start, 12);
 
         PathTuple newSegment = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 2000, start.getTotalLength());
+                end.getPreviousNode(), end.getCurrentWay(), 2000, start.getTotalLength(),
+                2000);
 
         System.out.println(newSegment.getSegmentLength());
         returnPath(newSegment, "");

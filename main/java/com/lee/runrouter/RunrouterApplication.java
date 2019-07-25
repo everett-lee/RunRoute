@@ -5,6 +5,7 @@ import com.lee.runrouter.executor.Executor;
 import com.lee.runrouter.executor.ExecutorMain;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 
+import com.lee.runrouter.graph.graphbuilder.GraphBuilder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -20,12 +21,12 @@ public class RunrouterApplication {
 
         boolean[] opts = {true, true, true, true, true, true, true,
                 true, true, true, true, true, true, true, true};
-        double[] coords = {51.889757, 0.900319};
+        double[] coords = {51.446529, -0.125446};
 
         final long startTime = System.currentTimeMillis();
         ElementRepo repo = ctx.getBean(ElementRepo.class);
         Executor executor = ctx.getBean(ExecutorMain.class);
-
+        GraphBuilder gb = ctx.getBean(GraphBuilder.class);
 
         final long endTime = System.currentTimeMillis();
 

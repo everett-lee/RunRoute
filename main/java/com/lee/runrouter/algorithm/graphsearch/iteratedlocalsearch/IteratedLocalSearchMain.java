@@ -78,7 +78,8 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
             // generate the new segment
             PathTuple newSegment = graphSearch.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                    end.getPreviousNode(), end.getCurrentWay(), availableDistance, start.getTotalLength());
+                    end.getPreviousNode(), end.getCurrentWay(), availableDistance, start.getTotalLength(),
+                    existingSegmentLength);
             setIterations(getIterations() + 1);
 
             double oldSegmentScore = calculateScore(start, end);

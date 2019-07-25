@@ -37,7 +37,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
     private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
     private final double PREFERRED_LENGTH = 1000     ;
     private final double PREFERRED_LENGTH_BONUS = 1;
-    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.5;
+    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.75;
     private final long TIME_LIMIT = 1000;
 
     private List<PathTuple> queue;

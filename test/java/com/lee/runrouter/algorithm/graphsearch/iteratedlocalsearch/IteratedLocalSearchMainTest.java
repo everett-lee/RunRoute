@@ -3,7 +3,6 @@ package com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ILSGraphSearch;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
-import com.lee.runrouter.graph.graphbuilder.node.Node;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,15 +16,15 @@ import static com.lee.runrouter.testhelpers.TestHelpers.*;
 import static org.junit.Assert.*;
 
 public class IteratedLocalSearchMainTest {
-    PathTuple morrishRoadShort;
-    PathTuple tulseHillLong;
+    PathTuple morrish5k;
+    PathTuple tulse5k;
     ILSGraphSearch ilsGraphSearch;
 
     private IteratedLocalSearch ils;
 
     {
-        morrishRoadShort = getMorrishShort();
-        tulseHillLong = getTulseLong();
+        morrish5k = getMorrish5k();
+        tulse5k = getTulse5k();
     }
 
     @Before
@@ -41,7 +40,7 @@ public class IteratedLocalSearchMainTest {
         Method getStartPathSegment = Arrays.stream(ils.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("getStartPathSegment")).findFirst().get();
         getStartPathSegment.setAccessible(true);
-        PathTuple result = (PathTuple) getStartPathSegment.invoke(ils, morrishRoadShort, 1);
+        PathTuple result = (PathTuple) getStartPathSegment.invoke(ils, morrish5k, 1);
         long resultid = result.getPreviousNode().getId();
         long expected = 114280020;
 
@@ -110,8 +109,6 @@ public class IteratedLocalSearchMainTest {
 
         PathTupleMain a = new PathTupleMain(null, null, null, 0, 0 ,0);
 
-        returnPath(morrishRoadShort, "");
-
         Method getPathsize = Arrays.stream(ils.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("getPathSize")).findFirst().get();
         getPathsize.setAccessible(true);
@@ -128,9 +125,6 @@ public class IteratedLocalSearchMainTest {
         PathTupleMain a = new PathTupleMain(null, null, null, 0, 0 ,0);
         PathTupleMain b = new PathTupleMain(a, null, null, 0, 0 ,0);
         PathTupleMain c = new PathTupleMain(b, null, null, 0, 0 ,0);
-
-
-        returnPath(morrishRoadShort, "");
 
         Method getPathsize = Arrays.stream(ils.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("getPathSize")).findFirst().get();
@@ -260,7 +254,7 @@ public class IteratedLocalSearchMainTest {
 
     @Test
     public void testReverseList() throws InvocationTargetException, IllegalAccessException {
-        PathTuple head = morrishRoadShort;
+        PathTuple head = morrish5k;
         PathTuple tail = head;
 
         while (tail.getPredecessor() != null) {
@@ -276,7 +270,7 @@ public class IteratedLocalSearchMainTest {
 
     @Test
     public void tesUpdateDistancesOne() throws InvocationTargetException, IllegalAccessException {
-        PathTuple head = morrishRoadShort;
+        PathTuple head = morrish5k;
         double originalLen = calculateDistance(head);
         PathTuple originalPred = head.getPredecessor();
 

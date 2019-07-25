@@ -27,7 +27,6 @@ public class RunrouterApplication {
         ElementRepo repo = ctx.getBean(ElementRepo.class);
         Executor executor = ctx.getBean(ExecutorMain.class);
         GraphBuilder gb = ctx.getBean(GraphBuilder.class);
-
         final long endTime = System.currentTimeMillis();
 
         System.out.println(repo.getWayRepo().size());

@@ -72,7 +72,7 @@ public class CycleGeneratorMainTest {
     public void testMorrishRoad5k() throws PathNotGeneratedException {
         double[] coords = {51.446810, -0.125484};
         PathTuple res = cycleGenerator.generateCycle(coords, 5000);
-
+        String name = "morrish5k";
         double length = calculateDistance(res);
 
         assertTrue(calculateScore(res) > 0);
@@ -84,7 +84,7 @@ public class CycleGeneratorMainTest {
     public void testMorrishRoad14k() throws PathNotGeneratedException {
         double[] coords = {51.446810, -0.125484};
         PathTuple res = cycleGenerator.generateCycle(coords, 14000);
-
+        String name = "morrish14k";
         double length = calculateDistance(res);
 
         assertTrue(calculateScore(res) > 0);
@@ -96,6 +96,7 @@ public class CycleGeneratorMainTest {
     public void testMorrishRoad21k() throws PathNotGeneratedException {
         double[] coords = {51.446810, -0.125484};
         PathTuple res = cycleGenerator.generateCycle(coords, 21000);
+        String name = "morrish21k";
 
         double length = calculateDistance(res);
 
@@ -108,6 +109,7 @@ public class CycleGeneratorMainTest {
     @Test(timeout=2000)
     public void testMorrishRoadProblemOne() throws PathNotGeneratedException {
         double[] coords = {51.446461, -0.125472};
+        String name = "morrishProblem1";
         PathTuple res = cycleGenerator.generateCycle(coords,        5500);
 
         double length = calculateDistance(res);
@@ -120,6 +122,7 @@ public class CycleGeneratorMainTest {
     @Test(timeout=2000)
     public void testMorrishRoadProblemTwo() throws PathNotGeneratedException {
         double[] coords = {51.447387,-0.126467};
+        String name = "morrishProblem2";
         PathTuple res = cycleGenerator.generateCycle(coords, 5000);
 
         double length = calculateDistance(res);
@@ -142,6 +145,7 @@ public class CycleGeneratorMainTest {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
+        String name = "craignair5k";
         PathTuple res = cycleGenerator.generateCycle(coords, 5000);
 
         double length = calculateDistance(res);
@@ -164,6 +168,7 @@ public class CycleGeneratorMainTest {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
+        String name = "craignair14k";
         PathTuple res = cycleGenerator.generateCycle(coords, 14000);
 
         double length = calculateDistance(res);
@@ -186,6 +191,7 @@ public class CycleGeneratorMainTest {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
+        String name = "craignair21k";
         PathTuple res = cycleGenerator.generateCycle(coords, 21000);
 
         double length = calculateDistance(res);
@@ -208,12 +214,10 @@ public class CycleGeneratorMainTest {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
+        String name = "tulse5k";
         PathTuple res = cycleGenerator.generateCycle(coords, 5000);
 
         double length = calculateDistance(res);
-
-        System.out.println(length);
-        serialize(res);
 
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -234,10 +238,10 @@ public class CycleGeneratorMainTest {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
+        String name = "tulse14k";
         PathTuple res = cycleGenerator.generateCycle(coords, 14000);
 
         double length = calculateDistance(res);
-
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
@@ -256,6 +260,7 @@ public class CycleGeneratorMainTest {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
+        String name = "tulse21k";
         PathTuple res = cycleGenerator.generateCycle(coords, 21000);
 
         double length = calculateDistance(res);
@@ -276,16 +281,17 @@ public class CycleGeneratorMainTest {
         return distance;
     }
 
-    static void serialize(PathTuple head) {
+    static void serialize(PathTuple head, String routeName) {
         try {
             System.out.println("Starting... ");
+            String fileName = String.format("/home/lee/project/app/runrouter/src/%s.ser", routeName);
             FileOutputStream fileOut =
-                    new FileOutputStream("/home/lee/project/app/runrouter/src/tulse5k.ser");
+                    new FileOutputStream(fileName);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(head);
             out.close();
             fileOut.close();
-            System.out.printf("/home/lee/project/app/runrouter/src/tulsehilllong.ser");
+            System.out.printf(fileName);
         } catch (IOException i) {
             i.printStackTrace();
         }

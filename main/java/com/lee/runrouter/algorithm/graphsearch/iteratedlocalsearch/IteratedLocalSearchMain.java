@@ -107,6 +107,10 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
                 r = 2;
             }
         }
+
+
+        System.out.println(this.iterations + " >>>>>> ITERATIONS");
+        System.out.println(this.improvements + " >>>>>>>>> IMPROVEMENTS");
         return head;
     }
 
@@ -228,7 +232,6 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         theTail.setPredecessor(end.getPredecessor()); // tail of new segment is linked
         // to next link of the head of the remaining existing path.
         end.setPredecessor(null);
-
         return start;
     }
 

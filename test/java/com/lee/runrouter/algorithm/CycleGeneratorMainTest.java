@@ -75,6 +75,8 @@ public class CycleGeneratorMainTest {
 
         double length = calculateDistance(res);
 
+        System.out.println(length);
+        serialize(res);
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
@@ -87,6 +89,9 @@ public class CycleGeneratorMainTest {
         PathTuple res = cycleGenerator.generateCycle(coords,        5500);
 
         double length = calculateDistance(res);
+
+        System.out.println(length);
+        serialize(res);
 
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -204,7 +209,7 @@ public class CycleGeneratorMainTest {
         try {
             System.out.println("Starting... ");
             FileOutputStream fileOut =
-                    new FileOutputStream("/home/lee/project/app/runrouter/src/craignair.ser");
+                    new FileOutputStream("/home/lee/project/app/runrouter/src/morrishProb1.ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(head);
             out.close();

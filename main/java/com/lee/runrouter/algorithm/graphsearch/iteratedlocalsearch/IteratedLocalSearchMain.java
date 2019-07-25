@@ -219,10 +219,8 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
     // insert the newSegment linked list into the main path linked list
     private PathTuple insertSegment(PathTuple start, PathTuple end, PathTuple newSegment) {
         PathTuple theTail = newSegment;
-        System.out.println("NEW SEGMENT START " + newSegment.getPreviousNode());
         newSegment = reverseList(newSegment); // reverse the segment to be added, as it
         // is currently in the wrong order
-        System.out.println("NEW SEGMENT END " + newSegment.getPreviousNode());
         start.setPredecessor(newSegment.getPredecessor()); // start of segment links to
         // new segment's next link (head of new segment is currently the same as the start
         // head

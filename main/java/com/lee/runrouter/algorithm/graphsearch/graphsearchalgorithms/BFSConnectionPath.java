@@ -26,14 +26,14 @@ import java.util.*;
 @Component
 @Qualifier("BFSConnectionPath")
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
-    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.25;
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
     private final double PREFERRED_MIN_LENGTH = 500; // minimum length of way to avoid
     // subtracting a score penalty
     private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
-    private final double PREFERRED_LENGTH = 1000;
+    private final double PREFERRED_LENGTH = 1100;
     private final double PREFERRED_LENGTH_BONUS = 1;
+    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.25;
     private final long TIME_LIMIT = 1000;
 
     private PriorityQueue<PathTuple> queue;

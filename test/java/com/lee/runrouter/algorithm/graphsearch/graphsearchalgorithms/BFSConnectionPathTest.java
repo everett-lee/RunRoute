@@ -89,6 +89,8 @@ public class BFSConnectionPathTest {
         PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
                 end.getPreviousNode(), end.getCurrentWay(), 2000, start.getTotalLength());
 
+
+        System.out.println(calculateScore(res));
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
     }

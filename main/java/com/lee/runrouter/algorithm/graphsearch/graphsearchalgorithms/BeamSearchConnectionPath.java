@@ -25,14 +25,14 @@ import java.util.*;
 @Component
 @Qualifier("BeamSearchConnectionpath")
 public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
-    private final int BEAM_SIZE = 7500; // the max number of possible Nodes under review
-    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.75;
+    private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
+    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.15;
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
-    private final double PREFERRED_MIN_LENGTH = 500; // minimum length of way to avoid
+    private final double PREFERRED_MIN_LENGTH = 300; // minimum length of way to avoid
     // subtracting a score penalty
     private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
-    private final double PREFERRED_LENGTH = 1100;
+    private final double PREFERRED_LENGTH = 1000;
     private final double PREFERRED_LENGTH_BONUS = 1;
     private final long TIME_LIMIT = 1000;
 

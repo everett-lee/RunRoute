@@ -30,16 +30,14 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
     private final double REPEATED_EDGE_PENALTY = 1000; // deducted from score where
     // edge/Way has been previously visited
-    private final double RANDOM_REDUCER = 50; // divides into random number added to the
+    private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
-    private final double MINIMUM_LENGTH = 5; // minimum length of way to avoid
-    // skipping
     private final double PREFERRED_MIN_LENGTH = 300; // minimum length of way to avoid
     // subtracting a score penalty
     private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
     private final double PREFERRED_LENGTH = 1000     ;
     private final double PREFERRED_LENGTH_BONUS = 1;
-    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.75;
+    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.25;
     private final long TIME_LIMIT = 1000;
 
     private List<PathTuple> queue;
@@ -172,7 +170,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
 
-                score += addScores(selectedWay, gradient, RANDOM_REDUCER);
+                score += super.addScores(selectedWay, gradient, RANDOM_REDUCER);
 
                 // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
@@ -183,7 +181,6 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
                 if (!repo.getOriginWay().getNodeContainer().getNodes().contains(visitedNodes)) {
                     this.visitedNodes.add(connectingNode.getId());
                 }
-
 
                 elapsedTime = (new Date()).getTime() - startTime;
             }

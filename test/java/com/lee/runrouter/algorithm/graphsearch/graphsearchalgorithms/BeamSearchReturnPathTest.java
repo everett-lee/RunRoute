@@ -71,11 +71,10 @@ public class BeamSearchReturnPathTest {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
-        PathTuple x = returnPath.searchGraph(w, coords, 5000);
+        PathTuple x = returnPath.searchGraph(w, coords, 2500);
 
+        System.out.println(calculateScore(x));
         assertEquals(originNode, x.getPreviousNode());
-
-
     }
 
 

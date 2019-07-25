@@ -281,7 +281,7 @@ public class IteratedLocalSearchMainTest {
         Method updateDistances = Arrays.stream(ils.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("updateDistances")).findFirst().get();
         updateDistances.setAccessible(true);
-        PathTuple result = (PathTuple) updateDistances.invoke(ils, head);
+        updateDistances.invoke(ils, head);
 
         assertEquals(originalLen + 12.5, calculateDistance(head), 0.0001);
     }

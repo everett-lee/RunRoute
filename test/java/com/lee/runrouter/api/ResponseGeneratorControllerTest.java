@@ -110,7 +110,7 @@ public class ResponseGeneratorControllerTest {
 
     @Test
     public void testGrassCorrect() throws NoSuchFieldException, IllegalAccessException {
-        boolean[] options = {false,false,false,false,false,true,false,false};
+        boolean[] options = {false,false,false,false,false,false,true,false};
 
         responseGeneratorController.receiveArgs(50, 1, 2000, 25, options);
 
@@ -142,8 +142,8 @@ public class ResponseGeneratorControllerTest {
     }
 
     @Test
-    public void testResidentialCorrect() throws NoSuchFieldException, IllegalAccessException {
-        boolean[] options = {false,false,false,false,false,false,true,false};
+    public void testBackRoadsCorrect() throws NoSuchFieldException, IllegalAccessException {
+        boolean[] options = {false,false,false,false,false,true,false,false};
 
         responseGeneratorController.receiveArgs(50, 1, 2000, 25, options);
 

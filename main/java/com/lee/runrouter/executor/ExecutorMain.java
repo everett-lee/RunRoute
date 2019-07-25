@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -27,6 +28,8 @@ public class ExecutorMain implements Executor {
     private ElevationHeuristic elevationHeuristic;
     private LinkedListToArray linkedListToArray;
 
+    private final double INITIAL_GRAPH_SIZE = 21000; // the starting size of the generated graph
+
     public ExecutorMain(
             @Qualifier("RouteGeneratorMain") RouteGenerator routeGenerator,
             GraphBuilder graphBuilder,
@@ -40,6 +43,22 @@ public class ExecutorMain implements Executor {
         this.linkedListToArray = linkedListToArray;
     }
 
+    /**
+     * Receive the route paramaters from the client and generate the required route.
+     * The coordinates and distance are first used to build a graph containing
+     * information for the required area. The other parameters are then passed to the
+     * route generation class.
+     *
+     * @param coords the user's initial coordinates
+     * @param maxGradient the maximum incline requested
+     * @param distance the target route distance
+     * @param options an array of booleans representing options
+     *                selected by the user
+     * @return An array of nodes visited in the course of the route. These
+     *         are sent in JSON format the client
+     * @throws PathNotGeneratedException where a suitable route could not
+     *         generated
+     */
     @Override
     public List<Node> executeQuery(double[] coords, double maxGradient, double distance, boolean[] options)
             throws PathNotGeneratedException {
@@ -58,6 +77,21 @@ public class ExecutorMain implements Executor {
         System.out.println(returnPath(route, ""));
 
         return linkedListToArray.convert(route);
+    }
+
+    /**
+     * Build a graph suited to a 21km route on receiving the user's initial
+     * position from the client. This serves to speed up the graph generation
+     * stage of later queries
+     *
+     * @param coords the user's initial coordinates
+     */
+    @Override
+    public void executeInitialGraphBuild(double[] coords) {
+        boolean[] roadOptions = {true, true, true, true, true, true, true,
+                true, true, true, true, true, true, true, true};
+
+        this.graphBuilder.buildGraph(coords, INITIAL_GRAPH_SIZE, roadOptions);
     }
 
     // create a boolean array reflecting the users preference selections
@@ -130,7 +164,6 @@ public class ExecutorMain implements Executor {
             elevationHeuristic.setOptions(true);
         }
     }
-
 
     static public String returnPath(PathTuple tp, String acc) {
         acc += "node(id:";

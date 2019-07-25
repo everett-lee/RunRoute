@@ -63,8 +63,11 @@ public class DistanceFromOriginToMidTestHeuristicRealData {
         double score4 = distanceFromOriginHeuristic.getScore(w4);
 
 
+        // second way closer than first
         assertTrue(score2 > score1);
+        // third way closer than first
         assertTrue(score3 > score1);
+        // fourth way closer than third
         assertTrue(score4 > score3);
     }
 
@@ -87,47 +90,8 @@ public class DistanceFromOriginToMidTestHeuristicRealData {
             queue.add(pt);
         });
 
+        // w1 is has the highest score
         assertEquals(queue.poll().getCurrentWay().getId(), 385587256L);
     }
-
-    @Test
-    public void testClosestToOrigin() {
-        Node n1 = new Node(1, 1, 0);
-        Node n2 = new Node(2, 1, 0);
-
-        Way origin = repo.getOriginWay();
-        Way w1 = repo.getWayRepo().stream().filter(x -> x.getId() == 192339946L).findFirst().get();
-        Way w2 = repo.getWayRepo().stream().filter(x -> x.getId() == 578916713L).findFirst().get();
-        Way w3 = repo.getWayRepo().stream().filter(x -> x.getId() == 4970487L).findFirst().get();
-        Way w4 = repo.getWayRepo().stream().filter(x -> x.getId() == 5045573L).findFirst().get();
-
-        PriorityQueue<PathTuple> queue = new PriorityQueue<>(Comparator
-                .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
-
-        List<Way> outQueue = new ArrayList<>();
-
-        PathTupleMain pt = new PathTupleMain(null, n1
-                , w1, distanceFromOriginHeuristic.getScore(w1), 0, 0);
-        queue.add(pt);
-        pt = new PathTupleMain(null, n1
-                , w2, distanceFromOriginHeuristic.getScore(w2), 0, 0);
-        queue.add(pt);
-        pt = new PathTupleMain(null, n1
-                , w3, distanceFromOriginHeuristic.getScore(w3), 0, 0);
-        queue.add(pt);
-        pt = new PathTupleMain(null, n1
-                , w4, distanceFromOriginHeuristic.getScore(w4), 0, 0);
-        queue.add(pt);
-
-        while (!queue.isEmpty()) {
-            outQueue.add(queue.poll().getCurrentWay());
-        }
-
-        assertEquals(outQueue, new ArrayList<>(Arrays.asList(w1, w2, w3, w4)));
-    }
-
-
-
-
 }
 

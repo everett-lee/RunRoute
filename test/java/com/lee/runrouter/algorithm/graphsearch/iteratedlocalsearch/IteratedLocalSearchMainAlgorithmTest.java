@@ -100,11 +100,15 @@ public class IteratedLocalSearchMainAlgorithmTest {
         double originalLength = calculateDistance(morrish5k);
         double target = 270;
 
-
         PathTuple res = ilsBFS.iterate(morrish5k, target);
 
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);
+
+        System.out.println(originalLength);
+        System.out.println(postDistance);
+        System.out.println(originalScore);
+        System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
         assertTrue(postDistance <= (originalLength + target) * 1.1);
@@ -144,7 +148,7 @@ public class IteratedLocalSearchMainAlgorithmTest {
     public void testScoreGreaterOrEqualMorrishProblemOneBFS() {
         double originalScore = calculateScore(morrishProblemOne);
         double originalLength = calculateDistance(morrishProblemOne);
-        double target = 300;
+        double target = 100;
 
         PathTuple res = ilsBFS.iterate(morrishProblemOne, target);
         double postScore = calculateScore(res);
@@ -159,7 +163,7 @@ public class IteratedLocalSearchMainAlgorithmTest {
     public void testScoreGreaterOrEqualMorrishProblemTwoBFS() {
         double originalScore = calculateScore(morrishProblemTwo);
         double originalLength = calculateDistance(morrishProblemTwo);
-        double target = 780;
+        double target = 0;
 
         PathTuple res = ilsBFS.iterate(morrishProblemTwo, target);
         double postScore = calculateScore(res);
@@ -195,6 +199,7 @@ public class IteratedLocalSearchMainAlgorithmTest {
 
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);
+
         assertTrue(postScore >= originalScore);
         assertTrue(postDistance <= (originalLength + target) * 1.1);
     }
@@ -209,11 +214,6 @@ public class IteratedLocalSearchMainAlgorithmTest {
 
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);
-        
-        System.out.println(originalLength);
-        System.out.println(postDistance);
-        System.out.println(originalScore);
-        System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
         assertTrue(postDistance <= (originalLength + target) * 1.1);

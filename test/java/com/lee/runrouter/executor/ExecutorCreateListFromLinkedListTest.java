@@ -46,21 +46,14 @@ public class ExecutorCreateListFromLinkedListTest {
         //result = linkedListToArrayNodes.convert(morrishRoad);
 
 
-        result.forEach(x -> System.out.println(x.getId()));
-
         assertTrue(result.get(0).getId() == result.get(result.size()-1).getId());
-
-
-
     }
+
     @Test
     public void testCraignairConversion() throws InvocationTargetException, IllegalAccessException {
         List<Node> result = (List<Node>) linkedListToArray.convert(craigNair14k);
 
 
         assertTrue(result.get(0).getId() == result.get(result.size()-1).getId());
-
     }
-
-
 }

@@ -76,7 +76,7 @@ public class IteratedLocalSearchTestAppendPath {
 
         PathTuple newSegment = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
                 end.getPreviousNode(), end.getCurrentWay(), 2000, start.getTotalLength(),
-                2000);
+                0);
         PathTuple newTail = getTail(head);
 
         assertEquals(originalHead, head);
@@ -91,13 +91,12 @@ public class IteratedLocalSearchTestAppendPath {
         PathTuple originalTail = getTail(head);
 
         PathTuple start = getStartPathSegment(head, 4);
-        PathTuple end = getEndPathSegment(start, 12);
+        PathTuple end = getEndPathSegment(start, 9);
 
         PathTuple newSegment = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
                 end.getPreviousNode(), end.getCurrentWay(), 2000, start.getTotalLength(),
-                2000);
+                0);
 
-        System.out.println(newSegment.getSegmentLength());
         returnPath(newSegment, "");
 
         insertSegment(start, end,  newSegment);

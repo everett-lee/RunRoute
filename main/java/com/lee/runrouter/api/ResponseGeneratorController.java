@@ -35,6 +35,7 @@ public class ResponseGeneratorController {
     final double MAX_RUN_LENGTH_M = 21000;
     final String PATH_STRING = "/route/coords=({lat},{lon}),distance={distance}" +
                               ",maxGradient={maxGradient},options={options}";
+    final String COORDS_STRING = "/start/coords=({lat},{lon})";
     private Executor executor;
 
     @Autowired
@@ -43,14 +44,19 @@ public class ResponseGeneratorController {
      this.executor = executor;
     }
 
+    // endpoint for the route query. Receives the route parameters and passes them to the
+    // Executor class
     @GetMapping(path = PATH_STRING)
     public ResponseEntity<List<Node>> receiveArgs(@PathVariable double lat, @PathVariable double lon,
                                       @PathVariable double distance, @PathVariable double maxGradient,
                                       @PathVariable boolean[] options) {
 
+        // Coordinates outside of accepted range
         if (!checkCoordInput(lat, lon)) {
             throw new InvalidCoordsException(String.format("Coordinates: (%s,%s)", lat, lon));
         }
+
+        // Distance outside of accepted range
         if (!checkLengthInput(distance)) {
             throw new InvalidDistanceException(String.format("Distance: %s", distance));
         }
@@ -64,10 +70,21 @@ public class ResponseGeneratorController {
             List<Node> result = executor.executeQuery(coords, maxGradient, distance, options);
             return new ResponseEntity<>(result, responseHeaders, HttpStatus.CREATED);
 
+        // a suitable path could not be generated
         } catch (PathNotGeneratedException e) {
             throw new PathGenerationFailureException(String.format("Coordinates: (%s,%s), Distance: %s",
                     lat, lon, distance));
         }
+    }
+
+
+    // intialise the graph construction when the starting coordinates are received.
+    // does not return anything until the route parameters are sent
+    @GetMapping(path = COORDS_STRING)
+    public void receiveStartCoords(@PathVariable double lat, @PathVariable double lon) {
+            double[] coords = {lat, lon};
+
+            executor.executeInitialGraphBuild(coords);
     }
 
     // method for checking lower and upper bounds of coordinate

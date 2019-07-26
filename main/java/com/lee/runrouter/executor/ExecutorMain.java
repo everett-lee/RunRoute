@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -28,7 +27,7 @@ public class ExecutorMain implements Executor {
     private ElevationHeuristic elevationHeuristic;
     private LinkedListToArray linkedListToArray;
 
-    private final double INITIAL_GRAPH_SIZE = 21000; // the starting size of the generated graph
+    private final double INITIAL_GRAPH_SIZE = 15000; // the starting size of the generated graph
 
     public ExecutorMain(
             @Qualifier("RouteGeneratorMain") RouteGenerator routeGenerator,
@@ -92,6 +91,7 @@ public class ExecutorMain implements Executor {
                 true, true, true, true, true, true, true, true};
 
         this.graphBuilder.buildGraph(coords, INITIAL_GRAPH_SIZE, roadOptions);
+
     }
 
     // create a boolean array reflecting the users preference selections

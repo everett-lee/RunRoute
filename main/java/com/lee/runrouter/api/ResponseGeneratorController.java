@@ -82,9 +82,14 @@ public class ResponseGeneratorController {
     // does not return anything until the route parameters are sent
     @GetMapping(path = COORDS_STRING)
     public void receiveStartCoords(@PathVariable double lat, @PathVariable double lon) {
-            double[] coords = {lat, lon};
+        // Coordinates outside of accepted range
+        if (!checkCoordInput(lat, lon)) {
+            throw new InvalidCoordsException(String.format("Coordinates: (%s,%s)", lat, lon));
+        }
 
-            executor.executeInitialGraphBuild(coords);
+        double[] coords = {lat, lon};
+
+        executor.executeInitialGraphBuild(coords);
     }
 
     // method for checking lower and upper bounds of coordinate

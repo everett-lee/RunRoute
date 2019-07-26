@@ -91,7 +91,6 @@ public class ExecutorMain implements Executor {
                 true, true, true, true, true, true, true, true};
 
         this.graphBuilder.buildGraph(coords, INITIAL_GRAPH_SIZE, roadOptions);
-
     }
 
     // create a boolean array reflecting the users preference selections

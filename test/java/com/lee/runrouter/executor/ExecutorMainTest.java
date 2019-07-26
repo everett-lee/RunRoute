@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
 
 public class ExecutorMainTest {
     private Executor executor;
@@ -29,7 +28,7 @@ public class ExecutorMainTest {
         this.elevationHeuristic = mock(ElevationHeuristicMain.class);
         this.linkedListToArray = mock(LinkedListToArray.class);
         this.executor = new ExecutorMain(routeGenerator, graphBuilder, featuresHeuristic,
-                                          elevationHeuristic, linkedListToArray);
+                elevationHeuristic, linkedListToArray);
     }
 
     @Test
@@ -40,7 +39,6 @@ public class ExecutorMainTest {
         executor.executeInitialGraphBuild(coords);
         verify(graphBuilder, atLeastOnce()).buildGraph(coords, DISTANCE, OPTIONS);
     }
-
 
     @Test
     public void testInputTwo() {

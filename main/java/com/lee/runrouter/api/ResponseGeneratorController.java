@@ -1,7 +1,7 @@
 package com.lee.runrouter.api;
 
 import com.lee.runrouter.api.exceptions.PathGenerationFailureException;
-import com.lee.runrouter.graph.graphbuilder.node.Node;
+import com.lee.runrouter.executor.ResponseObject;
 import com.lee.runrouter.api.exceptions.InvalidCoordsException;
 import com.lee.runrouter.api.exceptions.InvalidDistanceException;
 import com.lee.runrouter.executor.Executor;
@@ -47,9 +47,9 @@ public class ResponseGeneratorController {
     // endpoint for the route query. Receives the route parameters and passes them to the
     // Executor class
     @GetMapping(path = PATH_STRING)
-    public ResponseEntity<List<Node>> receiveArgs(@PathVariable double lat, @PathVariable double lon,
-                                      @PathVariable double distance, @PathVariable double maxGradient,
-                                      @PathVariable boolean[] options) {
+    public ResponseEntity<ResponseObject> receiveArgs(@PathVariable double lat, @PathVariable double lon,
+                                                      @PathVariable double distance, @PathVariable double maxGradient,
+                                                      @PathVariable boolean[] options) {
 
         // Coordinates outside of accepted range
         if (!checkCoordInput(lat, lon)) {
@@ -67,7 +67,7 @@ public class ResponseGeneratorController {
         double[] coords = {lat, lon};
 
         try {
-            List<Node> result = executor.executeQuery(coords, maxGradient, distance, options);
+            ResponseObject result = executor.executeQuery(coords, maxGradient, distance, options);
             return new ResponseEntity<>(result, responseHeaders, HttpStatus.CREATED);
 
         // a suitable path could not be generated

@@ -59,7 +59,7 @@ public class ExecutorMain implements Executor {
      *         generated
      */
     @Override
-    public List<Node> executeQuery(double[] coords, double maxGradient, double distance, boolean[] options)
+    public ResponseObject executeQuery(double[] coords, double maxGradient, double distance, boolean[] options)
             throws PathNotGeneratedException {
 
         // update features heuristic to reflect user-defined options
@@ -75,7 +75,15 @@ public class ExecutorMain implements Executor {
 
         System.out.println(returnPath(route, ""));
 
-        return linkedListToArray.convert(route);
+        PathTuple tail = route;
+        while (tail.getPredecessor() != null) {
+            tail = tail.getPredecessor();
+        }
+        double length = tail.getTotalLength(); // get total route length from the tail
+        List<Node> pathNodes = linkedListToArray.convert(route);
+        String startingWay = route.getCurrentWay().getName();
+
+        return new ResponseObject(pathNodes, length, startingWay);
     }
 
     /**

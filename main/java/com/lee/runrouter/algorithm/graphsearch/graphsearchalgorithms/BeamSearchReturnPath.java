@@ -1,7 +1,6 @@
 package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 import com.lee.runrouter.algorithm.AlgoHelpers;
-import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
@@ -38,7 +37,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
     private final double PREFERRED_LENGTH = 1000     ;
     private final double PREFERRED_LENGTH_BONUS = 1;
     private final double DISTANCE_FROM_ORIGIN_BONUS = 0.75;
-    private final long TIME_LIMIT = 1000;
+    private final long TIME_LIMIT = 1500;
 
     private List<PathTuple> queue;
     private Set<Long> visitedWays;

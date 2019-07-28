@@ -6,7 +6,7 @@ import com.lee.runrouter.graph.graphbuilder.node.Node;
 import java.util.List;
 
 public interface Executor {
-    List<Node> executeQuery(double[] coords, double maxGradient,
+    ResponseObject executeQuery(double[] coords, double maxGradient,
                                    double length, boolean[] options) throws PathNotGeneratedException;
     void executeInitialGraphBuild(double[] coords);
 }

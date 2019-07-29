@@ -16,7 +16,7 @@ public class ExecutorMainTest {
     private FeaturesHeuristic featuresHeuristic;
     private ElevationHeuristic elevationHeuristic;
     private LinkedListToArray linkedListToArray;
-    private final double DISTANCE = 21000;
+    private final double DISTANCE = 20000;
     private final boolean[] OPTIONS = {true, true, true, true, true, true, true,
             true, true, true, true, true, true, true, true};
 

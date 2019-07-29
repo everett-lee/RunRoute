@@ -43,8 +43,6 @@ public class ExecutorCreateListFromLinkedListTest {
     @Test
     public void testMorrishConversion() throws InvocationTargetException, IllegalAccessException {
         List<Node> result = linkedListToArray.convert(morrish5k);
-        //result = linkedListToArrayNodes.convert(morrishRoad);
-
 
         assertTrue(result.get(0).getId() == result.get(result.size()-1).getId());
     }

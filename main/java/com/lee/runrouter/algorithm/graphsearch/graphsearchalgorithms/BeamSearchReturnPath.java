@@ -92,7 +92,8 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
         Node originNode = new Node(-1, coords[0], coords[1]);
         originNode = AlgoHelpers.findClosest(originNode, root.getNodeContainer().getNodes());
 
-        queue.add(new PathTupleMain(null, originNode, root, 0, 0, 0));
+        queue.add(new PathTupleMain(null, originNode, root, 0,
+                                    0, 0, 0));
 
         while (!queue.isEmpty()  && elapsedTime <= TIME_LIMIT) {
             queue.sort(Comparator
@@ -118,9 +119,15 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
 
                     double finalDistance = edgeDistanceCalculator
                             .calculateDistance(currentNode, repo.getOriginNode(), repo.getOriginWay());
+                    double finalGradient = gradientCalculator.calculateGradient(currentNode, currentWay,
+                            repo.getOriginNode(), repo.getOriginWay(),
+                            finalDistance);
+
+
                     // create a new tuple representing the journey from the previous node to the final node
                     PathTuple returnTuple = new PathTupleMain(topTuple, repo.getOriginNode(),
-                            repo.getOriginWay(), 0, finalDistance, topTuple.getTotalLength() + finalDistance);
+                            repo.getOriginWay(), 0, finalDistance,
+                            topTuple.getTotalLength() + finalDistance, finalGradient);
                     return returnTuple;
                 }
             }
@@ -173,7 +180,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
 
                 // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
-                        score, distanceToNext, currentRouteLength + distanceToNext);
+                        score, distanceToNext, currentRouteLength + distanceToNext, gradient);
                 queue.add(toAdd);
 
                 visitedWays.add(currentWay.getId());
@@ -186,6 +193,6 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
         }
 
         return new PathTupleMain(null, null, null, -1,
-                -1, -1);
+                -1, -1, -1);
     }
 }

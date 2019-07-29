@@ -71,7 +71,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         double upperBound = availableDistance + initialDistance; // the remaining distance for the route
 
         queue.add(new PathTupleMain(null, originNode, originWay,
-                0, 0, initialDistance));
+                0, 0, initialDistance, 0));
 
         while (!queue.isEmpty() && elapsedTime <= TIME_LIMIT) {
             PathTuple topTuple = queue.poll();
@@ -84,12 +84,16 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
             if (topTuple.getCurrentWay().getId() == targetWay.getId()) {
                 double finalDistance = edgeDistanceCalculator
                         .calculateDistance(currentNode, targetNode, targetWay);
+                double finalGradient = gradientCalculator.calculateGradient(currentNode, currentWay,
+                        targetNode, targetWay,
+                        finalDistance);
 
                 // the route is at least as long as the one it replaces
                 if (topTuple.getTotalLength() >= targetDistance) {
                     // create a new tuple representing the journey from the previous node to the final node
                     PathTuple returnTuple = new PathTupleMain(topTuple, targetNode,
-                            targetWay, 0, finalDistance, topTuple.getTotalLength() + finalDistance);
+                            targetWay, 0, finalDistance,
+                            topTuple.getTotalLength() + finalDistance, finalGradient);
                     return returnTuple;
                 }
             }
@@ -143,7 +147,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
                 // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
-                        score, distanceToNext, currentRouteLength + distanceToNext);
+                        score, distanceToNext, currentRouteLength + distanceToNext, gradient);
                 queue.add(toAdd);
 
                 visitedWays.add(currentWay.getId());
@@ -152,6 +156,6 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         }
 
         return new PathTupleMain(null, null, null, -10000000,
-                -1, -1);
+                -1, -1, -1);
     }
 }

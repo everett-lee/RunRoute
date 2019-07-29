@@ -82,7 +82,8 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
 
         Node originNode = new Node(-1, coords[0], coords[1]);
         originNode = AlgoHelpers.findClosest(originNode, repo.getOriginWay().getNodeContainer().getNodes());
-        queue.add(new PathTupleMain(null, originNode, root, 0, 0, 0));
+        queue.add(new PathTupleMain(null, originNode, root,
+                        0, 0, 0, 0));
 
         // update the repository origin node
         repo.setOriginNode(originNode);
@@ -149,7 +150,8 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
 
                 // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
-                        score, distanceToNext, currentRouteLength + distanceToNext);
+                        score, distanceToNext, currentRouteLength + distanceToNext,
+                        gradient);
                 queue.add(toAdd);
 
                 visitedWays.add(currentWay.getId());
@@ -161,7 +163,7 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
 
         // null object returned in the event of an error
         return new PathTupleMain(null, null, null, Double.MIN_VALUE,
-                -1, -1);
+                -1, -1, -1);
     }
 
 }

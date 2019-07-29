@@ -29,7 +29,8 @@ public class RunrouterApplication {
         GraphBuilder gb = ctx.getBean(GraphBuilder.class);
         final long endTime = System.currentTimeMillis();
 
-        System.out.println(repo.getWayRepo().size());
+        gb.buildGraph(coords, 22000, opts);
+        serialize(repo);
 
         ResponseGeneratorController gc = ctx.getBean(ResponseGeneratorController.class);
 

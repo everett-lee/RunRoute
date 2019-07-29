@@ -103,7 +103,8 @@ public class CycleGeneratorMain implements CycleGenerator {
 
                 PathTuple toAdd = new PathTupleMain(head, current.getPreviousNode(),
                         current.getCurrentWay(),
-                        current.getSegmentScore(), current.getSegmentLength(), distance
+                        current.getSegmentScore(), current.getSegmentLength(), distance,
+                        current.getSegmentGradient()
                 );
 
                 head = toAdd;
@@ -114,9 +115,9 @@ public class CycleGeneratorMain implements CycleGenerator {
         // Head's length must be updated to reflect final stretch of the journey
         head = new PathTupleMain(head.getPredecessor(), head.getPreviousNode(), head.getCurrentWay(),
         head.getSegmentScore(), head.getPredecessor().getSegmentLength(),
-                head.getPredecessor().getSegmentLength() + head.getPredecessor().getTotalLength());
+                head.getPredecessor().getSegmentLength() + head.getPredecessor().getTotalLength(),
+                head.getSegmentGradient());
 
-        System.out.println(head.getTotalLength());
         return head;
     }
 }

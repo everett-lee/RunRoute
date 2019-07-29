@@ -4,13 +4,18 @@ import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristicMain;
+import com.lee.runrouter.algorithm.pathnode.PathTuple;
+import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
 import com.lee.runrouter.executor.Executor;
 import com.lee.runrouter.executor.ExecutorMain;
 import com.lee.runrouter.executor.LinkedListToArray;
 import com.lee.runrouter.executor.LinkedListToArrayHeadNodes;
 import com.lee.runrouter.graph.graphbuilder.GraphBuilder;
+import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.routegenerator.RouteGenerator;
 import com.lee.runrouter.routegenerator.RouteGeneratorMain;
+import com.lee.runrouter.routegenerator.cyclegenerator.PathNotGeneratedException;
+import com.lee.runrouter.graph.graphbuilder.node.Node;
 import org.junit.Before;
 import org.junit.Test;
 import java.lang.reflect.*;
@@ -30,8 +35,24 @@ public class ResponseGeneratorControllerTest {
     LinkedListToArray linkedListToArray;
 
     @Before
-    public void setUp() {
+    public void setUp() throws PathNotGeneratedException {
         routeGenerator = mock(RouteGeneratorMain.class);
+
+        // mock the response PathTuple and associated objects
+        Node mocknode = mock(Node.class);
+        when(mocknode.getId()).thenReturn(1l);
+        PathTuple response = mock(PathTupleMain.class);
+        when(response.getPredecessor()).thenReturn(null);
+        when(response.getPreviousNode()).thenReturn(mocknode);
+        when(response.getSegmentLength()).thenReturn(1d);
+        when(response.getSegmentScore()).thenReturn(1d);
+        Way mockedWay = mock(Way.class);
+        when(mockedWay.getId()).thenReturn(1l);
+        when(response.getCurrentWay()).thenReturn(mockedWay);
+
+        when(routeGenerator.generateRoute(anyObject(), anyDouble()))
+                .thenReturn(response);
+
         graphBuilder = mock(GraphBuilder.class);
         featuresHeuristic = new FeaturesHeuristicMain();
         elevationHeuristic = new ElevationHeuristicMain();
@@ -42,7 +63,7 @@ public class ResponseGeneratorControllerTest {
     }
 
     @Test
-    public void testHighwayDislikedSurfacesOnlyCorrect() throws NoSuchFieldException, IllegalAccessException {
+    public void testHighwayDislikedSurfacesOnlyCorrect() throws NoSuchFieldException, IllegalAccessException, PathNotGeneratedException {
         boolean[] options = {false,false,true,false,false,false,false,false};
 
         responseGeneratorController.receiveArgs(50, 1, 2000, 25, options);

@@ -86,7 +86,7 @@ public class DistanceFromOriginToMidTestHeuristicRealData {
         {
             double score = distanceFromOriginHeuristic.getScore(x.getConnectingWay());
             PathTupleMain pt = new PathTupleMain(null, x.getConnectingNode()
-                    , x.getConnectingWay(), score, 0, 0);
+                    , x.getConnectingWay(), score, 0, 0, 0);
             queue.add(pt);
         });
 

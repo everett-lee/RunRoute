@@ -84,7 +84,8 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
 
         // add the starting PathTuple of the chain, with no link
         queue.add(new PathTupleMain(null, originNode, originWay,
-                0, 0, initialDistance));
+                0, 0, initialDistance,
+                0));
 
         while (!queue.isEmpty() && elapsedTime <= TIME_LIMIT) {
             queue.sort(Comparator
@@ -107,9 +108,14 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
             if (currentWay.getId() == targetWay.getId()) {
                 double finalDistance = edgeDistanceCalculator
                         .calculateDistance(currentNode, targetNode, targetWay);
+                double finalGradient = gradientCalculator.calculateGradient(currentNode, currentWay,
+                                                                            targetNode, targetWay,
+                                                                            finalDistance);
+
                 // create a new tuple representing the journey from the previous node to the final node
                 PathTuple returnTuple = new PathTupleMain(topTuple, targetNode,
-                        targetWay, 0, finalDistance, topTuple.getTotalLength() + finalDistance);
+                        targetWay, 0, finalDistance,
+                        topTuple.getTotalLength() + finalDistance, finalGradient);
                 return returnTuple;
             }
 
@@ -162,7 +168,7 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
 
                 // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
-                        score, distanceToNext, currentRouteLength + distanceToNext);
+                        score, distanceToNext, currentRouteLength + distanceToNext, gradient);
                 queue.add(toAdd);
                 visitedWays.add(currentWay.getId());
 
@@ -171,6 +177,6 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
         }
 
         return new PathTupleMain(null, null, null, -10000000,
-                -1, -1);
+                -1, -1, -1);
     }
 }

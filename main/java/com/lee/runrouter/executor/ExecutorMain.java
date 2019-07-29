@@ -27,7 +27,7 @@ public class ExecutorMain implements Executor {
     private ElevationHeuristic elevationHeuristic;
     private LinkedListToArray linkedListToArray;
 
-    private final double INITIAL_GRAPH_SIZE = 15000; // the starting size of the generated graph
+    private final double INITIAL_GRAPH_SIZE = 20000; // the starting size of the generated graph
 
     public ExecutorMain(
             @Qualifier("RouteGeneratorMain") RouteGenerator routeGenerator,
@@ -76,6 +76,7 @@ public class ExecutorMain implements Executor {
         System.out.println(returnPath(route, ""));
 
         PathTuple tail = route;
+
         while (tail.getPredecessor() != null) {
             tail = tail.getPredecessor();
         }

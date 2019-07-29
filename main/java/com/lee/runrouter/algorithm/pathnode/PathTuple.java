@@ -14,4 +14,5 @@ public interface PathTuple {
     void setSegmentLength(double segmentLength);
     double getTotalLength();
     void setTotalLength(double totalLength);
+    double getSegmentGradient();
 }

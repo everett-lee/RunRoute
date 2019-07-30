@@ -1,5 +1,9 @@
 package com.lee.runrouter.executor;
 
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BFSConnectionPath;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearch;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearchReturnPath;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.SearchAlgorithm;
 import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.graph.graphbuilder.GraphBuilder;
 import com.lee.runrouter.routegenerator.RouteGenerator;
@@ -19,6 +23,9 @@ public class ExecutorMainTest {
     private final double DISTANCE = 20000;
     private final boolean[] OPTIONS = {true, true, true, true, true, true, true,
             true, true, true, true, true, true, true, true};
+    private SearchAlgorithm beamSearch;
+    private SearchAlgorithm beamSearchReturn;
+    private SearchAlgorithm BFSconnection;
 
     @Before
     public void setUp() {
@@ -27,8 +34,11 @@ public class ExecutorMainTest {
         this.featuresHeuristic = mock(FeaturesHeuristicMain.class);
         this.elevationHeuristic = mock(ElevationHeuristicMain.class);
         this.linkedListToArray = mock(LinkedListToArray.class);
+        this.beamSearch = mock(BeamSearch.class);
+        this.beamSearchReturn = mock(BeamSearchReturnPath.class);
+        this.BFSconnection = mock(BFSConnectionPath.class);
         this.executor = new ExecutorMain(routeGenerator, graphBuilder, featuresHeuristic,
-                elevationHeuristic, linkedListToArray);
+                elevationHeuristic, linkedListToArray, beamSearch, beamSearchReturn, BFSconnection);
     }
 
     @Test

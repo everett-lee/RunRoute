@@ -128,14 +128,22 @@ public class testRouteReflectsFeaturesHeuristic {
         double[] coords = {51.446537, -0.124989};
         PathTuple route = routeGenerator.generateRoute(coords, 5000);
 
-        int matchedCountWithoutLit = countLit(route);
+        int numberofUnlitWhenUnlitAllowed = countUnlit(route);
 
-        FeaturesHeuristic fh = (FeaturesHeuristic) featuresHeuristic;
-        fh.setAvoidUnlit(true);
+        SearchAlgorithm sa1 = (SearchAlgorithm) outward;
+        sa1.setAvoidUnlit(true);
+        SearchAlgorithm sa2 = (SearchAlgorithm) inward;
+        sa2.setAvoidUnlit(true);
+        SearchAlgorithm sa3 = (SearchAlgorithm) ilsGraphSearch;
+        sa3.setAvoidUnlit(true);
+
         route = routeGenerator.generateRoute(coords, 5000);
 
-        int matchedCountWithLit = countLit(route);
-        assertTrue(matchedCountWithoutLit < matchedCountWithLit);
+        int numberofUnlitWhenUnlitAvoided = countUnlit(route);
+
+        System.out.println(numberofUnlitWhenUnlitAllowed);
+        System.out.println(numberofUnlitWhenUnlitAvoided);
+        assertTrue(numberofUnlitWhenUnlitAvoided < numberofUnlitWhenUnlitAllowed);
     }
 
     @Test
@@ -143,16 +151,22 @@ public class testRouteReflectsFeaturesHeuristic {
         double[] coords = {51.440830, -0.106387};
         PathTuple route = routeGenerator.generateRoute(coords, 5000);
 
-        int matchedCountWithoutLit = countLit(route);
+        int numberofUnlitWhenUnlitAllowed = countUnlit(route);
 
-        FeaturesHeuristic fh = (FeaturesHeuristic) featuresHeuristic;
-        fh.setAvoidUnlit(true);
+        SearchAlgorithm sa1 = (SearchAlgorithm) outward;
+        sa1.setAvoidUnlit(true);
+        SearchAlgorithm sa2 = (SearchAlgorithm) inward;
+        sa2.setAvoidUnlit(true);
+        SearchAlgorithm sa3 = (SearchAlgorithm) ilsGraphSearch;
+        sa3.setAvoidUnlit(true);
+
         route = routeGenerator.generateRoute(coords, 5000);
 
-        int matchedCountWithLit = countLit(route);
+        int numberofUnlitWhenUnlitAvoided = countUnlit(route);
 
-
-        assertTrue(matchedCountWithoutLit < matchedCountWithLit);
+        System.out.println(numberofUnlitWhenUnlitAllowed);
+        System.out.println(numberofUnlitWhenUnlitAvoided);
+        assertTrue(numberofUnlitWhenUnlitAvoided < numberofUnlitWhenUnlitAllowed);
     }
 
     @Test
@@ -160,25 +174,22 @@ public class testRouteReflectsFeaturesHeuristic {
         double[] coords = {51.461868, -0.115622};
         PathTuple route = routeGenerator.generateRoute(coords, 5000);
 
-        int matchedCountWithoutLit = countLit(route);
+        int numberofUnlitWhenUnlitAllowed = countUnlit(route);
 
-        System.out.println(TestHelpers.calculateScore(route));
+        SearchAlgorithm sa1 = (SearchAlgorithm) outward;
+        sa1.setAvoidUnlit(true);
+        SearchAlgorithm sa2 = (SearchAlgorithm) inward;
+        sa2.setAvoidUnlit(true);
+        SearchAlgorithm sa3 = (SearchAlgorithm) ilsGraphSearch;
+        sa3.setAvoidUnlit(true);
 
-        FeaturesHeuristic fh = (FeaturesHeuristic) featuresHeuristic;
-        fh.setAvoidUnlit(true);
         route = routeGenerator.generateRoute(coords, 5000);
 
-        int matchedCountWithLit = countLit(route);
+        int numberofUnlitWhenUnlitAvoided = countUnlit(route);
 
-        System.out.println(TestHelpers.calculateScore(route));
-
-        System.out.println(matchedCountWithoutLit);
-        System.out.println(matchedCountWithLit);
-
-
-
-
-        assertTrue(matchedCountWithoutLit < matchedCountWithLit);
+        System.out.println(numberofUnlitWhenUnlitAllowed);
+        System.out.println(numberofUnlitWhenUnlitAvoided);
+        assertTrue(numberofUnlitWhenUnlitAvoided < numberofUnlitWhenUnlitAllowed);
     }
 
     public int countMatchedHighways(PathTuple head) {
@@ -192,10 +203,10 @@ public class testRouteReflectsFeaturesHeuristic {
         return  matchedCount;
     }
 
-    public int countLit(PathTuple head) {
+    public int countUnlit(PathTuple head) {
         int matchedCount = 0;
         while (head != null) {
-            if (head.getCurrentWay().isLit()) {
+            if (!head.getCurrentWay().isLit()) {
                 matchedCount++;
             }
             head = head.getPredecessor();

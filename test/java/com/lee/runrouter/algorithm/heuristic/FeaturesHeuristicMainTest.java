@@ -127,36 +127,5 @@ public class FeaturesHeuristicMainTest {
                 0.0001);
     }
 
-    @Test
-    public void testUnlitScore() {
-        featuresHeuristicMain = new FeaturesHeuristicMain();
-        featuresHeuristicMain.setAvoidUnlit(true);
-
-        Way wayUnderTest = new Way(21);
-        wayUnderTest.setHighway("Cycleway");
-        wayUnderTest.setSurface("Gravel");
-
-        double expected = -unlit_penalty;
-
-        assertEquals(expected,
-                featuresHeuristicMain.getScore(wayUnderTest),
-                0.0001);
-    }
-
-    @Test
-    public void testUnlitScoreUnaffectedWhereUnlitAccepted() {
-        featuresHeuristicMain = new FeaturesHeuristicMain();
-        featuresHeuristicMain.setAvoidUnlit(false);
-
-        Way wayUnderTest = new Way(21);
-        wayUnderTest.setHighway("Cycleway");
-        wayUnderTest.setSurface("Gravel");
-
-        double expected = 0;
-
-        assertEquals(expected,
-                featuresHeuristicMain.getScore(wayUnderTest),
-                0.0001);
-    }
 
 }

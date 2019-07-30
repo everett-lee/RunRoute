@@ -1,5 +1,7 @@
 package com.lee.runrouter.executor;
 
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.GraphSearch;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.SearchAlgorithm;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
@@ -26,6 +28,9 @@ public class ExecutorMain implements Executor {
     private FeaturesHeuristic featuresHeuristic;
     private ElevationHeuristic elevationHeuristic;
     private LinkedListToArray linkedListToArray;
+    private SearchAlgorithm outwardsPather;
+    private SearchAlgorithm returnPather;
+    private SearchAlgorithm connectionPather;
 
     private final double INITIAL_GRAPH_SIZE = 20000; // the starting size of the generated graph
 
@@ -34,12 +39,18 @@ public class ExecutorMain implements Executor {
             GraphBuilder graphBuilder,
             @Qualifier("FeaturesHeuristicMain") FeaturesHeuristic featuresHeuristic,
             @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic,
-            @Qualifier("LinkedListToArrayAllNodes") LinkedListToArray linkedListToArray) {
+            @Qualifier("LinkedListToArrayAllNodes") LinkedListToArray linkedListToArray,
+            @Qualifier("BeamSearch") SearchAlgorithm outwardsPather,
+            @Qualifier("BeamSearchReturnPath") SearchAlgorithm returnPather,
+            @Qualifier("BFSConnectionPath") SearchAlgorithm connectionPather) {
         this.routeGenerator = routeGenerator;
         this.graphBuilder = graphBuilder;
         this.featuresHeuristic = featuresHeuristic;
         this.elevationHeuristic = elevationHeuristic;
         this.linkedListToArray = linkedListToArray;
+        this.outwardsPather = outwardsPather;
+        this.returnPather = returnPather;
+        this.connectionPather = connectionPather;
     }
 
     /**
@@ -122,6 +133,11 @@ public class ExecutorMain implements Executor {
     }
 
     private void processFeaturesOptions(boolean[] options) {
+        // set all options to false/empty
+        this.outwardsPather.setAvoidUnlit(false);
+        this.returnPather.setAvoidUnlit(false);
+        this.connectionPather.setAvoidUnlit(false);
+
         List<String> preferredHighways = new ArrayList<>();
         List<String> preferredSurfaces = new ArrayList<>();
         List<String> dislikedSurfaces = new ArrayList<>();
@@ -133,7 +149,10 @@ public class ExecutorMain implements Executor {
 
         // user selected avoid unlit
         if (options[3]) {
-            this.featuresHeuristic.setAvoidUnlit(true);
+            this.outwardsPather.setAvoidUnlit(true);
+            this.returnPather.setAvoidUnlit(true);
+            this.connectionPather.setAvoidUnlit(true);
+
         }
 
         // user selected prefer residential roads
@@ -165,7 +184,10 @@ public class ExecutorMain implements Executor {
     }
 
     private void processElevationOptions(double maxGradient, boolean[] booleans) {
-        elevationHeuristic.setMaxGradient(maxGradient);
+        this.outwardsPather.setMaxGradient(maxGradient);
+        this.returnPather.setMaxGradient(maxGradient);
+        this.connectionPather.setMaxGradient(maxGradient);
+        elevationHeuristic.setOptions(false);
 
         // user select prefer uphill
         if (booleans[4]) {

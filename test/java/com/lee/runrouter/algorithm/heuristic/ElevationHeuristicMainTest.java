@@ -180,12 +180,4 @@ public class ElevationHeuristicMainTest {
         assertTrue(score < 0);
     }
 
-    @Test
-    public void testScoreReductionSetSteep() {
-        double gradient = 0.011;
-        elevationHeuristic.setMaxGradient(0.01);
-        double score = elevationHeuristic.getScore(gradient);
-        assertTrue(score < 0);
-    }
-
 }

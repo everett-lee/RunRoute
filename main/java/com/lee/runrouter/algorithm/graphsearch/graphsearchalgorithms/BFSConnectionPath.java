@@ -115,6 +115,12 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                     continue;
                 }
 
+                if (super.getAvoidUnlit()) {
+                    if (!selectedWay.isLit()) {
+                        continue;
+                    }
+                }
+
                 double distanceToNext = edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
 
@@ -141,6 +147,10 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
+
+                if (gradient > super.getMaxGradient()) {
+                    continue;
+                }
 
                 // call private method to add scores
                 score += addScores(selectedWay, gradient, RANDOM_REDUCER);

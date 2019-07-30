@@ -4,6 +4,7 @@ import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.Heuristic;
+import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,8 @@ public abstract class SearchAlgorithm {
     GradientCalculator gradientCalculator;
     ElevationHeuristic elevationHeuristic;
     Heuristic distanceFromOriginHeuristic;
+    double maxGradient;
+    boolean avoidUnlit;
 
     public SearchAlgorithm(ElementRepo repo,
                            Heuristic distanceHeuristic,
@@ -36,6 +39,8 @@ public abstract class SearchAlgorithm {
         this.featuresHeuristic = featuresHeuristic;
         this.edgeDistanceCalculator = edgeDistanceCalculator;
         this.elevationHeuristic = elevationHeuristic;
+        this.maxGradient = 1;
+        this.avoidUnlit = false;
 
     }
 
@@ -51,5 +56,21 @@ public abstract class SearchAlgorithm {
         score += (Math.random() / RANDOM_REDUCER);
 
         return score;
+    }
+
+    public void setMaxGradient(double maxGradient) {
+        this.maxGradient = maxGradient;
+    }
+
+    public double getMaxGradient() {
+        return this.maxGradient;
+    }
+
+    public void setAvoidUnlit(boolean avoidUnlit) {
+        this.avoidUnlit = avoidUnlit;
+    }
+
+    public boolean getAvoidUnlit() {
+        return this.avoidUnlit;
     }
 }

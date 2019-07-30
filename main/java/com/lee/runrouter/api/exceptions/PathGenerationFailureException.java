@@ -8,6 +8,6 @@ public class PathGenerationFailureException extends RuntimeException {
     }
     @Override
     public String getMessage() {
-        return String.format("Unable to generate a path for %s", this.message);
+        return String.format("Unable to generate a path. Try adjusting your parameters", this.message);
     }
 }

@@ -182,18 +182,23 @@ public class testRouteReflectsElevationHeuristic {
 
         double[] coords = {51.446537, -0.124989};
         double maxGradient = 0.05;
-        elevationHeuristic.setMaxGradient(maxGradient);
+
+        SearchAlgorithm sa1 = (SearchAlgorithm) outward;
+        sa1.setMaxGradient(maxGradient);
+        SearchAlgorithm sa2 = (SearchAlgorithm) inward;
+        sa2.setMaxGradient(maxGradient);
+        SearchAlgorithm sa3 = (SearchAlgorithm) ilsGraphSearch;
+        sa3.setMaxGradient(maxGradient);
 
         elevationHeuristic.setOptions(true);
         PathTuple route = routeGenerator.generateRoute(coords, 21000);
-        double avgGradientSteep = getAverageGradient(route);
 
         boolean flag = true;
 
         PathTuple head = route;
         while (head != null) {
-            System.out.println(head.getSegmentGradient());
             if (head.getSegmentGradient() > maxGradient) {
+                System.out.println(head.getSegmentGradient());
                 flag = false;
             }
             head = head.getPredecessor();
@@ -209,7 +214,13 @@ public class testRouteReflectsElevationHeuristic {
 
         double[] coords = {51.440830, -0.106387};
         double maxGradient = 0.05;
-        elevationHeuristic.setMaxGradient(maxGradient);
+
+        SearchAlgorithm sa1 = (SearchAlgorithm) outward;
+        sa1.setMaxGradient(maxGradient);
+        SearchAlgorithm sa2 = (SearchAlgorithm) inward;
+        sa2.setMaxGradient(maxGradient);
+        SearchAlgorithm sa3 = (SearchAlgorithm) ilsGraphSearch;
+        sa3.setMaxGradient(maxGradient);
 
         elevationHeuristic.setOptions(true);
         PathTuple route = routeGenerator.generateRoute(coords, 21000);
@@ -219,7 +230,6 @@ public class testRouteReflectsElevationHeuristic {
 
         PathTuple head = route;
         while (head != null) {
-            System.out.println(head.getSegmentGradient());
             if (head.getSegmentGradient() > maxGradient) {
                 flag = false;
             }
@@ -236,7 +246,13 @@ public class testRouteReflectsElevationHeuristic {
 
         double[] coords = {51.461868, -0.115622};
         double maxGradient = 0.05;
-        elevationHeuristic.setMaxGradient(maxGradient);
+
+        SearchAlgorithm sa1 = (SearchAlgorithm) outward;
+        sa1.setMaxGradient(maxGradient);
+        SearchAlgorithm sa2 = (SearchAlgorithm) inward;
+        sa2.setMaxGradient(maxGradient);
+        SearchAlgorithm sa3 = (SearchAlgorithm) ilsGraphSearch;
+        sa3.setMaxGradient(maxGradient);
 
         elevationHeuristic.setOptions(true);
         PathTuple route = routeGenerator.generateRoute(coords, 21000);

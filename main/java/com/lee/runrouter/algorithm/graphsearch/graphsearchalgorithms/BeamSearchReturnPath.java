@@ -143,6 +143,11 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();
 
+                if (super.getAvoidUnlit()) {
+                    if (!selectedWay.isLit()) {
+                        continue;
+                    }
+                }
 
                 // skip where this way has already been explored
                 if (visitedWays.contains(selectedWay.getId())) {
@@ -175,6 +180,10 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
+
+                if (gradient > super.getMaxGradient()) {
+                    continue;
+                }
 
                 score += super.addScores(selectedWay, gradient, RANDOM_REDUCER);
 

@@ -138,6 +138,12 @@ public class BFSReturnPath extends SearchAlgorithm implements GraphSearch {
                     continue;
                 }
 
+                if (super.avoidUnlit) {
+                    if (!selectedWay.isLit()) {
+                        continue;
+                    }
+                }
+
                 double distanceToNext = edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
 
@@ -166,6 +172,10 @@ public class BFSReturnPath extends SearchAlgorithm implements GraphSearch {
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
+
+                if (gradient > super.getMaxGradient()) {
+                    continue;
+                }
 
                 score += addScores(selectedWay, gradient, RANDOM_REDUCER);
 

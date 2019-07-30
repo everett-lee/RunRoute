@@ -119,6 +119,12 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();
 
+                if (super.getAvoidUnlit()) {
+                    if (!selectedWay.isLit()) {
+                        continue;
+                    }
+                }
+
                 // skip where this way or node has already been explored
                 if (visitedWays.contains(selectedWay.getId()) ||
                         this.visitedNodes.contains(connectingNode.getId())) {
@@ -144,6 +150,10 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
+
+                if (gradient > super.getMaxGradient()) {
+                    continue;
+                }
 
                 score += super.addScores(selectedWay, gradient, RANDOM_REDUCER);
                 score = Math.max(0, score); // score should not be less than zero

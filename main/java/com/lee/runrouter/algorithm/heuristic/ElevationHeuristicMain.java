@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 public class ElevationHeuristicMain implements ElevationHeuristic {
     private boolean preferUphill;
     private double maxGradient; // user-defined max acceptable gradient
-    private final double MULTIPLIER = 5; // number to scale
+    private final double MULTIPLIER = 10; // number to scale
     // gradient by in increase its share of heuristic score
     private final double MAX_GRADIENT_PENALTY = -10000; // penalty
     // for exceeding the max gradient
@@ -26,7 +26,7 @@ public class ElevationHeuristicMain implements ElevationHeuristic {
 
     @Override
     public double getScore(double gradient) {
-        if (gradient >= maxGradient) {
+        if (gradient > maxGradient) {
             return MAX_GRADIENT_PENALTY;
         }
 

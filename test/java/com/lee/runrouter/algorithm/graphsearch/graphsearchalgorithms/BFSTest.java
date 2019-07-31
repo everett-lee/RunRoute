@@ -70,15 +70,11 @@ public class BFSTest {
 
     }
 
-    @Test(timeout=3000)
+    @Test(timeout=1000)
     public void testMorrishRoadShort() {
 
         double[] coords = {51.446810, -0.125484};
         PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 2500);
-
-        String str = "node(id:";
-        str = returnPath(x, str);
-        System.out.println(str);
 
     }
 
@@ -89,9 +85,8 @@ public class BFSTest {
         PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 5000);
         System.out.println(x.getPredecessor() + " hello");
 
-        String str = "node(id:";
-        str = returnPath(x, str);
-        System.out.println(str);
+
+        System.out.println(calculateScore(x));
     }
 
     @Test(timeout=3000)
@@ -150,12 +145,10 @@ public class BFSTest {
                 .findFirst().get();
         repo.setOriginWay(origin);
 
-        PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 5000);
+        PathTuple x = bfs.searchGraph(repo.getOriginWay(), coords, 10000);
         System.out.println(x.getPredecessor() + " hello");
 
-        String str = "node(id:";
-        str = returnPath(x, str);
-        System.out.println(str);
+        System.out.println(calculateScore(x));
     }
 
     static String returnPath(PathTuple tp, String acc) {

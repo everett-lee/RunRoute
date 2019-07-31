@@ -27,14 +27,12 @@ import java.util.*;
 @Qualifier("BeamSearchReturnPath")
 public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
-    private final double REPEATED_EDGE_PENALTY = 1000; // deducted from score where
-    // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
-    private final double PREFERRED_MIN_LENGTH = 300; // minimum length of way to avoid
+    private final double PREFERRED_MIN_LENGTH = 350; // minimum length of way to avoid
     // subtracting a score penalty
     private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
-    private final double PREFERRED_LENGTH = 1000     ;
+    private final double PREFERRED_LENGTH = 800;
     private final double PREFERRED_LENGTH_BONUS = 1;
     private final double DISTANCE_FROM_ORIGIN_BONUS = 0.75;
     private final long TIME_LIMIT = 1500;
@@ -43,7 +41,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
     private Set<Long> visitedWays;
     private Set<Long> visitedNodes;
 
-    private final double LOWER_SCALE = 0.75; // amount to scale upper lower bound on
+    private final double LOWER_SCALE = 0.5; // amount to scale upper lower bound on
     // run length by
     private final double UPPER_SCALE = 0.05; // amount to scale upper bound on
     // run length by

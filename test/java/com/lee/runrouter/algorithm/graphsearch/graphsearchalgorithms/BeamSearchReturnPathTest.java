@@ -73,7 +73,6 @@ public class BeamSearchReturnPathTest {
 
         PathTuple x = returnPath.searchGraph(w, coords, 2500);
 
-        System.out.println(calculateScore(x));
         assertEquals(originNode, x.getPreviousNode());
     }
 

@@ -23,20 +23,23 @@ import java.util.*;
 @Component
 @Qualifier("BFS")
 public class BFS extends SearchAlgorithm implements GraphSearch {
+    private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
-    private final double PREFERRED_MIN_LENGTH = 50; // minimum length of way to avoid
+    private final double PREFERRED_MIN_LENGTH = 300; // minimum length of way to avoid
     // subtracting a score penalty
-    private final double PREFERRED_MIN_LENGTH_PENALTY = 0;
-    private final double PREFERRED_LENGTH = 250; // preferred minimum travel distance between
-    // nodes
-    private final double PREFERRED_LENGTH_BONUS = 1; // penalty if distance is below
-    // preferred
-    private final double SCALE = 0.15; // amount to scale upper and lower bound on
+    private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
+    private final double PREFERRED_LENGTH = 1000;
+    private final double PREFERRED_LENGTH_BONUS = 1;
+
+    private final double LOWER_SCALE = 0; // amount to scale upper lower bound on
+    // run length by
+    private final double UPPER_SCALE = 0.05; // amount to scale upper bound on
     // run length by
 
     private PriorityQueue<PathTuple> queue;
     private Set<Long> visitedWays;
+    private Set<Long> visitedNodes;
 
     @Autowired
     public BFS(ElementRepo repo,
@@ -48,7 +51,8 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
         super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
-        visitedWays = new HashSet<>();
+        this.visitedWays = new HashSet<>();
+        this.visitedNodes = new HashSet<>();
     }
 
 
@@ -67,22 +71,20 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
      */
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double distance) {
-
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
         Set<Long> visitedWays = new HashSet<>();
 
         double currentRouteLength;
-        double upperBound = distance + (distance * SCALE); // upper bound of
+        double upperBound = distance + (distance * UPPER_SCALE); // upper bound of
         // run length
-        double lowerBound = distance - (distance * SCALE); // lower bound of
+        double lowerBound = distance - (distance * LOWER_SCALE); // lower bound of
         // run length
 
         Node originNode = new Node(-1, coords[0], coords[1]);
         originNode = AlgoHelpers.findClosest(originNode, repo.getOriginWay().getNodeContainer().getNodes());
         queue.add(new PathTupleMain(null, originNode, root, 0,
                                     0, 0, 0));
-
 
         // update the repository origin node
         repo.setOriginNode(originNode);
@@ -108,8 +110,15 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();
 
-                // skip where this way has already been explored
-                if (visitedWays.contains(selectedWay.getId())) {
+                if (super.getAvoidUnlit()) {
+                    if (!selectedWay.isLit()) {
+                        continue;
+                    }
+                }
+
+                // skip where this way or node has already been explored
+                if (visitedWays.contains(selectedWay.getId()) ||
+                        this.visitedNodes.contains(connectingNode.getId())) {
                     continue;
                 }
 
@@ -133,13 +142,21 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
 
+                if (gradient > super.getMaxGradient()) {
+                    continue;
+                }
+
                 score += super.addScores(selectedWay, gradient, RANDOM_REDUCER);
+                score = Math.max(0, score); // score should not be less than zero
 
                 // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext, gradient);
                 queue.add(toAdd);
 
+                if (!repo.getOriginWay().getNodeContainer().getNodes().contains(visitedNodes)) {
+                    this.visitedNodes.add(connectingNode.getId());
+                }
                 visitedWays.add(currentWay.getId());
             }
         }

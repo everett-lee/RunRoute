@@ -27,10 +27,10 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
-    private final double PREFERRED_MIN_LENGTH = 300; // minimum length of way to avoid
+    private final double PREFERRED_MIN_LENGTH = 350; // minimum length of way to avoid
     // subtracting a score penalty
     private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
-    private final double PREFERRED_LENGTH = 1000;
+    private final double PREFERRED_LENGTH = 800;
     private final double PREFERRED_LENGTH_BONUS = 1;
 
     private final double LOWER_SCALE = 0; // amount to scale upper lower bound on
@@ -164,10 +164,10 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
                         gradient);
                 queue.add(toAdd);
 
-                visitedWays.add(currentWay.getId());
                 if (!repo.getOriginWay().getNodeContainer().getNodes().contains(visitedNodes)) {
                     this.visitedNodes.add(connectingNode.getId());
                 }
+                visitedWays.add(currentWay.getId());
             }
         }
 

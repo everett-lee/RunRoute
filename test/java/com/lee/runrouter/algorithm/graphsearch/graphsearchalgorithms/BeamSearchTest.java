@@ -61,8 +61,6 @@ public class BeamSearchTest {
         double[] coords = {51.446810, -0.125484};
         PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 2500);
 
-        System.out.println(calculateScore(x));
-
     }
 
 
@@ -71,6 +69,8 @@ public class BeamSearchTest {
 
         double[] coords = {51.446810, -0.125484};
         PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
+
+        System.out.println(calculateScore(x));
     }
 
     @Test(timeout = 1000)
@@ -117,8 +117,9 @@ public class BeamSearchTest {
                 .findFirst().get();
         repo.setOriginWay(origin);
 
-        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
+        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 10000);
 
-        System.out.println(returnPath(x, ""));
+
+        System.out.println(calculateScore(x));
     }
 }

@@ -117,7 +117,6 @@ public class testRouteReflectsElevationHeuristic {
 
     }
 
-
     @Test
     public void testAverageElevationWhenLessWhenFlatPreferredAndFeaturesIncluded()
             throws PathNotGeneratedException {

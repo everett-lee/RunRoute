@@ -28,10 +28,10 @@ import java.util.*;
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
-    private final double PREFERRED_MIN_LENGTH = 500; // minimum length of way to avoid
+    private final double PREFERRED_MIN_LENGTH = 350; // minimum length of way to avoid
     // subtracting a score penalty
     private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
-    private final double PREFERRED_LENGTH = 1100;
+    private final double PREFERRED_LENGTH = 900;
     private final double PREFERRED_LENGTH_BONUS = 1;
     private final double DISTANCE_FROM_ORIGIN_BONUS = 0.725;
     private final long TIME_LIMIT = 1000;
@@ -160,6 +160,9 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                         score, distanceToNext, currentRouteLength + distanceToNext, gradient);
                 queue.add(toAdd);
 
+                if (!repo.getOriginWay().getNodeContainer().getNodes().contains(visitedNodes)) {
+                    this.visitedNodes.add(connectingNode.getId());
+                }
                 visitedWays.add(currentWay.getId());
                 elapsedTime = (new Date()).getTime() - startTime;
             }

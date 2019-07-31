@@ -24,13 +24,8 @@ public class FeaturesHeuristicMainTest {
         Field f = featuresHeuristicMain.getClass().getDeclaredField("SURFACE_VALUE");
         surface_value = (double) f.get(featuresHeuristicMain);
 
-        featuresHeuristicMain = new FeaturesHeuristicMain();
         f = featuresHeuristicMain.getClass().getDeclaredField("HIGHWAY_VALUE");
         highway_value = (double) f.get(featuresHeuristicMain);
-
-        featuresHeuristicMain = new FeaturesHeuristicMain();
-        f = featuresHeuristicMain.getClass().getDeclaredField("UNLIT_PENALTY");
-        unlit_penalty = (double) f.get(featuresHeuristicMain);
     }
 
     @Test

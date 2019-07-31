@@ -73,13 +73,13 @@ public class BeamSearchConnectionPathTest {
 
 
         PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 2000, start.getTotalLength(),
-                2000);
-
+                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength(),
+                0);
 
         PathTuple resFinal = getEndTuple(res);
 
-        //assertEquals(end.getPreviousNode(), res.getPreviousNode());
+        System.out.println(calculateScore(res));
+
         assertEquals(start.getPreviousNode(), resFinal.getPreviousNode());
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
@@ -90,15 +90,16 @@ public class BeamSearchConnectionPathTest {
         PathTuple start = reverseList(morrish5k);
 
         start = getStartPathSegment(start, 1);
-        PathTuple end = getEndPathSegment(start, 1);
+        PathTuple end = getEndPathSegment(start, 3);
 
         PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 2000, start.getTotalLength(),
-                2000);
+                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength(),
+                0);
+
+        System.out.println(calculateScore(res));
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
-
     }
 
 
@@ -110,8 +111,8 @@ public class BeamSearchConnectionPathTest {
         PathTuple end = getEndPathSegment(start, 4);
 
         PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 2000, start.getTotalLength(),
-                2000);
+                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength(),
+                0);
 
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
@@ -129,8 +130,9 @@ public class BeamSearchConnectionPathTest {
 
 
         PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 2000, start.getTotalLength(),
-                2000);
+                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength(),
+                0);
+
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
@@ -146,6 +148,7 @@ public class BeamSearchConnectionPathTest {
         PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
                 end.getPreviousNode(), end.getCurrentWay(), 1000, start.getTotalLength(),
                 2000);
+
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
@@ -177,8 +180,10 @@ public class BeamSearchConnectionPathTest {
         PathTuple end = getEndPathSegment(start, 20);
 
         PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 2000, start.getTotalLength(),
-                2000);
+                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength(),
+                0);
+
+        System.out.println(calculateScore(res));
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());

@@ -26,14 +26,14 @@ import java.util.*;
 @Qualifier("BeamSearchConnectionpath")
 public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
-    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.15;
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
-    private final double PREFERRED_MIN_LENGTH = 300; // minimum length of way to avoid
+    private final double PREFERRED_MIN_LENGTH = 500; // minimum length of way to avoid
     // subtracting a score penalty
     private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
-    private final double PREFERRED_LENGTH = 1000;
+    private final double PREFERRED_LENGTH = 1100;
     private final double PREFERRED_LENGTH_BONUS = 1;
+    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.725;
     private final long TIME_LIMIT = 1000;
 
     private List<PathTuple> queue;
@@ -70,7 +70,7 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
      */
     @Override
     public PathTuple connectPath(Node originNode, Way originWay, Node targetNode, Way targetWay,
-                                 double availableDistance, double initialDistance, double targetDistnace) {
+                                 double availableDistance, double initialDistance, double targetDistance) {
         double currentRouteLength;
 
         this.visitedWays = new HashSet<>();
@@ -80,12 +80,10 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
 
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
-        double upperBound = availableDistance;  // the remaining distance for the route
+        double upperBound = availableDistance + initialDistance; // the remaining distance for the route
 
-        // add the starting PathTuple of the chain, with no link
         queue.add(new PathTupleMain(null, originNode, originWay,
-                0, 0, initialDistance,
-                0));
+                0, 0, initialDistance, 0));
 
         while (!queue.isEmpty() && elapsedTime <= TIME_LIMIT) {
             queue.sort(Comparator
@@ -105,18 +103,21 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
             double score;
 
             // the route has reached the target
-            if (currentWay.getId() == targetWay.getId()) {
+            if (topTuple.getCurrentWay().getId() == targetWay.getId()) {
                 double finalDistance = edgeDistanceCalculator
                         .calculateDistance(currentNode, targetNode, targetWay);
                 double finalGradient = gradientCalculator.calculateGradient(currentNode, currentWay,
-                                                                            targetNode, targetWay,
-                                                                            finalDistance);
+                        targetNode, targetWay,
+                        finalDistance);
 
-                // create a new tuple representing the journey from the previous node to the final node
-                PathTuple returnTuple = new PathTupleMain(topTuple, targetNode,
-                        targetWay, 0, finalDistance,
-                        topTuple.getTotalLength() + finalDistance, finalGradient);
-                return returnTuple;
+                // the route is at least as long as the one it replaces
+                if (topTuple.getTotalLength() >= targetDistance) {
+                    // create a new tuple representing the journey from the previous node to the final node
+                    PathTuple returnTuple = new PathTupleMain(topTuple, targetNode,
+                            targetWay, 0, finalDistance,
+                            topTuple.getTotalLength() + finalDistance, finalGradient);
+                    return returnTuple;
+                }
             }
 
             // distance to origin point from the last explored way
@@ -134,6 +135,12 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                 if (visitedWays.contains(selectedWay.getId()) ||
                         this.visitedNodes.contains(connectingNode.getId())) {
                     continue;
+                }
+
+                if (super.getAvoidUnlit()) {
+                    if (!selectedWay.isLit()) {
+                        continue;
+                    }
                 }
 
                 double distanceToNext = edgeDistanceCalculator
@@ -163,6 +170,10 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
 
+                if (gradient > super.getMaxGradient()) {
+                    continue;
+                }
+
                 // call private method to add scores
                 score += addScores(selectedWay, gradient, RANDOM_REDUCER);
 
@@ -170,6 +181,10 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext, gradient);
                 queue.add(toAdd);
+
+                if (!repo.getOriginWay().getNodeContainer().getNodes().contains(visitedNodes)) {
+                    this.visitedNodes.add(connectingNode.getId());
+                }
                 visitedWays.add(currentWay.getId());
 
                 elapsedTime = (new Date()).getTime() - startTime;

@@ -70,12 +70,11 @@ public class BFSConnectionPathTest {
         PathTuple end = getEndPathSegment(start, 7);
 
         PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 2000, start.getTotalLength(),
-                2000);
+                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength(),
+                0);
 
         PathTuple resFinal = getEndTuple(res);
 
-        //assertEquals(end.getPreviousNode(), res.getPreviousNode());
         assertEquals(start.getPreviousNode(), resFinal.getPreviousNode());
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
@@ -90,11 +89,11 @@ public class BFSConnectionPathTest {
         PathTuple end = getEndPathSegment(start, 1);
 
         PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 2000, start.getTotalLength(),
+                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength(),
                 0);
 
-
         System.out.println(calculateScore(res));
+
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
     }
@@ -108,9 +107,10 @@ public class BFSConnectionPathTest {
         PathTuple end = getEndPathSegment(start, 4);
 
         PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 2000, start.getTotalLength(),
+                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength(),
                 0);
 
+        System.out.println(calculateScore(res));
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
@@ -127,8 +127,10 @@ public class BFSConnectionPathTest {
         PathTuple end = getEndPathSegment(start, 16);
 
         PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 2000, start.getTotalLength()
+                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength()
                 ,0);
+
+        System.out.println(calculateScore(res));
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
@@ -145,6 +147,7 @@ public class BFSConnectionPathTest {
                 end.getPreviousNode(), end.getCurrentWay(), 1000 ,start.getTotalLength(),
                 0);
 
+
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
     }
@@ -158,8 +161,10 @@ public class BFSConnectionPathTest {
         PathTuple end = getEndPathSegment(start, 16);
 
         PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 2000, start.getTotalLength(),
+                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength(),
                 0);
+
+        System.out.println(calculateScore(res));
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
@@ -175,8 +180,10 @@ public class BFSConnectionPathTest {
         PathTuple end = getEndPathSegment(start, 20);
 
         PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 2000, start.getTotalLength(),
+                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength(),
                 0);
+
+        System.out.println(calculateScore(res));
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());

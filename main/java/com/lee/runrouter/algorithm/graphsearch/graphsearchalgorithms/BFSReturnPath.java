@@ -27,18 +27,14 @@ import java.util.*;
 @Component
 @Qualifier("BFSReturnPath")
 public class BFSReturnPath extends SearchAlgorithm implements GraphSearch {
-    private final double REPEATED_EDGE_PENALTY = 1; // deducted from score where
-    // edge/Way has been previously visited
     private final double RANDOM_REDUCER = 50; // divides into random number added to the
     // score
-    private final double MINIMUM_LENGTH = 5; // minimum length of way to avoid
-    // skipping
     private final double PREFERRED_MIN_LENGTH = 50; // minimum length of way to avoid
     // subtracting a score penalty
     private final double PREFERRED_MIN_LENGTH_PENALTY = 0;
     private final double PREFERRED_LENGTH = 250;
     private final double PREFERRED_LENGTH_BONUS = 1;
-    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.75;
+    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.7;
 
     private PriorityQueue<PathTuple> queue;
     private Set<Long> visitedWays;

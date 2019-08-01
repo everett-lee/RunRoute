@@ -22,8 +22,9 @@ public class FeaturesHeuristicMain implements Heuristic, FeaturesHeuristic {
     private List<String> dislikedSurfaces; // list of surfaces to be avoided
 
     // allocated scores for features
-    static final double SURFACE_VALUE = 0.5;
-    static final double HIGHWAY_VALUE = 1.5;
+    static final double SURFACE_VALUE = 0.005;
+    static final double HIGHWAY_VALUE = 0.01;
+
 
     public FeaturesHeuristicMain() {
         this.preferredSurfaces = new ArrayList<>();
@@ -34,22 +35,23 @@ public class FeaturesHeuristicMain implements Heuristic, FeaturesHeuristic {
     // iterate over user-provided surface and highway types and
     // adjust score for matching values
     private void calculateScore() {
+
         for (String surface: this.preferredSurfaces) {
             if (this.selectedWay.getSurface().equals(surface.toUpperCase())) {
-                this.score += SURFACE_VALUE;
+                this.score += SURFACE_VALUE * selectedWay.getLength();
             }
         }
 
         // lower score where surface should be avoided
         for (String surface: this.dislikedSurfaces) {
             if (this.selectedWay.getSurface().equals(surface.toUpperCase())) {
-                this.score -= SURFACE_VALUE;
+                this.score -= SURFACE_VALUE * selectedWay.getLength();
             }
         }
 
         for (String highway: this.preferredHighways) {
             if (this.selectedWay.getHighway().equals(highway.toUpperCase())) {
-                this.score += HIGHWAY_VALUE;
+                this.score += HIGHWAY_VALUE * selectedWay.getLength();
             }
         }
     }

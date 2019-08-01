@@ -29,7 +29,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
-    private final double PREFERRED_MIN_LENGTH = 350; // minimum length of way to avoid
+    private final double PREFERRED_MIN_LENGTH = 400; // minimum length of way to avoid
     // subtracting a score penalty
     private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
     private final double PREFERRED_LENGTH = 800;

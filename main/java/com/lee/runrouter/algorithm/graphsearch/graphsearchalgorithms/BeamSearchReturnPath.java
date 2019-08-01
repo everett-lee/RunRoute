@@ -191,7 +191,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
                 queue.add(toAdd);
 
                 visitedWays.add(currentWay.getId());
-                if (!repo.getOriginWay().getNodeContainer().getNodes().contains(visitedNodes)) {
+                if (!repo.getOriginWay().getNodeContainer().getNodes().contains(connectingNode)) {
                     this.visitedNodes.add(connectingNode.getId());
                 }
 

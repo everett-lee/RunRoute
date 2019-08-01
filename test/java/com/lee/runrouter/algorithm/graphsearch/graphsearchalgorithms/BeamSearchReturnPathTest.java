@@ -151,5 +151,43 @@ public class BeamSearchReturnPathTest {
         assertEquals(originNode, x.getPreviousNode());
         assertEquals(originNode, x.getPreviousNode());
     }
+    
+    @Test(timeout = 1500)
+    public void testTulseHillReturn8k() {
+        double[] coords = {51.441109, -0.106974};
+        Way w = repo.getWayRepo().stream().filter(x -> x.getId() == 12538762L).findFirst().get();
+
+        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 13854067L)
+                .findFirst().get();
+        repo.setOriginWay(origin);
+
+        Node originNode = new Node(-1, coords[0], coords[1]);
+        originNode = AlgoHelpers.findClosest(originNode, repo.getOriginWay().getNodeContainer().getNodes());
+        // update the repository origin node
+        repo.setOriginNode(originNode);
+
+        PathTuple x = returnPath.searchGraph(w, coords, 9000);
+
+        assertEquals(originNode, x.getPreviousNode());
+    }
+
+    @Test(timeout = 1000)
+    public void testTulseHillReturn10k() {
+        double[] coords = {51.441109, -0.106974};
+        Way w = repo.getWayRepo().stream().filter(x -> x.getId() == 12538762L).findFirst().get();
+
+        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 186828234L)
+                .findFirst().get();
+        repo.setOriginWay(origin);
+
+        Node originNode = new Node(-1, coords[0], coords[1]);
+        originNode = AlgoHelpers.findClosest(originNode, repo.getOriginWay().getNodeContainer().getNodes());
+        // update the repository origin node
+        repo.setOriginNode(originNode);
+
+        PathTuple x = returnPath.searchGraph(w, coords, 10000);
+
+        assertEquals(originNode, x.getPreviousNode());
+    }
 
 }

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Qualifier("WayQueryDirector")
 public class WayQueryDirector extends QueryDirector {
     @Autowired
-    public WayQueryDirector(@Qualifier("WayQueryBuilder") QueryBuilder qb, BBCalculator distanceCalc) {
+    public WayQueryDirector(@Qualifier("WayQueryBuilderCombined") QueryBuilder qb, BBCalculator distanceCalc) {
         super(qb, distanceCalc);
     }
 

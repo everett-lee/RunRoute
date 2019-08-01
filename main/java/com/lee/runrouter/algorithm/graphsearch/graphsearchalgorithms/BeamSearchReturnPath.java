@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+
+import static com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator.calculateDistanceII;
 import java.util.*;
 
 /**
@@ -35,15 +37,15 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
     private final double PREFERRED_LENGTH = 800;
     private final double PREFERRED_LENGTH_BONUS = 1;
     private final double DISTANCE_FROM_ORIGIN_BONUS = 0.75;
-    private final long TIME_LIMIT = 1500;
+    private final long TIME_LIMIT = 5000;
 
     private List<PathTuple> queue;
     private Set<Long> visitedWays;
     private Set<Long> visitedNodes;
 
-    private final double LOWER_SCALE = 0.5; // amount to scale upper lower bound on
+    private final double LOWER_SCALE = 0.25; // amount to scale upper lower bound on
     // run length by
-    private final double UPPER_SCALE = 0.05; // amount to scale upper bound on
+    private final double UPPER_SCALE = 0.25; // amount to scale upper bound on
     // run length by
 
     @Autowired
@@ -132,7 +134,6 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
 
             // distance to origin point from the last explored way
             double lastDist = distanceFromOriginHeuristic.getScore(currentWay);
-
             // for each Way reachable from the current Way
             for (ConnectionPair pair: repo.getConnectedWays(currentWay)) {
                 currentRouteLength = topTuple.getTotalLength();
@@ -169,11 +170,21 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
 
                 double currentDistanceScore
                         = distanceFromOriginHeuristic.getScore(selectedWay);
+//
+//                // if the current distance score is higher the previous Way's, that
+//                // is it is closer, increase the score
+//                if (currentDistanceScore > lastDist) {
+//                    score += DISTANCE_FROM_ORIGIN_BONUS;
+//                }
 
-                // if the current distance score is higher the previous Way's, that
-                // is it is closer, increase the score
-                if (currentDistanceScore > lastDist) {
-                    score += DISTANCE_FROM_ORIGIN_BONUS;
+                double distanceFromStart = calculateDistanceII(connectingNode, repo.getOriginNode());
+
+                double thresholdPercentage = 1.1 - (currentRouteLength / distance);
+                double targetDistance = distance * thresholdPercentage;
+
+                System.out.println("TO GO >>>>>>>>>>>>>>>> " + distanceFromStart);
+                if (distanceFromStart > targetDistance) {
+                    continue;
                 }
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,

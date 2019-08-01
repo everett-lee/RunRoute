@@ -33,7 +33,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
     private final double PREFERRED_LENGTH = 900;
     private final double PREFERRED_LENGTH_BONUS = 1;
-    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.75;
+    private final double DISTANCE_FROM_ORIGIN_BONUS = -1000;
     private final long TIME_LIMIT = 1000;
 
     private PriorityQueue<PathTuple> queue;
@@ -58,6 +58,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     @Override
     public PathTuple connectPath(Node originNode, Way originWay, Node targetNode, Way targetWay,
                                  double availableDistance, double initialDistance, double targetDistance) {
+
 
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());

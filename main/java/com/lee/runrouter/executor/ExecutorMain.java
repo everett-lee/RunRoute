@@ -72,7 +72,6 @@ public class ExecutorMain implements Executor {
     @Override
     public ResponseObject executeQuery(double[] coords, double maxGradient, double distance, boolean[] options)
             throws PathNotGeneratedException {
-
         // update features heuristic to reflect user-defined options
         processFeaturesOptions(options);
 

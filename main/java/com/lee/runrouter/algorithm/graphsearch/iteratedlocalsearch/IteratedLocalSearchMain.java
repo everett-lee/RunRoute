@@ -76,11 +76,14 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             // start, includes end
             availableDistance += existingSegmentLength;
 
-            // generate the new segment
-            PathTuple newSegment = graphSearch.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                    end.getPreviousNode(), end.getCurrentWay(), availableDistance, start.getTotalLength(),
-                    existingSegmentLength);
-            setIterations(getIterations() + 1);
+            PathTuple newSegment = null;
+            if (availableDistance > 0) {
+                // generate the new segment
+                newSegment = graphSearch.connectPath(start.getPreviousNode(), start.getCurrentWay(),
+                        end.getPreviousNode(), end.getCurrentWay(), availableDistance, start.getTotalLength(),
+                        end.getTotalLength());
+                setIterations(getIterations() + 1);
+            }
 
             double oldSegmentScore = calculateScore(start, end);
             double newSegmentScore = calculateScore(newSegment, null);
@@ -102,7 +105,6 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
                 // update current node distances and target distance to reflect added segment
                 double newDistance = updateDistances(head);
                 availableDistance = targetDistance - newDistance;
-
 
                 a = 1;
                 r = 2;

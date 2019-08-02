@@ -101,9 +101,10 @@ public class CycleGeneratorMain implements CycleGenerator {
 
                 distance += current.getSegmentLength();
 
+                double score = -10; // dummy score to increase
+                // chance repeated segment will be replaced
                 PathTuple toAdd = new PathTupleMain(head, current.getPreviousNode(),
-                        current.getCurrentWay(),
-                        current.getSegmentScore(), current.getSegmentLength(), distance,
+                        current.getCurrentWay(), score, current.getSegmentLength(), distance,
                         current.getSegmentGradient()
                 );
 

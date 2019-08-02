@@ -1,5 +1,6 @@
 package com.lee.runrouter.routegenerator;
 
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ILSGraphSearch;
 import com.lee.runrouter.routegenerator.cyclegenerator.CycleGenerator;
 import com.lee.runrouter.routegenerator.cyclegenerator.PathNotGeneratedException;
 import com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch.IteratedLocalSearch;
@@ -37,12 +38,16 @@ public class RouteGeneratorMain implements RouteGenerator {
      */
     @Override
     public PathTuple generateRoute(double[] coords, double distance) throws PathNotGeneratedException {
+
         PathTuple initialCycle = cycleGenerator.generateCycle(coords, distance);
         System.out.println("INITIAL CYCLE DONE");
 
         System.out.println("INITIAL CYCLE LEN " + initialCycle.getTotalLength());
 
         double remainingDistance = distance - initialCycle.getTotalLength();
+
+
+        System.out.println(" <><><><><> THEERE IS " + remainingDistance + "TO ADD <> <> <><><><>");
 
         return ils.iterate(initialCycle, remainingDistance);
     }

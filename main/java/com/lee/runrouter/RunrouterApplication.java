@@ -29,8 +29,6 @@ public class RunrouterApplication {
         GraphBuilder gb = ctx.getBean(GraphBuilder.class);
         final long endTime = System.currentTimeMillis();
 
-        gb.buildGraph(coords, 10000, opts);
-
         ResponseGeneratorController gc = ctx.getBean(ResponseGeneratorController.class);
 
         System.out.println("Total execution time: " + (endTime - startTime));

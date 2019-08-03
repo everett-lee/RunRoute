@@ -3,6 +3,7 @@ package com.lee.runrouter.algorithm;
 import com.lee.runrouter.algorithm.distanceCalculator.*;
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
+import com.lee.runrouter.routegenerator.PathNotGeneratedException;
 import com.lee.runrouter.routegenerator.cyclegenerator.*;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
@@ -32,7 +33,7 @@ public class CycleGeneratorMainTest {
     GraphSearch beamSearch;
     GraphSearch returnPath;
     DistanceCalculator distanceCalculator;
-    Heuristic distanceHeuristic;
+    DistanceFromOriginNodeHeursitic distanceHeuristic;
     Heuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
     GradientCalculator gradientCalculator;
@@ -46,7 +47,7 @@ public class CycleGeneratorMainTest {
     @Before
     public void setUp() {
         distanceCalculator = new HaversineCalculator();
-        distanceHeuristic = new DistanceFromOriginToMidHeuristic(repo, distanceCalculator);
+        distanceHeuristic = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
 
         List<String> preferredSurfaces = new ArrayList<>(Arrays.asList());
         List<String> preferredHighways = new ArrayList<>(Arrays.asList());

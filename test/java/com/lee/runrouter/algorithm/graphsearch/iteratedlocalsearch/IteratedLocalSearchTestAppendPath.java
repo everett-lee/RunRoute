@@ -21,14 +21,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.lee.runrouter.testhelpers.TestHelpers.*;
-
 public class IteratedLocalSearchTestAppendPath {
     PathTuple morrishWay5k;
     PathTuple tulse14k;
     ILSGraphSearch connectPath;
     DistanceCalculator distanceCalculator;
-    Heuristic distanceHeuristic;
+    DistanceFromOriginNodeHeursitic distanceHeuristic;
     Heuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
     ElevationHeuristic elevationHeuristic;
@@ -44,7 +42,7 @@ public class IteratedLocalSearchTestAppendPath {
     @Before
     public void setUp() {
         distanceCalculator = new HaversineCalculator();
-        distanceHeuristic = new DistanceFromOriginToMidHeuristic(repo, distanceCalculator);
+        distanceHeuristic = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
 
         List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("GRASS",
                 "DIRT", "GRAVEL"));

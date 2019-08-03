@@ -6,7 +6,7 @@ import com.lee.runrouter.api.exceptions.InvalidCoordsException;
 import com.lee.runrouter.api.exceptions.InvalidDistanceException;
 import com.lee.runrouter.executor.Executor;
 
-import com.lee.runrouter.routegenerator.cyclegenerator.PathNotGeneratedException;
+import com.lee.runrouter.routegenerator.PathNotGeneratedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
@@ -39,7 +39,7 @@ public class ResponseGeneratorController {
 
     @Autowired
     public ResponseGeneratorController(
-            @Qualifier("ExecutorMain") Executor executor) {
+            @Qualifier("ExecutorFullCycle") Executor executor) {
      this.executor = executor;
     }
 

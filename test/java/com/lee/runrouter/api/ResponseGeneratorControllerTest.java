@@ -17,7 +17,7 @@ import com.lee.runrouter.graph.graphbuilder.GraphBuilder;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.routegenerator.RouteGenerator;
 import com.lee.runrouter.routegenerator.RouteGeneratorMain;
-import com.lee.runrouter.routegenerator.cyclegenerator.PathNotGeneratedException;
+import com.lee.runrouter.routegenerator.PathNotGeneratedException;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +35,7 @@ public class ResponseGeneratorControllerTest {
     GraphBuilder graphBuilder;
     FeaturesHeuristic featuresHeuristic;
     Heuristic heuristic;
+    DistanceFromOriginNodeHeursitic distanceHeuristic;
     ElevationHeuristic elevationHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
     GradientCalculator gradientCalculator;
@@ -68,15 +69,16 @@ public class ResponseGeneratorControllerTest {
         heuristic = new FeaturesHeuristicMain();
         elevationHeuristic = new ElevationHeuristicMain();
         linkedListToArray = new LinkedListToArrayHeadNodes();
+        distanceHeuristic = mock(DistanceFromOriginNodeHeuristicMain.class);
 
         repo = mock(ElementRepo.class);
         edgeDistanceCalculator = mock(EdgeDistanceCalculatorMain.class);
         gradientCalculator = mock(SimpleGradientCalculator.class);
-        beamSearch = new BeamSearch(repo, heuristic, heuristic, edgeDistanceCalculator,
+        beamSearch = new BeamSearch(repo, distanceHeuristic, heuristic, edgeDistanceCalculator,
                                     gradientCalculator, elevationHeuristic);
-        beamSearchReturn = new BeamSearchReturnPath(repo, heuristic, heuristic, edgeDistanceCalculator,
+        beamSearchReturn = new BeamSearchReturnPath(repo, distanceHeuristic, heuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
-        BFSconnection = new BFSConnectionPath(repo, heuristic, heuristic, edgeDistanceCalculator,
+        BFSconnection = new BFSConnectionPath(repo, distanceHeuristic, heuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
 
 

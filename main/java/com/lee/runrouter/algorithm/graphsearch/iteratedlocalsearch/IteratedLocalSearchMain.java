@@ -133,7 +133,6 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
             head = head.getPredecessor();
         }
-
         return finalDistance;
     }
 

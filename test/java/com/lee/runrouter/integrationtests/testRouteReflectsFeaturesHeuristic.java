@@ -16,7 +16,7 @@ import com.lee.runrouter.routegenerator.RouteGenerator;
 import com.lee.runrouter.routegenerator.RouteGeneratorMain;
 import com.lee.runrouter.routegenerator.cyclegenerator.CycleGenerator;
 import com.lee.runrouter.routegenerator.cyclegenerator.CycleGeneratorMain;
-import com.lee.runrouter.routegenerator.cyclegenerator.PathNotGeneratedException;
+import com.lee.runrouter.routegenerator.PathNotGeneratedException;
 import com.lee.runrouter.testhelpers.TestHelpers;
 import org.junit.*;
 
@@ -30,7 +30,7 @@ public class testRouteReflectsFeaturesHeuristic {
     RouteGenerator routeGenerator;
     CycleGenerator cycleGenerator;
     ElementRepo repo;
-    Heuristic distanceHeuristic;
+    DistanceFromOriginNodeHeursitic distanceHeuristic;
     DistanceCalculator distanceCalculator;
     Heuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
@@ -48,7 +48,7 @@ public class testRouteReflectsFeaturesHeuristic {
         distanceCalculator = new HaversineCalculator();
 
         // heuristics
-        distanceHeuristic = new DistanceFromOriginToMidHeuristic(repo, distanceCalculator);
+        distanceHeuristic = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
         featuresHeuristic = new FeaturesHeuristicMain();
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         gradientCalculator = new SimpleGradientCalculator();

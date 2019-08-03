@@ -5,13 +5,10 @@ import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
-import org.hibernate.tool.hbm2ddl.SchemaUpdateTask;
-import org.hibernate.tool.schema.internal.exec.ScriptTargetOutputToFile;
+import com.lee.runrouter.routegenerator.PathNotGeneratedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
 
 /**
  * Combines results of two greedy search algorithms to form a cycle.

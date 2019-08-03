@@ -26,7 +26,7 @@ public class BeamSearchConnectionPathTest {
     PathTuple craignair14k;
     ILSGraphSearch connectPath;
     DistanceCalculator distanceCalculator;
-    Heuristic distanceHeuristic;
+    DistanceFromOriginNodeHeursitic distanceHeuristic;
     Heuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
     GradientCalculator gradientCalculator;
@@ -43,7 +43,7 @@ public class BeamSearchConnectionPathTest {
     @Before
     public void setUp() {
         distanceCalculator = new HaversineCalculator();
-        distanceHeuristic = new DistanceFromOriginToMidHeuristic(repo, distanceCalculator);
+        distanceHeuristic = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
 
         List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("GRASS",
                 "DIRT", "GRAVEL"));

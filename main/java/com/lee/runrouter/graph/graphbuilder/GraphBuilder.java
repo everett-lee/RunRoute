@@ -44,6 +44,8 @@ public class GraphBuilder {
      * @param options an Array of booleans representing options such as acceptable terrain types
      */
     public void buildGraph(double[] coords, double distance, boolean[] options) {
+        repo.reset();
+
         Long originID = originParser.getOriginWayID(coords, options);
 
         wayDirector.setOptions(options);

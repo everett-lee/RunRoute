@@ -43,12 +43,12 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
 
     @Autowired
     public BFS(ElementRepo repo,
-               @Qualifier("DistanceFromOriginToMidHeuristic") Heuristic distanceHeuristic,
+               @Qualifier("DistanceFromOriginNodeHeuristicMain") DistanceFromOriginNodeHeursitic distanceFromOriginHeuristic,
                @Qualifier("FeaturesHeuristicMain") Heuristic featuresHeuristic,
                @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
                @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
                @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
-        super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
+        super(repo, distanceFromOriginHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
         this.visitedWays = new HashSet<>();

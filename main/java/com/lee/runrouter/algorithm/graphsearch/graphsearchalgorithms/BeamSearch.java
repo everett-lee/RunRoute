@@ -44,12 +44,13 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
 
     @Autowired
     public BeamSearch(ElementRepo repo,
-                      @Qualifier("DistanceFromOriginToMidHeuristic") Heuristic distanceHeuristic,
+                      @Qualifier("DistanceFromOriginNodeHeuristicMain") DistanceFromOriginNodeHeursitic distanceFromOriginHeuristic,
                       @Qualifier("FeaturesHeuristicMain") Heuristic featuresHeuristic,
                       @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
                       @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
                       @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
-        super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
+        super(repo, distanceFromOriginHeuristic, featuresHeuristic,
+                edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new ArrayList<>();
         this.visitedWays = new HashSet<>();
         this.visitedNodes = new HashSet<>();

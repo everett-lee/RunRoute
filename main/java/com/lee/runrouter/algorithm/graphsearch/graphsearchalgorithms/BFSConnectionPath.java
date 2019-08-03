@@ -2,6 +2,7 @@ package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
+import com.lee.runrouter.algorithm.heuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.Heuristic;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
@@ -42,12 +43,12 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
     @Autowired
     public BFSConnectionPath(ElementRepo repo,
-                             @Qualifier("DistanceFromOriginToMidHeuristic") Heuristic distanceHeuristic,
+                             @Qualifier("DistanceFromOriginNodeHeuristicMain") DistanceFromOriginNodeHeursitic distanceFromOriginHeuristic,
                              @Qualifier("FeaturesHeuristicMain") Heuristic featuresHeuristic,
                              @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
                              @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
                              @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
-        super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
+        super(repo, distanceFromOriginHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
 

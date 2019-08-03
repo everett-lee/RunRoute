@@ -1,6 +1,7 @@
 package com.lee.runrouter.executor;
 
 
+import com.lee.runrouter.RunrouterApplication;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.SearchAlgorithm;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic;
@@ -21,35 +22,33 @@ import java.util.List;
  * algorithm and graph generation procedures.
  */
 @Component
-@Qualifier("ExecutorMain")
-public class ExecutorMain implements Executor {
+@Qualifier("ExecutorFullCycle")
+public class ExecutorFullCycle implements Executor {
     private RouteGenerator routeGenerator;
     private GraphBuilder graphBuilder;
     private FeaturesHeuristic featuresHeuristic;
     private ElevationHeuristic elevationHeuristic;
     private LinkedListToArray linkedListToArray;
-    private SearchAlgorithm outwardsPather;
-    private SearchAlgorithm returnPather;
+    private SearchAlgorithm pather;
     private SearchAlgorithm connectionPather;
 
     private final double INITIAL_GRAPH_SIZE = 20000; // the starting size of the generated graph
 
-    public ExecutorMain(
-            @Qualifier("RouteGeneratorMain") RouteGenerator routeGenerator,
+    public ExecutorFullCycle(
+            @Qualifier("RouteGeneratorCycle") RouteGenerator routeGenerator,
             GraphBuilder graphBuilder,
             @Qualifier("FeaturesHeuristicMain") FeaturesHeuristic featuresHeuristic,
             @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic,
             @Qualifier("LinkedListToArrayAllNodes") LinkedListToArray linkedListToArray,
-            @Qualifier("BeamSearch") SearchAlgorithm outwardsPather,
-            @Qualifier("BeamSearchReturnPath") SearchAlgorithm returnPather,
-            @Qualifier("BFSConnectionPath") SearchAlgorithm connectionPather) {
+            @Qualifier("BeamSearchCycle") SearchAlgorithm pather,
+            @Qualifier("BFSConnectionPath") SearchAlgorithm connectionPather,
+                    RunrouterApplication app) {
         this.routeGenerator = routeGenerator;
         this.graphBuilder = graphBuilder;
         this.featuresHeuristic = featuresHeuristic;
         this.elevationHeuristic = elevationHeuristic;
         this.linkedListToArray = linkedListToArray;
-        this.outwardsPather = outwardsPather;
-        this.returnPather = returnPather;
+        this.pather = pather;
         this.connectionPather = connectionPather;
     }
 
@@ -72,6 +71,7 @@ public class ExecutorMain implements Executor {
     @Override
     public ResponseObject executeQuery(double[] coords, double maxGradient, double distance, boolean[] options)
             throws PathNotGeneratedException {
+
         // update features heuristic to reflect user-defined options
         processFeaturesOptions(options);
 
@@ -133,8 +133,7 @@ public class ExecutorMain implements Executor {
 
     private void processFeaturesOptions(boolean[] options) {
         // set all options to false/empty
-        this.outwardsPather.setAvoidUnlit(false);
-        this.returnPather.setAvoidUnlit(false);
+        this.pather.setAvoidUnlit(false);
         this.connectionPather.setAvoidUnlit(false);
 
         List<String> preferredHighways = new ArrayList<>();
@@ -148,8 +147,7 @@ public class ExecutorMain implements Executor {
 
         // user selected avoid unlit
         if (options[3]) {
-            this.outwardsPather.setAvoidUnlit(true);
-            this.returnPather.setAvoidUnlit(true);
+            this.pather.setAvoidUnlit(true);
             this.connectionPather.setAvoidUnlit(true);
 
         }
@@ -183,8 +181,7 @@ public class ExecutorMain implements Executor {
     }
 
     private void processElevationOptions(double maxGradient, boolean[] booleans) {
-        this.outwardsPather.setMaxGradient(maxGradient);
-        this.returnPather.setMaxGradient(maxGradient);
+        this.pather.setMaxGradient(maxGradient);
         this.connectionPather.setMaxGradient(maxGradient);
         elevationHeuristic.setOptions(false);
 

@@ -4,6 +4,7 @@ import com.lee.runrouter.algorithm.AlgoHelpers;
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
+import com.lee.runrouter.algorithm.heuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.Heuristic;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
@@ -46,12 +47,12 @@ public class BFSReturnPath extends SearchAlgorithm implements GraphSearch {
 
     @Autowired
     public BFSReturnPath(ElementRepo repo,
-                         @Qualifier("DistanceFromOriginToMidHeuristic") Heuristic distanceHeuristic,
+                         @Qualifier("DistanceFromOriginNodeHeuristicMain") DistanceFromOriginNodeHeursitic distanceFromOriginHeuristic,
                          @Qualifier("FeaturesHeuristicMain") Heuristic featuresHeuristic,
                          @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
                          @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
                          @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
-        super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
+        super(repo, distanceFromOriginHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         // compare priority queue items by their assigned score in descending order
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());

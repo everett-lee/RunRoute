@@ -1,5 +1,4 @@
 package com.lee.runrouter.routegenerator;
-import com.lee.runrouter.routegenerator.cyclegenerator.PathNotGeneratedException;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 
 public interface RouteGenerator {

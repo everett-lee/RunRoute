@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 public class ElementRepo implements Serializable {
     private Way originWay;
     private Node originNode; // starting node of the route
-    private final Map<Long, List<Way>> nodeToWay; // the Ways associated
+    private Map<Long, List<Way>> nodeToWay; // the Ways associated
     // with each node ID
-    private final List<Way> wayRepo; // contains all generated Ways
+    private List<Way> wayRepo; // contains all generated Ways
 
     public ElementRepo() {
         this.originNode = null;
@@ -90,5 +90,11 @@ public class ElementRepo implements Serializable {
 
     public void setOriginNode(Node originNode) {
         this.originNode = originNode;
+    }
+
+    public void reset() {
+        this.originNode = null;
+        this.nodeToWay = new HashMap<>();
+        this.wayRepo = new ArrayList<>();
     }
 }

@@ -1,9 +1,6 @@
 package com.lee.runrouter.executor;
 
-import com.lee.runrouter.routegenerator.cyclegenerator.PathNotGeneratedException;
-import com.lee.runrouter.graph.graphbuilder.node.Node;
-
-import java.util.List;
+import com.lee.runrouter.routegenerator.PathNotGeneratedException;
 
 public interface Executor {
     ResponseObject executeQuery(double[] coords, double maxGradient,

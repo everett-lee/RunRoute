@@ -22,7 +22,7 @@ public class BeamSearchTest {
     ElementRepo repo;
     GraphSearch beamSearch;
     DistanceCalculator distanceCalculator;
-    Heuristic distanceHeuristic;
+    DistanceFromOriginNodeHeursitic distanceHeuristic;
     Heuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
     GradientCalculator gradientCalculator;
@@ -36,7 +36,7 @@ public class BeamSearchTest {
     @Before
     public void setUp() {
         distanceCalculator = new HaversineCalculator();
-        distanceHeuristic = new DistanceFromOriginToMidHeuristic(repo, distanceCalculator);
+        distanceHeuristic = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
 
         List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("GRASS",
                 "DIRT", "GRAVEL"));

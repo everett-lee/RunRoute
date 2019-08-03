@@ -3,6 +3,7 @@ package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 import com.lee.runrouter.algorithm.AlgoHelpers;
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
+import com.lee.runrouter.algorithm.heuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.Heuristic;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
@@ -49,12 +50,12 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
 
     @Autowired
     public BeamSearchReturnPath(ElementRepo repo,
-                                @Qualifier("DistanceFromOriginToMidHeuristic") Heuristic distanceHeuristic,
+                                @Qualifier("DistanceFromOriginNodeHeuristicMain") DistanceFromOriginNodeHeursitic distanceFromOriginHeuristic,
                                 @Qualifier("FeaturesHeuristicMain") Heuristic featuresHeuristic,
                                 @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
                                 @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
                                 @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
-        super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
+        super(repo, distanceFromOriginHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new ArrayList<>();
         this.visitedWays = new HashSet<>();
         this.visitedNodes = new HashSet<>();

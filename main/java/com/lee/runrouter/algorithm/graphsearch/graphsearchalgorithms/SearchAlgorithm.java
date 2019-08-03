@@ -2,6 +2,7 @@ package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
+import com.lee.runrouter.algorithm.heuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.Heuristic;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
@@ -19,6 +20,7 @@ import java.util.Set;
 @Component
 public abstract class SearchAlgorithm {
     ElementRepo repo; // the repository of Ways and Nodes
+    DistanceFromOriginNodeHeursitic distanceFromOriginHeursitic;
     Heuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
     GradientCalculator gradientCalculator;
@@ -28,13 +30,13 @@ public abstract class SearchAlgorithm {
     boolean avoidUnlit;
 
     public SearchAlgorithm(ElementRepo repo,
-                           Heuristic distanceHeuristic,
+                           DistanceFromOriginNodeHeursitic distanceFromOriginHeursitic,
                            Heuristic featuresHeuristic,
                            EdgeDistanceCalculator edgeDistanceCalculator,
                            GradientCalculator gradientCalculator,
                            ElevationHeuristic elevationHeuristic) {
         this.repo = repo;
-        this.distanceFromOriginHeuristic = distanceHeuristic;
+        this.distanceFromOriginHeursitic = distanceFromOriginHeursitic;
         this.gradientCalculator = gradientCalculator;
         this.featuresHeuristic = featuresHeuristic;
         this.edgeDistanceCalculator = edgeDistanceCalculator;

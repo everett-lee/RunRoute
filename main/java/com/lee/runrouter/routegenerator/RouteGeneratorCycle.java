@@ -1,5 +1,7 @@
 package com.lee.runrouter.routegenerator;
 
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.GraphSearch;
+import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.routegenerator.cyclegenerator.CycleGenerator;
 import com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch.IteratedLocalSearch;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
@@ -13,15 +15,18 @@ import org.springframework.stereotype.Component;
  * to yield the improved final route.
  */
 @Component
-@Qualifier("RouteGeneratorMain")
-public class RouteGeneratorMain implements RouteGenerator {
-    private CycleGenerator cycleGenerator;
+@Qualifier("RouteGeneratorCycle")
+public class RouteGeneratorCycle implements RouteGenerator {
+    private GraphSearch pather;
     private IteratedLocalSearch ils;
+    private ElementRepo repo;
 
-    public RouteGeneratorMain(@Qualifier("CycleGeneratorMain") CycleGenerator cycleGenerator,
-                              @Qualifier("IteratedLocalSearchMain")IteratedLocalSearch iteratedLocalSearch) {
-        this.cycleGenerator = cycleGenerator;
+    public RouteGeneratorCycle(@Qualifier("BeamSearchCycle") GraphSearch pather,
+                              @Qualifier("IteratedLocalSearchMain")IteratedLocalSearch iteratedLocalSearch,
+                                ElementRepo repo) {
+        this.pather = pather;
         this.ils = iteratedLocalSearch;
+        this.repo = repo;
     }
 
     /**
@@ -37,8 +42,12 @@ public class RouteGeneratorMain implements RouteGenerator {
     @Override
     public PathTuple generateRoute(double[] coords, double distance) throws PathNotGeneratedException {
 
-        PathTuple initialCycle = cycleGenerator.generateCycle(coords, distance);
+        PathTuple initialCycle = pather.searchGraph(repo.getOriginWay(), coords, distance);
         System.out.println("INITIAL CYCLE DONE");
+
+        if (initialCycle.getTotalLength() == -1) {
+            throw new PathNotGeneratedException("No valid path was generated");
+        }
 
         System.out.println("INITIAL CYCLE LEN " + initialCycle.getTotalLength());
 

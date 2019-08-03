@@ -9,12 +9,15 @@ import com.lee.runrouter.graph.graphbuilder.GraphBuilder;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 @SpringBootApplication
 public class RunrouterApplication {
+    static ApplicationContext ctx;
 
 	public static void main(String[] args) {
         ApplicationContext ctx = SpringApplication.run(RunrouterApplication.class, args);
@@ -23,15 +26,9 @@ public class RunrouterApplication {
                 true, true, true, true, true, true, true, true};
         double[] coords = {51.446529, -0.125446};
 
-        final long startTime = System.currentTimeMillis();
         ElementRepo repo = ctx.getBean(ElementRepo.class);
         Executor executor = ctx.getBean(ExecutorMain.class);
         GraphBuilder gb = ctx.getBean(GraphBuilder.class);
-        final long endTime = System.currentTimeMillis();
-
-        ResponseGeneratorController gc = ctx.getBean(ResponseGeneratorController.class);
-
-        System.out.println("Total execution time: " + (endTime - startTime));
 
 
     }
@@ -49,6 +46,10 @@ public class RunrouterApplication {
             i.printStackTrace();
         }
 
+    }
+
+    public static void refreshBeans() {
+        ((ConfigurableApplicationContext) ctx).refresh();
     }
 
 }

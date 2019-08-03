@@ -18,7 +18,7 @@ import java.util.List;
 
 import static com.lee.runrouter.testhelpers.TestHelpers.*;
 
-public class BeamSearchCycleTest {
+public class BeamSearchCycleTestWithFeatures {
     ElementRepo repo;
     GraphSearch beamSearch;
     DistanceCalculator distanceCalculator;
@@ -36,9 +36,17 @@ public class BeamSearchCycleTest {
     public void setUp() {
         distanceCalculator = new HaversineCalculator();
         distanceHeuristic = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
+
+        List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("GRASS",
+                "DIRT", "GRAVEL"));
+        List<String> preferredHighways = new ArrayList<>(Arrays.asList("LIVING_STREET", "PEDESTRIAN", "TRACK",
+                "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
         featuresHeuristic = new FeaturesHeuristicMain();
+        ((FeaturesHeuristicMain) featuresHeuristic).setPreferredHighways(preferredHighways);
+        ((FeaturesHeuristicMain) featuresHeuristic).setPreferredSurfaces(preferredSurfaces);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         elevationHeuristic = new ElevationHeuristicMain();
+        elevationHeuristic.setOptions(true);
         gradientCalculator = new SimpleGradientCalculator();
 
         beamSearch = new BeamSearchCycle(repo, distanceHeuristic,

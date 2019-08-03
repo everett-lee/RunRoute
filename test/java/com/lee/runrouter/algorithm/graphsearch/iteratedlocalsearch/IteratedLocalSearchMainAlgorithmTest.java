@@ -9,10 +9,7 @@ import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistan
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BFSConnectionPath;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearchConnectionPath;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ILSGraphSearch;
-import com.lee.runrouter.algorithm.heuristic.DistanceFromOriginToMidHeuristic;
-import com.lee.runrouter.algorithm.heuristic.ElevationHeuristicMain;
-import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristicMain;
-import com.lee.runrouter.algorithm.heuristic.Heuristic;
+import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import org.junit.Before;
@@ -39,7 +36,7 @@ public class IteratedLocalSearchMainAlgorithmTest {
     PathTuple craignair14k;
     PathTuple craignair21k;
     DistanceCalculator distanceCalculator;
-    Heuristic distanceHeuristic;
+    DistanceFromOriginNodeHeursitic distanceHeuristic;
     ElementRepo repo;
     Heuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
@@ -70,7 +67,7 @@ public class IteratedLocalSearchMainAlgorithmTest {
     @Before
     public void setUp() {
         distanceCalculator = new HaversineCalculator();
-        distanceHeuristic = new DistanceFromOriginToMidHeuristic(repo, distanceCalculator);
+        distanceHeuristic = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
 
         List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("GRASS",
                 "DIRT", "GRAVEL"));

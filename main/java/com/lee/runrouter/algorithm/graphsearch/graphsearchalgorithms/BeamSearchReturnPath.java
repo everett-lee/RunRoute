@@ -34,9 +34,9 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
     // score
     private final double PREFERRED_MIN_LENGTH = 500; // minimum length of way to avoid
     // subtracting a score penalty
-    private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
+    private final double PREFERRED_MIN_LENGTH_PENALTY = 0.25;
     private final double PREFERRED_LENGTH = 1000;
-    private final double PREFERRED_LENGTH_BONUS = 1;
+    private final double PREFERRED_LENGTH_BONUS = 0.25;
     private final long TIME_LIMIT = 2000;
 
     private List<PathTuple> queue;

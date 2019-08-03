@@ -38,20 +38,20 @@ public class FeaturesHeuristicMain implements Heuristic, FeaturesHeuristic {
 
         for (String surface: this.preferredSurfaces) {
             if (this.selectedWay.getSurface().equals(surface.toUpperCase())) {
-                this.score += 0.5;
+                this.score += 0.25;
             }
         }
 
         // lower score where surface should be avoided
         for (String surface: this.dislikedSurfaces) {
             if (this.selectedWay.getSurface().equals(surface.toUpperCase())) {
-                this.score -= SURFACE_VALUE * selectedWay.getLength();
+                this.score -= 0.25;
             }
         }
 
         for (String highway: this.preferredHighways) {
             if (this.selectedWay.getHighway().equals(highway.toUpperCase())) {
-                this.score += 1;
+                this.score += 0.5;
             }
         }
     }

@@ -19,11 +19,15 @@ public class ElementRepo implements Serializable {
     private Map<Long, List<Way>> nodeToWay; // the Ways associated
     // with each node ID
     private List<Way> wayRepo; // contains all generated Ways
+    private Hashtable<Long, Integer> visitedWays;
+    private Hashtable<Long, Integer> visitedNodes;
 
     public ElementRepo() {
         this.originNode = null;
         this.nodeToWay = new HashMap<>();
         this.wayRepo = new ArrayList<>();
+        this.visitedWays = new Hashtable<>();
+        this.visitedNodes = new Hashtable<>();
     }
 
 
@@ -96,5 +100,15 @@ public class ElementRepo implements Serializable {
         this.originNode = null;
         this.nodeToWay = new HashMap<>();
         this.wayRepo = new ArrayList<>();
+        this.visitedWays = new Hashtable<>();
+        this.visitedNodes = new Hashtable<>();
+    }
+
+    public Hashtable<Long, Integer> getVisitedWays() {
+        return visitedWays;
+    }
+
+    public Hashtable<Long, Integer> getVisitedNodes() {
+        return visitedNodes;
     }
 }

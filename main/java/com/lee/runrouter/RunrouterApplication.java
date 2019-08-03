@@ -29,8 +29,6 @@ public class RunrouterApplication {
         ElementRepo repo = ctx.getBean(ElementRepo.class);
         Executor executor = ctx.getBean(ExecutorMain.class);
         GraphBuilder gb = ctx.getBean(GraphBuilder.class);
-
-
     }
 	static void serialize(ElementRepo repo) {
         try {

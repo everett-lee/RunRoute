@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-import static com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator.*;
 
 /**
  * Variant of the BFS algorithm that restricts the next selected Way
@@ -30,16 +29,14 @@ import static com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
-    private final double PREFERRED_MIN_LENGTH = 500; // minimum length of way to avoid
+    private final double PREFERRED_MIN_LENGTH = 300; // minimum length of way to avoid
     // subtracting a score penalty
-    private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
-    private final double PREFERRED_LENGTH = 1000;
-    private final double PREFERRED_LENGTH_BONUS = 1;
-    private final long TIME_LIMIT = 1000;
+    private final double PREFERRED_MIN_LENGTH_PENALTY = 0.25;
+    private final double PREFERRED_LENGTH = 900;
+    private final double PREFERRED_LENGTH_BONUS = 0.25;
 
     private PriorityQueue<PathTuple> queue;
-    private Set<Long> visitedWays;
-    private Set<Long> visitedNodes;
+    private final double TIME_LIMIT = 1000;
 
     @Autowired
     public BFSConnectionPath(ElementRepo repo,
@@ -51,9 +48,6 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         super(repo, distanceFromOriginHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
-
-        this.visitedWays = new HashSet<>();
-        this.visitedNodes = new HashSet<>();
     }
 
     @Override
@@ -62,8 +56,6 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
-        this.visitedWays = new HashSet<>();
-        this.visitedNodes = new HashSet<>();
 
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
@@ -89,7 +81,8 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                         targetNode, targetWay,
                         finalDistance);
 
-                if (topTuple.getTotalLength() >= targetDistance) {
+                // TODO: CHECK IF THIS SHOULD BE 1
+                if (topTuple.getTotalLength() >= 1) {
                     if (checkMinLength(topTuple)) {
                         // create a new tuple representing the journey from the previous node to the final node
                         PathTuple returnTuple = new PathTupleMain(topTuple, targetNode,
@@ -109,9 +102,11 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                 Way selectedWay = pair.getConnectingWay();
 
                 // skip where this way or node has already been explored
-                if (this.visitedWays.contains(selectedWay.getId()) ||
-                        this.visitedNodes.contains(connectingNode.getId())) {
-                    continue;
+                if (this.repo.getVisitedWays().containsKey(selectedWay.getId())) {
+                    score -= this.repo.getVisitedWays().get(selectedWay.getId()) * 0.1;
+                }
+                if (this.repo.getVisitedNodes().containsKey(connectingNode.getId())) {
+                    score -= this.repo.getVisitedNodes().get(connectingNode.getId()) * 0.1;
                 }
 
                 if (super.getAvoidUnlit()) {
@@ -119,6 +114,11 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                         continue;
                     }
                 }
+
+                double distanceScore = distanceFromOriginHeursitic.getScore(connectingNode, repo.getOriginNode(),
+                        currentRouteLength, targetDistance);
+
+                score += distanceScore;
 
                 double distanceToNext = edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
@@ -150,10 +150,22 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                         score, distanceToNext, currentRouteLength + distanceToNext, gradient);
                 queue.add(toAdd);
 
-                if (!repo.getOriginWay().getNodeContainer().getNodes().contains(visitedNodes)) {
-                    this.visitedNodes.add(connectingNode.getId());
+                if (!repo.getOriginWay().getNodeContainer().getNodes()
+                        .contains(connectingNode.getId())) {
+                    if (!this.repo.getVisitedNodes().containsKey(connectingNode.getId())) {
+                        this.repo.getVisitedNodes().put(connectingNode.getId(), 1);
+                    } else {
+                        int current = this.repo.getVisitedNodes().get(connectingNode.getId());
+                        this.repo.getVisitedNodes().put(connectingNode.getId(), current + 1);
+                    }
                 }
-                visitedWays.add(currentWay.getId());
+
+                if (!this.repo.getVisitedWays().containsKey(selectedWay.getId())) {
+                    this.repo.getVisitedWays().put(selectedWay.getId(), 1);
+                } else {
+                    int current = this.repo.getVisitedWays().get(selectedWay.getId());
+                    this.repo.getVisitedWays().put(selectedWay.getId(), current + 1);
+                }
 
                 elapsedTime = (new Date()).getTime() - startTime;
             }

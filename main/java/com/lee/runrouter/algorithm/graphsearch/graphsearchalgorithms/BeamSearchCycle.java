@@ -31,7 +31,7 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
     private final double PREFERRED_MIN_LENGTH = 300; // minimum length of way to avoid
     // subtracting a score penalty
     private final double PREFERRED_MIN_LENGTH_PENALTY = 0.25;
-    private final double PREFERRED_LENGTH = 800;
+    private final double PREFERRED_LENGTH = 900;
     private final double PREFERRED_LENGTH_BONUS = 0.25;
 
     private final double LOWER_SCALE = 0.20; // amount to scale upper lower bound on
@@ -171,7 +171,7 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
                 if (currentRouteLength > distance * 0.50) {
                     score += 500 / distanceFromOriginNode;
                 } else {
-                    System.out.println(distanceFromOriginNode / 10000);
+                   score += distanceFromOriginNode / 10000;
                 }
 
                 if (distanceToNext < PREFERRED_MIN_LENGTH) {

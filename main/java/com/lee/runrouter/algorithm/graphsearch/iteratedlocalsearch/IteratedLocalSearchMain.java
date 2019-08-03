@@ -76,6 +76,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             // start, includes end
             availableDistance += existingSegmentLength;
 
+
             PathTuple newSegment = null;
             if (availableDistance > 0) {
                 // generate the new segment

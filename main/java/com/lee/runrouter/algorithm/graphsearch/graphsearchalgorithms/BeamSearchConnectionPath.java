@@ -150,14 +150,7 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                     continue; // skip to next where max length exceeded
                 }
 
-                double currentDistanceScore
-                        = distanceFromOriginHeuristic.getScore(selectedWay);
 
-                // if the current distance score is higher the previous Way's, that
-                // is it is closer, increase the score
-                if (currentDistanceScore > lastDist) {
-                    score += DISTANCE_FROM_ORIGIN_BONUS;
-                }
 
                 if (distanceToNext < PREFERRED_MIN_LENGTH) {
                     score -= PREFERRED_MIN_LENGTH_PENALTY;

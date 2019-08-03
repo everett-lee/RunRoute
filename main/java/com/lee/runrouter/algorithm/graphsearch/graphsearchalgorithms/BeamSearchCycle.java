@@ -2,6 +2,7 @@ package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 
 import com.lee.runrouter.algorithm.AlgoHelpers;
+import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.heuristic.*;
@@ -22,28 +23,28 @@ import java.util.*;
  * are kept in the list.
  */
 @Component
-@Qualifier("BeamSearch")
-public class BeamSearch extends SearchAlgorithm implements GraphSearch {
+@Qualifier("BeamSearchCycle")
+public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
-    private final double PREFERRED_MIN_LENGTH = 500; // minimum length of way to avoid
+    private final double PREFERRED_MIN_LENGTH = 300; // minimum length of way to avoid
     // subtracting a score penalty
-    private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
-    private final double PREFERRED_LENGTH = 1000;
-    private final double PREFERRED_LENGTH_BONUS = 1;
+    private final double PREFERRED_MIN_LENGTH_PENALTY = 0.25;
+    private final double PREFERRED_LENGTH = 800;
+    private final double PREFERRED_LENGTH_BONUS = 0.25;
 
-    private final double LOWER_SCALE = 0; // amount to scale upper lower bound on
+    private final double LOWER_SCALE = 0.20; // amount to scale upper lower bound on
     // run length by
-    private final double UPPER_SCALE = 0.05; // amount to scale upper bound on
+    private final double UPPER_SCALE = 0.20; // amount to scale upper bound on
     // run length by
 
     private List<PathTuple> queue;
-    private Set<Long> visitedWays;
-    private Set<Long> visitedNodes;
+    private Hashtable<Long, Integer> visitedWays;
+    private Hashtable<Long, Integer> visitedNodes;
 
     @Autowired
-    public BeamSearch(ElementRepo repo,
+    public BeamSearchCycle(ElementRepo repo,
                       @Qualifier("DistanceFromOriginToMidHeuristic") Heuristic distanceHeuristic,
                       @Qualifier("FeaturesHeuristicMain") Heuristic featuresHeuristic,
                       @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
@@ -51,8 +52,8 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
                       @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new ArrayList<>();
-        this.visitedWays = new HashSet<>();
-        this.visitedNodes = new HashSet<>();
+        this.visitedWays = new Hashtable<>();
+        this.visitedNodes = new Hashtable<>();
     }
 
     /**
@@ -71,8 +72,8 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double distance) {
         this.queue = new ArrayList<>();
-        this.visitedWays = new HashSet<>();
-        this.visitedNodes = new HashSet<>();
+        this.visitedWays = new Hashtable<>();
+        this.visitedNodes = new Hashtable<>();
 
         double currentRouteLength;
         double upperBound = distance + (distance * UPPER_SCALE); // upper bound of
@@ -83,7 +84,7 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
         Node originNode = new Node(-1, coords[0], coords[1]);
         originNode = AlgoHelpers.findClosest(originNode, repo.getOriginWay().getNodeContainer().getNodes());
         queue.add(new PathTupleMain(null, originNode, root,
-                        0, 0, 0, 0));
+                0, 0, 0, 0));
 
         // update the repository origin node
         repo.setOriginNode(originNode);
@@ -106,9 +107,25 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
 
             currentRouteLength = topTuple.getTotalLength();
 
+
             // return the first route to exceed the minimum length requirement.
             if (currentRouteLength > lowerBound) {
-                return topTuple;
+                // the route has returned to the origin
+                if (topTuple.getCurrentWay().getId() == repo.getOriginWay().getId()) {
+
+                    double finalDistance = edgeDistanceCalculator
+                            .calculateDistance(currentNode, repo.getOriginNode(), repo.getOriginWay());
+                    double finalGradient = gradientCalculator.calculateGradient(currentNode, currentWay,
+                            repo.getOriginNode(), repo.getOriginWay(),
+                            finalDistance);
+
+
+                    // create a new tuple representing the journey from the previous node to the final node
+                    PathTuple returnTuple = new PathTupleMain(topTuple, repo.getOriginNode(),
+                            repo.getOriginWay(), 0, finalDistance,
+                            topTuple.getTotalLength() + finalDistance, finalGradient);
+                    return returnTuple;
+                }
             }
 
             // for each Way reachable from the the current Way
@@ -125,10 +142,21 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
                     }
                 }
 
+                double distanceFromOriginNode =
+                        HaversineCalculator.calculateDistanceII(connectingNode, repo.getOriginNode());
+
+
+
+//                if (selectedWay.getId() == repo.getOriginWay().getId()) {
+//                    score += 10000000;
+//                }
+
                 // skip where this way or node has already been explored
-                if (visitedWays.contains(selectedWay.getId()) ||
-                        this.visitedNodes.contains(connectingNode.getId())) {
-                    continue;
+                if (this.visitedWays.containsKey(selectedWay.getId())) {
+                    score -= this.visitedWays.get(selectedWay.getId()) * 0.1;
+                }
+                if (this.visitedNodes.containsKey(connectingNode.getId())) {
+                    score -= this.visitedNodes.get(connectingNode.getId()) * 0.1;
                 }
 
                 // calculates distance from the current Node to the Node connecting
@@ -138,6 +166,12 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
 
                 if (currentRouteLength + distanceToNext > upperBound) {
                     continue; // skip to next where maximum length exceeded
+                }
+
+                if (currentRouteLength > distance * 0.50) {
+                    score += 500 / distanceFromOriginNode;
+                } else {
+                    System.out.println(distanceFromOriginNode / 10000);
                 }
 
                 if (distanceToNext < PREFERRED_MIN_LENGTH) {
@@ -162,12 +196,24 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
                         gradient);
                 queue.add(toAdd);
 
-                visitedWays.add(currentWay.getId());
-                if (!repo.getOriginWay().getNodeContainer().getNodes().contains(connectingNode)) {
-                    this.visitedNodes.add(connectingNode.getId());
+                if (!repo.getOriginWay().getNodeContainer().getNodes()
+                        .contains(connectingNode.getId())) {
+                    if (!this.visitedNodes.containsKey(connectingNode.getId())) {
+                        this.visitedNodes.put(connectingNode.getId(), 1);
+                    } else {
+                        int current = this.visitedNodes.get(connectingNode.getId());
+                        this.visitedNodes.put(connectingNode.getId(), current+1);
+                    }
                 }
 
-                visitedWays.add(currentWay.getId());
+
+
+                if (!this.visitedWays.containsKey(selectedWay.getId())) {
+                    this.visitedWays.put(selectedWay.getId(), 1);
+                } else {
+                    int current = this.visitedWays.get(selectedWay.getId());
+                    this.visitedWays.put(selectedWay.getId(), current+1);
+                }
             }
         }
 

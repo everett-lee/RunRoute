@@ -95,7 +95,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                                 targetWay, score, finalDistance,
                                 topTuple.getTotalLength() + finalDistance, finalGradient);
                         return returnTuple;
-                    }
+                    }   
                 }
             }
 
@@ -122,9 +122,9 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                 double distanceToNext = edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
 
-//                if (currentRouteLength + distanceToNext > upperBound) {
-//                    continue; // skip to next where max length exceeded
-//                }
+                if (currentRouteLength + distanceToNext > upperBound) {
+                    continue; // skip to next where max length exceeded
+                }
 
                 if (distanceToNext < PREFERRED_MIN_LENGTH) {
                     score -= PREFERRED_MIN_LENGTH_PENALTY;

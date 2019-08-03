@@ -1,0 +1,117 @@
+package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
+
+import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
+import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
+import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
+import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
+import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
+import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
+import com.lee.runrouter.algorithm.heuristic.*;
+import com.lee.runrouter.algorithm.pathnode.PathTuple;
+import com.lee.runrouter.graph.elementrepo.ElementRepo;
+
+import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
+import org.junit.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static com.lee.runrouter.testhelpers.TestHelpers.*;
+
+public class BeamSearchCycleTest {
+    ElementRepo repo;
+    GraphSearch beamSearch;
+    DistanceCalculator distanceCalculator;
+    Heuristic distanceHeuristic;
+    Heuristic featuresHeuristic;
+    EdgeDistanceCalculator edgeDistanceCalculator;
+    GradientCalculator gradientCalculator;
+    ElevationHeuristic elevationHeuristic;
+
+    {
+        repo = getRepo();
+    }
+
+
+    @Before
+    public void setUp() {
+        distanceCalculator = new HaversineCalculator();
+        distanceHeuristic = new DistanceFromOriginToMidHeuristic(repo, distanceCalculator);
+
+        featuresHeuristic = new FeaturesHeuristicMain();
+        edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
+        elevationHeuristic = new ElevationHeuristicMain();
+        gradientCalculator = new SimpleGradientCalculator();
+
+        beamSearch = new BeamSearchCycle(repo, distanceHeuristic,
+                featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
+    }
+
+    @Test(timeout = 1000)
+    public void testGenerateACycle() {
+        double[] coords = {51.446810, -0.125484};
+        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 10000);
+        System.out.println(returnPath(res, ""));
+    }
+
+    @Test(timeout = 1000)
+    public void testMorrishRoadLonger() {
+
+        double[] coords = {51.446810, -0.125484};
+        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 20000);
+
+
+    }
+
+    @Test(timeout = 1000)
+    public void testCraignairRoadShort() {
+        double[] coords = {51.448321, -0.114648};
+
+        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
+                .findFirst().get();
+        repo.setOriginWay(origin);
+
+        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 15000);
+
+        System.out.println(returnPath(res, ""));
+    }
+
+
+    @Test(timeout = 1000)
+    public void testCraignairRoadLonger() {
+        double[] coords = {51.448321, -0.114648};
+
+        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
+                .findFirst().get();
+        repo.setOriginWay(origin);
+
+        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 20000);
+
+    }
+
+
+    @Test(timeout = 1000)
+    public void TulseHillTest10KM() {
+        double[] coords = {51.441109, -0.106974};
+
+        List<String> preferredHighways = new ArrayList<>(Arrays.asList("FOOTWAY"));
+        featuresHeuristic = new FeaturesHeuristicMain();
+        ((FeaturesHeuristicMain) featuresHeuristic).setPreferredHighways(preferredHighways);
+        edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
+        elevationHeuristic = new ElevationHeuristicMain();
+        elevationHeuristic.setOptions(true);
+        beamSearch = new BeamSearch(repo, distanceHeuristic,
+                featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
+
+        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 4004611L)
+                .findFirst().get();
+        repo.setOriginWay(origin);
+
+        PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 20000);
+
+
+        System.out.println(calculateScore(x));
+    }
+
+}

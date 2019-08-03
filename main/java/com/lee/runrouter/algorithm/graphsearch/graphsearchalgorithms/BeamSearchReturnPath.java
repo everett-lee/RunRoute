@@ -28,7 +28,7 @@ import java.util.*;
 @Component
 @Qualifier("BeamSearchReturnPath")
 public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch {
-    private final int BEAM_SIZE = 1000; // the max number of possible Nodes under review
+    private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
     private final double PREFERRED_MIN_LENGTH = 500; // minimum length of way to avoid
@@ -42,9 +42,9 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
     private Set<Long> visitedWays;
     private Set<Long> visitedNodes;
 
-    private final double LOWER_SCALE = 0.10 ; // amount to scale upper lower bound on
+    private final double LOWER_SCALE = 0.20; // amount to scale upper lower bound on
     // run length by
-    private final double UPPER_SCALE = 0.10; // amount to scale upper bound on
+    private final double UPPER_SCALE = 0.20; // amount to scale upper bound on
     // run length by
 
     @Autowired
@@ -97,8 +97,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
         while (!queue.isEmpty()  && elapsedTime <= TIME_LIMIT) {
             queue.sort(Comparator
                     // sort by route segment score
-                    .comparing((PathTuple tuple) ->
-                            calculateDistanceII(tuple.getPreviousNode(), repo.getOriginNode())));
+                    .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
 
             if (queue.size() > BEAM_SIZE) {
                 queue = queue.subList(0, BEAM_SIZE);
@@ -134,6 +133,8 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
 
             // distance to origin point from the last explored way
             double lastDist = distanceFromOriginHeuristic.getScore(currentWay);
+            double lastDistFromOrigin = calculateDistanceII(topTuple.getPreviousNode(), repo.getOriginNode());
+
             // for each Way reachable from the current Way
             for (ConnectionPair pair: repo.getConnectedWays(currentWay)) {
                 currentRouteLength = topTuple.getTotalLength();
@@ -178,12 +179,16 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
 //                }
 
 
-//                double thresholdPercentage = 1.1 - (currentRouteLength / distance);
-//                double targetDistance = distance * thresholdPercentage;
-//
-//                if (distanceFromStart > targetDistance) {
-//                    continue;
-//                }
+                double thresholdPercentage = 1.0 - (currentRouteLength / distance);
+                double distanceLimit = distance * thresholdPercentage;
+                double distanceToOrigin = calculateDistanceII(connectingNode, repo.getOriginNode());
+                if ((currentRouteLength + distanceToNext) > distance / 2) {
+                    if (distanceToOrigin > lastDistFromOrigin * 1.5) {
+                        continue;
+                    }
+                }
+
+
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);

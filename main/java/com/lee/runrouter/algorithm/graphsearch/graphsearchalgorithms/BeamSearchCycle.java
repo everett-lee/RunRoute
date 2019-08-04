@@ -91,7 +91,7 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
         Node originNode = new Node(-1, coords[0], coords[1]);
         originNode = AlgoHelpers.findClosest(originNode, repo.getOriginWay().getNodeContainer().getNodes());
         queue.add(new PathTupleMain(null, originNode, root,
-                0, 0, 0, 0));
+                new ScorePair(0, 0), 0, 0, 0));
 
         // update the repository origin node
         repo.setOriginNode(originNode);
@@ -102,7 +102,7 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
         while (!queue.isEmpty() && elapsedTime <= TIME_LIMIT) {
             queue.sort(Comparator
                     // sort by route segment score
-                    .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
+                    .comparing((PathTuple tuple) -> tuple.getSegmentScore().getSum()).reversed());
 
             if (queue.size() > BEAM_SIZE) {
                 queue = queue.subList(0, BEAM_SIZE);
@@ -115,7 +115,7 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
             Way currentWay = topTuple.getCurrentWay();
             Node currentNode = topTuple.getPreviousNode();
             currentRouteLength = topTuple.getTotalLength();
-            double score;
+            double heuristicScore;
 
             // return the first route to exceed the minimum length requirement.
             if (currentRouteLength > lowerBound) {
@@ -128,9 +128,11 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
                             repo.getOriginNode(), repo.getOriginWay(),
                             finalDistance);
 
+                    ScorePair finalScore = new ScorePair(0, 0);
+
                     // create a new tuple representing the journey from the previous node to the final node
                     PathTuple returnTuple = new PathTupleMain(topTuple, repo.getOriginNode(),
-                            repo.getOriginWay(), 0, finalDistance,
+                            repo.getOriginWay(), finalScore, finalDistance,
                             topTuple.getTotalLength() + finalDistance, finalGradient);
                     return returnTuple;
                 }
@@ -139,7 +141,7 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
             // for each Way reachable from the the current Way
             for (ConnectionPair pair: repo.getConnectedWays(currentWay)) {
                 currentRouteLength = topTuple.getTotalLength();
-                score = 0;
+                heuristicScore = 0;
                 currentNode = topTuple.getPreviousNode(); // the last explored Node
                 Node connectingNode = pair.getConnectingNode(); // the Node connecting
                 // the intersecting Ways
@@ -152,10 +154,7 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
                     }
                 }
 
-                score += distanceFromOriginHeursitic.getScore(connectingNode, repo.getOriginNode(),
-                        currentRouteLength, targetDistance);
-
-                score += addRepeatedVisitScores(selectedWay, connectingNode);
+                heuristicScore += addRepeatedVisitScores(selectedWay, connectingNode);
 
                 // calculates targetDistance from the current Node to the Node connecting
                 // the current Way to the selected Way
@@ -166,7 +165,7 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
                     continue; // skip to next where maximum length exceeded
                 }
 
-                score += addLengthScores(distanceToNext);
+                heuristicScore += addLengthScores(distanceToNext);
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
@@ -175,10 +174,15 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
                     continue;
                 }
 
-                score += super.addScores(selectedWay, gradient, RANDOM_REDUCER);
+                heuristicScore += super.addScores(selectedWay, gradient, RANDOM_REDUCER);
+                double distanceScore = distanceFromOriginHeursitic.getScore(connectingNode, repo.getOriginNode(),
+                        currentRouteLength, targetDistance);
+
+                ScorePair segmentScore = new ScorePair(distanceScore, heuristicScore);
+
                 // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
-                        score, distanceToNext, currentRouteLength + distanceToNext,
+                        segmentScore, distanceToNext, currentRouteLength + distanceToNext,
                         gradient);
                 queue.add(toAdd);
 
@@ -204,8 +208,9 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
         }
 
         // null object returned in the event of an error
-        return new PathTupleMain(null, null, null, Double.MIN_VALUE,
-                -1, -1, -1);
+        return new PathTupleMain(null, null, null,
+                new ScorePair(-1, -1), -1,
+                -1, -1);
     }
 
     private double addRepeatedVisitScores(Way selectedWay, Node connectingNode) {

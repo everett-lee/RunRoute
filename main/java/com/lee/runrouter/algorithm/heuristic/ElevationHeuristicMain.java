@@ -22,11 +22,6 @@ public class ElevationHeuristicMain implements ElevationHeuristic {
 
     @Override
     public double getScore(double gradient) {
-        // flatter routes are preferred, so increase score where gradient is lower
-        if (!preferUphill) {
-            return Math.max(0, 0.01 - Math.abs(gradient));
-        }
-
         // score increases in line with the gradient
         if (gradient > 0) {
             return gradient * MULTIPLIER;

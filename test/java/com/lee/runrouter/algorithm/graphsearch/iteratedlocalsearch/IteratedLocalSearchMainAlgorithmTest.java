@@ -52,12 +52,9 @@ public class IteratedLocalSearchMainAlgorithmTest {
         morrish5k = getMorrish5k();
         morrish14k = getMorrish14k();
         morrish21k = getMorrish21k();
-        morrishProblemOne = getMorrishProblemOne();
-        morrishProblemTwo = getMorrishProblemTwo();
         craignair5k = getCraignair5k();
         craignair14k = getCraignair14k();
         craignair21k = getCraignair21k();
-        tulseHill5k = getTulse5k();
         tulseHill14k = getTulse14k();
         tulseHill21k = getTulse21k();
 
@@ -102,10 +99,7 @@ public class IteratedLocalSearchMainAlgorithmTest {
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);
 
-        System.out.println(originalLength);
-        System.out.println(postDistance);
-        System.out.println(originalScore);
-        System.out.println(postScore);
+        returnPath(res, "");
 
         assertTrue(postScore >= originalScore);
         assertTrue(postDistance <= (originalLength + target) * 1.1);
@@ -142,36 +136,6 @@ public class IteratedLocalSearchMainAlgorithmTest {
     }
 
     @Test
-    public void testScoreGreaterOrEqualMorrishProblemOneBFS() {
-        double originalScore = calculateScore(morrishProblemOne);
-        double originalLength = calculateDistance(morrishProblemOne);
-        double target = 100;
-
-        PathTuple res = ilsBFS.iterate(morrishProblemOne, target);
-        double postScore = calculateScore(res);
-        double postDistance = calculateDistance(res);
-
-        assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
-    }
-
-
-    @Test
-    public void testScoreGreaterOrEqualMorrishProblemTwoBFS() {
-        double originalScore = calculateScore(morrishProblemTwo);
-        double originalLength = calculateDistance(morrishProblemTwo);
-        double target = 0;
-
-        PathTuple res = ilsBFS.iterate(morrishProblemTwo, target);
-        double postScore = calculateScore(res);
-        double postDistance = calculateDistance(res);
-
-        assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
-    }
-
-
-    @Test
     public void testCraignair5k() {
         double originalScore = calculateScore(craignair5k);
         double originalLength = calculateDistance(craignair5k);
@@ -190,7 +154,7 @@ public class IteratedLocalSearchMainAlgorithmTest {
     public void testCraignair14k() {
         double originalScore = calculateScore(craignair14k);
         double originalLength = calculateDistance(craignair14k);
-        double target = 0;
+        double target = 900;
 
         PathTuple res = ilsBFS.iterate(craignair14k, target);
 
@@ -232,10 +196,10 @@ public class IteratedLocalSearchMainAlgorithmTest {
     }
 
     @Test
-    public void testulse15k() {
+    public void testulse14k() {
         double originalScore = calculateScore(tulseHill14k);
         double originalLength = calculateDistance(tulseHill14k);
-        double target = 500;
+        double target = 0;
 
         PathTuple res = ilsBFS.iterate(tulseHill14k, target);
         double postScore = calculateScore(res);
@@ -255,80 +219,12 @@ public class IteratedLocalSearchMainAlgorithmTest {
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);
 
+        System.out.println(originalLength);
+        System.out.println(postDistance);
+        System.out.println(originalScore);
+        System.out.println(postScore);
+
         assertTrue(postScore >= originalScore);
         assertTrue(postDistance <= (originalLength + target) * 1.1);
     }
-
-    @Test
-    public void testCountIterationsBeam() {
-        List<Integer> iterations = new ArrayList<>();
-        List<Integer> improvements = new ArrayList<>();
-
-        PathTuple res = ilsBeamSearch.iterate(craignair5k, 2000);
-        iterations.add(ilsBeamSearch.getIterations());
-        improvements.add(ilsBeamSearch.getImprovements());
-
-        System.out.println(iterations.stream().mapToDouble(x -> x).average());
-        System.out.println(improvements.stream().mapToDouble(x -> x).average());
-        System.out.println(iterations);
-        System.out.println(improvements);
-    }
-
-
-    @Test
-    public void testMorrishScoreGreaterOrEqualBeam() {
-        double originalScore = calculateScore(morrish5k);
-        double originalLength = calculateDistance(morrish5k);
-
-        PathTuple res = ilsBeamSearch.iterate(morrish5k, 140);
-
-        double postScore = calculateScore(res);
-        double postDistance = calculateDistance(res);
-        assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= originalLength + 140);
-    }
-
-    @Test
-    public void testCraignairScoreGreaterOrEqualBeam() {
-        double originalScore = calculateScore(craignair5k);
-        double originalLength = calculateDistance(craignair5k);
-
-        PathTuple res = ilsBeamSearch.iterate(craignair5k, 0);
-
-        double postScore = calculateScore(res);
-        double postDistance = calculateDistance(res);
-
-        assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= originalLength + 0);
-    }
-
-
-
-    @Test
-    public void testScoreGreaterOrEqualBeamTulse() {
-        double originalScore = calculateScore(tulseHill5k);
-        double originalLength = calculateDistance(tulseHill5k);
-
-        PathTuple res = ilsBeamSearch.iterate(tulseHill5k, 125);
-
-        double postScore = calculateScore(res);
-        double postDistance = calculateDistance(res);
-
-        assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= originalLength + 2000);
-    }
-
-    @Test
-    public void testScoreGreaterOrEqualTulseHillBeam() {
-        double originalScore = calculateScore(tulseHill5k);
-        double originalLength = calculateDistance(tulseHill5k);
-
-        PathTuple res = ilsBeamSearch.iterate(tulseHill5k, 0);
-        double postScore = calculateScore(res);
-        double postDistance = calculateDistance(res);
-
-        assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= originalLength + 0);
-    }
-
 }

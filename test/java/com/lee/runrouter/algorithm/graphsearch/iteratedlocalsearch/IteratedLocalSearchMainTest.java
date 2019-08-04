@@ -3,6 +3,7 @@ package com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ILSGraphSearch;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
+import com.lee.runrouter.algorithm.pathnode.ScorePair;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,22 +52,22 @@ public class IteratedLocalSearchMainTest {
     @Test
     public void testGetStartPathSegmentThirdIn() throws InvocationTargetException, IllegalAccessException {
         PathTuple a  = new PathTupleMain(null, null,
-                null, 1, 0, 0, 0);
+                null, new ScorePair(1, 1), 0, 0, 0);
         PathTuple b  = new PathTupleMain(a, null,
-                null, 2, 0, 0, 0);
+                null, new ScorePair(2, 2), 0, 0, 0);
         PathTuple c  = new PathTupleMain(b, null,
-                null, 3, 0, 0, 0);
+                null, new ScorePair(3, 3), 0, 0, 0);
         PathTuple d  = new PathTupleMain(c, null,
-                null, 4, 0, 0, 0);
+                null, new ScorePair(4, 4), 0, 0, 0);
         PathTuple e  = new PathTupleMain (d, null,
-                null, 5, 0, 0, 0);
+                null, new ScorePair(5, 5), 0, 0, 0);
 
 
         Method getStartPathSegment = Arrays.stream(ils.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("getStartPathSegment")).findFirst().get();
         getStartPathSegment.setAccessible(true);
         PathTuple result = (PathTuple) getStartPathSegment.invoke(ils, e, 3);
-        double resultScore = result.getSegmentScore();
+        double resultScore = result.getSegmentScore().getHeuristicScore();
         double expected = 3;
 
         assertEquals(expected, resultScore, 0.0001);
@@ -76,15 +77,16 @@ public class IteratedLocalSearchMainTest {
     @Test
     public void testGetEndPathSegmentTwoLong() throws InvocationTargetException, IllegalAccessException {
         PathTuple a  = new PathTupleMain(null, null,
-                null, 1, 0, 0 , 0);
+                null, new ScorePair(1, 1), 0, 0, 0);
         PathTuple b  = new PathTupleMain(a, null,
-                null, 2, 0, 0, 0);
+                null, new ScorePair(2, 2), 0, 0, 0);
         PathTuple c  = new PathTupleMain(b, null,
-                null, 3, 0, 0, 0);
+                null, new ScorePair(3, 3), 0, 0, 0);
         PathTuple d  = new PathTupleMain(c, null,
-                null, 4, 0, 0, 0);
+                null, new ScorePair(4, 4), 0, 0, 0);
         PathTuple e  = new PathTupleMain (d, null,
-                null, 5, 0, 0, 0);
+                null, new ScorePair(5, 5), 0, 0, 0);
+
 
         Method getStartPathSegment = Arrays.stream(ils.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("getStartPathSegment")).findFirst().get();
@@ -97,7 +99,7 @@ public class IteratedLocalSearchMainTest {
         PathTuple end = (PathTuple) getEndPathSegment.invoke(ils, start, 2);
 
 
-        double resultid = end.getSegmentScore();
+        double resultid = end.getSegmentScore().getHeuristicScore();
         double expected = 4;
         assertEquals(resultid, expected, 0.00001);
     }
@@ -107,7 +109,7 @@ public class IteratedLocalSearchMainTest {
         int expected = 1;
 
         PathTupleMain a = new PathTupleMain(null, null,
-                null, 0, 0 ,0, 0);
+                null, new ScorePair(0, 0), 0 ,0, 0);
 
         Method getPathsize = Arrays.stream(ils.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("getPathSize")).findFirst().get();
@@ -122,12 +124,12 @@ public class IteratedLocalSearchMainTest {
     public void testGetPathSizeTriple() throws InvocationTargetException, IllegalAccessException {
         int expected = 3;
 
-        PathTupleMain a = new PathTupleMain(null, null,
-                null, 0, 0 ,0, 0);
-        PathTupleMain b = new PathTupleMain(a, null, null,
-                0, 0 ,0, 0);
-        PathTupleMain c = new PathTupleMain(b, null, null,
-                0, 0 ,0, 0);
+        PathTuple a  = new PathTupleMain(null, null,
+                null, new ScorePair(1, 1), 0, 0, 0);
+        PathTuple b  = new PathTupleMain(a, null,
+                null, new ScorePair(2, 2), 0, 0, 0);
+        PathTuple c  = new PathTupleMain(b, null,
+                null, new ScorePair(3, 3), 0, 0, 0);
 
         Method getPathsize = Arrays.stream(ils.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("getPathSize")).findFirst().get();
@@ -140,15 +142,16 @@ public class IteratedLocalSearchMainTest {
     @Test
     public void testGetScoreFiveNodes() throws InvocationTargetException, IllegalAccessException {
         PathTuple a  = new PathTupleMain(null, null,
-                null, 1, 0, 0, 0);
+                null, new ScorePair(1, 1), 0, 0, 0);
         PathTuple b  = new PathTupleMain(a, null,
-                null, 2, 0, 0, 0);
+                null, new ScorePair(2, 2), 0, 0, 0);
         PathTuple c  = new PathTupleMain(b, null,
-                null, 3, 0, 0, 0);
+                null, new ScorePair(3, 3), 0, 0, 0);
         PathTuple d  = new PathTupleMain(c, null,
-                null, 4, 0, 0, 0);
+                null, new ScorePair(4, 4), 0, 0, 0);
         PathTuple e  = new PathTupleMain (d, null,
-                null, 5, 0, 0, 0);
+                null, new ScorePair(5, 5), 0, 0, 0);
+
 
 
         PathTuple head = e;
@@ -168,9 +171,9 @@ public class IteratedLocalSearchMainTest {
     @Test
     public void testcalculateScoreTwoNodes() throws InvocationTargetException, IllegalAccessException {
         PathTuple tail = new PathTupleMain(null, null,
-                null, 11, 5, 0, 0);
+                null, new ScorePair(0, 11), 5, 0, 0);
         PathTuple head = new PathTupleMain(tail, null, null,
-                13 , 5, 0, 0);
+                new ScorePair(0, 13) , 5, 0, 0);
 
         Method calculateLen = Arrays.stream(ils.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("calculateScore")).findFirst().get();
@@ -185,7 +188,7 @@ public class IteratedLocalSearchMainTest {
     @Test
     public void testcalculateScoreOneNode() throws InvocationTargetException, IllegalAccessException {
         PathTuple tail = new PathTupleMain(null, null, null,
-                24, 5, 0, 0);
+                new ScorePair(0, 24), 5, 0, 0);
 
         Method calculateLen = Arrays.stream(ils.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("calculateScore")).findFirst().get();
@@ -199,11 +202,11 @@ public class IteratedLocalSearchMainTest {
     @Test
     public void testcalculateScoreThreeNodes() throws InvocationTargetException, IllegalAccessException {
         PathTuple tail = new PathTupleMain(null, null, null,
-                15, 2, 0, 0);
-        PathTuple mid = new PathTupleMain(tail, null, null,15,
+                new ScorePair(0, 15), 2, 0, 0);
+        PathTuple mid = new PathTupleMain(tail, null, null,new ScorePair(0, 15),
                 40, 0, 0);
         PathTuple head = new PathTupleMain(mid, null, null,
-                8 , 40, 0, 0);
+                new ScorePair(0, 8), 40, 0, 0);
 
         Method calculateLen = Arrays.stream(ils.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("calculateScore")).findFirst().get();
@@ -219,9 +222,9 @@ public class IteratedLocalSearchMainTest {
     @Test
     public void testcalculateDistanceTwoNodes() throws InvocationTargetException, IllegalAccessException {
         PathTuple tail = new PathTupleMain(null, null, null,
-                0, 5, 0, 0);
+                new ScorePair(0, 0), 5, 0, 0);
         PathTuple head = new PathTupleMain(tail, null, null,
-                0 , 5, 0, 0);
+                new ScorePair(0, 0), 5, 0, 0);
 
         Method calculateLen = Arrays.stream(ils.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("calculateDistance")).findFirst().get();
@@ -236,7 +239,7 @@ public class IteratedLocalSearchMainTest {
     @Test
     public void testcalculatDistanceOneNode() throws InvocationTargetException, IllegalAccessException {
         PathTuple tail = new PathTupleMain(null, null, null,
-                5, 5, 0, 0);
+                new ScorePair(0, 5), 5, 0, 0);
 
           Method calculateLen = Arrays.stream(ils.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("calculateDistance")).findFirst().get();
@@ -250,13 +253,13 @@ public class IteratedLocalSearchMainTest {
     @Test
     public void testcalculateDistanceThreeNodes() throws InvocationTargetException, IllegalAccessException {
         PathTuple tail = new PathTupleMain(null, null, null,
-                0, 2, 0, 0);
+                new ScorePair(0, 0), 2, 0, 0);
         PathTuple midOne = new PathTupleMain(tail, null, null,
-                0 , 40.55, 0, 0);
+                new ScorePair(0, 0) , 40.55, 0, 0);
         PathTuple midTwo = new PathTupleMain(midOne, null, null,
-                0 ,  60, 0, 0);
+                new ScorePair(0, 0) ,  60, 0, 0);
         PathTuple head = new PathTupleMain(midTwo, null, null,
-                0 , 45.03, 0, 0);
+                new ScorePair(0, 0), 45.03, 0, 0);
 
         Method calculateLen = Arrays.stream(ils.getClass().getDeclaredMethods())
                 .filter(x -> x.getName().equals("calculateDistance")).findFirst().get();
@@ -291,8 +294,8 @@ public class IteratedLocalSearchMainTest {
         PathTuple originalPred = head.getPredecessor();
 
         PathTuple newTwo = new PathTupleMain(originalPred, null, null,
-                0, 5, 0, 0);
-        PathTuple newOne = new PathTupleMain(newTwo, null, null, 0,
+                new ScorePair(0, 0), 5, 0, 0);
+        PathTuple newOne = new PathTupleMain(newTwo, null, null, new ScorePair(0, 0),
                 7.5, 0, 0);
         head.setPredecessor(newOne);
 

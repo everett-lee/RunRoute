@@ -36,7 +36,7 @@ public class DistanceFromOriginNodeHeuristicMain implements DistanceFromOriginNo
         double score = 0;
 
         double distanceFromOriginNode =
-                HaversineCalculator.calculateDistanceII(currentNode, originNode);
+                distanceCalculator.calculateDistance(currentNode, originNode);
 
         if (currentRouteLength > targetDistance * SWITCH_PERCENTAGE) {
             score += RETURN_SCORE_NUMERATOR / distanceFromOriginNode;

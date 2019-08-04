@@ -7,91 +7,78 @@ import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.Heuristic;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
+import com.lee.runrouter.algorithm.pathnode.ScorePair;
 import com.lee.runrouter.graph.elementrepo.ConnectionPair;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 
+
 /**
- * A variant of the BeamSearch Algorithm for finding paths
- * between two specified points. This algorithm is used to
- * fill gaps created by removing path edges as part of the iterated
- * local search metaheuristic.
+ * Variant of the BFS algorithm that restricts the next selected Way
+ * to those closer to the starting point than the previous. It is used
+ * to complete the circuit and return to the route's starting position
+ * following execution of the BFS.
  */
 @Component
-@Qualifier("BeamSearchConnectionpath")
+@Qualifier("BeamSearchConnectionPath")
 public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
-    private final double PREFERRED_MIN_LENGTH = 500; // minimum length of way to avoid
+    private final double PREFERRED_MIN_LENGTH = 300; // minimum length of way to avoid
     // subtracting a score penalty
-    private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
-    private final double PREFERRED_LENGTH = 1100;
-    private final double PREFERRED_LENGTH_BONUS = 1;
-    private final double DISTANCE_FROM_ORIGIN_BONUS = 0.725;
-    private final long TIME_LIMIT = 1000;
+    private final double PREFERRED_MIN_LENGTH_PENALTY = 0;
+    private final double PREFERRED_LENGTH = 800;
+    private final double PREFERRED_LENGTH_BONUS = 0.25;
+    private final double REPEATED_VISIT_DEDUCTION = 0.015;
 
     private List<PathTuple> queue;
-    private Set<Long> visitedWays;
-    private Set<Long> visitedNodes;
+    private Hashtable<Long, Integer> visitedWays;
+    private Hashtable<Long, Integer> visitedNodes;
 
-    @Autowired
+    private final double TIME_LIMIT = 1000;
+
     public BeamSearchConnectionPath(ElementRepo repo,
-                      @Qualifier("DistanceFromOriginNodeHeuristicMain") DistanceFromOriginNodeHeursitic distanceFromOriginHeuristic,
-                      @Qualifier("FeaturesHeuristicMain") Heuristic featuresHeuristic,
-                      @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
-                      @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
-                      @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
-        super(repo, distanceFromOriginHeuristic, featuresHeuristic,
-                edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
+                             @Qualifier("DirectDistanceHeuristic") DistanceFromOriginNodeHeursitic distanceFromOriginHeursitic,
+                             @Qualifier("FeaturesHeuristicMain") Heuristic featuresHeuristic,
+                             @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
+                             @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
+                             @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
+        super(repo, distanceFromOriginHeursitic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
+
         this.queue = new ArrayList<>();
-        this.visitedWays = new HashSet<>();
-        this.visitedNodes = new HashSet<>();
+        this.visitedWays = new Hashtable<>();
+        this.visitedNodes = new Hashtable<>();
     }
 
-
-    /**
-     * Method for generating a route of the specified length,
-     * that selects a path based on the given preferences.
-     * The method returns as soon as the target way is reached.
-     *
-     * @param originNode the starting node of of the connecting path
-     * @param originWay the starting way of the connecting path
-     * @param targetNode the target node of the connecting path
-     * @param targetWay the target way of the connecting path
-     * @param availableDistance the total distance available to travel
-     * @return a PathTuple that is the head of the linked list
-     * of PathTuples containing the path back to the origin point
-     */
     @Override
     public PathTuple connectPath(Node originNode, Way originWay, Node targetNode, Way targetWay,
                                  double availableDistance, double initialDistance, double targetDistance) {
-        double currentRouteLength;
-
-        this.visitedWays = new HashSet<>();
-        this.visitedNodes = new HashSet<>();
 
         this.queue = new ArrayList<>();
 
+        this.visitedWays = new Hashtable<>();
+        this.visitedNodes = new Hashtable<>();
+
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
+        double currentRouteLength;
         double upperBound = availableDistance + initialDistance; // the remaining distance for the route
 
+        // REPLACE WITH COPY OF START NODE  W/0 PRED
         queue.add(new PathTupleMain(null, originNode, originWay,
-                0, 0, initialDistance, 0));
+                new ScorePair(0, 0), 0, initialDistance, 0));
 
         while (!queue.isEmpty() && elapsedTime <= TIME_LIMIT) {
             queue.sort(Comparator
                     // sort by route segment score
-                    .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
+                    .comparing((PathTuple tuple) -> tuple.getSegmentScore().getSum()).reversed());
 
-            // reduce the size of the queue where it exceeds beam size
             if (queue.size() > BEAM_SIZE) {
                 queue = queue.subList(0, BEAM_SIZE);
             }
@@ -99,9 +86,10 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
             PathTuple topTuple = queue.get(0);
             queue.remove(0);
 
+
             Way currentWay = topTuple.getCurrentWay();
             Node currentNode = topTuple.getPreviousNode();
-            double score;
+            ScorePair finalScore = topTuple.getSegmentScore();
 
             // the route has reached the target
             if (topTuple.getCurrentWay().getId() == targetWay.getId()) {
@@ -111,32 +99,40 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                         targetNode, targetWay,
                         finalDistance);
 
-                // the route is at least as long as the one it replaces
-                if (topTuple.getTotalLength() >= targetDistance) {
-                    // create a new tuple representing the journey from the previous node to the final node
-                    PathTuple returnTuple = new PathTupleMain(topTuple, targetNode,
-                            targetWay, 0, finalDistance,
-                            topTuple.getTotalLength() + finalDistance, finalGradient);
-                    return returnTuple;
+                // TODO: CHECK IF THIS SHOULD BE 1
+                if (topTuple.getTotalLength() >= 1) {
+                    if (checkMinLength(topTuple)) {
+                        // create a new tuple representing the journey from the previous node to the final node
+                        PathTuple returnTuple = new PathTupleMain(topTuple, targetNode,
+                                targetWay, finalScore, finalDistance,
+                                topTuple.getTotalLength() + finalDistance, finalGradient);
+                        return returnTuple;
+                    }
                 }
             }
 
-            // distance to origin point from the last explored way
-            double lastDist = distanceFromOriginHeuristic.getScore(currentWay);
+            double currentDistanceFromTarget
+                    = distanceFromOriginHeursitic.getScore(currentNode, targetNode,
+                    0, 0);
 
             // for each Way reachable from the current Way
             for (ConnectionPair pair : repo.getConnectedWays(currentWay)) {
                 currentRouteLength = topTuple.getTotalLength();
-                score = 0;
+
                 currentNode = topTuple.getPreviousNode();
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();
+                double heuristicScore = 0;
 
-                // skip where this way or node has already been explored
-                if (visitedWays.contains(selectedWay.getId()) ||
-                        this.visitedNodes.contains(connectingNode.getId())) {
+                double distanceFromSelectedToTarget
+                        = distanceFromOriginHeursitic.getScore(connectingNode, targetNode,
+                        0, 0);
+
+                if (distanceFromSelectedToTarget > currentDistanceFromTarget * 1.5) {
                     continue;
                 }
+
+                heuristicScore += addRepeatedVisitScores(selectedWay, connectingNode);
 
                 if (super.getAvoidUnlit()) {
                     if (!selectedWay.isLit()) {
@@ -151,15 +147,7 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                     continue; // skip to next where max length exceeded
                 }
 
-
-
-                if (distanceToNext < PREFERRED_MIN_LENGTH) {
-                    score -= PREFERRED_MIN_LENGTH_PENALTY;
-                }
-
-                if (distanceToNext >= PREFERRED_LENGTH) {
-                    score += PREFERRED_LENGTH_BONUS;
-                }
+                heuristicScore += addLengthScores(distanceToNext);
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
@@ -169,23 +157,75 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                 }
 
                 // call private method to add scores
-                score += addScores(selectedWay, gradient, RANDOM_REDUCER);
+                heuristicScore += addScores(selectedWay, gradient, RANDOM_REDUCER);
+
+                ScorePair score = new ScorePair(0, heuristicScore);
 
                 // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext, gradient);
                 queue.add(toAdd);
 
-                if (!repo.getOriginWay().getNodeContainer().getNodes().contains(visitedNodes)) {
-                    this.visitedNodes.add(connectingNode.getId());
+                if (!repo.getOriginWay().getNodeContainer().getNodes()
+                        .contains(connectingNode.getId())) {
+                    if (!this.visitedNodes.containsKey(connectingNode.getId())) {
+                        this.visitedNodes.put(connectingNode.getId(), 1);
+                    } else {
+                        int current = this.visitedNodes.get(connectingNode.getId());
+                        this.visitedNodes.put(connectingNode.getId(), current + 1);
+                    }
                 }
-                visitedWays.add(currentWay.getId());
+
+                if (!this.visitedWays.containsKey(selectedWay.getId())) {
+                    this.visitedWays.put(selectedWay.getId(), 1);
+                } else {
+                    int current = this.visitedWays.get(selectedWay.getId());
+                    this.visitedWays.put(selectedWay.getId(), current + 1);
+                }
 
                 elapsedTime = (new Date()).getTime() - startTime;
             }
         }
 
-        return new PathTupleMain(null, null, null, -10000000,
+        return new PathTupleMain(null, null, null, new ScorePair(-1, -1),
                 -1, -1, -1);
+    }
+
+    private double addRepeatedVisitScores(Way selectedWay, Node connectingNode) {
+        double score = 0;
+
+        // skip where this way or node has already been explored
+        if (this.visitedWays.containsKey(selectedWay.getId())) {
+            score -= this.visitedWays.get(selectedWay.getId()) * REPEATED_VISIT_DEDUCTION;
+        }
+        if (this.visitedNodes.containsKey(connectingNode.getId())) {
+            score -= this.visitedNodes.get(connectingNode.getId()) * REPEATED_VISIT_DEDUCTION;
+        }
+        return score;
+    }
+
+    private double addLengthScores(double distanceToNext) {
+        double score = 0;
+
+        if (distanceToNext < PREFERRED_MIN_LENGTH) {
+            score -= PREFERRED_MIN_LENGTH_PENALTY;
+        }
+
+        if (distanceToNext >= PREFERRED_LENGTH) {
+            score += PREFERRED_LENGTH_BONUS;
+        }
+
+        return score;
+    }
+
+    public boolean checkMinLength(PathTuple head) {
+        int count = 0;
+
+        while (head != null && count <= 3) {
+            count ++;
+            head = head.getPredecessor();
+        }
+
+        return (count >= 3);
     }
 }

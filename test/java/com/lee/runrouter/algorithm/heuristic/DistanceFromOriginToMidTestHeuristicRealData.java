@@ -4,6 +4,7 @@ import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
+import com.lee.runrouter.algorithm.pathnode.ScorePair;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
@@ -79,14 +80,15 @@ public class DistanceFromOriginToMidTestHeuristicRealData {
         Way w1 = repo.getWayRepo().stream().filter(x -> x.getId() == 385587247L).findFirst().get();
 
         PriorityQueue<PathTuple> queue = new PriorityQueue<>(Comparator
-                .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
-
+                .comparing((PathTuple tuple) -> tuple.getSegmentScore().getDistanceScore()).reversed());
 
         repo.getConnectedWays(w1).forEach(x ->
         {
             double score = distanceFromOriginHeuristic.getScore(x.getConnectingWay());
+            ScorePair scorePair = new ScorePair(score, 0);
+
             PathTupleMain pt = new PathTupleMain(null, x.getConnectingNode()
-                    , x.getConnectingWay(), score, 0, 0, 0);
+                    , x.getConnectingWay(), scorePair, 0, 0, 0);
             queue.add(pt);
         });
 

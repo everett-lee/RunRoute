@@ -8,6 +8,7 @@ import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.*;
 import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
+import com.lee.runrouter.algorithm.pathnode.ScorePair;
 import com.lee.runrouter.executor.Executor;
 import com.lee.runrouter.executor.ExecutorMain;
 import com.lee.runrouter.executor.LinkedListToArray;
@@ -56,7 +57,7 @@ public class ResponseGeneratorControllerTest {
         when(response.getPredecessor()).thenReturn(null);
         when(response.getPreviousNode()).thenReturn(mocknode);
         when(response.getSegmentLength()).thenReturn(1d);
-        when(response.getSegmentScore()).thenReturn(1d);
+        when(response.getSegmentScore()).thenReturn(new ScorePair(1,1));
         Way mockedWay = mock(Way.class);
         when(mockedWay.getId()).thenReturn(1l);
         when(response.getCurrentWay()).thenReturn(mockedWay);

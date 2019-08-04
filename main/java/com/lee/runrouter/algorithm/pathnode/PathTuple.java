@@ -8,8 +8,8 @@ public interface PathTuple {
     Node getPreviousNode();
     Way getCurrentWay();
     void setPredecessor(PathTuple predecessor);
-    double getSegmentScore();
-    void setSegmentScore(double segmentScore);
+    ScorePair getSegmentScore();
+    void setSegmentScore(ScorePair segmentScore);
     double getSegmentLength();
     void setSegmentLength(double segmentLength);
     double getTotalLength();

@@ -8,6 +8,7 @@ import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.Heuristic;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
+import com.lee.runrouter.algorithm.pathnode.ScorePair;
 import com.lee.runrouter.graph.elementrepo.ConnectionPair;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
@@ -17,7 +18,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 
-import static com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator.calculateDistanceII;
 import java.util.*;
 
 /**
@@ -92,13 +92,14 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
         Node originNode = new Node(-1, coords[0], coords[1]);
         originNode = AlgoHelpers.findClosest(originNode, root.getNodeContainer().getNodes());
 
-        queue.add(new PathTupleMain(null, originNode, root, 0,
+        queue.add(new PathTupleMain(null, originNode, root, new ScorePair(0,0),
                                     0, 0, 0));
 
         while (!queue.isEmpty()  && elapsedTime <= TIME_LIMIT) {
             queue.sort(Comparator
                     // sort by route segment score
-                    .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
+                    .comparing((PathTuple tuple) ->
+                            tuple.getSegmentScore().getSum()).reversed());
 
             if (queue.size() > BEAM_SIZE) {
                 queue = queue.subList(0, BEAM_SIZE);
@@ -126,7 +127,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
 
                     // create a new tuple representing the journey from the previous node to the final node
                     PathTuple returnTuple = new PathTupleMain(topTuple, repo.getOriginNode(),
-                            repo.getOriginWay(), 0, finalDistance,
+                            repo.getOriginWay(), new ScorePair(0 ,0), finalDistance,
                             topTuple.getTotalLength() + finalDistance, finalGradient);
                     return returnTuple;
                 }
@@ -134,7 +135,6 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
 
             // distance to origin point from the last explored way
             double lastDist = distanceFromOriginHeuristic.getScore(currentWay);
-            double lastDistFromOrigin = calculateDistanceII(topTuple.getPreviousNode(), repo.getOriginNode());
 
             // for each Way reachable from the current Way
             for (ConnectionPair pair: repo.getConnectedWays(currentWay)) {
@@ -172,24 +172,6 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
 
                 double currentDistanceScore
                         = distanceFromOriginHeuristic.getScore(selectedWay);
-//
-//                // if the current distance score is higher the previous Way's, that
-//                // is it is closer, increase the score
-//                if (currentDistanceScore > lastDist) {
-//                    score += DISTANCE_FROM_ORIGIN_BONUS;
-//                }
-
-
-                double thresholdPercentage = 1.0 - (currentRouteLength / distance);
-                double distanceLimit = distance * thresholdPercentage;
-                double distanceToOrigin = calculateDistanceII(connectingNode, repo.getOriginNode());
-                if ((currentRouteLength + distanceToNext) > distance / 2) {
-                    if (distanceToOrigin > lastDistFromOrigin * 1.5) {
-                        continue;
-                    }
-                }
-
-
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
@@ -202,7 +184,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
 
                 // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
-                        score, distanceToNext, currentRouteLength + distanceToNext, gradient);
+                       new ScorePair(0, 0), distanceToNext, currentRouteLength + distanceToNext, gradient);
                 queue.add(toAdd);
 
 
@@ -215,7 +197,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
             }
         }
 
-        return new PathTupleMain(null, null, null, -1,
+        return new PathTupleMain(null, null, null, new ScorePair(-1 , -1),
                 -1, -1, -1);
     }
 }

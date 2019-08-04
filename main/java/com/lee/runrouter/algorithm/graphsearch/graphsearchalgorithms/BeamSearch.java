@@ -80,19 +80,19 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
         // run length
         double lowerBound = distance - (distance * LOWER_SCALE); // lower bound of
         // run length
-
-        Node originNode = new Node(-1, coords[0], coords[1]);
-        originNode = AlgoHelpers.findClosest(originNode, repo.getOriginWay().getNodeContainer().getNodes());
-        queue.add(new PathTupleMain(null, originNode, root,
-                        0, 0, 0, 0));
+//
+//        Node originNode = new Node(-1, coords[0], coords[1]);
+//        originNode = AlgoHelpers.findClosest(originNode, repo.getOriginWay().getNodeContainer().getNodes());
+//        queue.add(new PathTupleMain(null, originNode, root,
+//                        0, 0, 0, 0));
 
         // update the repository origin node
-        repo.setOriginNode(originNode);
+//        repo.setOriginNode(originNode);
 
         while (!queue.isEmpty()) {
             queue.sort(Comparator
                     // sort by route segment score
-                    .comparing((PathTuple tuple) -> tuple.getSegmentScore()).reversed());
+                    .comparing((PathTuple tuple) -> tuple.getSegmentScore().getSum()).reversed());
 
             if (queue.size() > BEAM_SIZE) {
                 queue = queue.subList(0, BEAM_SIZE);
@@ -159,7 +159,7 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
                 score += super.addScores(selectedWay, gradient, RANDOM_REDUCER);
                 // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
-                        score, distanceToNext, currentRouteLength + distanceToNext,
+                        new ScorePair(0, 0), distanceToNext, currentRouteLength + distanceToNext,
                         gradient);
                 queue.add(toAdd);
 
@@ -173,7 +173,7 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
         }
 
         // null object returned in the event of an error
-        return new PathTupleMain(null, null, null, Double.MIN_VALUE,
+        return new PathTupleMain(null, null, null, new ScorePair(0, 0),
                 -1, -1, -1);
     }
 

@@ -32,7 +32,7 @@ public class TestHelpers {
         while (tp != null) {
             acc += tp.getPreviousNode().getId() + ", ";
             System.out.println("(" + tp.getPreviousNode() + " distance: "
-                    + tp.getTotalLength() + " score: " + tp.getSegmentScore() +
+                    + tp.getTotalLength() + " score: " + tp.getSegmentScore().getHeuristicScore() +
                     ") " + " way: " + tp.getCurrentWay().getId());
             System.out.println("Segment length: " + tp.getSegmentLength());
             tp = tp.getPredecessor();
@@ -44,12 +44,12 @@ public class TestHelpers {
     }
 
     static public PathTuple getMorrish5k() {
-        PathTuple morrishRoadShort = null;
+        PathTuple route = null;
         // deserialise test path used for testing.
         try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/morrish5k.ser");
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/morrish5k.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            morrishRoadShort = (PathTuple) in.readObject();
+            route = (PathTuple) in.readObject();
             in.close();
             fileIn.close();
         } catch (IOException i) {
@@ -58,16 +58,36 @@ public class TestHelpers {
             System.out.println("Repo class not found");
             c.printStackTrace();
         }
-        return morrishRoadShort;
+        return route;
+    }
+
+
+    static public PathTuple getMorrish5kFeaturesUphill() {
+        PathTuple route = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn
+                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/morrish5kWithFeaturesUphill");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            route = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return route;
     }
 
     static public PathTuple getMorrish14k() {
-        PathTuple morrishRoadShort = null;
+        PathTuple route = null;
         // deserialise test path used for testing.
         try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/morrish14k.ser");
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/morrish14k.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            morrishRoadShort = (PathTuple) in.readObject();
+            route = (PathTuple) in.readObject();
             in.close();
             fileIn.close();
         } catch (IOException i) {
@@ -76,15 +96,35 @@ public class TestHelpers {
             System.out.println("Repo class not found");
             c.printStackTrace();
         }
-        return morrishRoadShort;
+        return route;
     }
+
+    static public PathTuple getMorrish14kFeaturesFlat() {
+        PathTuple route = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn
+                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/morrish14kWithFeaturesFlat.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            route = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return route;
+    }
+
     static public PathTuple getMorrish21k() {
-        PathTuple morrishRoadShort = null;
+        PathTuple route = null;
         // deserialise test path used for testing.
         try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/morrish21k.ser");
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/morrish21k.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            morrishRoadShort = (PathTuple) in.readObject();
+            route = (PathTuple) in.readObject();
             in.close();
             fileIn.close();
         } catch (IOException i) {
@@ -93,16 +133,18 @@ public class TestHelpers {
             System.out.println("Repo class not found");
             c.printStackTrace();
         }
-        return morrishRoadShort;
+        return route;
     }
 
-    static public PathTuple getMorrishProblemOne() {
-        PathTuple morrishRoadProb = null;
+
+    static public PathTuple getMorrish21kFeaturesFlat() {
+        PathTuple route = null;
         // deserialise test path used for testing.
         try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/morrishProblem1.ser");
+            FileInputStream fileIn
+                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/morrish21kWithFeaturesFlat.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            morrishRoadProb = (PathTuple) in.readObject();
+            route = (PathTuple) in.readObject();
             in.close();
             fileIn.close();
         } catch (IOException i) {
@@ -111,16 +153,17 @@ public class TestHelpers {
             System.out.println("Repo class not found");
             c.printStackTrace();
         }
-        return morrishRoadProb;
+        return route;
     }
 
-    static public PathTuple getMorrishProblemTwo() {
-        PathTuple morrishRoadProb = null;
+    static public PathTuple getMorrish21kFeaturesUphill() {
+        PathTuple route = null;
         // deserialise test path used for testing.
         try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/morrishProblem2.ser");
+            FileInputStream fileIn
+                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/morrish21kWithFeaturesUphill.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            morrishRoadProb = (PathTuple) in.readObject();
+            route = (PathTuple) in.readObject();
             in.close();
             fileIn.close();
         } catch (IOException i) {
@@ -129,16 +172,16 @@ public class TestHelpers {
             System.out.println("Repo class not found");
             c.printStackTrace();
         }
-        return morrishRoadProb;
+        return route;
     }
 
     static public PathTuple getCraignair5k() {
-        PathTuple morrishRoadShort = null;
+        PathTuple route = null;
         // deserialise test path used for testing.
         try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/craignair5k.ser");
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/craignair5k.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            morrishRoadShort = (PathTuple) in.readObject();
+            route = (PathTuple) in.readObject();
             in.close();
             fileIn.close();
         } catch (IOException i) {
@@ -147,16 +190,54 @@ public class TestHelpers {
             System.out.println("Repo class not found");
             c.printStackTrace();
         }
-        return morrishRoadShort;
+        return route;
+    }
+
+    static public PathTuple getCraignair5kFeaturesFlat() {
+        PathTuple route = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn
+                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/craignair5kwithFeaturesFlat.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            route = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return route;
+    }
+
+    static public PathTuple getCraignair5kFeaturesUphill() {
+        PathTuple route = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn
+                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/craignair5kwithFeaturesUphill.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            route = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return route;
     }
 
     static public PathTuple getCraignair14k() {
-        PathTuple morrishRoadShort = null;
+        PathTuple route = null;
         // deserialise test path used for testing.
         try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/craignair14k.ser");
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/craignair14k.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            morrishRoadShort = (PathTuple) in.readObject();
+            route = (PathTuple) in.readObject();
             in.close();
             fileIn.close();
         } catch (IOException i) {
@@ -165,15 +246,17 @@ public class TestHelpers {
             System.out.println("Repo class not found");
             c.printStackTrace();
         }
-        return morrishRoadShort;
+        return route;
     }
-    static public PathTuple getCraignair21k() {
-        PathTuple morrishRoadShort = null;
+
+    static public PathTuple getCraignair14kFeaturesFlat() {
+        PathTuple route = null;
         // deserialise test path used for testing.
         try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/craignair21k.ser");
+            FileInputStream fileIn
+                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/craignair14kwithFeaturesFlat.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            morrishRoadShort = (PathTuple) in.readObject();
+            route = (PathTuple) in.readObject();
             in.close();
             fileIn.close();
         } catch (IOException i) {
@@ -182,16 +265,91 @@ public class TestHelpers {
             System.out.println("Repo class not found");
             c.printStackTrace();
         }
-        return morrishRoadShort;
+        return route;
+    }
+
+    static public PathTuple getCraignair14kFeaturesUphill() {
+        PathTuple route = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn
+                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/craignair14kwithFeaturesUphill.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            route = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return route;
+    }
+
+    static public PathTuple getCraignair21k() {
+        PathTuple route = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/craignair21k.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            route = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return route;
+    }
+
+    static public PathTuple getCraignair21kFeaturesFlat() {
+        PathTuple route = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn
+                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/craignair21kwithFeaturesFlat.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            route = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return route;
+    }
+
+    static public PathTuple getCraignair21kFeaturesUphill() {
+        PathTuple route = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn
+                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/craignair21kwithFeaturesUphill.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            route = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return route;
     }
 
     static public PathTuple getTulse5k() {
-        PathTuple tulseHillLong = null;
+        PathTuple route = null;
         // deserialise test repo used for testing.
         try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/tulse5k.ser");
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/tulse5k.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            tulseHillLong = (PathTuple) in.readObject();
+            route = (PathTuple) in.readObject();
             in.close();
             fileIn.close();
         } catch (IOException i) {
@@ -200,16 +358,54 @@ public class TestHelpers {
             System.out.println("Repo class not found");
             c.printStackTrace();
         }
-        return tulseHillLong;
+        return route;
+    }
+
+    static public PathTuple getTulse5keaturesFlat() {
+        PathTuple route = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn
+                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/tulse5kWithFeaturesFlat.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            route = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return route;
+    }
+
+    static public PathTuple getTulse5kFeaturesUphill() {
+        PathTuple route = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn
+                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/tulse5kWithFeaturesUphill.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            route = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return route;
     }
 
     static public PathTuple getTulse14k() {
-        PathTuple tulseHillLong = null;
+        PathTuple route = null;
         // deserialise test repo used for testing.
         try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/tulse14k.ser");
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/tulse14k.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            tulseHillLong = (PathTuple) in.readObject();
+            route = (PathTuple) in.readObject();
             in.close();
             fileIn.close();
         } catch (IOException i) {
@@ -218,16 +414,54 @@ public class TestHelpers {
             System.out.println("Repo class not found");
             c.printStackTrace();
         }
-        return tulseHillLong;
+        return route;
+    }
+
+    static public PathTuple getTulse14keaturesFlat() {
+        PathTuple route = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn
+                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/tulse14kWithFeaturesFlat.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            route = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return route;
+    }
+
+    static public PathTuple getTulse14kFeaturesUphill() {
+        PathTuple route = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn
+                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/tulse14kWithFeaturesUphill.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            route = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return route;
     }
 
     static public PathTuple getTulse21k() {
-        PathTuple tulseHillLong = null;
+        PathTuple route = null;
         // deserialise test repo used for testing.
         try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/tulse21k.ser");
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/tulse21k.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
-            tulseHillLong = (PathTuple) in.readObject();
+            route = (PathTuple) in.readObject();
             in.close();
             fileIn.close();
         } catch (IOException i) {
@@ -236,14 +470,53 @@ public class TestHelpers {
             System.out.println("Repo class not found");
             c.printStackTrace();
         }
-        return tulseHillLong;
+        return route;
     }
+
+    static public PathTuple getTulse21keaturesFlat() {
+        PathTuple route = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn
+                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/tulse21kWithFeaturesFlat.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            route = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return route;
+    }
+
+    static public PathTuple getTulse21kFeaturesUphill() {
+        PathTuple route = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn
+                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/tulse21kWithFeaturesUphill.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            route = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return route;
+    }
+
 
     public static double calculateScore(PathTuple head) {
         double score = 0;
 
         while (head != null) {
-            score += head.getSegmentScore();
+            score += head.getSegmentScore().getHeuristicScore();
             head = head.getPredecessor();
         }
 

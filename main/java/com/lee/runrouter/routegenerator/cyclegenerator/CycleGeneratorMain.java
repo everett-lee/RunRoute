@@ -3,6 +3,7 @@ package com.lee.runrouter.routegenerator.cyclegenerator;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.GraphSearch;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
+import com.lee.runrouter.algorithm.pathnode.ScorePair;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.routegenerator.PathNotGeneratedException;
@@ -98,10 +99,8 @@ public class CycleGeneratorMain implements CycleGenerator {
 
                 distance += current.getSegmentLength();
 
-                double score = -10; // dummy score to increase
-                // chance repeated segment will be replaced
                 PathTuple toAdd = new PathTupleMain(head, current.getPreviousNode(),
-                        current.getCurrentWay(), score, current.getSegmentLength(), distance,
+                        current.getCurrentWay(), new ScorePair(0, 0), current.getSegmentLength(), distance,
                         current.getSegmentGradient()
                 );
 

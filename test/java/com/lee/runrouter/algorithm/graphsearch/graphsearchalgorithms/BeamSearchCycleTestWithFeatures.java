@@ -13,6 +13,10 @@ import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
 import org.junit.*;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -368,5 +372,20 @@ public class BeamSearchCycleTestWithFeatures {
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
     }
 
+    static void serialize(PathTuple head, String routeName) {
+        try {
+            System.out.println("Starting... ");
+            String fileName = String.format("/home/lee/project/app/runrouter/src/savedRoutes/%s.ser", routeName);
+            FileOutputStream fileOut =
+                    new FileOutputStream(fileName);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(head);
+            out.close();
+            fileOut.close();
+            System.out.printf(fileName);
+        } catch (IOException i) {
+            i.printStackTrace();
+        }
+    }
 
 }

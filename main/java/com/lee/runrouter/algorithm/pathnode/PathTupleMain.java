@@ -14,13 +14,13 @@ public class PathTupleMain implements PathTuple, Serializable {
     private PathTuple predecessor;
     private Node previousNode;
     private Way currentWay;
-    private double segmentScore;
+    private ScorePair segmentScore;
     private double segmentLength;
     private double totalLength;
     private double gradient;
 
     public PathTupleMain(PathTuple predecessor, Node previousNode, Way currentWay,
-                         double segmentScore, double segmentLength, double totalLength,
+                         ScorePair segmentScore, double segmentLength, double totalLength,
                          double gradient) {
         this.predecessor = predecessor;
         this.previousNode = previousNode;
@@ -52,12 +52,12 @@ public class PathTupleMain implements PathTuple, Serializable {
     }
 
     @Override
-    public double getSegmentScore() {
+    public ScorePair getSegmentScore() {
         return segmentScore;
     }
 
     @Override
-    public void setSegmentScore(double segmentScore) {
+    public void setSegmentScore(ScorePair segmentScore) {
         this.segmentScore = segmentScore;
     }
 

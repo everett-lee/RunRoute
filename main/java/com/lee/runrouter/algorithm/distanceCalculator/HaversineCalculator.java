@@ -35,19 +35,4 @@ public class HaversineCalculator implements DistanceCalculator {
 
         return EARTH_RADIUS_METRES * c;
     }
-
-
-    public static double calculateDistanceII(Node n1, Node n2) {
-        double lat1 = Math.toRadians(n1.getLat());
-        double lat2 = Math.toRadians(n2.getLat());
-        double deltaLat = Math.toRadians(n2.getLat() - n1.getLat());
-        double deltaLon = Math.toRadians(n2.getLon() - n1.getLon());
-
-        double a = Math.sin(deltaLat/2) * Math.sin(deltaLat/2) + Math.cos(lat1) * Math.cos(lat2)
-                * Math.sin(deltaLon/2) * Math.sin(deltaLon/2);
-
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-        return 6371000 * c;
-    }
 }

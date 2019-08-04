@@ -48,13 +48,14 @@ public class BeamSearchCycleTest {
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
     }
 
-    @Test(timeout = 1000)
+    @Test(timeout = 3000)
     public void testMorrishRoad5k() {
         double[] coords = {51.446810, -0.125484};
         PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
         String name = "morrish5k";
 
         double length = calculateDistance(res);
+        serialize(res, name);
 
         assertTrue(calculateScore(res) > 0);
         System.out.println(returnPath(res, ""));
@@ -62,13 +63,14 @@ public class BeamSearchCycleTest {
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
     }
 
-    @Test(timeout = 1000)
+    @Test(timeout = 3000)
     public void testMorrishRoad14k() {
         double[] coords = {51.446810, -0.125484};
-        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
+        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 14000);
         String name = "morrish14k";
 
         double length = calculateDistance(res);
+        serialize(res, name);
 
         assertTrue(calculateScore(res) > 0);
         System.out.println(returnPath(res, ""));
@@ -76,13 +78,14 @@ public class BeamSearchCycleTest {
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
     }
 
-    @Test(timeout = 1000)
+    @Test(timeout = 3000)
     public void testMorrishRoad21k() {
         double[] coords = {51.446810, -0.125484};
-        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
+        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 21000);
         String name = "morrish21k";
 
         double length = calculateDistance(res);
+        serialize(res, name);
 
         assertTrue(calculateScore(res) > 0);
         System.out.println(returnPath(res, ""));
@@ -90,7 +93,7 @@ public class BeamSearchCycleTest {
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
     }
 
-    @Test(timeout = 1000)
+    @Test(timeout = 3000)
     public void testCraignairRoad5k()  {
         double[] coords = {51.448321, -0.114648};
 
@@ -102,13 +105,14 @@ public class BeamSearchCycleTest {
         String name = "craignair5k";
 
         double length = calculateDistance(res);
+        serialize(res, name);
 
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
     }
 
-    @Test(timeout = 1000)
+    @Test(timeout = 3000)
     public void testCraignairRoad14k()  {
         double[] coords = {51.448321, -0.114648};
 
@@ -120,13 +124,14 @@ public class BeamSearchCycleTest {
         String name = "craignair14k";
 
         double length = calculateDistance(res);
+        serialize(res, name);
 
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
     }
 
-    @Test(timeout = 1000)
+    @Test(timeout = 3000)
     public void testCraignairRoad21k()  {
         double[] coords = {51.448321, -0.114648};
 
@@ -138,13 +143,14 @@ public class BeamSearchCycleTest {
         String name = "craignair21k";
 
         double length = calculateDistance(res);
+        serialize(res, name);
 
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
     }
 
-    @Test(timeout = 1000)
+    @Test(timeout = 3000)
     public void TulseHillTest5KM() {
         double[] coords = {51.441109, -0.106974};
 
@@ -156,13 +162,14 @@ public class BeamSearchCycleTest {
         String name = "tulse5k";
 
         double length = calculateDistance(res);
+        serialize(res, name);
 
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
     }
 
-    @Test(timeout = 1000)
+    @Test(timeout = 3000)
     public void TulseHillTest14KM() {
         double[] coords = {51.441109, -0.106974};
 
@@ -174,13 +181,14 @@ public class BeamSearchCycleTest {
         String name = "tulse14k";
 
         double length = calculateDistance(res);
+        serialize(res, name);
 
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
     }
 
-    @Test(timeout = 1000)
+    @Test(timeout = 3000)
     public void TulseHillTest21KM() {
         double[] coords = {51.441109, -0.106974};
 
@@ -192,6 +200,7 @@ public class BeamSearchCycleTest {
         String name = "tulse21k";
 
         double length = calculateDistance(res);
+        serialize(res, name);
 
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -201,7 +210,7 @@ public class BeamSearchCycleTest {
     static void serialize(PathTuple head, String routeName) {
         try {
             System.out.println("Starting... ");
-            String fileName = String.format("/home/lee/project/app/runrouter/src/%s.ser", routeName);
+            String fileName = String.format("/home/lee/project/app/runrouter/src/savedRoutes/%s.ser", routeName);
             FileOutputStream fileOut =
                     new FileOutputStream(fileName);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);

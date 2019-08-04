@@ -136,6 +136,8 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         return finalDistance;
     }
 
+    // reverse the linked list of tuples so that that they are in
+    // the order of arrival
     private PathTuple reverseList(PathTuple head) {
         PathTuple prev = null;
         PathTuple current = head;
@@ -193,13 +195,13 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         head = head.getPredecessor();
 
         while (head != tail) {
-            score += head.getSegmentScore();
+            score += head.getSegmentScore().getHeuristicScore();
             head = head.getPredecessor();
         }
 
 
         if (tail != null) {
-            score += tail.getSegmentScore();
+            score += head.getSegmentScore().getHeuristicScore();
         }
         return score;
     }

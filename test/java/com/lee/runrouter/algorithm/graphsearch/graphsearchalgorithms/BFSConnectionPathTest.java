@@ -43,7 +43,7 @@ public class BFSConnectionPathTest {
     @Before
     public void setUp() {
         distanceCalculator = new HaversineCalculator();
-        distanceHeuristic = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
+        distanceHeuristic = new DirectDistanceHeuristic(distanceCalculator);
 
         List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("GRASS",
                 "DIRT", "GRAVEL"));
@@ -75,10 +75,11 @@ public class BFSConnectionPathTest {
 
         PathTuple resFinal = getEndTuple(res);
 
+        System.out.println(returnPath(res, ""));
+
         assertEquals(start.getPreviousNode(), resFinal.getPreviousNode());
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
-
     }
 
     @Test
@@ -165,6 +166,7 @@ public class BFSConnectionPathTest {
                 0);
 
         System.out.println(calculateScore(res));
+        System.out.println(returnPath(res, ""));
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());

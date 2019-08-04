@@ -29,15 +29,15 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
     // score
     private final double PREFERRED_MIN_LENGTH = 300; // minimum length of way to avoid
     // subtracting a score penalty
-    private final double PREFERRED_MIN_LENGTH_PENALTY = 0.25;
+    private final double PREFERRED_MIN_LENGTH_PENALTY = 0.0;
     private final double PREFERRED_LENGTH = 800; // minimum length to receive a score bonus
     private final double PREFERRED_LENGTH_BONUS = 0.25;
-    private final double REPEATED_VISIT_DEDUCTION = 0.1; // score deduction for each repeat visit
+    private final double REPEATED_VISIT_DEDUCTION = 0.015; // score deduction for each repeat visit
     // to this Node or Way
 
     private final double LOWER_SCALE = 0.15; // amount to scale upper lower bound on
     // run length by
-                private final double UPPER_SCALE = 0.15; // amount to scale upper bound on
+                private final double UPPER_SCALE = 0.10; // amount to scale upper bound on
     // run length by
     private final long TIME_LIMIT = 2000;
 

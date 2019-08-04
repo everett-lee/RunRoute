@@ -51,7 +51,7 @@ public class FeaturesHeuristicMain implements Heuristic, FeaturesHeuristic {
 
         for (String highway: this.preferredHighways) {
             if (this.selectedWay.getHighway().equals(highway.toUpperCase())) {
-                this.score += 0.75;
+                this.score += 0.5;
             }
         }
     }

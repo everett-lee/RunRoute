@@ -37,7 +37,7 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
 
     private final double LOWER_SCALE = 0.15; // amount to scale upper lower bound on
     // run length by
-                private final double UPPER_SCALE = 0.10; // amount to scale upper bound on
+                private final double UPPER_SCALE = 0.15; // amount to scale upper bound on
     // run length by
     private final long TIME_LIMIT = 2000;
 

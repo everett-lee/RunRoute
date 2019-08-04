@@ -32,7 +32,7 @@ public class ExecutorFullCycle implements Executor {
     private SearchAlgorithm pather;
     private SearchAlgorithm connectionPather;
 
-    private final double INITIAL_GRAPH_SIZE = 20000; // the starting size of the generated graph
+    private final double INITIAL_GRAPH_SIZE = 12000; // the starting size of the generated graph
 
     public ExecutorFullCycle(
             @Qualifier("RouteGeneratorCycle") RouteGenerator routeGenerator,

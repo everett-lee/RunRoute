@@ -1,6 +1,7 @@
-package com.lee.runrouter.algorithm.heuristic;
+package com.lee.runrouter.algorithm.heuristic.DistanceHeuristic;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
+import com.lee.runrouter.algorithm.heuristic.Heuristic;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;

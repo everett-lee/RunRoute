@@ -2,6 +2,7 @@ package com.lee.runrouter.algorithm.heuristic;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
+import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginToMidHeuristic;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
 import com.lee.runrouter.algorithm.pathnode.ScorePair;

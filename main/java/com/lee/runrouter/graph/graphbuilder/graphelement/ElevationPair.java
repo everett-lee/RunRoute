@@ -2,6 +2,9 @@ package com.lee.runrouter.graph.graphbuilder.graphelement;
 
 import java.io.Serializable;
 
+/**
+ * Contains the elevation information for each Way.
+ */
 public class ElevationPair implements Serializable {
     private long startElevation;
     private long endElevation;

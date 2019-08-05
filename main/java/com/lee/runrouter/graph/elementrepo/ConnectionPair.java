@@ -3,7 +3,7 @@ import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
 /**
  * A pair for storing a Way and the node that
- * connects it
+ * connects it to the Way it intersects
  */
 public class ConnectionPair {
     private final Way connectingWay;

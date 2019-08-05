@@ -1,4 +1,4 @@
-package com.lee.runrouter.algorithm.heuristic;
+package com.lee.runrouter.algorithm.heuristic.DistanceHeuristic;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
 
 public interface DistanceFromOriginNodeHeursitic {

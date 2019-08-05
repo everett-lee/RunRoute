@@ -9,6 +9,11 @@ import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistan
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearchConnectionPath;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ILSGraphSearch;
 import com.lee.runrouter.algorithm.heuristic.*;
+import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeuristicMain;
+import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
+import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
+import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicMain;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicMain;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import org.junit.Before;

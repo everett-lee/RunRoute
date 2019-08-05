@@ -1,22 +1,21 @@
-package com.lee.runrouter.algorithm.heuristic;
+package com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 /**
- * Returns a score corresponding to the gradient of the path travelled.
- * This score either represents the 'flatness' of the route
- * , where flatter routes are preferred, or correlates to the route's
- * steepness.
+ * A more sensitive version of the standard elevation heuristic.
+ * This is used in the iterated local search algorithm to choose
+ * steeps.
  */
 @Component
-@Qualifier("ElevationHeuristicMain")
-public class ElevationHeuristicMain implements ElevationHeuristic {
+@Qualifier("ElevationHeuristicSensitive")
+public class ElevationHeuristicSensitive implements ElevationHeuristic {
     private boolean preferUphill;
-    private final double MULTIPLIER = 0.5; // number to scale
+    private final double MULTIPLIER = 3; // number to scale
     // gradient by in increase its share of heuristic score
 
-    public ElevationHeuristicMain() {
+    public ElevationHeuristicSensitive() {
         this.preferUphill = false;
     }
 

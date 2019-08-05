@@ -4,8 +4,8 @@
 //import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 //import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 //import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
-//import com.lee.runrouter.algorithm.heuristic.DistanceFromOriginNodeHeursitic;
-//import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
+//import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
+//import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
 //import com.lee.runrouter.algorithm.heuristic.Heuristic;
 //import com.lee.runrouter.algorithm.pathnode.PathTuple;
 //import com.lee.runrouter.algorithm.pathnode.PathTupleMain;

@@ -10,6 +10,10 @@ import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BFSConnecti
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearchConnectionPath;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ILSGraphSearch;
 import com.lee.runrouter.algorithm.heuristic.*;
+import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeuristicMain;
+import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
+import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicMain;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicMain;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import org.junit.Before;
@@ -213,16 +217,11 @@ public class IteratedLocalSearchMainAlgorithmTest {
     public void testulse21k() {
         double originalScore = calculateScore(tulseHill21k);
         double originalLength = calculateDistance(tulseHill21k);
-        double target = 2000;
+        double target = 0;
 
         PathTuple res = ilsBFS.iterate(tulseHill21k, target);
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);
-
-        System.out.println(originalLength);
-        System.out.println(postDistance);
-        System.out.println(originalScore);
-        System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
         assertTrue(postDistance <= (originalLength + target) * 1.1);

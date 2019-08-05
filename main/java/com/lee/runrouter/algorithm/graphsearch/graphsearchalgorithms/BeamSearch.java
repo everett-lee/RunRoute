@@ -1,10 +1,11 @@
 package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 
-import com.lee.runrouter.algorithm.AlgoHelpers;
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.heuristic.*;
+import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
+import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.pathnode.*;
 import com.lee.runrouter.graph.elementrepo.*;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;

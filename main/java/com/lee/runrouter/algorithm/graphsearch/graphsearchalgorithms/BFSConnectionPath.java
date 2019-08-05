@@ -2,8 +2,8 @@ package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
-import com.lee.runrouter.algorithm.heuristic.DistanceFromOriginNodeHeursitic;
-import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
+import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
+import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.Heuristic;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
@@ -29,9 +29,9 @@ import java.util.*;
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final double RANDOM_REDUCER = 500; // divides into random number added to the
     // score
-    private final double PREFERRED_MIN_LENGTH = 300; // minimum length of way to avoid
+    private final double PREFERRED_MIN_LENGTH = 200; // minimum length of way to avoid
     // subtracting a score penalty
-    private final double PREFERRED_MIN_LENGTH_PENALTY = 0;
+    private final double PREFERRED_MIN_LENGTH_PENALTY = 0.05;
     private final double PREFERRED_LENGTH = 800;
     private final double PREFERRED_LENGTH_BONUS = 0.25;
     private final double REPEATED_VISIT_DEDUCTION = 0.015;
@@ -47,7 +47,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                              @Qualifier("FeaturesHeuristicMain") Heuristic featuresHeuristic,
                              @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
                              @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
-                             @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
+                             @Qualifier("ElevationHeuristicSensitive") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceFromOriginHeursitic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) ->
@@ -186,11 +186,10 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
     private double addRepeatedVisitScores(Way selectedWay, Node connectingNode) {
         double score = 0;
-
-        // skip where this way or node has already been explored
-        if (this.visitedWays.containsKey(selectedWay.getId())) {
-            score -= this.visitedWays.get(selectedWay.getId()) * REPEATED_VISIT_DEDUCTION;
-        }
+//
+//        if (this.visitedWays.containsKey(selectedWay.getId())) {
+//            score -= this.visitedWays.get(selectedWay.getId()) * REPEATED_VISIT_DEDUCTION;
+//        }
         if (this.visitedNodes.containsKey(connectingNode.getId())) {
             score -= this.visitedNodes.get(connectingNode.getId()) * REPEATED_VISIT_DEDUCTION;
         }

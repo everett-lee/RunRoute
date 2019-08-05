@@ -1,5 +1,6 @@
 package com.lee.runrouter.algorithm.heuristic;
 
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicMain;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import org.junit.Before;
 import org.junit.Test;

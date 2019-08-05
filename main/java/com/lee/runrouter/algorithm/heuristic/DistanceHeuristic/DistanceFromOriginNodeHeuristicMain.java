@@ -1,6 +1,5 @@
-package com.lee.runrouter.algorithm.heuristic;
+package com.lee.runrouter.algorithm.heuristic.DistanceHeuristic;
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
-import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

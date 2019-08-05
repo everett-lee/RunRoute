@@ -4,7 +4,10 @@ import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BFSConnecti
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearch;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearchReturnPath;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.SearchAlgorithm;
-import com.lee.runrouter.algorithm.heuristic.*;
+import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
+import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicMain;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicMain;
 import com.lee.runrouter.graph.graphbuilder.GraphBuilder;
 import com.lee.runrouter.routegenerator.RouteGenerator;
 import com.lee.runrouter.routegenerator.RouteGeneratorMain;

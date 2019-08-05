@@ -5,6 +5,8 @@ import com.lee.runrouter.algorithm.AlgoHelpers;
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.heuristic.*;
+import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
+import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.pathnode.*;
 import com.lee.runrouter.graph.elementrepo.*;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
@@ -19,7 +21,7 @@ import java.util.*;
  * A greedy Search algorithm that utilises a restricted List.
  * Neighbouring nodes are explored and only those with the
  * highest score (as assessed by the heuristics) at each stage
- * are kept in the list.
+ * are retained.
  */
 @Component
 @Qualifier("BeamSearchCycle")
@@ -33,7 +35,7 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
     private final double PREFERRED_LENGTH = 800; // minimum length to receive a score bonus
     private final double PREFERRED_LENGTH_BONUS = 0.25;
     private final double REPEATED_VISIT_DEDUCTION = 0.015; // score deduction for each repeat visit
-    // to this Node or Way
+    // to a Node or Way
 
     private final double LOWER_SCALE = 0.15; // amount to scale upper lower bound on
     // run length by
@@ -42,9 +44,8 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
     private final long TIME_LIMIT = 2000;
 
     private List<PathTuple> queue;
-    private Hashtable<Long, Integer> visitedWays;
-    private Hashtable<Long, Integer> visitedNodes;
-
+    private Hashtable<Long, Integer> visitedWays; // counts number of visits to each Way
+    private Hashtable<Long, Integer> visitedNodes; // counts number of visits to each Node
 
     @Autowired
     public BeamSearchCycle(ElementRepo repo,
@@ -96,9 +97,6 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
-        System.out.println(repo.getOriginWay());
-        System.out.println(repo.getOriginNode());
-
         while (!queue.isEmpty() && elapsedTime <= TIME_LIMIT) {
             queue.sort(Comparator
                     // sort by route segment score
@@ -119,22 +117,9 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
 
             // return the first route to exceed the minimum length requirement.
             if (currentRouteLength > lowerBound) {
-                // the route has returned to the origin
-                if (topTuple.getCurrentWay().getId() == repo.getOriginWay().getId()) {
-
-                    double finalDistance = edgeDistanceCalculator
-                            .calculateDistance(currentNode, repo.getOriginNode(), repo.getOriginWay());
-                    double finalGradient = gradientCalculator.calculateGradient(currentNode, currentWay,
-                            repo.getOriginNode(), repo.getOriginWay(),
-                            finalDistance);
-
-                    ScorePair finalScore = new ScorePair(0, 0);
-
-                    // create a new tuple representing the journey from the previous node to the final node
-                    PathTuple returnTuple = new PathTupleMain(topTuple, repo.getOriginNode(),
-                            repo.getOriginWay(), finalScore, finalDistance,
-                            topTuple.getTotalLength() + finalDistance, finalGradient);
-                    return returnTuple;
+                PathTuple result = returnValidPath(topTuple, currentNode, currentWay);
+                if (result != null) {
+                    return  result;
                 }
             }
 
@@ -147,13 +132,14 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
                 // the intersecting Ways
                 Way selectedWay = pair.getConnectingWay();
 
-                // skip the way where street lighting required and none avilable
+                // skip the way where street lighting required and none available
                 if (super.getAvoidUnlit()) {
                     if (!selectedWay.isLit()) {
                         continue;
                     }
                 }
 
+                // call helper function to deduct scores for repeat visits to Node/Way
                 heuristicScore += addRepeatedVisitScores(selectedWay, connectingNode);
 
                 // calculates targetDistance from the current Node to the Node connecting
@@ -186,6 +172,8 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
                         gradient);
                 queue.add(toAdd);
 
+                // increase visited count for this Way if it is not the
+                // origin
                 if (!this.visitedWays.containsKey(selectedWay.getId())) {
                     this.visitedWays.put(selectedWay.getId(), 1);
                 } else {
@@ -193,6 +181,9 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
                     this.visitedWays.put(selectedWay.getId(), current + 1);
                 }
 
+
+                // increase visited count for this Node if it is not in the
+                // origin set
                 if (!repo.getOriginWay().getNodeContainer().getNodes()
                         .contains(connectingNode.getId())) {
                     if (!this.visitedNodes.containsKey(connectingNode.getId())) {
@@ -213,13 +204,34 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
                 -1, -1);
     }
 
+    private PathTuple returnValidPath(PathTuple topTuple, Node currentNode, Way currentWay) {
+        // the route has returned to the origin
+        if (topTuple.getCurrentWay().getId() == repo.getOriginWay().getId()) {
+
+            double finalDistance = edgeDistanceCalculator
+                    .calculateDistance(currentNode, repo.getOriginNode(), repo.getOriginWay());
+            double finalGradient = gradientCalculator.calculateGradient(currentNode, currentWay,
+                    repo.getOriginNode(), repo.getOriginWay(),
+                    finalDistance);
+
+            ScorePair finalScore = new ScorePair(0, 0);
+
+            // create a new tuple representing the journey from the previous node to the final node
+            PathTuple returnTuple = new PathTupleMain(topTuple, repo.getOriginNode(),
+                    repo.getOriginWay(), finalScore, finalDistance,
+                    topTuple.getTotalLength() + finalDistance, finalGradient);
+            return returnTuple;
+        }
+        return null;
+    }
+
     private double addRepeatedVisitScores(Way selectedWay, Node connectingNode) {
         double score = 0;
 
-        // skip where this way or node has already been explored
-        if (this.visitedWays.containsKey(selectedWay.getId())) {
-            score -= this.visitedWays.get(selectedWay.getId()) * REPEATED_VISIT_DEDUCTION;
-        }
+//        if (this.visitedWays.containsKey(selectedWay.getId())) {
+//            score -= this.visitedWays.get(selectedWay.getId()) * REPEATED_VISIT_DEDUCTION;
+//        }
+
         if (this.visitedNodes.containsKey(connectingNode.getId())) {
             score -= this.visitedNodes.get(connectingNode.getId()) * REPEATED_VISIT_DEDUCTION;
         }

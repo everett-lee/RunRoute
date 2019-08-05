@@ -3,8 +3,8 @@ package com.lee.runrouter.executor;
 
 import com.lee.runrouter.RunrouterApplication;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.SearchAlgorithm;
-import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
-import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic;
+import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.routegenerator.PathNotGeneratedException;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;

@@ -1,4 +1,4 @@
-package com.lee.runrouter.algorithm.heuristic;
+package com.lee.runrouter.algorithm.heuristic.ElevationHeuristic;
 
 public interface ElevationHeuristic {
     public double getScore(double gradient);

@@ -1,6 +1,7 @@
-package com.lee.runrouter.algorithm.heuristic;
+package com.lee.runrouter.algorithm.heuristic.DistanceHeuristic;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
+import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Qualifier("DirectDistanceHeuristic")
-public class DirectDistanceHeuristic implements DistanceFromOriginNodeHeursitic{
+public class DirectDistanceHeuristic implements DistanceFromOriginNodeHeursitic {
     private DistanceCalculator distanceCalculator;
 
     @Autowired

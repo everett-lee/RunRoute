@@ -7,6 +7,11 @@ import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
 import com.lee.runrouter.algorithm.heuristic.*;
+import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeuristicMain;
+import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
+import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
+import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicMain;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicMain;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 
@@ -55,7 +60,7 @@ public class BeamSearchCycleTest {
         String name = "morrish5k";
 
         double length = calculateDistance(res);
-        serialize(res, name);
+        //serialize(res, name);
 
         assertTrue(calculateScore(res) > 0);
         System.out.println(returnPath(res, ""));
@@ -70,7 +75,7 @@ public class BeamSearchCycleTest {
         String name = "morrish14k";
 
         double length = calculateDistance(res);
-        serialize(res, name);
+        //serialize(res, name);
 
         assertTrue(calculateScore(res) > 0);
         System.out.println(returnPath(res, ""));
@@ -85,7 +90,7 @@ public class BeamSearchCycleTest {
         String name = "morrish21k";
 
         double length = calculateDistance(res);
-        serialize(res, name);
+        //serialize(res, name);
 
         assertTrue(calculateScore(res) > 0);
         System.out.println(returnPath(res, ""));
@@ -105,7 +110,7 @@ public class BeamSearchCycleTest {
         String name = "craignair5k";
 
         double length = calculateDistance(res);
-        serialize(res, name);
+        //serialize(res, name);
 
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -124,7 +129,7 @@ public class BeamSearchCycleTest {
         String name = "craignair14k";
 
         double length = calculateDistance(res);
-        serialize(res, name);
+        //serialize(res, name);
 
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -143,7 +148,7 @@ public class BeamSearchCycleTest {
         String name = "craignair21k";
 
         double length = calculateDistance(res);
-        serialize(res, name);
+        //serialize(res, name);
 
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -162,7 +167,7 @@ public class BeamSearchCycleTest {
         String name = "tulse5k";
 
         double length = calculateDistance(res);
-        serialize(res, name);
+        //serialize(res, name);
 
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -181,7 +186,7 @@ public class BeamSearchCycleTest {
         String name = "tulse14k";
 
         double length = calculateDistance(res);
-        serialize(res, name);
+        //serialize(res, name);
 
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -200,7 +205,7 @@ public class BeamSearchCycleTest {
         String name = "tulse21k";
 
         double length = calculateDistance(res);
-        serialize(res, name);
+        //serialize(res, name);
 
         assertTrue(calculateScore(res) > 0);
         assertEquals(length, res.getTotalLength(), 0.01);

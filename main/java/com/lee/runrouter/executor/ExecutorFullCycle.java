@@ -1,10 +1,7 @@
 package com.lee.runrouter.executor;
 
 
-import com.lee.runrouter.RunrouterApplication;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.SearchAlgorithm;
-import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
-import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.routegenerator.PathNotGeneratedException;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
@@ -26,30 +23,26 @@ import java.util.List;
 public class ExecutorFullCycle implements Executor {
     private RouteGenerator routeGenerator;
     private GraphBuilder graphBuilder;
-    private FeaturesHeuristic featuresHeuristic;
-    private ElevationHeuristic elevationHeuristic;
     private LinkedListToArray linkedListToArray;
     private SearchAlgorithm pather;
     private SearchAlgorithm connectionPather;
+    private CycleRemover cycleRemover;
 
     private final double INITIAL_GRAPH_SIZE = 12000; // the starting size of the generated graph
 
     public ExecutorFullCycle(
             @Qualifier("RouteGeneratorCycle") RouteGenerator routeGenerator,
             GraphBuilder graphBuilder,
-            @Qualifier("FeaturesHeuristicMain") FeaturesHeuristic featuresHeuristic,
-            @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic,
             @Qualifier("LinkedListToArrayAllNodes") LinkedListToArray linkedListToArray,
             @Qualifier("BeamSearchCycle") SearchAlgorithm pather,
             @Qualifier("BFSConnectionPath") SearchAlgorithm connectionPather,
-                    RunrouterApplication app) {
+            CycleRemover cycleRemover) {
         this.routeGenerator = routeGenerator;
         this.graphBuilder = graphBuilder;
-        this.featuresHeuristic = featuresHeuristic;
-        this.elevationHeuristic = elevationHeuristic;
         this.linkedListToArray = linkedListToArray;
         this.pather = pather;
         this.connectionPather = connectionPather;
+        this.cycleRemover = cycleRemover;
     }
 
     /**
@@ -83,15 +76,21 @@ public class ExecutorFullCycle implements Executor {
         System.out.println("GRAPH BUILT");
         PathTuple route = this.routeGenerator.generateRoute(coords, distance);
 
-        System.out.println(returnPath(route, ""));
-
         PathTuple tail = route;
 
         while (tail.getPredecessor() != null) {
             tail = tail.getPredecessor();
         }
         double length = tail.getTotalLength(); // get total route length from the tail
+
+        // convert the way to an Array
         List<Node> pathNodes = linkedListToArray.convert(route);
+
+        // remove small cycles and reduce length to reflect this
+        System.out.println(length);
+        length -= cycleRemover.removeCycle(pathNodes);
+        System.out.println("new length: " + length);
+
         String startingWay = route.getCurrentWay().getName();
 
         return new ResponseObject(pathNodes, length, startingWay);
@@ -175,19 +174,20 @@ public class ExecutorFullCycle implements Executor {
             preferredHighways.add(Way.Highway.TRACK.toString());
         }
 
-        this.featuresHeuristic.setPreferredSurfaces(preferredSurfaces);
-        this.featuresHeuristic.setDislikedSurfaces(dislikedSurfaces);
-        this.featuresHeuristic.setPreferredHighways(preferredHighways);
+        this.pather.setFeaturesHeuristicOptions(preferredHighways, preferredSurfaces, dislikedSurfaces);
+        this.connectionPather.setFeaturesHeuristicOptions(preferredHighways, preferredSurfaces, dislikedSurfaces);
     }
 
     private void processElevationOptions(double maxGradient, boolean[] booleans) {
         this.pather.setMaxGradient(maxGradient);
         this.connectionPather.setMaxGradient(maxGradient);
-        elevationHeuristic.setOptions(false);
+        this.pather.setElevationHeuristicOptions(false);
+        this.connectionPather.setElevationHeuristicOptions(false);
 
         // user select prefer uphill
         if (booleans[4]) {
-            elevationHeuristic.setOptions(true);
+            this.pather.setElevationHeuristicOptions(true);
+            this.connectionPather.setElevationHeuristicOptions(true);
         }
     }
 

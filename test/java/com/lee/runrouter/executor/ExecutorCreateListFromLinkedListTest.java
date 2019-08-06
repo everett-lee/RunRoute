@@ -16,6 +16,7 @@ public class ExecutorCreateListFromLinkedListTest {
     private PathTuple morrish5k;
     private PathTuple craigNair14k;
     private ElementRepo repo;
+    CycleRemover cycleremover;
     private LinkedListToArray linkedListToArray;
     private LinkedListToArray linkedListToArrayNodes;
 

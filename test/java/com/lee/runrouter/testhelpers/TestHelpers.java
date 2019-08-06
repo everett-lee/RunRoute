@@ -67,7 +67,7 @@ public class TestHelpers {
         // deserialise test path used for testing.
         try {
             FileInputStream fileIn
-                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/morrish5kWithFeaturesUphill");
+                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/morrish5kWithFeaturesUphill.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             route = (PathTuple) in.readObject();
             in.close();

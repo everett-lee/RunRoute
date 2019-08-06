@@ -4,10 +4,13 @@ import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
 import com.lee.runrouter.algorithm.heuristic.Heuristic;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * A template for the various graph search algorithms.
@@ -16,23 +19,25 @@ import org.springframework.stereotype.Component;
 @Component
 public abstract class SearchAlgorithm {
     ElementRepo repo; // the repository of Ways and Nodes
-    DistanceFromOriginNodeHeursitic distanceFromOriginHeursitic;
-    Heuristic featuresHeuristic;
+    DistanceFromOriginNodeHeursitic distanceFromOriginHeuristic;
+    FeaturesHeuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
     GradientCalculator gradientCalculator;
     ElevationHeuristic elevationHeuristic;
-    Heuristic distanceFromOriginHeuristic;
     double maxGradient;
     boolean avoidUnlit;
 
+    private final double RANDOM_REDUCER = 500; // divides into random number added to the
+    // score
+
     public SearchAlgorithm(ElementRepo repo,
                            DistanceFromOriginNodeHeursitic distanceFromOriginHeursitic,
-                           Heuristic featuresHeuristic,
+                           FeaturesHeuristic featuresHeuristic,
                            EdgeDistanceCalculator edgeDistanceCalculator,
                            GradientCalculator gradientCalculator,
                            ElevationHeuristic elevationHeuristic) {
         this.repo = repo;
-        this.distanceFromOriginHeursitic = distanceFromOriginHeursitic;
+        this.distanceFromOriginHeuristic = distanceFromOriginHeursitic;
         this.gradientCalculator = gradientCalculator;
         this.featuresHeuristic = featuresHeuristic;
         this.edgeDistanceCalculator = edgeDistanceCalculator;
@@ -43,11 +48,11 @@ public abstract class SearchAlgorithm {
     }
 
     // a helper method for calculating the score of way Way making up a path
-    protected double addScores(Way selectedWay, double gradient, double RANDOM_REDUCER) {
+    protected double addScores(Way selectedWay, double distanceTravelled, double gradient) {
         double score = 0;
 
         // add score reflecting correspondence of terrain features to user selections
-        score += featuresHeuristic.getScore(selectedWay);
+        score += featuresHeuristic.getScore(selectedWay, distanceTravelled);
 
         // add score reflecting gradient of the Way
         score += elevationHeuristic.getScore(gradient);
@@ -72,5 +77,18 @@ public abstract class SearchAlgorithm {
 
     public boolean getAvoidUnlit() {
         return this.avoidUnlit;
+    }
+
+    public void setFeaturesHeuristicOptions(List<String> preferredHighways, List<String> preferredSurfaces,
+                                            List<String> dislikedSurfaces) {
+        this.featuresHeuristic.setPreferredHighways(preferredHighways);
+        this.featuresHeuristic.setPreferredSurfaces(preferredSurfaces);
+        this.featuresHeuristic.setDislikedSurfaces(dislikedSurfaces);
+    }
+
+    public void setElevationHeuristicOptions(boolean preferUphill) {
+        if (preferUphill) {
+            this.elevationHeuristic.setOptions(true);
+        }
     }
 }

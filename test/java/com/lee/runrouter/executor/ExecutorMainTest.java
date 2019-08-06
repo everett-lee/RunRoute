@@ -7,7 +7,7 @@ import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.SearchAlgor
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
-import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicMain;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicUsingDistance;
 import com.lee.runrouter.graph.graphbuilder.GraphBuilder;
 import com.lee.runrouter.routegenerator.RouteGenerator;
 import com.lee.runrouter.routegenerator.RouteGeneratorMain;
@@ -34,7 +34,7 @@ public class ExecutorMainTest {
     public void setUp() {
         this.routeGenerator = mock(RouteGeneratorMain.class);
         this.graphBuilder = mock(GraphBuilder.class);
-        this.featuresHeuristic = mock(FeaturesHeuristicMain.class);
+        this.featuresHeuristic = mock(FeaturesHeuristicUsingDistance.class);
         this.elevationHeuristic = mock(ElevationHeuristicMain.class);
         this.linkedListToArray = mock(LinkedListToArray.class);
         this.beamSearch = mock(BeamSearch.class);

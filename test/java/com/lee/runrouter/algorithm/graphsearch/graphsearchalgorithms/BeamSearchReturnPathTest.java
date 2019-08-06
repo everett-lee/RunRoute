@@ -12,7 +12,8 @@ import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOrigi
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicMain;
-import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicMain;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicUsingDistance;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
@@ -33,7 +34,7 @@ public class BeamSearchReturnPathTest {
     GraphSearch returnPath;
     DistanceCalculator distanceCalculator;
     DistanceFromOriginNodeHeursitic distanceHeuristic;
-    Heuristic featuresHeuristic;
+    FeaturesHeuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
     GradientCalculator gradientCalculator;
     ElevationHeuristic elevationHeuristic;
@@ -51,9 +52,9 @@ public class BeamSearchReturnPathTest {
                 "DIRT", "GRAVEL"));
         List<String> preferredHighways = new ArrayList<>(Arrays.asList("LIVING_STREET", "PEDESTRIAN", "TRACK",
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
-        featuresHeuristic = new FeaturesHeuristicMain();
-        ((FeaturesHeuristicMain) featuresHeuristic).setPreferredSurfaces(preferredSurfaces);
-        ((FeaturesHeuristicMain) featuresHeuristic).setPreferredHighways(preferredHighways);
+        featuresHeuristic = new FeaturesHeuristicUsingDistance();
+        featuresHeuristic.setPreferredSurfaces(preferredSurfaces);
+        featuresHeuristic.setPreferredHighways(preferredHighways);
 
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         gradientCalculator = new SimpleGradientCalculator();

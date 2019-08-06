@@ -6,6 +6,7 @@ import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistan
 import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
 import com.lee.runrouter.algorithm.pathnode.*;
 import com.lee.runrouter.graph.elementrepo.*;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
@@ -26,8 +27,6 @@ import java.util.*;
 @Qualifier("BeamSearch")
 public class BeamSearch extends SearchAlgorithm implements GraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
-    private final double RANDOM_REDUCER = 500; // divides into random number added to the
-    // score
     private final double PREFERRED_MIN_LENGTH = 500; // minimum length of way to avoid
     // subtracting a score penalty
     private final double PREFERRED_MIN_LENGTH_PENALTY = 1;
@@ -46,7 +45,7 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
     @Autowired
     public BeamSearch(ElementRepo repo,
                       @Qualifier("DistanceFromOriginNodeHeuristicMain") DistanceFromOriginNodeHeursitic distanceFromOriginHeuristic,
-                      @Qualifier("FeaturesHeuristicMain") Heuristic featuresHeuristic,
+                      @Qualifier("FeaturesHeuristicMain") FeaturesHeuristic featuresHeuristic,
                       @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
                       @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
                       @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
@@ -157,7 +156,7 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
                     continue;
                 }
 
-                score += super.addScores(selectedWay, gradient, RANDOM_REDUCER);
+                score += super.addScores(selectedWay, distanceToNext, gradient);
                 // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         new ScorePair(0, 0), distanceToNext, currentRouteLength + distanceToNext,

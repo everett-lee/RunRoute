@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 public interface FeaturesHeuristic {
-    public void getScore(Way selectedWay, double distance);
+    public double getScore(Way selectedWay, double distance);
     public void setPreferredSurfaces(List<String> preferredSurfaces);
     public void setDislikedSurfaces(List<String> dislikedSurfaces);
     public void setPreferredHighways(List<String> preferredHighways);

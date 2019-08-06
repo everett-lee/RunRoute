@@ -4,9 +4,9 @@ package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 import com.lee.runrouter.algorithm.AlgoHelpers;
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
-import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
 import com.lee.runrouter.algorithm.pathnode.*;
 import com.lee.runrouter.graph.elementrepo.*;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
@@ -27,12 +27,10 @@ import java.util.*;
 @Qualifier("BeamSearchCycle")
 public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
-    private final double RANDOM_REDUCER = 5000; // divides into random number added to the
-    // score
-    private final double PREFERRED_MIN_LENGTH = 300; // minimum length of way to avoid
+    private final double PREFERRED_MIN_LENGTH = 50; // minimum length of way to avoid
     // subtracting a score penalty
-    private final double PREFERRED_MIN_LENGTH_PENALTY = 0.0;
-    private final double PREFERRED_LENGTH = 800; // minimum length to receive a score bonus
+    private final double PREFERRED_MIN_LENGTH_PENALTY = 0.025;
+    private final double PREFERRED_LENGTH = 450; // minimum length to receive a score bonus
     private final double PREFERRED_LENGTH_BONUS = 0.25;
     private final double REPEATED_VISIT_DEDUCTION = 0.015; // score deduction for each repeat visit
     // to a Node or Way
@@ -44,20 +42,18 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
     private final long TIME_LIMIT = 2000;
 
     private List<PathTuple> queue;
-    private Hashtable<Long, Integer> visitedWays; // counts number of visits to each Way
-    private Hashtable<Long, Integer> visitedNodes; // counts number of visits to each Node
+    private Map<Long, Integer> visitedNodes; // counts number of visits to each Node
 
     @Autowired
     public BeamSearchCycle(ElementRepo repo,
                            @Qualifier("DistanceFromOriginNodeHeuristicMain") DistanceFromOriginNodeHeursitic distanceFromOriginHeuristic,
-                           @Qualifier("FeaturesHeuristicMain") Heuristic featuresHeuristic,
+                           @Qualifier("FeaturesHeuristicUsingDistance") FeaturesHeuristic featuresHeuristic,
                            @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
                            @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
                            @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceFromOriginHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
         this.queue = new ArrayList<>();
-        this.visitedWays = new Hashtable<>();
-        this.visitedNodes = new Hashtable<>();
+        this.visitedNodes = new HashMap<>();
     }
 
     /**
@@ -76,8 +72,7 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double targetDistance) {
         this.queue = new ArrayList<>();
-        this.visitedWays = new Hashtable<>();
-        this.visitedNodes = new Hashtable<>();
+        this.visitedNodes = new HashMap<>();
 
         double currentRouteLength;
         long startTime = System.currentTimeMillis(); // the algorithm is time-limited
@@ -160,8 +155,9 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
                     continue;
                 }
 
-                heuristicScore += super.addScores(selectedWay, gradient, RANDOM_REDUCER);
-                double distanceScore = distanceFromOriginHeursitic.getScore(connectingNode, repo.getOriginNode(),
+                heuristicScore += super.addScores(selectedWay, distanceToNext, gradient);
+
+                double distanceScore = distanceFromOriginHeuristic.getScore(connectingNode, repo.getOriginNode(),
                         currentRouteLength, targetDistance);
 
                 ScorePair segmentScore = new ScorePair(distanceScore, heuristicScore);
@@ -171,16 +167,6 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
                         segmentScore, distanceToNext, currentRouteLength + distanceToNext,
                         gradient);
                 queue.add(toAdd);
-
-                // increase visited count for this Way if it is not the
-                // origin
-                if (!this.visitedWays.containsKey(selectedWay.getId())) {
-                    this.visitedWays.put(selectedWay.getId(), 1);
-                } else {
-                    int current = this.visitedWays.get(selectedWay.getId());
-                    this.visitedWays.put(selectedWay.getId(), current + 1);
-                }
-
 
                 // increase visited count for this Node if it is not in the
                 // origin set
@@ -227,10 +213,6 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
 
     private double addRepeatedVisitScores(Way selectedWay, Node connectingNode) {
         double score = 0;
-
-//        if (this.visitedWays.containsKey(selectedWay.getId())) {
-//            score -= this.visitedWays.get(selectedWay.getId()) * REPEATED_VISIT_DEDUCTION;
-//        }
 
         if (this.visitedNodes.containsKey(connectingNode.getId())) {
             score -= this.visitedNodes.get(connectingNode.getId()) * REPEATED_VISIT_DEDUCTION;

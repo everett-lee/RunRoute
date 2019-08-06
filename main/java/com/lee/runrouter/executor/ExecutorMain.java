@@ -83,8 +83,6 @@ public class ExecutorMain implements Executor {
         System.out.println("GRAPH BUILT");
         PathTuple route = this.routeGenerator.generateRoute(coords, distance);
 
-        System.out.println(returnPath(route, ""));
-
         PathTuple tail = route;
 
         while (tail.getPredecessor() != null) {

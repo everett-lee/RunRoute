@@ -115,6 +115,9 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
         System.out.println(this.iterations + " >>>>>> ITERATIONS");
         System.out.println(this.improvements + " >>>>>>>>> IMPROVEMENTS");
+
+        // reset the Map for the the next route
+        graphSearch.resetVisitedNodes();
         return head;
     }
 

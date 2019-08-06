@@ -161,25 +161,4 @@ public class ElevationHeuristicMainTest {
         double score = elevationHeuristic.getScore(gradient);
         assertTrue(score >= 1);
     }
-
-    @Test
-    // the gradient exceeds default max
-    public void testTooSteepWay() {
-        Node n1 = new Node(1, 1, 1);
-        Node n2 = new Node( 2, 2, 2);
-        NodeContainer nc = mock(NodeContainer.class);
-        when(nc.getStartNode()).thenReturn(n1);
-        when(nc.getEndNode()).thenReturn(n2);
-        ElevationPair ep = mock(ElevationPair.class);
-        when(ep.getStartElevation()).thenReturn(10l);
-        when(ep.getEndElevation()).thenReturn(35l);
-        Way startingWay = mock(Way.class);
-        when(startingWay.getNodeContainer()).thenReturn(nc);
-        when(startingWay.getElevationPair()).thenReturn(ep);
-
-        double gradient = gradientCalculator.calculateGradient(n1, startingWay, n2, startingWay, 50);
-        double score = elevationHeuristic.getScore(gradient);
-        assertTrue(score < 0);
-    }
-
 }

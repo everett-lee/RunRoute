@@ -16,9 +16,11 @@ import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeurist
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicMain;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicUsingDistance;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.routegenerator.RouteGenerator;
+import com.lee.runrouter.routegenerator.RouteGeneratorCycle;
 import com.lee.runrouter.routegenerator.RouteGeneratorMain;
 import com.lee.runrouter.routegenerator.cyclegenerator.CycleGenerator;
 import com.lee.runrouter.routegenerator.cyclegenerator.CycleGeneratorMain;
@@ -34,16 +36,14 @@ import static org.junit.Assert.*;
 
 public class testRouteReflectsFeaturesHeuristic {
     RouteGenerator routeGenerator;
-    CycleGenerator cycleGenerator;
     ElementRepo repo;
     DistanceFromOriginNodeHeursitic distanceHeuristic;
     DistanceCalculator distanceCalculator;
-    Heuristic featuresHeuristic;
+    FeaturesHeuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
     GradientCalculator gradientCalculator;
     ElevationHeuristic elevationHeuristic;
     GraphSearch outward;
-    GraphSearch inward;
     IteratedLocalSearch iteratedLocalSearch;
     ILSGraphSearch ilsGraphSearch;
     List<String> preferredHighways;
@@ -55,22 +55,19 @@ public class testRouteReflectsFeaturesHeuristic {
 
         // heuristics
         distanceHeuristic = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
-        featuresHeuristic = new FeaturesHeuristicMain();
+        featuresHeuristic = new FeaturesHeuristicUsingDistance();
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         gradientCalculator = new SimpleGradientCalculator();
         elevationHeuristic = new ElevationHeuristicMain();
 
-        outward = new BeamSearch(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
-                gradientCalculator, elevationHeuristic);
-        inward = new BeamSearchReturnPath(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        outward = new BeamSearchCycle(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
         ilsGraphSearch = new BFSConnectionPath(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
 
         iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
 
-        cycleGenerator = new CycleGeneratorMain(outward, inward, repo);
-        routeGenerator = new RouteGeneratorMain(cycleGenerator, iteratedLocalSearch);
+        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, repo);
 
         // preferred Highways options
         preferredHighways = new ArrayList<>(Arrays.asList("CYCLEWAY", "BRIDLEWAY",
@@ -82,13 +79,13 @@ public class testRouteReflectsFeaturesHeuristic {
     @Test
     public void testHeuristicReflectedOne() throws PathNotGeneratedException {
         double[] coords = {51.446537, -0.124989};
-        PathTuple route = routeGenerator.generateRoute(coords, 5000);
+        PathTuple route = routeGenerator.generateRoute(coords, 10000);
 
         int matchedCountWithoutPref = countMatchedHighways(route);
 
         FeaturesHeuristic fh = (FeaturesHeuristic) featuresHeuristic;
         fh.setPreferredHighways(preferredHighways);
-        route = routeGenerator.generateRoute(coords, 5000);
+        route = routeGenerator.generateRoute(coords, 10000);
 
         int matchedCountWithPref = countMatchedHighways(route);
         System.out.println(matchedCountWithoutPref);
@@ -100,15 +97,17 @@ public class testRouteReflectsFeaturesHeuristic {
     @Test
     public void testHeuristicReflectedTwo() throws PathNotGeneratedException {
         double[] coords = {51.440830, -0.106387};
-        PathTuple route = routeGenerator.generateRoute(coords, 5000);
+        PathTuple route = routeGenerator.generateRoute(coords, 10000);
 
         int matchedCountWithoutPref = countMatchedHighways(route);
 
         FeaturesHeuristic fh = (FeaturesHeuristic) featuresHeuristic;
         fh.setPreferredHighways(preferredHighways);
-        route = routeGenerator.generateRoute(coords, 5000);
+        route = routeGenerator.generateRoute(coords, 10000);
 
         int matchedCountWithPref = countMatchedHighways(route);
+        System.out.println(matchedCountWithoutPref);
+        System.out.println(matchedCountWithPref);
 
         assertTrue(matchedCountWithPref > matchedCountWithoutPref);
     }
@@ -116,13 +115,13 @@ public class testRouteReflectsFeaturesHeuristic {
     @Test
     public void testHeuristicReflectedThree() throws PathNotGeneratedException {
         double[] coords = {51.461868, -0.115622};
-        PathTuple route = routeGenerator.generateRoute(coords, 5000);
+        PathTuple route = routeGenerator.generateRoute(coords, 11000);
 
         int matchedCountWithoutPref = countMatchedHighways(route);
 
-        FeaturesHeuristic fh = (FeaturesHeuristic) featuresHeuristic;
+        FeaturesHeuristic fh = featuresHeuristic;
         fh.setPreferredHighways(preferredHighways);
-        route = routeGenerator.generateRoute(coords, 5000);
+        route = routeGenerator.generateRoute(coords, 11000);
 
         int matchedCountWithPref = countMatchedHighways(route);
 
@@ -131,61 +130,13 @@ public class testRouteReflectsFeaturesHeuristic {
 
     @Test
     public void testLitHeuristicReflectedOne() throws PathNotGeneratedException {
-        double[] coords = {51.446537, -0.124989};
+        double[] coords = {51.459, -0.129};
         PathTuple route = routeGenerator.generateRoute(coords, 5000);
 
         int numberofUnlitWhenUnlitAllowed = countUnlit(route);
 
         SearchAlgorithm sa1 = (SearchAlgorithm) outward;
         sa1.setAvoidUnlit(true);
-        SearchAlgorithm sa2 = (SearchAlgorithm) inward;
-        sa2.setAvoidUnlit(true);
-        SearchAlgorithm sa3 = (SearchAlgorithm) ilsGraphSearch;
-        sa3.setAvoidUnlit(true);
-
-        route = routeGenerator.generateRoute(coords, 5000);
-
-        int numberofUnlitWhenUnlitAvoided = countUnlit(route);
-
-        System.out.println(numberofUnlitWhenUnlitAllowed);
-        System.out.println(numberofUnlitWhenUnlitAvoided);
-        assertTrue(numberofUnlitWhenUnlitAvoided < numberofUnlitWhenUnlitAllowed);
-    }
-
-    @Test
-    public void testLitHeuristicReflectedTwo() throws PathNotGeneratedException {
-        double[] coords = {51.440830, -0.106387};
-        PathTuple route = routeGenerator.generateRoute(coords, 5000);
-
-        int numberofUnlitWhenUnlitAllowed = countUnlit(route);
-
-        SearchAlgorithm sa1 = (SearchAlgorithm) outward;
-        sa1.setAvoidUnlit(true);
-        SearchAlgorithm sa2 = (SearchAlgorithm) inward;
-        sa2.setAvoidUnlit(true);
-        SearchAlgorithm sa3 = (SearchAlgorithm) ilsGraphSearch;
-        sa3.setAvoidUnlit(true);
-
-        route = routeGenerator.generateRoute(coords, 5000);
-
-        int numberofUnlitWhenUnlitAvoided = countUnlit(route);
-
-        System.out.println(numberofUnlitWhenUnlitAllowed);
-        System.out.println(numberofUnlitWhenUnlitAvoided);
-        assertTrue(numberofUnlitWhenUnlitAvoided < numberofUnlitWhenUnlitAllowed);
-    }
-
-    @Test
-    public void testLitHeuristicReflectedThree() throws PathNotGeneratedException {
-        double[] coords = {51.461868, -0.115622};
-        PathTuple route = routeGenerator.generateRoute(coords, 5000);
-
-        int numberofUnlitWhenUnlitAllowed = countUnlit(route);
-
-        SearchAlgorithm sa1 = (SearchAlgorithm) outward;
-        sa1.setAvoidUnlit(true);
-        SearchAlgorithm sa2 = (SearchAlgorithm) inward;
-        sa2.setAvoidUnlit(true);
         SearchAlgorithm sa3 = (SearchAlgorithm) ilsGraphSearch;
         sa3.setAvoidUnlit(true);
 

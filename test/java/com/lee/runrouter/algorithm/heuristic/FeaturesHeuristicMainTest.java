@@ -23,9 +23,11 @@ public class FeaturesHeuristicMainTest {
     public void setUp() throws NoSuchFieldException, IllegalAccessException {
         featuresHeuristicMain = new FeaturesHeuristicMain();
         Field f = featuresHeuristicMain.getClass().getDeclaredField("SURFACE_VALUE");
+        f.setAccessible(true);
         surface_value = (double) f.get(featuresHeuristicMain);
 
         f = featuresHeuristicMain.getClass().getDeclaredField("HIGHWAY_VALUE");
+        f.setAccessible(true);
         highway_value = (double) f.get(featuresHeuristicMain);
     }
 
@@ -44,7 +46,7 @@ public class FeaturesHeuristicMainTest {
         double expected = surface_value + highway_value;
 
         assertEquals(expected,
-                featuresHeuristicMain.getScore(wayUnderTest),
+                featuresHeuristicMain.getScore(wayUnderTest, 0),
                 0.0001);
     }
 
@@ -63,7 +65,7 @@ public class FeaturesHeuristicMainTest {
         double expected = surface_value + highway_value;
 
         assertEquals(expected,
-                featuresHeuristicMain.getScore(wayUnderTest),
+                featuresHeuristicMain.getScore(wayUnderTest, 0),
                 0.0001);
     }
 
@@ -83,7 +85,7 @@ public class FeaturesHeuristicMainTest {
         double expected = 0.0;
 
         assertEquals(expected,
-                featuresHeuristicMain.getScore(wayUnderTest),
+                featuresHeuristicMain.getScore(wayUnderTest, 0),
                 0.0001);
     }
 
@@ -102,7 +104,7 @@ public class FeaturesHeuristicMainTest {
         double expected = highway_value;
 
         assertEquals(expected,
-                featuresHeuristicMain.getScore(wayUnderTest),
+                featuresHeuristicMain.getScore(wayUnderTest, 0),
                 0.0001);
     }
 
@@ -119,7 +121,7 @@ public class FeaturesHeuristicMainTest {
         double expected = -surface_value;
 
         assertEquals(expected,
-                featuresHeuristicMain.getScore(wayUnderTest),
+                featuresHeuristicMain.getScore(wayUnderTest, 0),
                 0.0001);
     }
 

@@ -5,6 +5,7 @@ import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
 import com.lee.runrouter.algorithm.heuristic.Heuristic;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
@@ -30,8 +31,6 @@ import java.util.*;
 @Qualifier("BeamSearchReturnPath")
 public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
-    private final double RANDOM_REDUCER = 500; // divides into random number added to the
-    // score
     private final double PREFERRED_MIN_LENGTH = 500; // minimum length of way to avoid
     // subtracting a score penalty
     private final double PREFERRED_MIN_LENGTH_PENALTY = 0.25;
@@ -51,7 +50,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
     @Autowired
     public BeamSearchReturnPath(ElementRepo repo,
                                 @Qualifier("DistanceFromOriginNodeHeuristicMain") DistanceFromOriginNodeHeursitic distanceFromOriginHeuristic,
-                                @Qualifier("FeaturesHeuristicMain") Heuristic featuresHeuristic,
+                                @Qualifier("FeaturesHeuristicUsingDistance") FeaturesHeuristic featuresHeuristic,
                                 @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
                                 @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
                                 @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
@@ -134,7 +133,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
             }
 
             // distance to origin point from the last explored way
-            double lastDist = distanceFromOriginHeuristic.getScore(currentWay);
+            double lastDist = distanceFromOriginHeuristic.getScore(currentNode, repo.getOriginNode(), 0, 0);
 
             // for each Way reachable from the current Way
             for (ConnectionPair pair: repo.getConnectedWays(currentWay)) {
@@ -170,9 +169,6 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
                     score += PREFERRED_LENGTH_BONUS;
                 }
 
-                double currentDistanceScore
-                        = distanceFromOriginHeuristic.getScore(selectedWay);
-
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
 
@@ -180,7 +176,7 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
                     continue;
                 }
 
-                score += super.addScores(selectedWay, gradient, RANDOM_REDUCER);
+                score += super.addScores(selectedWay, distanceToNext, gradient);
 
                 // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,

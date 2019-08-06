@@ -11,7 +11,7 @@ import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOrigi
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
-import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicMain;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicUsingDistance;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
 import com.lee.runrouter.algorithm.pathnode.ScorePair;
@@ -41,7 +41,6 @@ public class ResponseGeneratorControllerTest {
     RouteGenerator routeGenerator;
     GraphBuilder graphBuilder;
     FeaturesHeuristic featuresHeuristic;
-    Heuristic heuristic;
     DistanceFromOriginNodeHeursitic distanceHeuristic;
     ElevationHeuristic elevationHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
@@ -72,8 +71,7 @@ public class ResponseGeneratorControllerTest {
                 .thenReturn(response);
 
         graphBuilder = mock(GraphBuilder.class);
-        featuresHeuristic = new FeaturesHeuristicMain();
-        heuristic = new FeaturesHeuristicMain();
+        featuresHeuristic = new FeaturesHeuristicUsingDistance();
         elevationHeuristic = new ElevationHeuristicMain();
         linkedListToArray = new LinkedListToArrayHeadNodes();
         distanceHeuristic = mock(DistanceFromOriginNodeHeuristicMain.class);
@@ -81,11 +79,11 @@ public class ResponseGeneratorControllerTest {
         repo = mock(ElementRepo.class);
         edgeDistanceCalculator = mock(EdgeDistanceCalculatorMain.class);
         gradientCalculator = mock(SimpleGradientCalculator.class);
-        beamSearch = new BeamSearch(repo, distanceHeuristic, heuristic, edgeDistanceCalculator,
+        beamSearch = new BeamSearch(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
                                     gradientCalculator, elevationHeuristic);
-        beamSearchReturn = new BeamSearchReturnPath(repo, distanceHeuristic, heuristic, edgeDistanceCalculator,
+        beamSearchReturn = new BeamSearchReturnPath(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
-        BFSconnection = new BFSConnectionPath(repo, distanceHeuristic, heuristic, edgeDistanceCalculator,
+        BFSconnection = new BFSConnectionPath(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
 
 

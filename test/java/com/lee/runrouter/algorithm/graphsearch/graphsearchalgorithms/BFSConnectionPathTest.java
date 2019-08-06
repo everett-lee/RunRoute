@@ -1,17 +1,11 @@
 package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
-import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
-import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
-import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
-import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
-import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
-import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
-import com.lee.runrouter.algorithm.heuristic.*;
-import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DirectDistanceHeuristic;
-import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
-import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
-import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicMain;
-import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicMain;
+import com.lee.runrouter.algorithm.distanceCalculator.*;
+import com.lee.runrouter.algorithm.gradientcalculator.*;
+import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.*;
+import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.*;
+import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.*;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.*;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import org.junit.Before;
@@ -32,7 +26,7 @@ public class BFSConnectionPathTest {
     ILSGraphSearch connectPath;
     DistanceCalculator distanceCalculator;
     DistanceFromOriginNodeHeursitic distanceHeuristic;
-    Heuristic featuresHeuristic;
+    FeaturesHeuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
     GradientCalculator gradientCalculator;
     ElevationHeuristic elevationHeuristic;
@@ -54,9 +48,9 @@ public class BFSConnectionPathTest {
                 "DIRT", "GRAVEL"));
         List<String> preferredHighways = new ArrayList<>(Arrays.asList("LIVING_STREET","PEDESTRIAN", "TRACK",
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
-        featuresHeuristic = new FeaturesHeuristicMain();
-        ((FeaturesHeuristicMain) featuresHeuristic).setPreferredHighways(preferredHighways);
-        ((FeaturesHeuristicMain) featuresHeuristic).setPreferredSurfaces(preferredSurfaces);
+        featuresHeuristic = new FeaturesHeuristicUsingDistance();
+        featuresHeuristic.setPreferredHighways(preferredHighways);
+        featuresHeuristic.setPreferredSurfaces(preferredSurfaces);
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         gradientCalculator = new SimpleGradientCalculator();
         elevationHeuristic = new ElevationHeuristicMain();

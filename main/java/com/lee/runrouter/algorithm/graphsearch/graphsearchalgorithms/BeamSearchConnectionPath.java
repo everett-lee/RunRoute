@@ -4,6 +4,7 @@ import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
 import com.lee.runrouter.algorithm.heuristic.Heuristic;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
@@ -28,8 +29,6 @@ import java.util.*;
 @Qualifier("BeamSearchConnectionPath")
 public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
-    private final double RANDOM_REDUCER = 500; // divides into random number added to the
-    // score
     private final double PREFERRED_MIN_LENGTH = 300; // minimum length of way to avoid
     // subtracting a score penalty
     private final double PREFERRED_MIN_LENGTH_PENALTY = 0;
@@ -45,7 +44,7 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
 
     public BeamSearchConnectionPath(ElementRepo repo,
                              @Qualifier("DirectDistanceHeuristic") DistanceFromOriginNodeHeursitic distanceFromOriginHeursitic,
-                             @Qualifier("FeaturesHeuristicMain") Heuristic featuresHeuristic,
+                             @Qualifier("FeaturesHeuristicMain") FeaturesHeuristic featuresHeuristic,
                              @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
                              @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
                              @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
@@ -112,7 +111,7 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
             }
 
             double currentDistanceFromTarget
-                    = distanceFromOriginHeursitic.getScore(currentNode, targetNode,
+                    = distanceFromOriginHeuristic.getScore(currentNode, targetNode,
                     0, 0);
 
             // for each Way reachable from the current Way
@@ -125,7 +124,7 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                 double heuristicScore = 0;
 
                 double distanceFromSelectedToTarget
-                        = distanceFromOriginHeursitic.getScore(connectingNode, targetNode,
+                        = distanceFromOriginHeuristic.getScore(connectingNode, targetNode,
                         0, 0);
 
                 if (distanceFromSelectedToTarget > currentDistanceFromTarget * 1.5) {
@@ -157,7 +156,7 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                 }
 
                 // call private method to add scores
-                heuristicScore += addScores(selectedWay, gradient, RANDOM_REDUCER);
+                heuristicScore += addScores(selectedWay, distanceToNext, gradient);
 
                 ScorePair score = new ScorePair(0, heuristicScore);
 
@@ -189,6 +188,11 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
 
         return new PathTupleMain(null, null, null, new ScorePair(-1, -1),
                 -1, -1, -1);
+    }
+
+    @Override
+    public void resetVisitedNodes() {
+
     }
 
     private double addRepeatedVisitScores(Way selectedWay, Node connectingNode) {

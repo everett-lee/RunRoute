@@ -9,19 +9,17 @@ import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistan
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.*;
 import com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch.IteratedLocalSearch;
 import com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch.IteratedLocalSearchMain;
-import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
-import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicMain;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicUsingDistance;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.routegenerator.RouteGenerator;
-import com.lee.runrouter.routegenerator.RouteGeneratorMain;
+import com.lee.runrouter.routegenerator.RouteGeneratorCycle;
 import com.lee.runrouter.routegenerator.cyclegenerator.CycleGenerator;
-import com.lee.runrouter.routegenerator.cyclegenerator.CycleGeneratorMain;
 import com.lee.runrouter.routegenerator.PathNotGeneratedException;
 import com.lee.runrouter.testhelpers.TestHelpers;
 import org.junit.*;
@@ -34,16 +32,14 @@ import static org.junit.Assert.*;
 
 public class testRouteReflectsElevationHeuristic {
     RouteGenerator routeGenerator;
-    CycleGenerator cycleGenerator;
     ElementRepo repo;
     DistanceFromOriginNodeHeursitic distanceHeuristic;
     DistanceCalculator distanceCalculator;
-    Heuristic featuresHeuristic;
+    FeaturesHeuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
     GradientCalculator gradientCalculator;
     ElevationHeuristic elevationHeuristic;
     GraphSearch outward;
-    GraphSearch inward;
     IteratedLocalSearch iteratedLocalSearch;
     ILSGraphSearch ilsGraphSearch;
     List<String> preferredHighways;
@@ -55,22 +51,19 @@ public class testRouteReflectsElevationHeuristic {
 
         // heuristics
         distanceHeuristic = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
-        featuresHeuristic = new FeaturesHeuristicMain();
+        featuresHeuristic = new FeaturesHeuristicUsingDistance();
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         gradientCalculator = new SimpleGradientCalculator();
         elevationHeuristic = new ElevationHeuristicMain();
 
-        outward = new BeamSearch(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
-                                 gradientCalculator, elevationHeuristic);
-        inward = new BeamSearchReturnPath(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
-                                          gradientCalculator, elevationHeuristic);
+        outward = new BeamSearchCycle(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
         ilsGraphSearch = new BFSConnectionPath(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
 
         iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
 
-        cycleGenerator = new CycleGeneratorMain(outward, inward, repo);
-        routeGenerator = new RouteGeneratorMain(cycleGenerator, iteratedLocalSearch);
+        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, repo);
 
         // preferred Highways options
         preferredHighways = new ArrayList<>(Arrays.asList("CYCLEWAY", "BRIDLEWAY",
@@ -80,45 +73,49 @@ public class testRouteReflectsElevationHeuristic {
     @Test
     public void testAverageElevationWhenLessWhenFlatPreferredOne() throws PathNotGeneratedException {
         double[] coords = {51.446537, -0.124989};
-        PathTuple route = routeGenerator.generateRoute(coords, 5000);
+        PathTuple route = routeGenerator.generateRoute(coords, 10000);
 
         double avgGradientFlat = getAverageGradient(route);
 
         elevationHeuristic.setOptions(true);
-        route = routeGenerator.generateRoute(coords, 5000);
+        route = routeGenerator.generateRoute(coords, 10000);
         double avgGradientSteep = getAverageGradient(route);
 
-        assertTrue(avgGradientFlat < avgGradientSteep);
+
+        assertTrue(avgGradientFlat <= avgGradientSteep);
 
     }
 
     @Test
     public void testAverageElevationWhenLessWhenFlatPreferredTwo() throws PathNotGeneratedException {
         double[] coords = {51.440830, -0.106387};
-        PathTuple route = routeGenerator.generateRoute(coords, 5000);
+        PathTuple route = routeGenerator.generateRoute(coords, 10000);
 
         double avgGradientFlat = getAverageGradient(route);
 
         elevationHeuristic.setOptions(true);
-        route = routeGenerator.generateRoute(coords, 5000);
+        route = routeGenerator.generateRoute(coords, 10000);
         double avgGradientSteep = getAverageGradient(route);
 
-        assertTrue(avgGradientFlat < avgGradientSteep);
+        assertTrue(avgGradientFlat <= avgGradientSteep);
     }
 
 
     @Test
     public void testAverageElevationWhenLessWhenFlatPreferredThree() throws PathNotGeneratedException {
         double[] coords = {51.461868, -0.115622};
-        PathTuple route = routeGenerator.generateRoute(coords, 5000);
+        PathTuple route = routeGenerator.generateRoute(coords, 10000);
 
         double avgGradientFlat = getAverageGradient(route);
 
         elevationHeuristic.setOptions(true);
-        route = routeGenerator.generateRoute(coords, 5000);
+        route = routeGenerator.generateRoute(coords, 10000);
         double avgGradientSteep = getAverageGradient(route);
 
-        assertTrue(avgGradientFlat < avgGradientSteep);
+        System.out.println(avgGradientFlat);
+        System.out.println(avgGradientSteep);
+
+        assertTrue(avgGradientFlat <= avgGradientSteep);
 
     }
 
@@ -129,15 +126,15 @@ public class testRouteReflectsElevationHeuristic {
         fh.setPreferredHighways(preferredHighways);
 
         double[] coords = {51.446537, -0.124989};
-        PathTuple route = routeGenerator.generateRoute(coords, 5000);
+        PathTuple route = routeGenerator.generateRoute(coords, 10000);
 
         double avgGradientFlat = getAverageGradient(route);
 
         elevationHeuristic.setOptions(true);
-        route = routeGenerator.generateRoute(coords, 5000);
+        route = routeGenerator.generateRoute(coords, 10000);
         double avgGradientSteep = getAverageGradient(route);
 
-        assertTrue(avgGradientFlat < avgGradientSteep);
+        assertTrue(avgGradientFlat <= avgGradientSteep);
     }
 
 
@@ -148,16 +145,16 @@ public class testRouteReflectsElevationHeuristic {
         fh.setPreferredHighways(preferredHighways);
 
         double[] coords = {51.440830, -0.106387};
-        PathTuple route = routeGenerator.generateRoute(coords, 5000);
+        PathTuple route = routeGenerator.generateRoute(coords, 10000);
 
         double avgGradientFlat = getAverageGradient(route);
 
         elevationHeuristic.setOptions(true);
-        route = routeGenerator.generateRoute(coords, 5000);
+        route = routeGenerator.generateRoute(coords, 10000);
         double avgGradientSteep = getAverageGradient(route);
 
 
-        assertTrue(avgGradientFlat < avgGradientSteep);
+        assertTrue(avgGradientFlat <= avgGradientSteep);
     }
 
 
@@ -189,8 +186,6 @@ public class testRouteReflectsElevationHeuristic {
 
         SearchAlgorithm sa1 = (SearchAlgorithm) outward;
         sa1.setMaxGradient(maxGradient);
-        SearchAlgorithm sa2 = (SearchAlgorithm) inward;
-        sa2.setMaxGradient(maxGradient);
         SearchAlgorithm sa3 = (SearchAlgorithm) ilsGraphSearch;
         sa3.setMaxGradient(maxGradient);
 
@@ -221,8 +216,6 @@ public class testRouteReflectsElevationHeuristic {
 
         SearchAlgorithm sa1 = (SearchAlgorithm) outward;
         sa1.setMaxGradient(maxGradient);
-        SearchAlgorithm sa2 = (SearchAlgorithm) inward;
-        sa2.setMaxGradient(maxGradient);
         SearchAlgorithm sa3 = (SearchAlgorithm) ilsGraphSearch;
         sa3.setMaxGradient(maxGradient);
 
@@ -253,8 +246,6 @@ public class testRouteReflectsElevationHeuristic {
 
         SearchAlgorithm sa1 = (SearchAlgorithm) outward;
         sa1.setMaxGradient(maxGradient);
-        SearchAlgorithm sa2 = (SearchAlgorithm) inward;
-        sa2.setMaxGradient(maxGradient);
         SearchAlgorithm sa3 = (SearchAlgorithm) ilsGraphSearch;
         sa3.setMaxGradient(maxGradient);
 

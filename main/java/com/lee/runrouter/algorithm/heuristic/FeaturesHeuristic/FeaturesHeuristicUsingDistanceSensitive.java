@@ -11,20 +11,22 @@ import java.util.List;
 /**
  * Scores Way under consideration based on its features and attributes.
  * The scores reflect matches against user-supplied preferences.
+ * This variant multipliers the score by the distance travelled and
+ * has increased sensitivity.
  */
 @Component
-@Qualifier("FeaturesHeuristicMain")
-public class FeaturesHeuristicMain implements FeaturesHeuristic {
+@Qualifier("FeaturesHeuristicUsingDistanceSensitive")
+public class FeaturesHeuristicUsingDistanceSensitive implements FeaturesHeuristic {
     private List<String> preferredSurfaces; // list of user-preferred surfaces
     private List<String> preferredHighways; // list of user-preferred highways
     private List<String> dislikedSurfaces; // list of surfaces to be avoided
 
     // allocated scores for features
-    static final double SURFACE_VALUE = 0.25;
-    static final double HIGHWAY_VALUE = 0.25;
+    static final double SURFACE_VALUE = 0.005;
+    static final double HIGHWAY_VALUE = 0.005;
 
 
-    public FeaturesHeuristicMain() {
+    public FeaturesHeuristicUsingDistanceSensitive() {
         this.preferredSurfaces = new ArrayList<>();
         this.preferredHighways = new ArrayList<>();
         this.dislikedSurfaces = new ArrayList<>();
@@ -32,34 +34,33 @@ public class FeaturesHeuristicMain implements FeaturesHeuristic {
 
     // iterate over user-provided surface and highway types and
     // adjust score for matching values
-    private double calculateScore(Way selectedWay) {
+    private double calculateScore(Way selectedWay, double distance) {
         double score = 0;
 
         for (String surface: this.preferredSurfaces) {
             if (selectedWay.getSurface().equals(surface.toUpperCase())) {
-                score += SURFACE_VALUE;
+                score += SURFACE_VALUE * distance;
             }
         }
 
         // lower score where surface should be avoided
         for (String surface: this.dislikedSurfaces) {
             if (selectedWay.getSurface().equals(surface.toUpperCase())) {
-                score -= SURFACE_VALUE;
+                score -= SURFACE_VALUE * distance;
             }
         }
 
         for (String highway: this.preferredHighways) {
             if (selectedWay.getHighway().equals(highway.toUpperCase())) {
-                score += HIGHWAY_VALUE;
+                score += HIGHWAY_VALUE * distance;
             }
         }
-
         return score;
     }
 
     @Override
-    public double getScore(Way selectedWay, double distance) {
-        double score = calculateScore(selectedWay);
+    public double getScore (Way selectedWay, double distance) {
+        double score = calculateScore(selectedWay, distance);
 
         return score;
     }

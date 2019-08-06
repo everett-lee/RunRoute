@@ -21,9 +21,11 @@ public class ElevationHeuristicSensitive implements ElevationHeuristic {
 
     @Override
     public double getScore(double gradient) {
-        // score increases in line with the gradient
-        if (gradient > 0) {
-            return gradient * MULTIPLIER;
+        if (preferUphill) {
+            // score increases in line with the gradient
+            if (gradient > 0) {
+                return gradient * MULTIPLIER;
+            }
         }
 
         // return 0 where uphill preferred and gradient is negative

@@ -106,12 +106,6 @@ public class IteratedLocalSearchMainAlgorithmTest {
 
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);
-
-        System.out.println(originalLength);
-        System.out.println(postDistance);
-        System.out.println(originalScore);
-        System.out.println(postScore);
-
         assertTrue(postScore >= originalScore);
         assertTrue(postDistance <= (originalLength + target) * 1.1);
     }
@@ -126,6 +120,12 @@ public class IteratedLocalSearchMainAlgorithmTest {
 
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);
+
+        System.out.println(originalLength);
+        System.out.println(postDistance);
+        System.out.println(originalScore);
+        System.out.println(postScore);
+
 
         assertTrue(postScore >= originalScore);
         assertTrue(postDistance <= (originalLength + target) * 1.1);

@@ -85,7 +85,6 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                         targetNode, targetWay,
                         finalDistance);
 
-                // TODO: CHECK IF THIS SHOULD BE 1
                 if (topTuple.getTotalLength() >= targetDistance * TARGET_DISTANCE_SCALE) {
                     if (checkMinLength(topTuple)) {
                         // create a new tuple representing the journey from the previous node to the final node

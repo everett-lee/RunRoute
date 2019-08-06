@@ -62,8 +62,8 @@ public class BeamSearchCycleTest {
         double length = calculateDistance(res);
         serialize(res, name);
 
-        assertTrue(calculateScore(res) > 0);
-        System.out.println(returnPath(res, ""));
+
+        assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
     }
@@ -74,10 +74,12 @@ public class BeamSearchCycleTest {
         PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 14000);
         String name = "morrish14k";
 
+        System.out.println(returnPath(res, ""));
+
         double length = calculateDistance(res);
         serialize(res, name);
 
-        assertTrue(calculateScore(res) > 0);
+        assertTrue(length > 5);
         System.out.println(returnPath(res, ""));
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
@@ -92,7 +94,7 @@ public class BeamSearchCycleTest {
         double length = calculateDistance(res);
         serialize(res, name);
 
-        assertTrue(calculateScore(res) > 0);
+        assertTrue(length > 5);
         System.out.println(returnPath(res, ""));
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
@@ -112,7 +114,7 @@ public class BeamSearchCycleTest {
         double length = calculateDistance(res);
         serialize(res, name);
 
-        assertTrue(calculateScore(res) > 0);
+        assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
     }
@@ -131,7 +133,7 @@ public class BeamSearchCycleTest {
         double length = calculateDistance(res);
         serialize(res, name);
 
-        assertTrue(calculateScore(res) > 0);
+        assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
     }
@@ -150,7 +152,7 @@ public class BeamSearchCycleTest {
         double length = calculateDistance(res);
         serialize(res, name);
 
-        assertTrue(calculateScore(res) > 0);
+        assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
     }
@@ -169,7 +171,7 @@ public class BeamSearchCycleTest {
         double length = calculateDistance(res);
         serialize(res, name);
 
-        assertTrue(calculateScore(res) > 0);
+        assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
     }
@@ -188,7 +190,7 @@ public class BeamSearchCycleTest {
         double length = calculateDistance(res);
         serialize(res, name);
 
-        assertTrue(calculateScore(res) > 0);
+        assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
     }
@@ -207,7 +209,7 @@ public class BeamSearchCycleTest {
         double length = calculateDistance(res);
         serialize(res, name);
 
-        assertTrue(calculateScore(res) > 0);
+        assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
     }

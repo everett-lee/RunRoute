@@ -20,7 +20,7 @@ public class DistanceFromOriginNodeHeuristicMain implements DistanceFromOriginNo
     // which the heuristic switches from favouring outward paths to favouring returning
     // paths
     private final double RETURN_SCORE_NUMERATOR = 5000;
-    private final double OUTWARD_SCORE_DENOMINATOR = 15000.0;
+    private final double OUTWARD_SCORE_DENOMINATOR = 10000.0;
 
     @Autowired
     public DistanceFromOriginNodeHeuristicMain(@Qualifier("HaversineCalculator")

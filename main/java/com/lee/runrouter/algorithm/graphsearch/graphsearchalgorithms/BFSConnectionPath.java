@@ -29,7 +29,7 @@ import java.util.*;
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final double PREFERRED_MIN_LENGTH = 50; // minimum length of way to avoid
     // subtracting a score penalty
-    private final double PREFERRED_MIN_LENGTH_PENALTY = 0.025;
+    private final double PREFERRED_MIN_LENGTH_PENALTY = 0.005;
     private final double PREFERRED_LENGTH = 450;
     private final double PREFERRED_LENGTH_BONUS = 0.25;
     private final double REPEATED_VISIT_DEDUCTION = 0.005;

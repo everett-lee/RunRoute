@@ -47,9 +47,11 @@ public class RouteGeneratorCycle implements RouteGenerator {
         System.out.println("INITIAL CYCLE DONE");
 
         int attempts = 1;
-
+        // if a valid route was not generated
         if (initialCycle.getTotalLength() == -1) {
+            // reduce the algorithm run time
             pather.setTimeLimit(500);
+            // reattempt until a valid route is generated or max attempts made
             while (attempts < MAX_ATTEMPTS && initialCycle.getTotalLength() == -1) {
                 initialCycle = pather.searchGraph(repo.getOriginWay(), coords, distance);
                 attempts++;

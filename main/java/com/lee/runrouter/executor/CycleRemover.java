@@ -1,11 +1,9 @@
 package com.lee.runrouter.executor;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
-import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
 import org.springframework.stereotype.Component;
 
 import com.lee.runrouter.graph.graphbuilder.node.Node;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

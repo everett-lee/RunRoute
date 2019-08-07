@@ -34,7 +34,7 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
     private final double UPPER_SCALE = 0.15; // amount to scale upper bound on
     // run length by
 
-    private final double REPEATED_VISIT_DEDUCTION = 0.025; // score deduction for each repeat visit
+    private final double REPEATED_VISIT_DEDUCTION = 0.05; // score deduction for each repeat visit
     // to a Node or Way
 
     private List<PathTuple> queue;

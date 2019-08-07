@@ -29,10 +29,12 @@ import java.util.*;
 @Qualifier("BeamSearchConnectionPath")
 public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
-    private final double MINIMUM_SCORING_DISTANCE = 300;
-    private final double DISTANCE_BONUS = 0.001;
-    private final double REPEATED_VISIT_DEDUCTION = 0.5 ; // score deduction for each repeat visit
+    private final double MINIMUM_SCORING_DISTANCE = 350;
+    private final double DISTANCE_BONUS = 0.05;
+    private double MINIMUM_PATH_PERCENTAGE = 1;
 
+    private final double REPEATED_VISIT_DEDUCTION = 0.5; // score deduction for each repeat visit
+    // to a Node or Way
     private List<PathTuple> queue;
     private Hashtable<Long, Integer> visitedWays;
     private Hashtable<Long, Integer> visitedNodes;
@@ -95,8 +97,7 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                         targetNode, targetWay,
                         finalDistance);
 
-                // TODO: CHECK IF THIS SHOULD BE 1
-                if (topTuple.getTotalLength() >= targetDistance) {
+                if (topTuple.getTotalLength() >= targetDistance * MINIMUM_PATH_PERCENTAGE) {
                     if (checkMinLength(topTuple)) {
                         // create a new tuple representing the journey from the previous node to the final node
                         PathTuple returnTuple = new PathTupleMain(topTuple, targetNode,
@@ -146,6 +147,8 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                 //heuristicScore += addLengthScores(distanceToNext);
                 if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
                     heuristicScore += distanceToNext * DISTANCE_BONUS;
+                } else {
+                    heuristicScore -= distanceToNext * DISTANCE_BONUS;
                 }
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
@@ -198,10 +201,6 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
     private double addRepeatedVisitScores(Way selectedWay, Node connectingNode) {
         double score = 0;
 
-        // skip where this way or node has already been explored
-        if (this.visitedWays.containsKey(selectedWay.getId())) {
-            score -= this.visitedWays.get(selectedWay.getId()) * REPEATED_VISIT_DEDUCTION;
-        }
         if (this.visitedNodes.containsKey(connectingNode.getId())) {
             score -= this.visitedNodes.get(connectingNode.getId()) * REPEATED_VISIT_DEDUCTION;
         }

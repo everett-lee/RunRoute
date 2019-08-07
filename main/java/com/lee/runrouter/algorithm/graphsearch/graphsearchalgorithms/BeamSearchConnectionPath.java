@@ -29,13 +29,12 @@ import java.util.*;
 @Qualifier("BeamSearchConnectionPath")
 public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
-    private final double PREFERRED_MIN_LENGTH = 300; // minimum length of way to avoid
+    private final double PREFERRED_MIN_LENGTH = 400; // minimum length of way to avoid
     // subtracting a score penalty
-    private final double PREFERRED_MIN_LENGTH_PENALTY = 0.01;
-    private final double PREFERRED_LENGTH = 700; // minimum length to receive a score bonus
-    private final double PREFERRED_LENGTH_BONUS = 0.01;
-    private final double REPEATED_VISIT_DEDUCTION = 0.025; // score deduction for each repeat visit
-    // to a Node or Way
+    private final double PREFERRED_MIN_LENGTH_PENALTY = 0.05;
+    private final double PREFERRED_LENGTH = 800; // minimum length to receive a score bonus
+    private final double PREFERRED_LENGTH_BONUS = 0.05;
+    private final double REPEATED_VISIT_DEDUCTION = 0.5 ; // score deduction for each repeat visit
 
     private List<PathTuple> queue;
     private Hashtable<Long, Integer> visitedWays;
@@ -100,7 +99,7 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                         finalDistance);
 
                 // TODO: CHECK IF THIS SHOULD BE 1
-                if (topTuple.getTotalLength() >= targetDistance * 0.75) {
+                if (topTuple.getTotalLength() >= targetDistance) {
                     if (checkMinLength(topTuple)) {
                         // create a new tuple representing the journey from the previous node to the final node
                         PathTuple returnTuple = new PathTupleMain(topTuple, targetNode,

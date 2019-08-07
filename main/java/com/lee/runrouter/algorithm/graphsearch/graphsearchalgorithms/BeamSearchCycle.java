@@ -27,11 +27,11 @@ import java.util.*;
 @Qualifier("BeamSearchCycle")
 public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
-    private final double PREFERRED_MIN_LENGTH = 250; // minimum length of way to avoid
+    private final double PREFERRED_MIN_LENGTH = 300; // minimum length of way to avoid
     // subtracting a score penalty
-    private final double PREFERRED_MIN_LENGTH_PENALTY = 0.01;
+    private final double PREFERRED_MIN_LENGTH_PENALTY = 0.005;
     private final double PREFERRED_LENGTH = 700; // minimum length to receive a score bonus
-    private final double PREFERRED_LENGTH_BONUS = 0.01;
+    private final double PREFERRED_LENGTH_BONUS = 0.005;
     private final double REPEATED_VISIT_DEDUCTION = 0.025; // score deduction for each repeat visit
     // to a Node or Way
 

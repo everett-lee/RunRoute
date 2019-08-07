@@ -29,11 +29,8 @@ import java.util.*;
 @Qualifier("BeamSearchConnectionPath")
 public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
-    private final double PREFERRED_MIN_LENGTH = 400; // minimum length of way to avoid
-    // subtracting a score penalty
-    private final double PREFERRED_MIN_LENGTH_PENALTY = 0.05;
-    private final double PREFERRED_LENGTH = 800; // minimum length to receive a score bonus
-    private final double PREFERRED_LENGTH_BONUS = 0.05;
+    private final double MINIMUM_SCORING_DISTANCE = 300;
+    private final double DISTANCE_BONUS = 0.001;
     private final double REPEATED_VISIT_DEDUCTION = 0.5 ; // score deduction for each repeat visit
 
     private List<PathTuple> queue;
@@ -146,7 +143,10 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                     continue; // skip to next where max length exceeded
                 }
 
-                heuristicScore += addLengthScores(distanceToNext);
+                //heuristicScore += addLengthScores(distanceToNext);
+                if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
+                    heuristicScore += distanceToNext * DISTANCE_BONUS;
+                }
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
@@ -205,20 +205,6 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
         if (this.visitedNodes.containsKey(connectingNode.getId())) {
             score -= this.visitedNodes.get(connectingNode.getId()) * REPEATED_VISIT_DEDUCTION;
         }
-        return score;
-    }
-
-    private double addLengthScores(double distanceToNext) {
-        double score = 0;
-
-        if (distanceToNext < PREFERRED_MIN_LENGTH) {
-            score -= PREFERRED_MIN_LENGTH_PENALTY;
-        }
-
-        if (distanceToNext >= PREFERRED_LENGTH) {
-            score += PREFERRED_LENGTH_BONUS;
-        }
-
         return score;
     }
 

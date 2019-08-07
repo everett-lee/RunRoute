@@ -45,8 +45,7 @@ public class BeamSearchCycleTestWithFeatures {
         repo = getRepo();
     }
 
-    @Before
-    public void setUp() {
+    {
         distanceCalculator = new HaversineCalculator();
         distanceHeuristic = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
 

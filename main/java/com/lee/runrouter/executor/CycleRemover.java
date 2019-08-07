@@ -24,7 +24,7 @@ public class CycleRemover {
 
         Map<Long, Integer> idToPositionLookUp = new HashMap<>();
         int listSize = nodes.size();
-        int maxCycleLength = 15;
+        int maxCycleLength = 20;
 
         // starting from four in
         for (int i = 3; i < listSize; i++) {
@@ -39,16 +39,16 @@ public class CycleRemover {
                 if (i - previousIndex < maxCycleLength) {
                     int gapSize = i - previousIndex;
 
+                    System.out.println("REMOVING CYCLE OF LEN " + gapSize);
+
+
+                    distance += getRemovedSegmentDistance(nodes,
+                            previousIndex, gapSize);
                     // remove nodes between the gap
                     for (int j = 0; j < gapSize; j++) {
                         int start = previousIndex +1;
 
-                        // add distance between these nodes to removed distance
-                        Node previousNode = nodes.get(start-1);
-                        Node removedNode = nodes.get(start);
-                        distance +=
-                                distanceCalculator.calculateDistance(previousNode, removedNode);
-
+                                
                         nodes.remove(start);
                     }
                     // remove number of deleted from the list
@@ -58,6 +58,19 @@ public class CycleRemover {
             } else {
                 idToPositionLookUp.put(currentNodeId, i);
             }
+        }
+
+        return distance;
+    }
+
+    public double getRemovedSegmentDistance(List <Node> nodes, int start, int gapSize) {
+        double distance = 0;
+        for (int i = start, j = 0; j < gapSize; i++, j++) {
+            // add distance between these nodes to removed distance
+            Node previousNode = nodes.get(i);
+            Node removedNode = nodes.get(i+1);
+            distance +=
+                    distanceCalculator.calculateDistance(previousNode, removedNode);
         }
 
         return distance;

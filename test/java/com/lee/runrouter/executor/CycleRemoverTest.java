@@ -47,6 +47,48 @@ public class CycleRemoverTest {
     }
 
     @Test
+    public void testShortListDistance() {
+        Node n1 = new Node(1,  51.455219, -0.135222);
+        Node n2 = new Node(11, 51.454925, -0.135705);
+        Node n3 = new Node(3,  51.454925, -0.135705);
+        Node n4 = new Node(22,  51.454925, -0.135705);
+        Node n5 = new Node(2, 51.455547, -0.136703);
+        Node n6 = new Node(7,  51.456195, -0.137787);
+        Node n7 = new Node(15,  51.455674, -0.138474);
+        Node n8 = new Node(6, 51.455025, -0.137433);
+        Node n9 = new Node(21, 51.454356, -0.136489);
+        Node n10 = new Node(22,  51.454925, -0.135705);
+        Node n11 = new Node(15,  51.455078, -0.135459);
+
+        List<Node> nodes = new ArrayList<>(Arrays.asList(n1, n2, n3, n4, n5, n6, n7,
+                n8, n9, n10, n11));
+
+        double originalDistance = 0;
+        for (int i = 0; i < nodes.size()-1; i++) {
+            double currentDistance = distanceCalculator.calculateDistance(nodes.get(i), nodes.get(i+1));
+            originalDistance += currentDistance;
+        }
+
+        double removedDistance = 0;
+        for (int i = 3; i < 9; i++) {
+            double currentDistance = distanceCalculator.calculateDistance(nodes.get(i), nodes.get(i + 1));
+            removedDistance += currentDistance;
+        }
+        cycleRemover.removeCycle(nodes);
+
+        double afterDistance = 0;
+        for (int i = 0; i < nodes.size()-1; i++) {
+            double currentDistance = distanceCalculator.calculateDistance(nodes.get(i), nodes.get(i+1));
+            afterDistance += currentDistance;
+        }
+
+        int postLength = nodes.size();
+
+        assertEquals(5, postLength);
+        assertEquals(afterDistance, originalDistance - removedDistance, 0.1);
+    }
+
+    @Test
     public void testTwoNodeList() {
         Node n1 = new Node(1, 1, 1);
         Node n2 = new Node(11, 1, 1);

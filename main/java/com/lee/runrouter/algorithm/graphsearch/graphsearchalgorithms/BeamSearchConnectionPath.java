@@ -29,18 +29,19 @@ import java.util.*;
 @Qualifier("BeamSearchConnectionPath")
 public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
-    private final double PREFERRED_MIN_LENGTH = 300; // minimum length of way to avoid
+    private final double PREFERRED_MIN_LENGTH = 50; // minimum length of way to avoid
     // subtracting a score penalty
-    private final double PREFERRED_MIN_LENGTH_PENALTY = 0;
-    private final double PREFERRED_LENGTH = 800;
-    private final double PREFERRED_LENGTH_BONUS = 0.25;
-    private final double REPEATED_VISIT_DEDUCTION = 0.015;
+    private final double PREFERRED_MIN_LENGTH_PENALTY = 0.005;
+    private final double PREFERRED_LENGTH = 450; // minimum length to receive a score bonus
+    private final double PREFERRED_LENGTH_BONUS = 0.005;
+    private final double REPEATED_VISIT_DEDUCTION = 0.0075; // score deduction for each repeat visit
+    // to a Node or Way
 
     private List<PathTuple> queue;
     private Hashtable<Long, Integer> visitedWays;
     private Hashtable<Long, Integer> visitedNodes;
 
-    private final double TIME_LIMIT = 1000;
+    private final double TIME_LIMIT = 500;
 
     public BeamSearchConnectionPath(ElementRepo repo,
                              @Qualifier("DirectDistanceHeuristic") DistanceFromOriginNodeHeursitic distanceFromOriginHeursitic,

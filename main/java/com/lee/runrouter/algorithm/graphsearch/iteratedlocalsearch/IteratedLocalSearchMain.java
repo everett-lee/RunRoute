@@ -17,7 +17,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
     private int improvements;
 
     @Autowired
-    public IteratedLocalSearchMain(@Qualifier("BFSConnectionPath") ILSGraphSearch graphSearch) {
+    public IteratedLocalSearchMain(@Qualifier("BeamSearchConnectionPath") ILSGraphSearch graphSearch) {
         this.graphSearch = graphSearch;
     }
 
@@ -40,7 +40,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         head = reverseList(head);
 
         int a = 1; // the starting node, indexed from 1
-        int r = 2; // number of nodes to remove
+        int r = 5; // number of nodes to remove
         while (elapsedTime <= TIME_LIMIT) {
             elapsedTime = (new Date()).getTime() - startTime;
 
@@ -51,7 +51,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             int pathSize = getPathSize(head);
             // reset if r greater than pathLength minus the start and end node
             if (r > pathSize - 2) {
-                r = 2;
+                r = 5;
             }
 
             // reset r if removed section plus index of the
@@ -64,7 +64,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             // extends past the final node
             if (a >= pathSize - 2) {
                 a = 1;
-                r = 2;
+                r = 5;
             }
 
             start = getStartPathSegment(head, a);
@@ -108,7 +108,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
                 availableDistance = targetDistance - newDistance;
 
                 a = 1;
-                r = 2;
+                r = 5;
             }
         }
 

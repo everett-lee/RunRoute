@@ -29,12 +29,12 @@ import java.util.*;
 @Qualifier("BeamSearchConnectionPath")
 public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
-    private final double PREFERRED_MIN_LENGTH = 50; // minimum length of way to avoid
+    private final double PREFERRED_MIN_LENGTH = 300; // minimum length of way to avoid
     // subtracting a score penalty
-    private final double PREFERRED_MIN_LENGTH_PENALTY = 0.005;
-    private final double PREFERRED_LENGTH = 450; // minimum length to receive a score bonus
-    private final double PREFERRED_LENGTH_BONUS = 0.005;
-    private final double REPEATED_VISIT_DEDUCTION = 0.0075; // score deduction for each repeat visit
+    private final double PREFERRED_MIN_LENGTH_PENALTY = 0.01;
+    private final double PREFERRED_LENGTH = 700; // minimum length to receive a score bonus
+    private final double PREFERRED_LENGTH_BONUS = 0.01;
+    private final double REPEATED_VISIT_DEDUCTION = 0.025; // score deduction for each repeat visit
     // to a Node or Way
 
     private List<PathTuple> queue;
@@ -100,7 +100,7 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                         finalDistance);
 
                 // TODO: CHECK IF THIS SHOULD BE 1
-                if (topTuple.getTotalLength() >= 1) {
+                if (topTuple.getTotalLength() >= targetDistance * 0.75) {
                     if (checkMinLength(topTuple)) {
                         // create a new tuple representing the journey from the previous node to the final node
                         PathTuple returnTuple = new PathTupleMain(topTuple, targetNode,
@@ -128,7 +128,7 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
                         = distanceFromOriginHeuristic.getScore(connectingNode, targetNode,
                         0, 0);
 
-                if (distanceFromSelectedToTarget > currentDistanceFromTarget * 1.5) {
+                if (distanceFromSelectedToTarget > currentDistanceFromTarget * 1.25) {
                     continue;
                 }
 

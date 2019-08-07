@@ -32,7 +32,7 @@ public class ExecutorMain implements Executor {
     private SearchAlgorithm returnPather;
     private SearchAlgorithm connectionPather;
 
-    private final double INITIAL_GRAPH_SIZE = 20000; // the starting size of the generated graph
+    private final double INITIAL_GRAPH_SIZE = 8000; // the starting size of the generated graph
 
     public ExecutorMain(
             @Qualifier("RouteGeneratorMain") RouteGenerator routeGenerator,

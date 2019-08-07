@@ -5,4 +5,5 @@ import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 
 public interface GraphSearch {
     public PathTuple searchGraph(Way root, double[] coords, double distance);
+    void setTimeLimit(long timeLimit);
 }

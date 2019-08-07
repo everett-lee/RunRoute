@@ -33,7 +33,6 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
     // run length by
     private final double UPPER_SCALE = 0.15; // amount to scale upper bound on
     // run length by
-    private final long TIME_LIMIT = 2000;
 
     private final double REPEATED_VISIT_DEDUCTION = 0.025; // score deduction for each repeat visit
     // to a Node or Way
@@ -41,6 +40,7 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
     private List<PathTuple> queue;
     private Map<Long, Integer> visitedNodesOutbound; // counts number of visits to each Node
     private Map<Long, Integer> visitedNodesInbound; // counts number of visits to each Node
+    private long timeLimit = 1500;
 
     @Autowired
     public BeamSearchCycle(ElementRepo repo,
@@ -92,7 +92,7 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
-        while (!queue.isEmpty() && elapsedTime <= TIME_LIMIT) {
+        while (!queue.isEmpty() && elapsedTime <= timeLimit) {
             queue.sort(Comparator
                     // sort by route segment score
                     .comparing((PathTuple tuple) -> tuple.getSegmentScore().getSum()).reversed());
@@ -203,6 +203,11 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
         return new PathTupleMain(null, null, null,
                 new ScorePair(-1, -1), -1,
                 -1, -1);
+    }
+
+    @Override
+    public void setTimeLimit(long timeLimit) {
+        this.timeLimit = timeLimit;
     }
 
     private PathTuple returnValidPath(PathTuple topTuple, Node currentNode, Way currentWay) {

@@ -196,4 +196,8 @@ public class BeamSearchReturnPath extends SearchAlgorithm implements GraphSearch
         return new PathTupleMain(null, null, null, new ScorePair(-1 , -1),
                 -1, -1, -1);
     }
+
+    @Override
+    public void setTimeLimit(long timeLimit) {
+    }
 }

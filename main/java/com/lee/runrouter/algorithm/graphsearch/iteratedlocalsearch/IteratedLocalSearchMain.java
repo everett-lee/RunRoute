@@ -30,15 +30,15 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         long elapsedTime = 0L;
         PathTuple start = null;
         PathTuple end = null;
-//
-//        double targetDistance = head.getTotalLength() + distanceToAdd; // target is current route length
-//        // plus the remaining available distance
-//
-//        double availableDistance = distanceToAdd; // distance left available to add to route
-//
-//        // begin by reversing the path
-//        head = reverseList(head);
-//
+
+        double targetDistance = head.getTotalLength() + distanceToAdd; // target is current route length
+        // plus the remaining available distance
+
+        double availableDistance = distanceToAdd; // distance left available to add to route
+
+        // begin by reversing the path
+        head = reverseList(head);
+
 //        int a = 1; // the starting node, indexed from 1
 //        int r = 5; // number of nodes to remove
 //        while (elapsedTime <= TIME_LIMIT) {

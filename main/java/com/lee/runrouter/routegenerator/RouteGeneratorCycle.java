@@ -20,6 +20,7 @@ public class RouteGeneratorCycle implements RouteGenerator {
     private GraphSearch pather;
     private IteratedLocalSearch ils;
     private ElementRepo repo;
+    private int MAX_ATTEMPTS = 5;
 
     public RouteGeneratorCycle(@Qualifier("BeamSearchCycle") GraphSearch pather,
                               @Qualifier("IteratedLocalSearchMain")IteratedLocalSearch iteratedLocalSearch,
@@ -44,6 +45,16 @@ public class RouteGeneratorCycle implements RouteGenerator {
 
         PathTuple initialCycle = pather.searchGraph(repo.getOriginWay(), coords, distance);
         System.out.println("INITIAL CYCLE DONE");
+
+        int attempts = 1;
+
+        if (initialCycle.getTotalLength() == -1) {
+            pather.setTimeLimit(500);
+            while (attempts < MAX_ATTEMPTS && initialCycle.getTotalLength() == -1) {
+                initialCycle = pather.searchGraph(repo.getOriginWay(), coords, distance);
+                attempts++;
+            }
+        }
 
         if (initialCycle.getTotalLength() == -1) {
             throw new PathNotGeneratedException("No valid path was generated");

@@ -177,4 +177,9 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
                 -1, -1, -1);
     }
 
+    @Override
+    public void setTimeLimit(long timeLimit) {
+
+    }
+
 }

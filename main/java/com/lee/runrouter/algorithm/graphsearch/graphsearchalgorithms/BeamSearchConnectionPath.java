@@ -30,10 +30,9 @@ import java.util.*;
 public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
     private final double MINIMUM_SCORING_DISTANCE = 250;
-    private final double DISTANCE_BONUS = 0.01;
-    private double MINIMUM_PATH_PERCENTAGE = 0.9;
-
-    private final double REPEATED_VISIT_DEDUCTION = 0.05; // score deduction for each repeat visit
+    private final double DISTANCE_BONUS = 0.5;
+    private double MINIMUM_PATH_PERCENTAGE = 0.85;
+    private final double REPEATED_VISIT_DEDUCTION = 0.5; // score deduction for each repeat visit
     // to a Node or Way
     private List<PathTuple> queue;
     private Hashtable<Long, Integer> visitedWays;
@@ -83,7 +82,6 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
 
             PathTuple topTuple = queue.get(0);
             queue.remove(0);
-
 
             Way currentWay = topTuple.getCurrentWay();
             Node currentNode = topTuple.getPreviousNode();
@@ -200,6 +198,10 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
 
     private double addRepeatedVisitScores(Way selectedWay, Node connectingNode) {
         double score = 0;
+
+        if (this.visitedWays.containsKey(selectedWay.getId())) {
+            score -= this.visitedWays.get(selectedWay.getId()) * 10000000;
+        }
 
         if (this.visitedNodes.containsKey(connectingNode.getId())) {
             score -= this.visitedNodes.get(connectingNode.getId()) * REPEATED_VISIT_DEDUCTION;

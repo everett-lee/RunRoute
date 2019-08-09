@@ -67,7 +67,7 @@ public class testRouteReflectsFeaturesHeuristic {
 
         iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
 
-        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, repo);
+        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repo);
 
         // preferred Highways options
         preferredHighways = new ArrayList<>(Arrays.asList("CYCLEWAY", "BRIDLEWAY",

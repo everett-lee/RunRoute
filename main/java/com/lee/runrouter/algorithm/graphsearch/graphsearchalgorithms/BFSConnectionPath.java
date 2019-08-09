@@ -174,6 +174,11 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
        this.visitedNodes =  new HashMap<>();
     }
 
+    @Override
+    public void setMinimumPathPercentage(double minimumPathPercentage) {
+
+    }
+
     private double addRepeatedVisitScores(Way selectedWay, Node connectingNode) {
         double score = 0;
         if (this.visitedNodes.containsKey(connectingNode.getId())) {

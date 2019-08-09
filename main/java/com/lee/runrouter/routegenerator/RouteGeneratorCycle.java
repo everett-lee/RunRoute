@@ -1,6 +1,7 @@
 package com.lee.runrouter.routegenerator;
 
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.GraphSearch;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ILSGraphSearch;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.routegenerator.cyclegenerator.CycleGenerator;
 import com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch.IteratedLocalSearch;
@@ -18,15 +19,18 @@ import org.springframework.stereotype.Component;
 @Qualifier("RouteGeneratorCycle")
 public class RouteGeneratorCycle implements RouteGenerator {
     private GraphSearch pather;
+    private ILSGraphSearch connectionPather;
     private IteratedLocalSearch ils;
     private ElementRepo repo;
     private int MAX_ATTEMPTS = 5;
 
     public RouteGeneratorCycle(@Qualifier("BeamSearchCycle") GraphSearch pather,
-                              @Qualifier("IteratedLocalSearchMain")IteratedLocalSearch iteratedLocalSearch,
+                               @Qualifier("IteratedLocalSearchMain")IteratedLocalSearch iteratedLocalSearch,
+                                @Qualifier("BeamSearchConnectionPath") ILSGraphSearch connectionPather,
                                 ElementRepo repo) {
         this.pather = pather;
         this.ils = iteratedLocalSearch;
+        this.connectionPather = connectionPather;
         this.repo = repo;
     }
 
@@ -64,10 +68,23 @@ public class RouteGeneratorCycle implements RouteGenerator {
 
         System.out.println("INITIAL CYCLE LEN " + initialCycle.getTotalLength());
 
+        setMinimumPathPercentage(distance);
         double remainingDistance = distance - initialCycle.getTotalLength();
 
         System.out.println(" <><><><><> THEERE IS " + remainingDistance + "TO ADD <> <> <><><><>");
 
         return ils.iterate(initialCycle, remainingDistance);
+    }
+
+    // increase the minimum length of the path added by the ILS algorithm in line
+    // with the total distance travelled.
+    private void setMinimumPathPercentage(double distance) {
+        if (distance > 10000 && distance < 15000) {
+            connectionPather.setMinimumPathPercentage(0.85);
+        }
+
+        if (distance > 15000) {
+            connectionPather.setMinimumPathPercentage(0.75);
+        }
     }
 }

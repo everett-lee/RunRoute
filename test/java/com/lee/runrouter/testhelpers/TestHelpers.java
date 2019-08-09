@@ -99,12 +99,12 @@ public class TestHelpers {
         return route;
     }
 
-    static public PathTuple getMorrish14kFeaturesFlat() {
+    static public PathTuple getMorrish14kFeaturesUphill() {
         PathTuple route = null;
         // deserialise test path used for testing.
         try {
             FileInputStream fileIn
-                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/morrish14kWithFeaturesFlat.ser");
+                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/morrish14kWithFeaturesUphill.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             route = (PathTuple) in.readObject();
             in.close();

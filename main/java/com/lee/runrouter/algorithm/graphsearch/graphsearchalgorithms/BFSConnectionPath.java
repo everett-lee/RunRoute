@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-
 /**
  * Variant of the BFS algorithm that restricts the next selected Way
  * to those closer to the starting point than the previous. It is used
@@ -27,30 +26,29 @@ import java.util.*;
 @Component
 @Qualifier("BFSConnectionPath")
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
-    private final double PREFERRED_MIN_LENGTH = 50; // minimum length of way to avoid
-    // subtracting a score penalty
-    private final double PREFERRED_MIN_LENGTH_PENALTY = 0.005;
-    private final double PREFERRED_LENGTH = 450;
-    private final double PREFERRED_LENGTH_BONUS = 0.25;
-    private final double REPEATED_VISIT_DEDUCTION = 0.005;
-    private final double TARGET_DISTANCE_SCALE = 0.75;
-
+    private final double MINIMUM_SCORING_DISTANCE = 300;
+    private final double DISTANCE_BONUS = 0.5;
+    private final double REPEATED_VISIT_DEDUCTION = 0.5; // score deduction for each repeat visit
+    // to a Node or Way
     private PriorityQueue<PathTuple> queue;
-    private Map<Long, Integer> visitedNodes;
+    private Hashtable<Long, Integer> visitedWays;
+    private Hashtable<Long, Integer> visitedNodes;
+    private double minimumPathPercentage = 0.90;
 
-    private final double TIME_LIMIT = 2000;
+    private final double TIME_LIMIT = 500;
 
     public BFSConnectionPath(ElementRepo repo,
-                             @Qualifier("DirectDistanceHeuristic") DistanceFromOriginNodeHeursitic distanceFromOriginHeursitic,
-                             @Qualifier("FeaturesHeuristicUsingDistanceSensitive") FeaturesHeuristic featuresHeuristic,
-                             @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
-                             @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
-                             @Qualifier("ElevationHeuristicSensitive") ElevationHeuristic elevationHeuristic) {
+                                    @Qualifier("DirectDistanceHeuristic") DistanceFromOriginNodeHeursitic distanceFromOriginHeursitic,
+                                    @Qualifier("FeaturesHeuristicMain") FeaturesHeuristic featuresHeuristic,
+                                    @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
+                                    @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
+                                    @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceFromOriginHeursitic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
+
         this.queue = new PriorityQueue<>(Comparator
-                .comparing((PathTuple tuple) ->
-                        tuple.getSegmentScore().getHeuristicScore()).reversed());
-        this.visitedNodes = new HashMap<>();
+                .comparing((PathTuple tuple) -> tuple.getSegmentScore().getDistanceScore()).reversed());
+        this.visitedWays = new Hashtable<>();
+        this.visitedNodes = new Hashtable<>();
     }
 
     @Override
@@ -58,8 +56,10 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                                  double availableDistance, double initialDistance, double targetDistance) {
 
         this.queue = new PriorityQueue<>(Comparator
-                .comparing((PathTuple tuple)
-                        -> tuple.getSegmentScore().getHeuristicScore()).reversed());
+                .comparing((PathTuple tuple) -> tuple.getSegmentScore().getHeuristicScore()).reversed());
+
+        this.visitedWays = new Hashtable<>();
+        this.visitedNodes = new Hashtable<>();
 
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
@@ -85,14 +85,14 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                         targetNode, targetWay,
                         finalDistance);
 
-                if (topTuple.getTotalLength() >= targetDistance * TARGET_DISTANCE_SCALE) {
+                if (topTuple.getTotalLength() >= targetDistance * minimumPathPercentage) {
                     if (checkMinLength(topTuple)) {
                         // create a new tuple representing the journey from the previous node to the final node
                         PathTuple returnTuple = new PathTupleMain(topTuple, targetNode,
                                 targetWay, finalScore, finalDistance,
                                 topTuple.getTotalLength() + finalDistance, finalGradient);
                         return returnTuple;
-                    }   
+                    }
                 }
             }
 
@@ -113,7 +113,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                         = distanceFromOriginHeuristic.getScore(connectingNode, targetNode,
                         0, 0);
 
-                if (distanceFromSelectedToTarget > currentDistanceFromTarget * 1) {
+                if (distanceFromSelectedToTarget > currentDistanceFromTarget * 1.25) {
                     continue;
                 }
 
@@ -132,7 +132,12 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                     continue; // skip to next where max length exceeded
                 }
 
-                heuristicScore += addLengthScores(distanceToNext);
+                //heuristicScore += addLengthScores(distanceToNext);
+                if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
+                    heuristicScore += distanceToNext * DISTANCE_BONUS;
+                } else {
+                    heuristicScore -= distanceToNext * DISTANCE_BONUS;
+                }
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
@@ -161,6 +166,13 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                     }
                 }
 
+                if (!this.visitedWays.containsKey(selectedWay.getId())) {
+                    this.visitedWays.put(selectedWay.getId(), 1);
+                } else {
+                    int current = this.visitedWays.get(selectedWay.getId());
+                    this.visitedWays.put(selectedWay.getId(), current + 1);
+                }
+
                 elapsedTime = (new Date()).getTime() - startTime;
             }
         }
@@ -171,33 +183,19 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
     @Override
     public void resetVisitedNodes() {
-       this.visitedNodes =  new HashMap<>();
-    }
-
-    @Override
-    public void setMinimumPathPercentage(double minimumPathPercentage) {
 
     }
 
     private double addRepeatedVisitScores(Way selectedWay, Node connectingNode) {
         double score = 0;
+
+        if (this.visitedWays.containsKey(selectedWay.getId())) {
+            score -= this.visitedWays.get(selectedWay.getId()) * 10000000;
+        }
+
         if (this.visitedNodes.containsKey(connectingNode.getId())) {
             score -= this.visitedNodes.get(connectingNode.getId()) * REPEATED_VISIT_DEDUCTION;
         }
-        return score;
-    }
-
-    private double addLengthScores(double distanceToNext) {
-        double score = 0;
-
-        if (distanceToNext < PREFERRED_MIN_LENGTH) {
-            score -= PREFERRED_MIN_LENGTH_PENALTY;
-        }
-
-        if (distanceToNext >= PREFERRED_LENGTH) {
-            score += PREFERRED_LENGTH_BONUS;
-        }
-
         return score;
     }
 
@@ -210,5 +208,9 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         }
 
         return (count >= 3);
+    }
+
+    public void setMinimumPathPercentage(double minimumPathPercentage) {
+        this.minimumPathPercentage = minimumPathPercentage;
     }
 }

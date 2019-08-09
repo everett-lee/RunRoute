@@ -35,7 +35,7 @@ public class ExecutorFullCycle implements Executor {
             GraphBuilder graphBuilder,
             @Qualifier("LinkedListToArrayAllNodes") LinkedListToArray linkedListToArray,
             @Qualifier("BeamSearchCycle") SearchAlgorithm pather,
-            @Qualifier("BeamSearchConnectionPath") SearchAlgorithm connectionPather,
+            @Qualifier("BFSConnectionPath") SearchAlgorithm connectionPather,
             CycleRemover cycleRemover) {
         this.routeGenerator = routeGenerator;
         this.graphBuilder = graphBuilder;

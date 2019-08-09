@@ -26,14 +26,14 @@ import java.util.*;
 @Component
 @Qualifier("BFSConnectionPath")
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
-    private final double MINIMUM_SCORING_DISTANCE = 300;
-    private final double DISTANCE_BONUS = 0.5;
-    private final double REPEATED_VISIT_DEDUCTION = 0.5; // score deduction for each repeat visit
+    private final double MINIMUM_SCORING_DISTANCE = 500;
+    private final double DISTANCE_BONUS = 0.01;
+    private final double REPEATED_VISIT_DEDUCTION = 5; // score deduction for each repeat visit
     // to a Node or Way
     private PriorityQueue<PathTuple> queue;
     private Hashtable<Long, Integer> visitedWays;
     private Hashtable<Long, Integer> visitedNodes;
-    private double minimumPathPercentage = 0.90;
+    private double minimumPathPercentage = 0.6;
 
     private final double TIME_LIMIT = 500;
 
@@ -136,7 +136,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                 if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
                     heuristicScore += distanceToNext * DISTANCE_BONUS;
                 } else {
-                    heuristicScore -= distanceToNext * DISTANCE_BONUS;
+//                    heuristicScore -= distanceToNext * DISTANCE_BONUS;
                 }
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
@@ -144,7 +144,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
                 if (gradient > super.getMaxGradient()) {
                     continue;
-                }
+                   }
 
                 // call private method to add scores
                 heuristicScore += addScores(selectedWay, distanceToNext, gradient);
@@ -194,7 +194,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         }
 
         if (this.visitedNodes.containsKey(connectingNode.getId())) {
-            score -= this.visitedNodes.get(connectingNode.getId()) * REPEATED_VISIT_DEDUCTION;
+            score -= Math.pow(REPEATED_VISIT_DEDUCTION, this.visitedNodes.get(connectingNode.getId()));
         }
         return score;
     }

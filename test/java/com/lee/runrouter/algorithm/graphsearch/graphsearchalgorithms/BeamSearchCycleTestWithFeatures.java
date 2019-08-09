@@ -40,6 +40,7 @@ public class BeamSearchCycleTestWithFeatures {
     EdgeDistanceCalculator edgeDistanceCalculator;
     GradientCalculator gradientCalculator;
     ElevationHeuristic elevationHeuristic;
+    boolean saveRoutes;
 
     {
         repo = getRepo();
@@ -63,6 +64,8 @@ public class BeamSearchCycleTestWithFeatures {
 
         beamSearch = new BeamSearchCycle(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
+
+        saveRoutes = false;
     }
 
     @Test(timeout = 5000)
@@ -72,7 +75,10 @@ public class BeamSearchCycleTestWithFeatures {
         String name = "morrish5kWithFeaturesUphill";
 
         double length = calculateDistance(res);
-        //serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         System.out.println(returnPath(res, ""));
@@ -88,7 +94,10 @@ public class BeamSearchCycleTestWithFeatures {
         String name = "morrish5kWithFeaturesFlat";
 
         double length = calculateDistance(res);
-        //serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         System.out.println(returnPath(res, ""));
@@ -104,7 +113,10 @@ public class BeamSearchCycleTestWithFeatures {
         String name = "morrish14kWithFeaturesUphill";
 
         double length = calculateDistance(res);
-        //serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         System.out.println(returnPath(res, ""));
@@ -120,7 +132,10 @@ public class BeamSearchCycleTestWithFeatures {
         String name = "morrish14kWithFeaturesFlat";
 
         double length = calculateDistance(res);
-        //serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         System.out.println(returnPath(res, ""));
@@ -136,7 +151,10 @@ public class BeamSearchCycleTestWithFeatures {
         String name = "morrish21kWithFeaturesUphill";
 
         double length = calculateDistance(res);
-        //serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         System.out.println(returnPath(res, ""));
@@ -152,7 +170,10 @@ public class BeamSearchCycleTestWithFeatures {
         String name = "morrish21kWithFeaturesFlat";
 
         double length = calculateDistance(res);
-       // serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         System.out.println(returnPath(res, ""));
@@ -172,7 +193,10 @@ public class BeamSearchCycleTestWithFeatures {
         String name = "craignair5kwithFeaturesUphill";
 
         double length = calculateDistance(res);
-        //serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -192,7 +216,10 @@ public class BeamSearchCycleTestWithFeatures {
         String name = "craignair5kwithFeaturesFlat";
 
         double length = calculateDistance(res);
-        //serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -211,7 +238,10 @@ public class BeamSearchCycleTestWithFeatures {
         String name = "craignair14kwithFeaturesUphill";
 
         double length = calculateDistance(res);
-        //serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -231,7 +261,10 @@ public class BeamSearchCycleTestWithFeatures {
         String name = "craignair14kwithFeaturesFlat";
 
         double length = calculateDistance(res);
-       //serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -250,7 +283,10 @@ public class BeamSearchCycleTestWithFeatures {
         String name = "craignair21kwithFeaturesUphill";
 
         double length = calculateDistance(res);
-        //serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -270,7 +306,10 @@ public class BeamSearchCycleTestWithFeatures {
         String name = "craignair21kwithFeaturesFlat";
 
         double length = calculateDistance(res);
-        //serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -289,7 +328,10 @@ public class BeamSearchCycleTestWithFeatures {
         String name = "tulse5kWithFeaturesUphill";
 
         double length = calculateDistance(res);
-        //serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -309,7 +351,10 @@ public class BeamSearchCycleTestWithFeatures {
         String name = "tulse5kWithFeaturesFlat";
 
         double length = calculateDistance(res);
-        //serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -329,7 +374,10 @@ public class BeamSearchCycleTestWithFeatures {
         String name = "tulse14kWithFeaturesUphill";
 
         double length = calculateDistance(res);
-        //serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -349,7 +397,10 @@ public class BeamSearchCycleTestWithFeatures {
         String name = "tulse14kWithFeaturesFlat";
 
         double length = calculateDistance(res);
-        //serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -368,7 +419,10 @@ public class BeamSearchCycleTestWithFeatures {
         String name = "tulse21kWithFeaturesUphill";
 
         double length = calculateDistance(res);
-        //serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -388,7 +442,10 @@ public class BeamSearchCycleTestWithFeatures {
         String name = "tulse21kWithFeaturesFlat";
 
         double length = calculateDistance(res);
-        //serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);

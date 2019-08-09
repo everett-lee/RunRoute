@@ -26,7 +26,7 @@ import java.util.*;
 @Qualifier("BeamSearchCycle")
 public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
-    private final double MINIMUM_SCORING_DISTANCE = 300;
+    private final double MINIMUM_SCORING_DISTANCE = 500;
     private final double DISTANCE_BONUS = 0.01;
 
     private final double LOWER_SCALE = 0.90; // amount to scale upper lower bound on
@@ -174,26 +174,7 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
                         gradient);
                 this.queue.add(toAdd);
 
-                // increase visited count for this Node if it is not in the
-                // origin set
-                if (!this.repo.getOriginWay().getNodeContainer().getNodes()
-                        .contains(connectingNode.getId())) {
-                    if (!overHalf) {
-                        if (!visitedNodesOutbound.containsKey(connectingNode.getId())) {
-                            visitedNodesOutbound.put(connectingNode.getId(), 1);
-                        } else {
-                            int current = visitedNodesOutbound.get(connectingNode.getId());
-                            visitedNodesOutbound.put(connectingNode.getId(), current + 1);
-                        }
-                    } else {
-                        if (!visitedNodesInbound.containsKey(connectingNode.getId())) {
-                            visitedNodesInbound.put(connectingNode.getId(), 1);
-                        } else {
-                            int current = visitedNodesInbound.get(connectingNode.getId());
-                            visitedNodesInbound.put(connectingNode.getId(), current + 1);
-                        }
-                    }
-                }
+                addVisitedNode(connectingNode, overHalf);
 
                 elapsedTime = (new Date()).getTime() - startTime;
             }
@@ -244,6 +225,29 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
             }
         }
         return score;
+    }
+
+    private void addVisitedNode(Node connectingNode, boolean overHalf) {
+        // increase visited count for this Node if it is not in the
+        // origin set
+        if (!this.repo.getOriginWay().getNodeContainer().getNodes()
+                .contains(connectingNode.getId())) {
+            if (!overHalf) {
+                if (!visitedNodesOutbound.containsKey(connectingNode.getId())) {
+                    visitedNodesOutbound.put(connectingNode.getId(), 1);
+                } else {
+                    int current = visitedNodesOutbound.get(connectingNode.getId());
+                    visitedNodesOutbound.put(connectingNode.getId(), current + 1);
+                }
+            } else {
+                if (!visitedNodesInbound.containsKey(connectingNode.getId())) {
+                    visitedNodesInbound.put(connectingNode.getId(), 1);
+                } else {
+                    int current = visitedNodesInbound.get(connectingNode.getId());
+                    visitedNodesInbound.put(connectingNode.getId(), current + 1);
+                }
+            }
+        }
     }
 
 

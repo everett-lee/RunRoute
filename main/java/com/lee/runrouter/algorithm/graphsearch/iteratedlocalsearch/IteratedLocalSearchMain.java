@@ -17,7 +17,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
     private int improvements;
 
     @Autowired
-    public IteratedLocalSearchMain(@Qualifier("BeamSearchConnectionPath") ILSGraphSearch graphSearch) {
+    public IteratedLocalSearchMain(@Qualifier("BFSConnectionPath") ILSGraphSearch graphSearch) {
         this.graphSearch = graphSearch;
     }
 
@@ -100,14 +100,14 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
             // new segment score is higher, so replace old path segment with the new one
             } else {
-//                PathTuple topi = newSegment;
-//                System.out.println("COMING FROM " + start.getPreviousNode());
-//                System.out.println("GOING TO " + end.getPreviousNode());
-//                while (topi != null) {
-//                    System.out.print(topi.getPreviousNode().getId() + ", ");
-//                    topi = topi.getPredecessor();
-//                }
-//                System.out.println("THE NEW SEGMENT ^^^^^^^^^^");
+                PathTuple topi = newSegment;
+                System.out.println("COMING FROM " + start.getPreviousNode());
+                System.out.println("GOING TO " + end.getPreviousNode());
+                while (topi != null) {
+                    System.out.print(topi.getPreviousNode().getId() + ", ");
+                    topi = topi.getPredecessor();
+                }
+                System.out.println("THE NEW SEGMENT ^^^^^^^^^^");
 
                 setImprovements(getImprovements() + 1);
                 insertSegment(start, end, newSegment);

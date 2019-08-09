@@ -26,7 +26,7 @@ public class RouteGeneratorCycle implements RouteGenerator {
 
     public RouteGeneratorCycle(@Qualifier("BeamSearchCycle") GraphSearch pather,
                                @Qualifier("IteratedLocalSearchMain")IteratedLocalSearch iteratedLocalSearch,
-                                @Qualifier("BeamSearchConnectionPath") ILSGraphSearch connectionPather,
+                                @Qualifier("BFSConnectionPath") ILSGraphSearch connectionPather,
                                 ElementRepo repo) {
         this.pather = pather;
         this.ils = iteratedLocalSearch;
@@ -80,11 +80,11 @@ public class RouteGeneratorCycle implements RouteGenerator {
     // with the total distance travelled.
     private void setMinimumPathPercentage(double distance) {
         if (distance > 10000 && distance < 15000) {
-            connectionPather.setMinimumPathPercentage(0.85);
+            connectionPather.setMinimumPathPercentage(0.6);
         }
 
         if (distance > 15000) {
-            connectionPather.setMinimumPathPercentage(0.75);
+            connectionPather.setMinimumPathPercentage(0.6);
         }
     }
 }

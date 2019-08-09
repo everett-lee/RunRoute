@@ -6,7 +6,6 @@ import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
-import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BFSConnectionPath;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearchConnectionPath;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ILSGraphSearch;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeuristicMain;
@@ -15,7 +14,6 @@ import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeurist
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicSensitive;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
-import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicUsingDistance;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicUsingDistanceSensitive;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
@@ -23,11 +21,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static com.lee.runrouter.testhelpers.TestHelpers.*;
+import static org.junit.Assert.assertTrue;
 
-
-import static org.junit.Assert.*;
-
-public class IteratedLocalSearchMainAlgorithmTestBFS {
+public class IteratedLocalSearchMainAlgorithmTestBeam {
     PathTuple morrish5k;
     PathTuple morrish14k;
     PathTuple morrish21k;
@@ -47,8 +43,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
     ElevationHeuristic elevationSensitive;
     ILSGraphSearch connectPathBFS;
     ILSGraphSearch connectPathBeamSearch;
-    IteratedLocalSearch ilsBFS;
-    IteratedLocalSearch ilsBeamSearch;
+    IteratedLocalSearch ilsBeam;
 
 
     {
@@ -58,7 +53,6 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         craignair5k = getCraignair5k();
         craignair14k = getCraignair14k();
         craignair21k = getCraignair21k();
-        tulseHill5k = getTulse5k();
         tulseHill14k = getTulse14k();
         tulseHill21k = getTulse21k();
 
@@ -76,10 +70,10 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         elevationSensitive = new ElevationHeuristicSensitive();
         elevationSensitive.setOptions(true);
 
-        connectPathBFS = new BFSConnectionPath(repo, distanceHeuristic,
-                featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationSensitive);
+        connectPathBeamSearch = new BeamSearchConnectionPath(repo, distanceHeuristic,
+                featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
-        this.ilsBFS = new IteratedLocalSearchMain(connectPathBFS);
+        this.ilsBeam = new IteratedLocalSearchMain(connectPathBFS);
 
     }
 
@@ -89,7 +83,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         double originalLength = calculateDistance(morrish5k);
         double target = 0;
 
-        PathTuple res = ilsBFS.iterate(morrish5k, target);
+        PathTuple res = ilsBeam.iterate(morrish5k, target);
 
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);
@@ -109,7 +103,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         double originalLength = calculateDistance(morrish14k);
         double target = 0;
 
-        PathTuple res = ilsBFS.iterate(morrish14k, target);
+        PathTuple res = ilsBeam.iterate(morrish14k, target);
 
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);
@@ -130,7 +124,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         double originalLength = calculateDistance(morrish21k);
         double target = 0;
 
-        PathTuple res = ilsBFS.iterate(morrish21k, target);
+        PathTuple res = ilsBeam.iterate(morrish21k, target);
 
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);
@@ -148,9 +142,9 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
     public void testCraignair5k() {
         double originalScore = calculateScore(craignair5k);
         double originalLength = calculateDistance(craignair5k);
-        double target = 300;
+        double target = 0;
 
-        PathTuple res = ilsBFS.iterate(craignair5k, target);
+        PathTuple res = ilsBeam.iterate(craignair5k, target);
 
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);
@@ -170,7 +164,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         double originalLength = calculateDistance(craignair14k);
         double target = 0;
 
-        PathTuple res = ilsBFS.iterate(craignair14k, target);
+        PathTuple res = ilsBeam.iterate(craignair14k, target);
 
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);
@@ -190,7 +184,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         double originalLength = calculateDistance(craignair21k);
         double target = 0;
 
-        PathTuple res = ilsBFS.iterate(craignair21k, target);
+        PathTuple res = ilsBeam.iterate(craignair21k, target);
 
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);
@@ -210,7 +204,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         double originalLength = calculateDistance(tulseHill5k);
         double target = 700;
 
-        PathTuple res = ilsBFS.iterate(tulseHill5k, target);
+        PathTuple res = ilsBeam.iterate(tulseHill5k, target);
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);
 
@@ -224,7 +218,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         double originalLength = calculateDistance(tulseHill14k);
         double target = 0;
 
-        PathTuple res = ilsBFS.iterate(tulseHill14k, target);
+        PathTuple res = ilsBeam.iterate(tulseHill14k, target);
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);
 
@@ -243,9 +237,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         double originalLength = calculateDistance(tulseHill21k);
         double target = 0;
 
-        System.out.println(tulseHill21k.getPreviousNode());
-
-        PathTuple res = ilsBFS.iterate(tulseHill21k, target);
+        PathTuple res = ilsBeam.iterate(tulseHill21k, target);
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);
 

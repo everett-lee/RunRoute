@@ -54,9 +54,7 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
     ElevationHeuristic elevationHeuristicMain;
     ElevationHeuristic elevationHeuristicSensitive;
     ILSGraphSearch connectPathBFS;
-    ILSGraphSearch connectPathBeamSearch;
     IteratedLocalSearch ilsBFS;
-    IteratedLocalSearch ilsBeamSearch;
 
 
     // load routes
@@ -101,7 +99,6 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
         elevationHeuristicMain = new ElevationHeuristicMain();
         elevationHeuristicSensitive = new ElevationHeuristicSensitive();
         elevationHeuristicSensitive.setOptions(true);
-        elevationHeuristicSensitive.setOptions(true);
 
         connectPathBFS = new BFSConnectionPath(repo, distanceHeuristic,
                 featuresHeuristicSensitive, edgeDistanceCalculator,
@@ -137,7 +134,7 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
     public void testMorrish14KUphill() {
         double originalScore = calculateScore(morrish5kUphill);
         double originalLength = calculateDistance(morrish5kUphill);
-        double target = 1500;
+        double target = 300;
 
         PathTuple res = ilsBFS.iterate(morrish5kUphill, target);
 

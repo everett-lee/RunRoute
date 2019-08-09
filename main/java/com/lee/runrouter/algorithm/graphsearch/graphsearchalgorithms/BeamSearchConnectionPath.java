@@ -29,14 +29,14 @@ import java.util.*;
 @Qualifier("BeamSearchConnectionPath")
 public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
-    private final double MINIMUM_SCORING_DISTANCE = 300;
-    private final double DISTANCE_BONUS = 0.5;
-    private final double REPEATED_VISIT_DEDUCTION = 0.5; // score deduction for each repeat visit
+    private final double MINIMUM_SCORING_DISTANCE = 600;
+    private final double DISTANCE_BONUS = 0.01;
+    private final double REPEATED_VISIT_DEDUCTION = 1; // score deduction for each repeat visit
     // to a Node or Way
     private List<PathTuple> queue;
     private Hashtable<Long, Integer> visitedWays;
     private Hashtable<Long, Integer> visitedNodes;
-    private double minimumPathPercentage = 0.90;
+    private double minimumPathPercentage = 0.9;
 
     private final double TIME_LIMIT = 500;
 

@@ -35,6 +35,7 @@ public class BeamSearchCycleTest {
     EdgeDistanceCalculator edgeDistanceCalculator;
     GradientCalculator gradientCalculator;
     ElevationHeuristic elevationHeuristic;
+    boolean saveRoutes;
 
     {
         repo = getRepo();
@@ -51,6 +52,8 @@ public class BeamSearchCycleTest {
 
         beamSearch = new BeamSearchCycle(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
+
+        saveRoutes = false;
     }
 
     @Test(timeout = 3000)
@@ -60,8 +63,10 @@ public class BeamSearchCycleTest {
         String name = "morrish5k";
 
         double length = calculateDistance(res);
-        serialize(res, name);
 
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -77,7 +82,10 @@ public class BeamSearchCycleTest {
         System.out.println(returnPath(res, ""));
 
         double length = calculateDistance(res);
-        serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         System.out.println(returnPath(res, ""));
@@ -92,7 +100,10 @@ public class BeamSearchCycleTest {
         String name = "morrish21k";
 
         double length = calculateDistance(res);
-        serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         System.out.println(returnPath(res, ""));
@@ -112,7 +123,10 @@ public class BeamSearchCycleTest {
         String name = "craignair5k";
 
         double length = calculateDistance(res);
-        serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -131,7 +145,10 @@ public class BeamSearchCycleTest {
         String name = "craignair14k";
 
         double length = calculateDistance(res);
-        serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -150,7 +167,10 @@ public class BeamSearchCycleTest {
         String name = "craignair21k";
 
         double length = calculateDistance(res);
-        serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -169,8 +189,10 @@ public class BeamSearchCycleTest {
         String name = "tulse5k";
 
         double length = calculateDistance(res);
-        serialize(res, name);
 
+        if (saveRoutes) {
+            serialize(res, name);
+        }
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
@@ -188,7 +210,10 @@ public class BeamSearchCycleTest {
         String name = "tulse14k";
 
         double length = calculateDistance(res);
-        serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
@@ -208,6 +233,10 @@ public class BeamSearchCycleTest {
 
         double length = calculateDistance(res);
         serialize(res, name);
+
+        if (saveRoutes) {
+            serialize(res, name);
+        }
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);

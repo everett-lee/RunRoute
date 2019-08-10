@@ -22,8 +22,8 @@ public class FeaturesHeuristicUsingDistanceSensitive implements FeaturesHeuristi
     private List<String> dislikedSurfaces; // list of surfaces to be avoided
     
     // allocated scores for features
-    static final double SURFACE_VALUE = 0.0025;
-    static final double HIGHWAY_VALUE = 0.0025;
+    static final double SURFACE_VALUE = 0.005;
+    static final double HIGHWAY_VALUE = 0.005;
 
     public FeaturesHeuristicUsingDistanceSensitive() {
         this.preferredSurfaces = new ArrayList<>();
@@ -34,6 +34,10 @@ public class FeaturesHeuristicUsingDistanceSensitive implements FeaturesHeuristi
     // iterate over user-provided surface and highway types and
     // adjust score for matching values
     private double calculateScore(Way selectedWay, double distance) {
+        System.out.println(preferredHighways);
+        System.out.println(preferredSurfaces);
+        System.out.println(dislikedSurfaces);
+
         double score = 0;
 
         for (String surface: this.preferredSurfaces) {

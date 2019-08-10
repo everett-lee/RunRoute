@@ -149,7 +149,6 @@ public class ExecutorMain implements Executor {
             this.outwardsPather.setAvoidUnlit(true);
             this.returnPather.setAvoidUnlit(true);
             this.connectionPather.setAvoidUnlit(true);
-
         }
 
         // user selected prefer residential roads

@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import static com.lee.runrouter.testhelpers.TestHelpers.*;
@@ -466,6 +467,26 @@ public class BeamSearchCycleTestWithFeatures {
         } catch (IOException i) {
             i.printStackTrace();
         }
+    }
+
+
+    @Test
+    public void beamTest() {
+        double[] coords = {51.441109, -0.106974};
+        double scores = 0;
+
+        long startTime = System.currentTimeMillis();
+
+        for (int i = 0; i < 500; i++) {
+            System.out.println(i);
+            PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 20000);
+            scores += calculateScore(res);
+        }
+
+        long elapsedTime = (new Date()).getTime() - startTime;
+
+        System.out.println("TIME: " + elapsedTime/500);
+        System.out.println("SCORE: " + scores / 500);
     }
 
 }

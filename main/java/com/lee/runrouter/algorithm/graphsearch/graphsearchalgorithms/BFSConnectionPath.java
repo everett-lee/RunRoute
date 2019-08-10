@@ -33,7 +33,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     private PriorityQueue<PathTuple> queue;
     private Hashtable<Long, Integer> visitedWays;
     private Hashtable<Long, Integer> visitedNodes;
-    private double minimumPathPercentage = 0.6;
+    private double minimumPathPercentage = 0.8;
 
     private final double TIME_LIMIT = 500;
 
@@ -136,7 +136,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                 if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
                     heuristicScore += distanceToNext * DISTANCE_BONUS;
                 } else {
-//                    heuristicScore -= distanceToNext * DISTANCE_BONUS;
+                    heuristicScore -= distanceToNext * DISTANCE_BONUS;
                 }
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
@@ -203,7 +203,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         int count = 0;
 
         while (head != null && count <= 3) {
-            count ++;
+            count++;
             head = head.getPredecessor();
         }
 

@@ -23,9 +23,8 @@ import java.util.*;
  * are retained.
  */
 @Component
-@Qualifier("BeamSearchCycle")
-public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
-    private final int BEAM_SIZE = 100000; // the max number of possible Nodes under review
+@Qualifier("BFSCycle")
+public class BFSCycle extends SearchAlgorithm implements GraphSearch {
     private final double MINIMUM_SCORING_DISTANCE = 500;
     private final double DISTANCE_BONUS = 0.01;
 
@@ -37,20 +36,22 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
     private final double REPEATED_VISIT_DEDUCTION = 0.15; // score deduction for each repeat visit
     // to a Node or Way
 
-    private List<PathTuple> queue;
+    private PriorityQueue<PathTuple> queue;
     private Map<Long, Integer> visitedNodesOutbound; // counts number of visits to each Node
     private Map<Long, Integer> visitedNodesInbound; // counts number of visits to each Node
     private long timeLimit = 1500;
 
     @Autowired
-    public BeamSearchCycle(ElementRepo repo,
+    public BFSCycle(ElementRepo repo,
                            @Qualifier("DistanceFromOriginNodeHeuristicMain") DistanceFromOriginNodeHeursitic distanceFromOriginHeuristic,
                            @Qualifier("FeaturesHeuristicUsingDistance") FeaturesHeuristic featuresHeuristic,
                            @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
                            @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
                            @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceFromOriginHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
-        this.queue = new ArrayList<>();
+
+        this.queue = new PriorityQueue<>(Comparator
+                .comparing((PathTuple tuple) -> tuple.getSegmentScore().getDistanceScore()).reversed());
         this.visitedNodesOutbound = new HashMap<>();
         this.visitedNodesInbound = new HashMap<>();
     }
@@ -70,7 +71,9 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
      */
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double targetDistance) {
-        queue = new ArrayList<>();
+        this.queue = new PriorityQueue<>(Comparator
+                .comparing((PathTuple tuple) -> tuple.getSegmentScore().getHeuristicScore()).reversed());
+
         visitedNodesOutbound = new HashMap<>();
         visitedNodesInbound = new HashMap<>();
 
@@ -93,17 +96,7 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
         repo.setOriginNode(originNode);
 
         while (!queue.isEmpty() && elapsedTime <= timeLimit) {
-            queue.sort(Comparator
-                    // sort by route segment score
-                    .comparing((PathTuple tuple) -> tuple.getSegmentScore().getSum()).reversed());
-
-            if (queue.size() > BEAM_SIZE) {
-                queue = queue.subList(0, BEAM_SIZE);
-            }
-
-            // get and pop the first element in the queue
-            PathTuple topTuple = queue.get(0);
-            queue.remove(0);
+            PathTuple topTuple = queue.poll();
 
             Way currentWay = topTuple.getCurrentWay();
             Node currentNode = topTuple.getPreviousNode();
@@ -150,7 +143,7 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
 
                 double gradient = this.gradientCalculator
                         .calculateGradient(currentNode, currentWay, connectingNode,
-                        selectedWay, distanceToNext);
+                                selectedWay, distanceToNext);
 
                 if (gradient > super.getMaxGradient()) {
                     continue;
@@ -164,7 +157,7 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
 
                 double distanceScore = this.distanceFromOriginHeuristic
                         .getScore(connectingNode, repo.getOriginNode(),
-                        currentRouteLength, targetDistance);
+                                currentRouteLength, targetDistance);
 
                 ScorePair segmentScore = new ScorePair(distanceScore, heuristicScore);
 

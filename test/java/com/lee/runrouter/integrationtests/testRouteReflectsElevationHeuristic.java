@@ -81,7 +81,6 @@ public class testRouteReflectsElevationHeuristic {
         route = routeGenerator.generateRoute(coords, 10000);
         double avgGradientSteep = getAverageGradient(route);
 
-
         assertTrue(avgGradientFlat <= avgGradientSteep);
 
     }
@@ -96,6 +95,7 @@ public class testRouteReflectsElevationHeuristic {
         elevationHeuristic.setOptions(true);
         route = routeGenerator.generateRoute(coords, 10000);
         double avgGradientSteep = getAverageGradient(route);
+
 
         assertTrue(avgGradientFlat <= avgGradientSteep);
     }
@@ -112,8 +112,6 @@ public class testRouteReflectsElevationHeuristic {
         route = routeGenerator.generateRoute(coords, 10000);
         double avgGradientSteep = getAverageGradient(route);
 
-        System.out.println(avgGradientFlat);
-        System.out.println(avgGradientSteep);
 
         assertTrue(avgGradientFlat <= avgGradientSteep);
 

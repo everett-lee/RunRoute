@@ -130,15 +130,15 @@ public class testRouteReflectsFeaturesHeuristic {
 
     @Test
     public void testLitHeuristicReflectedOne() throws PathNotGeneratedException {
-        double[] coords = {51.459, -0.129};
+        double[] coords = {51.441, -0.125   };
         PathTuple route = routeGenerator.generateRoute(coords, 5000);
 
         int numberofUnlitWhenUnlitAllowed = countUnlit(route);
 
         SearchAlgorithm sa1 = (SearchAlgorithm) outward;
         sa1.setAvoidUnlit(true);
-        SearchAlgorithm sa3 = (SearchAlgorithm) ilsGraphSearch;
-        sa3.setAvoidUnlit(true);
+        SearchAlgorithm sa2 = (SearchAlgorithm) ilsGraphSearch;
+        sa2.setAvoidUnlit(true);
 
         route = routeGenerator.generateRoute(coords, 5000);
 

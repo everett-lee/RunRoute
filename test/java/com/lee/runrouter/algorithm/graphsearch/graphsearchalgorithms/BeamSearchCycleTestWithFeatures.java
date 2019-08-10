@@ -35,6 +35,7 @@ import static org.junit.Assert.assertTrue;
 public class BeamSearchCycleTestWithFeatures {
     ElementRepo repo;
     GraphSearch beamSearch;
+    GraphSearch BFS;
     DistanceCalculator distanceCalculator;
     DistanceFromOriginNodeHeursitic distanceHeuristic;
     FeaturesHeuristic featuresHeuristic;
@@ -64,6 +65,8 @@ public class BeamSearchCycleTestWithFeatures {
         gradientCalculator = new SimpleGradientCalculator();
 
         beamSearch = new BeamSearchCycle(repo, distanceHeuristic,
+                featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
+        BFS = new BFSCycle(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
         saveRoutes = false;
@@ -472,14 +475,14 @@ public class BeamSearchCycleTestWithFeatures {
 
     @Test
     public void beamTest() {
-        double[] coords = {51.441109, -0.106974};
+        double[] coords = {51.446810, -0.125484};
         double scores = 0;
 
         long startTime = System.currentTimeMillis();
 
         for (int i = 0; i < 500; i++) {
             System.out.println(i);
-            PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 20000);
+            PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 20000);
             scores += calculateScore(res);
         }
 

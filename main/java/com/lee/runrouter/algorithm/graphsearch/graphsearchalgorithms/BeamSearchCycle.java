@@ -25,7 +25,7 @@ import java.util.*;
 @Component
 @Qualifier("BeamSearchCycle")
 public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
-    private final int BEAM_SIZE = 100000; // the max number of possible Nodes under review
+    private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
     private final double MINIMUM_SCORING_DISTANCE = 500;
     private final double DISTANCE_BONUS = 0.01;
 

@@ -41,7 +41,6 @@ public class ExecutorMain implements Executor {
             @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic,
             @Qualifier("LinkedListToArrayAllNodes") LinkedListToArray linkedListToArray,
             @Qualifier("BeamSearch") SearchAlgorithm outwardsPather,
-            @Qualifier("BeamSearchReturnPath") SearchAlgorithm returnPather,
             @Qualifier("BFSConnectionPath") SearchAlgorithm connectionPather) {
         this.routeGenerator = routeGenerator;
         this.graphBuilder = graphBuilder;

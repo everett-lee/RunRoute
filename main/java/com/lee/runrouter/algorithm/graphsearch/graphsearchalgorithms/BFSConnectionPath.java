@@ -26,10 +26,12 @@ import java.util.*;
 @Component
 @Qualifier("BFSConnectionPath")
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
-    private final double MINIMUM_SCORING_DISTANCE = 500;
-    private final double DISTANCE_BONUS = 0.01;
+    private final double MINIMUM_SCORING_DISTANCE = 550;
+    private final double DISTANCE_BONUS = 0.025;
+
     private final double REPEATED_VISIT_DEDUCTION = 5; // score deduction for each repeat visit
     // to a Node or Way
+
     private PriorityQueue<PathTuple> queue;
     private Hashtable<Long, Integer> visitedWays;
     private Hashtable<Long, Integer> visitedNodes;
@@ -46,7 +48,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         super(repo, distanceFromOriginHeursitic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
         this.queue = new PriorityQueue<>(Comparator
-                .comparing((PathTuple tuple) -> tuple.getSegmentScore().getDistanceScore()).reversed());
+                .comparing((PathTuple tuple) -> tuple.getSegmentScore().getHeuristicScore()).reversed());
         this.visitedWays = new Hashtable<>();
         this.visitedNodes = new Hashtable<>();
     }
@@ -135,8 +137,6 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                 //heuristicScore += addLengthScores(distanceToNext);
                 if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
                     heuristicScore += distanceToNext * DISTANCE_BONUS;
-                } else {
-                    heuristicScore -= distanceToNext * DISTANCE_BONUS;
                 }
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,

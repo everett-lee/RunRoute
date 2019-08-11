@@ -6,19 +6,16 @@ import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
-import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
-import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicUsingDistance;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
-
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
-import org.junit.*;
+import org.junit.Test;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,9 +29,8 @@ import static com.lee.runrouter.testhelpers.TestHelpers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class BeamSearchCycleTestWithFeatures {
+public class BFSCycleTestWithFeatures {
     ElementRepo repo;
-    GraphSearch beamSearch;
     GraphSearch BFS;
     DistanceCalculator distanceCalculator;
     DistanceFromOriginNodeHeursitic distanceHeuristic;
@@ -64,18 +60,16 @@ public class BeamSearchCycleTestWithFeatures {
         elevationHeuristic.setOptions(true);
         gradientCalculator = new SimpleGradientCalculator();
 
-        beamSearch = new BeamSearchCycle(repo, distanceHeuristic,
-                featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
-        BFS = new BFSCycle(repo, distanceHeuristic,
+         BFS = new BFSCycle(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
-        saveRoutes = false;
+        saveRoutes = true;
     }
 
     @Test(timeout = 5000)
     public void testMorrishRoad5kUphill() {
         double[] coords = {51.446810, -0.125484};
-        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 5000);
         String name = "morrish5kWithFeaturesUphill";
 
         double length = calculateDistance(res);
@@ -94,7 +88,7 @@ public class BeamSearchCycleTestWithFeatures {
     public void testMorrishRoad5kFlat() {
         double[] coords = {51.446810, -0.125484};
         elevationHeuristic.setOptions(false);
-        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 5000);
         String name = "morrish5kWithFeaturesFlat";
 
         double length = calculateDistance(res);
@@ -113,7 +107,7 @@ public class BeamSearchCycleTestWithFeatures {
     @Test(timeout = 5000)
     public void testMorrishRoad14kUphill() {
         double[] coords = {51.446810, -0.125484};
-        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 14000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 14000);
         String name = "morrish14kWithFeaturesUphill";
 
         double length = calculateDistance(res);
@@ -132,7 +126,7 @@ public class BeamSearchCycleTestWithFeatures {
     public void testMorrishRoad14kFlat() {
         double[] coords = {51.446810, -0.125484};
         elevationHeuristic.setOptions(false);
-        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 14000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 14000);
         String name = "morrish14kWithFeaturesFlat";
 
         double length = calculateDistance(res);
@@ -151,7 +145,7 @@ public class BeamSearchCycleTestWithFeatures {
     @Test(timeout = 5000)
     public void testMorrishRoad21kUphill() {
         double[] coords = {51.446810, -0.125484};
-        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 22000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 22000);
         String name = "morrish21kWithFeaturesUphill";
 
         double length = calculateDistance(res);
@@ -170,7 +164,7 @@ public class BeamSearchCycleTestWithFeatures {
     public void testMorrishRoad21kFlat() {
         double[] coords = {51.446810, -0.125484};
         elevationHeuristic.setOptions(false);
-        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 21000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 21000);
         String name = "morrish21kWithFeaturesFlat";
 
         double length = calculateDistance(res);
@@ -193,7 +187,7 @@ public class BeamSearchCycleTestWithFeatures {
                 .findFirst().get();
         repo.setOriginWay(origin);
 
-        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 5000);
         String name = "craignair5kwithFeaturesUphill";
 
         double length = calculateDistance(res);
@@ -216,7 +210,7 @@ public class BeamSearchCycleTestWithFeatures {
         repo.setOriginWay(origin);
 
         elevationHeuristic.setOptions(false);
-        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 5000);
         String name = "craignair5kwithFeaturesFlat";
 
         double length = calculateDistance(res);
@@ -238,7 +232,7 @@ public class BeamSearchCycleTestWithFeatures {
                 .findFirst().get();
         repo.setOriginWay(origin);
 
-        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 14000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 14000);
         String name = "craignair14kwithFeaturesUphill";
 
         double length = calculateDistance(res);
@@ -261,7 +255,7 @@ public class BeamSearchCycleTestWithFeatures {
         repo.setOriginWay(origin);
 
         elevationHeuristic.setOptions(false);
-        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 14000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 14000);
         String name = "craignair14kwithFeaturesFlat";
 
         double length = calculateDistance(res);
@@ -283,7 +277,7 @@ public class BeamSearchCycleTestWithFeatures {
                 .findFirst().get();
         repo.setOriginWay(origin);
 
-        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 21000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 21000);
         String name = "craignair21kwithFeaturesUphill";
 
         double length = calculateDistance(res);
@@ -306,7 +300,7 @@ public class BeamSearchCycleTestWithFeatures {
         repo.setOriginWay(origin);
 
         elevationHeuristic.setOptions(false);
-        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 22000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 22000);
         String name = "craignair21kwithFeaturesFlat";
 
         double length = calculateDistance(res);
@@ -328,7 +322,7 @@ public class BeamSearchCycleTestWithFeatures {
                 .findFirst().get();
         repo.setOriginWay(origin);
 
-        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 5000);
         String name = "tulse5kWithFeaturesUphill";
 
         double length = calculateDistance(res);
@@ -351,7 +345,7 @@ public class BeamSearchCycleTestWithFeatures {
         repo.setOriginWay(origin);
 
         elevationHeuristic.setOptions(false);
-        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 5000);
         String name = "tulse5kWithFeaturesFlat";
 
         double length = calculateDistance(res);
@@ -374,7 +368,7 @@ public class BeamSearchCycleTestWithFeatures {
                 .findFirst().get();
         repo.setOriginWay(origin);
 
-        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 14000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 14000);
         String name = "tulse14kWithFeaturesUphill";
 
         double length = calculateDistance(res);
@@ -397,7 +391,7 @@ public class BeamSearchCycleTestWithFeatures {
         repo.setOriginWay(origin);
 
         elevationHeuristic.setOptions(false);
-        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 14000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 14000);
         String name = "tulse14kWithFeaturesFlat";
 
         double length = calculateDistance(res);
@@ -419,7 +413,7 @@ public class BeamSearchCycleTestWithFeatures {
                 .findFirst().get();
         repo.setOriginWay(origin);
 
-        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 21000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 21000);
         String name = "tulse21kWithFeaturesUphill";
 
         double length = calculateDistance(res);
@@ -442,7 +436,7 @@ public class BeamSearchCycleTestWithFeatures {
         repo.setOriginWay(origin);
 
         elevationHeuristic.setOptions(false);
-        PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 21000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 21000);
         String name = "tulse21kWithFeaturesFlat";
 
         double length = calculateDistance(res);
@@ -472,24 +466,5 @@ public class BeamSearchCycleTestWithFeatures {
         }
     }
 
-
-    @Test
-    public void beamTest() {
-        double[] coords = {51.446810, -0.125484};
-        double scores = 0;
-
-        long startTime = System.currentTimeMillis();
-
-        for (int i = 0; i < 500; i++) {
-            System.out.println(i);
-            PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 20000);
-            scores += calculateScore(res);
-        }
-
-        long elapsedTime = (new Date()).getTime() - startTime;
-
-        System.out.println("TIME: " + elapsedTime/500);
-        System.out.println("SCORE: " + scores / 500);
-    }
 
 }

@@ -25,8 +25,8 @@ import java.util.*;
 @Component
 @Qualifier("BFSCycle")
 public class BFSCycle extends SearchAlgorithm implements GraphSearch {
-    private final double MINIMUM_SCORING_DISTANCE = 500;
-    private final double DISTANCE_BONUS = 0.01;
+    private final double MINIMUM_SCORING_DISTANCE = 550;
+    private final double DISTANCE_BONUS = 0.025;
 
     private final double LOWER_SCALE = 0.90; // amount to scale upper lower bound on
     // run length by
@@ -51,7 +51,7 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
         super(repo, distanceFromOriginHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
         this.queue = new PriorityQueue<>(Comparator
-                .comparing((PathTuple tuple) -> tuple.getSegmentScore().getDistanceScore()).reversed());
+                .comparing((PathTuple tuple) -> tuple.getSegmentScore().getSum()).reversed());
         this.visitedNodesOutbound = new HashMap<>();
         this.visitedNodesInbound = new HashMap<>();
     }
@@ -72,7 +72,7 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double targetDistance) {
         this.queue = new PriorityQueue<>(Comparator
-                .comparing((PathTuple tuple) -> tuple.getSegmentScore().getHeuristicScore()).reversed());
+                .comparing((PathTuple tuple) -> tuple.getSegmentScore().getSum()).reversed());
 
         visitedNodesOutbound = new HashMap<>();
         visitedNodesInbound = new HashMap<>();

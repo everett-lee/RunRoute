@@ -29,7 +29,6 @@ public class CycleGeneratorMain implements CycleGenerator {
 
     @Autowired
     public CycleGeneratorMain(@Qualifier("BeamSearch") GraphSearch initialOutwardsPather,
-                              @Qualifier("BeamSearchReturnPath")  GraphSearch initialReturnPather,
                               ElementRepo repo) {
         this.initialOutwardsPather = initialOutwardsPather;
         this.initialReturnPather = initialReturnPather;

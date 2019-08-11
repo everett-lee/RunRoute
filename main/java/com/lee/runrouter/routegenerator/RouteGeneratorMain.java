@@ -17,12 +17,12 @@ import org.springframework.stereotype.Component;
 public class RouteGeneratorMain implements RouteGenerator {
     private CycleGenerator cycleGenerator;
     private IteratedLocalSearch ils;
-
-    public RouteGeneratorMain(@Qualifier("CycleGeneratorMain") CycleGenerator cycleGenerator,
-                              @Qualifier("IteratedLocalSearchMain")IteratedLocalSearch iteratedLocalSearch) {
-        this.cycleGenerator = cycleGenerator;
-        this.ils = iteratedLocalSearch;
-    }
+//
+//    public RouteGeneratorMain(@Qualifier("CycleGeneratorMain") CycleGenerator cycleGenerator,
+//                              @Qualifier("IteratedLocalSearchMain")IteratedLocalSearch iteratedLocalSearch) {
+//        this.cycleGenerator = cycleGenerator;
+//        this.ils = iteratedLocalSearch;
+//    }
 
     /**
      * Generates the required circular route

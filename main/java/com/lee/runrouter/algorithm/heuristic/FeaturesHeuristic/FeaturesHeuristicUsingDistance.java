@@ -21,8 +21,8 @@ public class FeaturesHeuristicUsingDistance implements FeaturesHeuristic {
     private List<String> dislikedSurfaces; // list of surfaces to be avoided
 
     // allocated scores for features
-    static final double SURFACE_VALUE = 0.005;
-    static final double HIGHWAY_VALUE = 0.005;
+    static final double SURFACE_VALUE = 0.01;
+    static final double HIGHWAY_VALUE = 0.01;
 
 
     public FeaturesHeuristicUsingDistance() {

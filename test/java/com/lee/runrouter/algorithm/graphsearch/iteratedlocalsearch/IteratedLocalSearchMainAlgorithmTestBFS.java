@@ -7,15 +7,12 @@ import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BFSConnectionPath;
-import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearchConnectionPath;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ILSGraphSearch;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
-import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicSensitive;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
-import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicUsingDistance;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicUsingDistanceSensitive;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
@@ -43,13 +40,9 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
     FeaturesHeuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
     GradientCalculator gradientCalculator;
-    ElevationHeuristicMain elevationHeuristic;
     ElevationHeuristic elevationSensitive;
     ILSGraphSearch connectPathBFS;
-    ILSGraphSearch connectPathBeamSearch;
     IteratedLocalSearch ilsBFS;
-    IteratedLocalSearch ilsBeamSearch;
-
 
     {
         morrish5k = getMorrish5k();
@@ -79,7 +72,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         connectPathBFS = new BFSConnectionPath(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationSensitive);
 
-        this.ilsBFS = new IteratedLocalSearchMain(connectPathBFS);
+        ilsBFS = new IteratedLocalSearchMain(connectPathBFS);
 
     }
 
@@ -104,7 +97,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
     }
 
     @Test
-    public void testMorrish14KGreaterOrEqual() {
+    public void testMorrish14K() {
         double originalScore = calculateScore(morrish14k);
         double originalLength = calculateDistance(morrish14k);
         double target = 0;
@@ -168,7 +161,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
     public void testCraignair14k() {
         double originalScore = calculateScore(craignair14k);
         double originalLength = calculateDistance(craignair14k);
-        double target = 0;
+        double target = 600;
 
         PathTuple res = ilsBFS.iterate(craignair14k, target);
 
@@ -188,7 +181,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
     public void testCraignair21k() {
         double originalScore = calculateScore(craignair21k);
         double originalLength = calculateDistance(craignair21k);
-        double target = 0;
+        double target = 1000;
 
         PathTuple res = ilsBFS.iterate(craignair21k, target);
 
@@ -208,11 +201,16 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
     public void testulse5k() {
         double originalScore = calculateScore(tulseHill5k);
         double originalLength = calculateDistance(tulseHill5k);
-        double target = 700;
+        double target = 300;
 
         PathTuple res = ilsBFS.iterate(tulseHill5k, target);
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);
+
+        System.out.println(originalLength);
+        System.out.println(postDistance);
+        System.out.println(originalScore);
+        System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
         assertTrue(postDistance <= (originalLength + target) * 1.1);
@@ -222,7 +220,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
     public void testulse14k() {
         double originalScore = calculateScore(tulseHill14k);
         double originalLength = calculateDistance(tulseHill14k);
-        double target = 0;
+        double target = 1000;
 
         PathTuple res = ilsBFS.iterate(tulseHill14k, target);
         double postScore = calculateScore(res);
@@ -241,7 +239,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
     public void testulse21k() {
         double originalScore = calculateScore(tulseHill21k);
         double originalLength = calculateDistance(tulseHill21k);
-        double target = 0;
+        double target = 2000;
 
         System.out.println(tulseHill21k.getPreviousNode());
 

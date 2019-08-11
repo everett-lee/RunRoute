@@ -15,10 +15,7 @@ import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
 import com.lee.runrouter.algorithm.pathnode.ScorePair;
-import com.lee.runrouter.executor.Executor;
-import com.lee.runrouter.executor.ExecutorMain;
-import com.lee.runrouter.executor.LinkedListToArray;
-import com.lee.runrouter.executor.LinkedListToArrayHeadNodes;
+import com.lee.runrouter.executor.*;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.GraphBuilder;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
@@ -46,9 +43,9 @@ public class ResponseGeneratorControllerTest {
     EdgeDistanceCalculator edgeDistanceCalculator;
     GradientCalculator gradientCalculator;
     LinkedListToArray linkedListToArray;
-    SearchAlgorithm beamSearch;
-    SearchAlgorithm beamSearchReturn;
+    SearchAlgorithm BFS;
     SearchAlgorithm BFSconnection;
+    CycleRemover cycleRemover;
     ElementRepo repo;
 
     @Before
@@ -79,17 +76,14 @@ public class ResponseGeneratorControllerTest {
         repo = mock(ElementRepo.class);
         edgeDistanceCalculator = mock(EdgeDistanceCalculatorMain.class);
         gradientCalculator = mock(SimpleGradientCalculator.class);
-        beamSearch = new BeamSearch(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        BFS = new BFSCycle(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
                                     gradientCalculator, elevationHeuristic);
-        beamSearchReturn = new BeamSearchReturnPath(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
-                gradientCalculator, elevationHeuristic);
         BFSconnection = new BFSConnectionPath(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
+        cycleRemover = mock(CycleRemover.class);
 
-
-        executor = new ExecutorMain(routeGenerator, graphBuilder,
-                featuresHeuristic, elevationHeuristic, linkedListToArray, beamSearch,
-                beamSearchReturn, BFSconnection);
+        executor = new ExecutorFullCycle(routeGenerator, graphBuilder, linkedListToArray,
+                BFS, BFSconnection, cycleRemover);
         responseGeneratorController = new ResponseGeneratorController(executor);
     }
 
@@ -113,11 +107,10 @@ public class ResponseGeneratorControllerTest {
 
         responseGeneratorController.receiveArgs(50, 1, 2000, 25, options);
 
-        boolean avoidUnlit = beamSearch.getAvoidUnlit();
-        boolean avoidUnlit2 = beamSearchReturn.getAvoidUnlit();
+        boolean avoidUnlit = BFS.getAvoidUnlit();
         boolean avoidUnlit3 = BFSconnection.getAvoidUnlit();
 
-        assertTrue(avoidUnlit && avoidUnlit2 && avoidUnlit3);
+        assertTrue(avoidUnlit && avoidUnlit3);
     }
 
     @Test
@@ -126,11 +119,10 @@ public class ResponseGeneratorControllerTest {
 
         responseGeneratorController.receiveArgs(50, 1, 2000, 25, options);
 
-        boolean avoidUnlit = beamSearch.getAvoidUnlit();
-        boolean avoidUnlit2 = beamSearchReturn.getAvoidUnlit();
+        boolean avoidUnlit = BFS.getAvoidUnlit();
         boolean avoidUnlit3 = BFSconnection.getAvoidUnlit();
 
-        assertFalse(avoidUnlit && avoidUnlit2 && avoidUnlit3);
+        assertFalse(avoidUnlit && avoidUnlit3);
     }
 
     @Test
@@ -139,12 +131,10 @@ public class ResponseGeneratorControllerTest {
         responseGeneratorController.receiveArgs(50, 1, 2000, 0.05, options);
 
 
-        double maxGradient = beamSearch.getMaxGradient();
-        double maxGradient2 = beamSearchReturn.getMaxGradient();
+        double maxGradient = BFS.getMaxGradient();
         double maxGradient3 = BFSconnection.getMaxGradient();
 
         assertEquals(maxGradient, 0.05, 0.000001);
-        assertEquals(maxGradient2, 0.05, 0.000001);
         assertEquals(maxGradient3, 0.05, 0.000001);
     }
 
@@ -154,12 +144,10 @@ public class ResponseGeneratorControllerTest {
         responseGeneratorController.receiveArgs(50, 1, 2000, 0.67, options);
 
 
-        double maxGradient = beamSearch.getMaxGradient();
-        double maxGradient2 = beamSearchReturn.getMaxGradient();
+        double maxGradient = BFS.getMaxGradient();
         double maxGradient3 = BFSconnection.getMaxGradient();
 
         assertEquals(maxGradient, 0.67, 0.000001);
-        assertEquals(maxGradient2, 0.67, 0.000001);
         assertEquals(maxGradient3, 0.67, 0.000001);
     }
 

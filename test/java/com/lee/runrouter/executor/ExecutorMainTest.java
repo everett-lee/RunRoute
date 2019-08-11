@@ -2,7 +2,6 @@ package com.lee.runrouter.executor;
 
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BFSConnectionPath;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearch;
-import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearchReturnPath;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.SearchAlgorithm;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicMain;
@@ -38,10 +37,9 @@ public class ExecutorMainTest {
         this.elevationHeuristic = mock(ElevationHeuristicMain.class);
         this.linkedListToArray = mock(LinkedListToArray.class);
         this.beamSearch = mock(BeamSearch.class);
-        this.beamSearchReturn = mock(BeamSearchReturnPath.class);
         this.BFSconnection = mock(BFSConnectionPath.class);
         this.executor = new ExecutorMain(routeGenerator, graphBuilder, featuresHeuristic,
-                elevationHeuristic, linkedListToArray, beamSearch, beamSearchReturn, BFSconnection);
+                elevationHeuristic, linkedListToArray, beamSearch, BFSconnection);
     }
 
     @Test

@@ -19,6 +19,11 @@ import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import org.junit.Before;
 import org.junit.Test;
 
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static com.lee.runrouter.testhelpers.TestHelpers.*;
 
 public class ILSRepeated {
@@ -37,7 +42,7 @@ public class ILSRepeated {
     FeaturesHeuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
     GradientCalculator gradientCalculator;
-    ElevationHeuristic elevationSensitive;
+    ElevationHeuristic elevationHeursitic;
     ILSGraphSearch connectPathBFS;
     IteratedLocalSearch ilsBFS;
 
@@ -60,13 +65,25 @@ public class ILSRepeated {
         distanceCalculator = new HaversineCalculator();
         distanceHeuristic = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
 
+        List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("GRASS",
+                "DIRT", "GRAVEL"));
+        List<String> preferredHighways = new ArrayList<>(Arrays.asList("TRACK",
+                "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
+
         featuresHeuristic = new FeaturesHeuristicUsingDistance();
+
+        featuresHeuristic.setPreferredSurfaces(preferredSurfaces);
+        featuresHeuristic.setPreferredHighways(preferredHighways);
+
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         gradientCalculator = new SimpleGradientCalculator();
-        elevationSensitive = new ElevationHeuristicMain();
+
+        elevationHeursitic = new ElevationHeuristicMain();
+        elevationHeursitic.setOptions(true);
 
         connectPathBFS = new BFSConnectionPath(repo, distanceHeuristic,
-                featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationSensitive);
+                featuresHeuristic , edgeDistanceCalculator,
+                gradientCalculator, elevationHeursitic);
 
         ilsBFS = new IteratedLocalSearchMain(connectPathBFS);
 
@@ -77,25 +94,16 @@ public class ILSRepeated {
         double originalScore = calculateScore(morrish5k);
         double originalLength = calculateDistance(morrish5k);
         double target = 0;
-        int iterations = 10;
+        int iterations = 100;
 
         double totalLength = 0;
         double totalScore = 0;
 
         for (int i = 0; i < iterations; i++) {
-
             PathTuple in = getMorrish5k();
             PathTuple res = ilsBFS.iterate(in, target);
             totalScore += calculateScore(res);
-
-            double thisSCore = calculateScore(res);
-
-            if (thisSCore > 1000) {
-                break;
-            }
-
             totalLength += calculateDistance(res);
-
         }
 
         System.out.println("ORIGINAL LENGTH: " + originalLength);
@@ -110,7 +118,7 @@ public class ILSRepeated {
         double originalScore = calculateScore(morrish14k);
         double originalLength = calculateDistance(morrish14k);
         double target = 0;
-        int iterations = 50;
+        int iterations = 100;
 
         double totalLength = 0;
         double totalScore = 0;
@@ -118,6 +126,103 @@ public class ILSRepeated {
         for (int i = 0; i < iterations; i++) {
 
             PathTuple res = ilsBFS.iterate(getMorrish14k(), target);
+            totalScore += calculateScore(res);
+            totalLength += calculateDistance(res);
+        }
+
+        System.out.println("ORIGINAL LENGTH: " + originalLength);
+        System.out.println("ORIGINAL SCORE " + originalScore);
+
+        System.out.println("AFTER LENGTH (AVG): " + totalLength / iterations);
+        System.out.println("AFTER SCORE (AVG): " + totalScore / iterations);
+    }
+
+    @Test
+    public void testCraignair5k() {
+        double originalScore = calculateScore(craignair5k);
+        double originalLength = calculateDistance(craignair5k);
+        double target = 0;
+        int iterations = 100;
+
+        double totalLength = 0;
+        double totalScore = 0;
+
+        for (int i = 0; i < iterations; i++) {
+
+            PathTuple res = ilsBFS.iterate(getCraignair5k(), target);
+            totalScore += calculateScore(res);
+            totalLength += calculateDistance(res);
+        }
+
+        System.out.println("ORIGINAL LENGTH: " + originalLength);
+        System.out.println("ORIGINAL SCORE " + originalScore);
+
+        System.out.println("AFTER LENGTH (AVG): " + totalLength / iterations);
+        System.out.println("AFTER SCORE (AVG): " + totalScore / iterations);
+    }
+
+    @Test
+    public void testCraignair14k() {
+        double originalScore = calculateScore(craignair14k);
+        double originalLength = calculateDistance(craignair14k);
+        double target = 0;
+        int iterations = 100;
+
+        double totalLength = 0;
+        double totalScore = 0;
+
+        for (int i = 0; i < iterations; i++) {
+
+            PathTuple res = ilsBFS.iterate(getCraignair14k(), target);
+            totalScore += calculateScore(res);
+            totalLength += calculateDistance(res);
+        }
+
+        System.out.println("ORIGINAL LENGTH: " + originalLength);
+        System.out.println("ORIGINAL SCORE " + originalScore);
+
+        System.out.println("AFTER LENGTH (AVG): " + totalLength / iterations);
+        System.out.println("AFTER SCORE (AVG): " + totalScore / iterations);
+    }
+
+
+    @Test
+    public void testTulse5k() {
+        double originalScore = calculateScore(tulseHill5k);
+        double originalLength = calculateDistance(tulseHill5k);
+        double target = 0;
+        int iterations = 100;
+
+        double totalLength = 0;
+        double totalScore = 0;
+
+        for (int i = 0; i < iterations; i++) {
+
+            PathTuple res = ilsBFS.iterate(getTulse5k(), target);
+            totalScore += calculateScore(res);
+            totalLength += calculateDistance(res);
+        }
+
+        System.out.println("ORIGINAL LENGTH: " + originalLength);
+        System.out.println("ORIGINAL SCORE " + originalScore);
+
+        System.out.println("AFTER LENGTH (AVG): " + totalLength / iterations);
+        System.out.println("AFTER SCORE (AVG): " + totalScore / iterations);
+    }
+
+    @Test
+    public void tesTulse14k() {
+        double originalScore = calculateScore(getTulse14k());
+        double originalLength = calculateDistance(getTulse14k());
+        double target = 0;
+        int iterations = 100;
+
+        double totalLength = 0;
+        double totalScore = 0;
+
+        for (int i = 0; i < iterations; i++) {
+
+            PathTuple res = ilsBFS.iterate(getTulse14k(), target);
             totalScore += calculateScore(res);
             totalLength += calculateDistance(res);
         }

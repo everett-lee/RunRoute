@@ -87,17 +87,14 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
 
         featuresHeuristicMain = new FeaturesHeuristicUsingDistance();
-        featuresHeuristicSensitive = new FeaturesHeuristicUsingDistanceSensitive();
+
         featuresHeuristicMain.setPreferredSurfaces(preferredSurfaces);
         featuresHeuristicMain.setPreferredHighways(preferredHighways);
-        featuresHeuristicSensitive.setPreferredSurfaces(preferredSurfaces);
-        featuresHeuristicSensitive.setPreferredHighways(preferredHighways);
 
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         gradientCalculator = new SimpleGradientCalculator();
 
         elevationHeuristicMain = new ElevationHeuristicMain();
-        elevationHeuristicSensitive = new ElevationHeuristicSensitive();
         elevationHeuristicSensitive.setOptions(true);
 
         connectPathBFS = new BFSConnectionPath(repo, distanceHeuristic,

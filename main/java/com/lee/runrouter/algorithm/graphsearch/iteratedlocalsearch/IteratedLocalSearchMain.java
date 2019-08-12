@@ -12,7 +12,7 @@ import java.util.Date;
 @Qualifier("IteratedLocalSearchMain")
 public class IteratedLocalSearchMain implements IteratedLocalSearch {
     private ILSGraphSearch graphSearch;
-    private final long TIME_LIMIT = 3000L;
+    private final long TIME_LIMIT = 2500L;
     private int iterations;
     private int improvements;
 
@@ -36,11 +36,11 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
         double availableDistance = distanceToAdd; // distance left available to add to route
 
-        // begin by reversing the path
+        // begin by reversing the incoming path
         head = reverseList(head);
 
         int a = 1; // the starting node, indexed from 1
-        int r = 5; // number of nodes to remove
+        int r = 3; // number of nodes to remove
         while (elapsedTime <= TIME_LIMIT) {
             elapsedTime = (new Date()).getTime() - startTime;
 
@@ -51,7 +51,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             int pathSize = getPathSize(head);
             // reset if r greater than pathLength minus the start and end node
             if (r > pathSize - 2) {
-                r = 5;
+                r = 3;
             }
 
             // reset r if removed section plus index of the
@@ -64,7 +64,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             // extends past the final node
             if (a >= pathSize - 2) {
                 a = 1;
-                r = 5;
+                r = 3;
             }
 
             start = getStartPathSegment(head, a);
@@ -75,7 +75,6 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             double existingSegmentLength = calculateDistance(start, end); // does not include
             // start, includes end
             availableDistance += existingSegmentLength;
-
 
             PathTuple newSegment = null;
             if (availableDistance > 0) {
@@ -100,7 +99,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
             // new segment score is higher, so replace old path segment with the new one
             } else {
-
+//
 //                System.out.println("COMING FROM " + start.getPreviousNode());
 //                System.out.println("GOING TO " + end.getPreviousNode());
 //
@@ -133,14 +132,14 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
                 availableDistance = targetDistance - newDistance;
 
                 a = 1;
-                r = 5;
+                r = 3;
             }
         }
 
         System.out.println(this.iterations + " >>>>>> ITERATIONS");
         System.out.println(this.improvements + " >>>>>>>>> IMPROVEMENTS");
 
-        // reset the Map for the the next route
+        // reset the hashmap for the next round
         graphSearch.resetVisitedNodes();
         return head;
     }

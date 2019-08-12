@@ -14,6 +14,7 @@ import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeurist
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicSensitive;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
+import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicUsingDistance;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicUsingDistanceSensitive;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
@@ -64,11 +65,10 @@ public class IteratedLocalSearchMainAlgorithmTestBeam {
         distanceCalculator = new HaversineCalculator();
         distanceHeuristic = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
 
-        featuresHeuristic = new FeaturesHeuristicUsingDistanceSensitive();
+        featuresHeuristic = new FeaturesHeuristicUsingDistance();
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         gradientCalculator = new SimpleGradientCalculator();
-        elevationSensitive = new ElevationHeuristicSensitive();
-        elevationSensitive.setOptions(true);
+        elevationSensitive = new ElevationHeuristicMain();
 
         connectPathBeamSearch = new BeamSearchConnectionPath(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);

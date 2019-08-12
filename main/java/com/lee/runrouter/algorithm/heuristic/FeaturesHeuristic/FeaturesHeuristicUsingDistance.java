@@ -54,6 +54,7 @@ public class FeaturesHeuristicUsingDistance implements FeaturesHeuristic {
                 score += HIGHWAY_VALUE * distance;
             }
         }
+
         return score;
     }
 

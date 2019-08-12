@@ -27,7 +27,7 @@ import java.util.*;
 @Qualifier("BFSConnectionPath")
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final double MINIMUM_SCORING_DISTANCE = 550;
-    private final double DISTANCE_BONUS = 0.025;
+    private final double DISTANCE_BONUS = 0.05;
 
     private final double REPEATED_VISIT_DEDUCTION = 5; // score deduction for each repeat visit
     // to a Node or Way
@@ -134,9 +134,10 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                     continue; // skip to next where max length exceeded
                 }
 
-                //heuristicScore += addLengthScores(distanceToNext);
                 if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
                     heuristicScore += distanceToNext * DISTANCE_BONUS;
+                } else if (distanceToNext < 20) {
+                    heuristicScore -= 10;
                 }
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
@@ -190,12 +191,13 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         double score = 0;
 
         if (this.visitedWays.containsKey(selectedWay.getId())) {
-            score -= this.visitedWays.get(selectedWay.getId()) * 10000000;
+            score -= this.visitedWays.get(selectedWay.getId()) * 100;
         }
 
         if (this.visitedNodes.containsKey(connectingNode.getId())) {
             score -= Math.pow(REPEATED_VISIT_DEDUCTION, this.visitedNodes.get(connectingNode.getId()));
         }
+
         return score;
     }
 

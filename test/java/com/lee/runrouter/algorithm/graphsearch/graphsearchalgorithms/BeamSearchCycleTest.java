@@ -53,7 +53,7 @@ public class BeamSearchCycleTest {
         beamSearch = new BeamSearchCycle(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
-        saveRoutes = false;
+        saveRoutes = true;
     }
 
     @Test(timeout = 3000)

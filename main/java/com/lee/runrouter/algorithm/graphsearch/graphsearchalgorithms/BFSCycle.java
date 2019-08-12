@@ -26,7 +26,7 @@ import java.util.*;
 @Qualifier("BFSCycle")
 public class BFSCycle extends SearchAlgorithm implements GraphSearch {
     private final double MINIMUM_SCORING_DISTANCE = 550;
-    private final double DISTANCE_BONUS = 0.025;
+    private final double DISTANCE_BONUS = 0.05;
 
     private final double LOWER_SCALE = 0.90; // amount to scale upper lower bound on
     // run length by

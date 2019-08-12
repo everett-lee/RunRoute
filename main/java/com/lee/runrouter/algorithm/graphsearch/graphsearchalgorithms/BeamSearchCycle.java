@@ -27,7 +27,7 @@ import java.util.*;
 public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
     private final int BEAM_SIZE = 10000; // the max number of possible Nodes under review
     private final double MINIMUM_SCORING_DISTANCE = 500;
-    private final double DISTANCE_BONUS = 0.01;
+    private final double DISTANCE_BONUS = 0.025;
 
     private final double LOWER_SCALE = 0.90; // amount to scale upper lower bound on
     // run length by

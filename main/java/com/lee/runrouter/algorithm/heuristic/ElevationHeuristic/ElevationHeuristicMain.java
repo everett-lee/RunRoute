@@ -22,6 +22,7 @@ public class ElevationHeuristicMain implements ElevationHeuristic {
 
     @Override
     public double getScore(double gradient) {
+
         if (preferUphill) {
             // score increases in line with the gradient
             if (gradient > 0) {

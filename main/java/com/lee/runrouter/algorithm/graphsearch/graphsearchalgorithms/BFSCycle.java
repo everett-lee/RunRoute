@@ -30,7 +30,7 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
 
     private final double LOWER_SCALE = 0.90; // amount to scale upper lower bound on
     // run length by
-    private final double UPPER_SCALE = 1.15; // amount to scale upper bound on
+    private final double UPPER_SCALE = 1.10 ; // amount to scale upper bound on
     // run length by
 
     private final double REPEATED_VISIT_DEDUCTION = 0.15; // score deduction for each repeat visit
@@ -39,6 +39,8 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
     private PriorityQueue<PathTuple> queue;
     private Map<Long, Integer> visitedNodesOutbound; // counts number of visits to each Node
     private Map<Long, Integer> visitedNodesInbound; // counts number of visits to each Node
+    private Map<Long, Integer> visitedWaysOutbound; // counts number of visits to each Node
+    private Map<Long, Integer> visitedWaysInbound; // counts number of visits to each Node
     private long timeLimit = 1500;
 
     @Autowired
@@ -54,6 +56,8 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore().getSum()).reversed());
         this.visitedNodesOutbound = new HashMap<>();
         this.visitedNodesInbound = new HashMap<>();
+        this.visitedWaysOutbound = new HashMap<>();
+        this.visitedWaysInbound = new HashMap<>();
     }
 
     /**
@@ -76,6 +80,8 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
 
         visitedNodesOutbound = new HashMap<>();
         visitedNodesInbound = new HashMap<>();
+        this.visitedWaysOutbound = new HashMap<>();
+        this.visitedWaysInbound = new HashMap<>();
 
         double currentRouteLength;
         long startTime = System.currentTimeMillis(); // the algorithm is time-limited
@@ -113,6 +119,7 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
 
             // for each Way reachable from the the current Way
             for (ConnectionPair pair: this.repo.getConnectedWays(currentWay)) {
+
                 currentRouteLength = topTuple.getTotalLength();
                 heuristicScore = 0;
                 currentNode = topTuple.getPreviousNode(); // the last explored Node
@@ -155,6 +162,18 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                 // call helper function to deduct scores for repeat visits to Node/Way
                 heuristicScore += addRepeatedVisitScores(connectingNode, overHalf);
 
+
+
+                if (!overHalf) {
+                    if (visitedWaysOutbound.containsKey(selectedWay.getId())) {
+                        continue;
+                    }
+                } else {
+                    if (visitedWaysInbound.containsKey(selectedWay.getId())) {
+                        continue;
+                    }
+                }
+
                 double distanceScore = this.distanceFromOriginHeuristic
                         .getScore(connectingNode, repo.getOriginNode(),
                                 currentRouteLength, targetDistance);
@@ -170,6 +189,18 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                 addVisitedNode(connectingNode, overHalf);
 
                 elapsedTime = (new Date()).getTime() - startTime;
+
+                if (this.repo.getOriginWay().getId() != selectedWay.getId()) {
+                    if (!overHalf) {
+                        if (!visitedWaysOutbound.containsKey(selectedWay.getId())) {
+                            visitedWaysOutbound.put(selectedWay.getId(), 1);
+                        }
+                    } else {
+                        if (!visitedWaysInbound.containsKey(selectedWay.getId())) {
+                            visitedWaysInbound.put(selectedWay.getId(), 1);
+                        }
+                    }
+                }
             }
         }
 
@@ -208,15 +239,15 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
     private double addRepeatedVisitScores(Node connectingNode, boolean overHalf) {
         double score = 0;
 
-        if (!overHalf) {
-            if (visitedNodesOutbound.containsKey(connectingNode.getId())) {
-                score -= visitedNodesOutbound.get(connectingNode.getId()) * REPEATED_VISIT_DEDUCTION;
-            }
-        } else {
-            if (visitedNodesInbound.containsKey(connectingNode.getId())) {
-                score -= visitedNodesInbound.get(connectingNode.getId()) * REPEATED_VISIT_DEDUCTION;
-            }
-        }
+//        if (!overHalf) {
+//            if (visitedNodesOutbound.containsKey(connectingNode.getId())) {
+//                score -= visitedNodesOutbound.get(connectingNode.getId()) * REPEATED_VISIT_DEDUCTION;
+//            }
+//        } else {
+//            if (visitedNodesInbound.containsKey(connectingNode.getId())) {
+//                score -= visitedNodesInbound.get(connectingNode.getId()) * REPEATED_VISIT_DEDUCTION;
+//            }
+//        }
         return score;
     }
 

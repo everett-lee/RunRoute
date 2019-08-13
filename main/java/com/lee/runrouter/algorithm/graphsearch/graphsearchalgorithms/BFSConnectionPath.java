@@ -68,7 +68,6 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         double currentRouteLength;
         double upperBound = availableDistance + initialDistance; // the remaining distance for the route
 
-        // REPLACE WITH COPY OF START NODE  W/0 PRED
         queue.add(new PathTupleMain(null, originNode, originWay,
                 new ScorePair(0, 0), 0, initialDistance, 0));
 
@@ -136,8 +135,6 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
                 if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
                     heuristicScore += distanceToNext * DISTANCE_BONUS;
-                } else if (distanceToNext < 20) {
-                    heuristicScore -= 10;
                 }
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,

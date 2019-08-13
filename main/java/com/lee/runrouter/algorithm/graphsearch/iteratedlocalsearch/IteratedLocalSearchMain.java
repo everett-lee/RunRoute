@@ -40,7 +40,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         head = reverseList(head);
 
         int a = 1; // the starting node, indexed from 1
-        int r = 3; // number of nodes to remove
+        int r = 8; // number of nodes to remove
         while (elapsedTime <= TIME_LIMIT) {
             elapsedTime = (new Date()).getTime() - startTime;
 
@@ -51,7 +51,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             int pathSize = getPathSize(head);
             // reset if r greater than pathLength minus the start and end node
             if (r > pathSize - 2) {
-                r = 3;
+                r = 8;
             }
 
             // reset r if removed section plus index of the
@@ -64,7 +64,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             // extends past the final node
             if (a >= pathSize - 2) {
                 a = 1;
-                r = 3;
+                r = 8;
             }
 
             start = getStartPathSegment(head, a);
@@ -99,30 +99,30 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
             // new segment score is higher, so replace old path segment with the new one
             } else {
-//
-//                System.out.println("COMING FROM " + start.getPreviousNode());
-//                System.out.println("GOING TO " + end.getPreviousNode());
-//
-//                System.out.println();
-//                System.out.println("node(id:");
-//                PathTuple topi = start;
-//                while (topi != end) {
-//                    System.out.print(topi.getPreviousNode().getId() + ", ");
-//                    topi = topi.getPredecessor();
-//                }
-//                System.out.println(");out;");
-//
-//                System.out.println("THE OLD SEGMENT ^^^^^^^^^^");
-//
-//                System.out.println("node(id:");
-//
-//                topi = newSegment;
-//                while (topi != null) {
-//                    System.out.print(topi.getPreviousNode().getId() + ", ");
-//                    topi = topi.getPredecessor();
-//                }
-//                System.out.println(");out;");
-//                System.out.println("THE NEW SEGMENT ^^^^^^^^^^");
+
+                System.out.println("COMING FROM " + start.getPreviousNode());
+                System.out.println("GOING TO " + end.getPreviousNode());
+
+                System.out.println();
+                System.out.println("node(id:");
+                PathTuple topi = start;
+                while (topi != end) {
+                    System.out.print(topi.getPreviousNode().getId() + ", ");
+                    topi = topi.getPredecessor();
+                }
+                System.out.println(");out;");
+
+                System.out.println("THE OLD SEGMENT ^^^^^^^^^^");
+
+                System.out.println("node(id:");
+
+                topi = newSegment;
+                while (topi != null) {
+                    System.out.print(topi.getPreviousNode().getId() + ", ");
+                    topi = topi.getPredecessor();
+                }
+                System.out.println(");out;");
+                System.out.println("THE NEW SEGMENT ^^^^^^^^^^");
 
                 setImprovements(getImprovements() + 1);
                 insertSegment(start, end, newSegment);
@@ -132,7 +132,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
                 availableDistance = targetDistance - newDistance;
 
                 a = 1;
-                r = 3;
+                r = 8;
             }
         }
 

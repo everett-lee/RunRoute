@@ -26,21 +26,16 @@ import java.util.*;
 @Qualifier("BFSCycle")
 public class BFSCycle extends SearchAlgorithm implements GraphSearch {
     private final double MINIMUM_SCORING_DISTANCE = 550;
-    private final double DISTANCE_BONUS = 0.05;
+    private final double DISTANCE_BONUS = 0.025;
 
     private final double LOWER_SCALE = 0.90; // amount to scale upper lower bound on
     // run length by
     private final double UPPER_SCALE = 1.10 ; // amount to scale upper bound on
     // run length by
 
-    private final double REPEATED_VISIT_DEDUCTION = 0.15; // score deduction for each repeat visit
-    // to a Node or Way
-
     private PriorityQueue<PathTuple> queue;
-    private Map<Long, Integer> visitedNodesOutbound; // counts number of visits to each Node
-    private Map<Long, Integer> visitedNodesInbound; // counts number of visits to each Node
-    private Map<Long, Integer> visitedWaysOutbound; // counts number of visits to each Node
-    private Map<Long, Integer> visitedWaysInbound; // counts number of visits to each Node
+    private Set<Long> visitedWaysOutbound; // counts number of visits to each Node
+    private Set<Long> visitedWaysInbound; // counts number of visits to each Node
     private long timeLimit = 1500;
 
     @Autowired
@@ -54,10 +49,9 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
 
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore().getSum()).reversed());
-        this.visitedNodesOutbound = new HashMap<>();
-        this.visitedNodesInbound = new HashMap<>();
-        this.visitedWaysOutbound = new HashMap<>();
-        this.visitedWaysInbound = new HashMap<>();
+
+        this.visitedWaysOutbound = new HashSet<>();
+        this.visitedWaysInbound = new HashSet<>();
     }
 
     /**
@@ -78,10 +72,8 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore().getSum()).reversed());
 
-        visitedNodesOutbound = new HashMap<>();
-        visitedNodesInbound = new HashMap<>();
-        this.visitedWaysOutbound = new HashMap<>();
-        this.visitedWaysInbound = new HashMap<>();
+        this.visitedWaysOutbound = new HashSet<>();
+        this.visitedWaysInbound = new HashSet<>();
 
         double currentRouteLength;
         long startTime = System.currentTimeMillis(); // the algorithm is time-limited
@@ -160,16 +152,13 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
 
                 boolean overHalf = (currentRouteLength + distanceToNext) / targetDistance > 0.5;
                 // call helper function to deduct scores for repeat visits to Node/Way
-                heuristicScore += addRepeatedVisitScores(connectingNode, overHalf);
-
-
 
                 if (!overHalf) {
-                    if (visitedWaysOutbound.containsKey(selectedWay.getId())) {
+                    if (visitedWaysOutbound.contains(selectedWay.getId())) {
                         continue;
                     }
                 } else {
-                    if (visitedWaysInbound.containsKey(selectedWay.getId())) {
+                    if (visitedWaysInbound.contains(selectedWay.getId())) {
                         continue;
                     }
                 }
@@ -186,21 +175,10 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                         gradient);
                 this.queue.add(toAdd);
 
-                addVisitedNode(connectingNode, overHalf);
+                addVisitedWay(selectedWay, overHalf);
 
                 elapsedTime = (new Date()).getTime() - startTime;
 
-                if (this.repo.getOriginWay().getId() != selectedWay.getId()) {
-                    if (!overHalf) {
-                        if (!visitedWaysOutbound.containsKey(selectedWay.getId())) {
-                            visitedWaysOutbound.put(selectedWay.getId(), 1);
-                        }
-                    } else {
-                        if (!visitedWaysInbound.containsKey(selectedWay.getId())) {
-                            visitedWaysInbound.put(selectedWay.getId(), 1);
-                        }
-                    }
-                }
             }
         }
 
@@ -236,39 +214,19 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
         return null;
     }
 
-    private double addRepeatedVisitScores(Node connectingNode, boolean overHalf) {
-        double score = 0;
 
-//        if (!overHalf) {
-//            if (visitedNodesOutbound.containsKey(connectingNode.getId())) {
-//                score -= visitedNodesOutbound.get(connectingNode.getId()) * REPEATED_VISIT_DEDUCTION;
-//            }
-//        } else {
-//            if (visitedNodesInbound.containsKey(connectingNode.getId())) {
-//                score -= visitedNodesInbound.get(connectingNode.getId()) * REPEATED_VISIT_DEDUCTION;
-//            }
-//        }
-        return score;
-    }
 
-    private void addVisitedNode(Node connectingNode, boolean overHalf) {
-        // increase visited count for this Node if it is not in the
+    private void addVisitedWay(Way selectedWay, boolean overHalf) {
+        // increase visited count for this Way if it is not in the
         // origin set
-        if (!this.repo.getOriginWay().getNodeContainer().getNodes()
-                .contains(connectingNode.getId())) {
+        if (this.repo.getOriginWay().getId() != selectedWay.getId()) {
             if (!overHalf) {
-                if (!visitedNodesOutbound.containsKey(connectingNode.getId())) {
-                    visitedNodesOutbound.put(connectingNode.getId(), 1);
-                } else {
-                    int current = visitedNodesOutbound.get(connectingNode.getId());
-                    visitedNodesOutbound.put(connectingNode.getId(), current + 1);
+                if (!visitedWaysOutbound.contains(selectedWay.getId())) {
+                    visitedWaysOutbound.add(selectedWay.getId());
                 }
             } else {
-                if (!visitedNodesInbound.containsKey(connectingNode.getId())) {
-                    visitedNodesInbound.put(connectingNode.getId(), 1);
-                } else {
-                    int current = visitedNodesInbound.get(connectingNode.getId());
-                    visitedNodesInbound.put(connectingNode.getId(), current + 1);
+                if (!visitedWaysInbound.contains(selectedWay.getId())) {
+                    visitedWaysInbound.add(selectedWay.getId());
                 }
             }
         }

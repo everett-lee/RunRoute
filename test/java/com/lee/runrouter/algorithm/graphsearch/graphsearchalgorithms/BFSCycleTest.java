@@ -53,7 +53,7 @@ public class BFSCycleTest {
         BFS = new BFSCycle(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
-        saveRoutes = true;
+        saveRoutes = false;
     }
 
     @Test(timeout = 3000)

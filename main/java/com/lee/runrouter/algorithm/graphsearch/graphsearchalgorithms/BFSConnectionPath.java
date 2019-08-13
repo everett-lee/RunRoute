@@ -27,7 +27,7 @@ import java.util.*;
 @Qualifier("BFSConnectionPath")
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final double MINIMUM_SCORING_DISTANCE = 550;
-    private final double DISTANCE_BONUS = 0.05;
+    private final double DISTANCE_BONUS = 0.025;
 
     private final double REPEATED_VISIT_DEDUCTION = 5; // score deduction for each repeat visit
     // to a Node or Way
@@ -50,7 +50,6 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore().getHeuristicScore()).reversed());
         this.visitedWays = new Hashtable<>();
-        this.visitedNodes = new Hashtable<>();
     }
 
     @Override
@@ -109,6 +108,11 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();
                 double heuristicScore = 0;
+
+
+                if (this.visitedWays.containsKey(selectedWay.getId())) {
+                    continue;
+                }
 
                 double distanceFromSelectedToTarget
                         = distanceFromOriginHeuristic.getScore(connectingNode, targetNode,
@@ -187,13 +191,6 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     private double addRepeatedVisitScores(Way selectedWay, Node connectingNode) {
         double score = 0;
 
-        if (this.visitedWays.containsKey(selectedWay.getId())) {
-            score -= this.visitedWays.get(selectedWay.getId()) * 100;
-        }
-
-        if (this.visitedNodes.containsKey(connectingNode.getId())) {
-            score -= Math.pow(REPEATED_VISIT_DEDUCTION, this.visitedNodes.get(connectingNode.getId()));
-        }
 
         return score;
     }

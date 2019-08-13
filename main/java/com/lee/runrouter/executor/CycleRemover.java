@@ -24,7 +24,7 @@ public class CycleRemover {
 
         Map<Long, Integer> idToPositionLookUp = new HashMap<>();
         int listSize = nodes.size();
-        int maxCycleLength = 10;
+        int maxCycleLength = 3;
 
         // starting from four in
         for (int i = 3; i < listSize; i++) {

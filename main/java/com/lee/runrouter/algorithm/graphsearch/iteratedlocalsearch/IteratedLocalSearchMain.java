@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.HashSet;
 
 @Component
 @Qualifier("IteratedLocalSearchMain")
@@ -15,6 +16,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
     private final long TIME_LIMIT = 2500L;
     private int iterations;
     private int improvements;
+    private HashSet<Long> includedWays;
 
     @Autowired
     public IteratedLocalSearchMain(@Qualifier("BFSConnectionPath") ILSGraphSearch graphSearch) {
@@ -25,6 +27,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
     public PathTuple iterate(PathTuple head, double distanceToAdd) {
         setIterations(0);
         setImprovements(0);
+        populateAndSetIncludedNodes(head);
 
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
@@ -40,7 +43,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         head = reverseList(head);
 
         int a = 1; // the starting node, indexed from 1
-        int r = 8; // number of nodes to remove
+        int r = 1; // number of nodes to remove
         while (elapsedTime <= TIME_LIMIT) {
             elapsedTime = (new Date()).getTime() - startTime;
 
@@ -51,7 +54,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             int pathSize = getPathSize(head);
             // reset if r greater than pathLength minus the start and end node
             if (r > pathSize - 2) {
-                r = 8;
+                r = 1;
             }
 
             // reset r if removed section plus index of the
@@ -64,7 +67,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             // extends past the final node
             if (a >= pathSize - 2) {
                 a = 1;
-                r = 8;
+                r = 1;
             }
 
             start = getStartPathSegment(head, a);
@@ -82,11 +85,15 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
                 newSegment = graphSearch.connectPath(start.getPreviousNode(), start.getCurrentWay(),
                         end.getPreviousNode(), end.getCurrentWay(), availableDistance, start.getTotalLength(),
                         end.getTotalLength());
-                setIterations(getIterations() + 1);
+
             }
+
+            setIterations(getIterations() + 1);
+
 
             double oldSegmentScore = calculateScore(start, end);
             double newSegmentScore = calculateScore(newSegment, null);
+
 
             // if old segment had a better score, or a new segment was not found
             if (oldSegmentScore >= newSegmentScore || newSegment == null
@@ -110,29 +117,29 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
                     System.out.print(topi.getPreviousNode().getId() + ", ");
                     topi = topi.getPredecessor();
                 }
-                System.out.println(");out;");
+                System.out.println(topi.getPreviousNode().getId() + ");out;");
 
                 System.out.println("THE OLD SEGMENT ^^^^^^^^^^");
 
                 System.out.println("node(id:");
 
                 topi = newSegment;
-                while (topi != null) {
+                while (topi.getPredecessor() != null) {
                     System.out.print(topi.getPreviousNode().getId() + ", ");
                     topi = topi.getPredecessor();
                 }
-                System.out.println(");out;");
+                System.out.println(topi.getPreviousNode().getId() + ");out;");
                 System.out.println("THE NEW SEGMENT ^^^^^^^^^^");
 
                 setImprovements(getImprovements() + 1);
                 insertSegment(start, end, newSegment);
 
                 // update current node distances and target distance to reflect added segment
-                double newDistance = updateDistances(head);
+                double newDistance = updateDistancesAndIncludedWays(head);
                 availableDistance = targetDistance - newDistance;
 
                 a = 1;
-                r = 8;
+                r = 1;
             }
         }
 
@@ -140,17 +147,31 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         System.out.println(this.improvements + " >>>>>>>>> IMPROVEMENTS");
 
         // reset the hashmap for the next round
-        graphSearch.resetVisitedNodes();
+        graphSearch.resetVisitedWays();
         return head;
     }
 
-    private double updateDistances(PathTuple head) {
+
+    private void populateAndSetIncludedNodes(PathTuple head) {
+        includedWays = new HashSet<>();
+        while (head != null) {
+            includedWays.add(head.getCurrentWay().getId());
+            head = head.getPredecessor();
+        }
+        graphSearch.setIncludedWays(includedWays);
+    }
+
+    // update the route distance and inlcuded Ways to reflect
+    // newly added path segment
+    private double updateDistancesAndIncludedWays(PathTuple head) {
         double runningDistance = 0;
         double finalDistance = 0;
+        includedWays.clear();
 
         while (head != null) {
             head.setTotalLength(runningDistance);
             runningDistance += head.getSegmentLength();
+            includedWays.add(head.getCurrentWay().getId());
 
             // get the new final distance
             if (head.getPredecessor() == null) {

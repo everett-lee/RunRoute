@@ -192,7 +192,12 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
     }
 
     @Override
-    public void resetVisitedNodes() {
+    public void setIncludedWays(HashSet<Long> includedWays) {
+
+    }
+
+    @Override
+    public void resetVisitedWays() {
 
     }
 

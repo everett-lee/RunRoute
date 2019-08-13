@@ -26,15 +26,13 @@ import java.util.*;
 @Component
 @Qualifier("BFSConnectionPath")
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
-    private final double MINIMUM_SCORING_DISTANCE = 550;
+    private final double MINIMUM_SCORING_DISTANCE = 650;
     private final double DISTANCE_BONUS = 0.025;
 
-    private final double REPEATED_VISIT_DEDUCTION = 5; // score deduction for each repeat visit
-    // to a Node or Way
-
     private PriorityQueue<PathTuple> queue;
-    private Hashtable<Long, Integer> visitedWays;
-    private Hashtable<Long, Integer> visitedNodes;
+    private HashSet<Long> visitedWays; // ways visited in the course of this search
+    private HashSet<Long> includedWays; // ways included in the main path
+    private HashSet<Long> visitedNodes;
     private double minimumPathPercentage = 0.8;
 
     private final double TIME_LIMIT = 500;
@@ -49,7 +47,8 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore().getHeuristicScore()).reversed());
-        this.visitedWays = new Hashtable<>();
+        this.visitedWays = new HashSet<>();
+        this.visitedNodes = new HashSet<>();
     }
 
     @Override
@@ -59,8 +58,11 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore().getHeuristicScore()).reversed());
 
-        this.visitedWays = new Hashtable<>();
-        this.visitedNodes = new Hashtable<>();
+
+        this.visitedWays = new HashSet<>();
+        this.visitedNodes = new HashSet<>();
+
+
 
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
@@ -109,8 +111,15 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                 Way selectedWay = pair.getConnectingWay();
                 double heuristicScore = 0;
 
+                if (this.visitedWays.contains(selectedWay.getId())) {
+                    continue;
+                }
 
-                if (this.visitedWays.containsKey(selectedWay.getId())) {
+                if (this.includedWays.contains(selectedWay.getId())) {
+                    heuristicScore -= 3;
+                }
+
+                if (this.visitedNodes.contains(connectingNode.getId())){
                     continue;
                 }
 
@@ -118,11 +127,9 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                         = distanceFromOriginHeuristic.getScore(connectingNode, targetNode,
                         0, 0);
 
-                if (distanceFromSelectedToTarget > currentDistanceFromTarget * 1.25) {
+                if (distanceFromSelectedToTarget > currentDistanceFromTarget * 1.5) {
                     continue;
                 }
-
-                heuristicScore += addRepeatedVisitScores(selectedWay, connectingNode);
 
                 if (super.getAvoidUnlit()) {
                     if (!selectedWay.isLit()) {
@@ -158,42 +165,34 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                         score, distanceToNext, currentRouteLength + distanceToNext, gradient);
                 queue.add(toAdd);
 
-                if (!repo.getOriginWay().getNodeContainer().getNodes()
-                        .contains(connectingNode.getId())) {
-                    if (!this.visitedNodes.containsKey(connectingNode.getId())) {
-                        this.visitedNodes.put(connectingNode.getId(), 1);
-                    } else {
-                        int current = this.visitedNodes.get(connectingNode.getId());
-                        this.visitedNodes.put(connectingNode.getId(), current + 1);
-                    }
+                // add this way to the visited list
+                if (!this.visitedWays.contains(selectedWay.getId())) {
+                    this.visitedWays.add(selectedWay.getId());
                 }
 
-                if (!this.visitedWays.containsKey(selectedWay.getId())) {
-                    this.visitedWays.put(selectedWay.getId(), 1);
-                } else {
-                    int current = this.visitedWays.get(selectedWay.getId());
-                    this.visitedWays.put(selectedWay.getId(), current + 1);
+                if (!this.visitedNodes.contains(connectingNode)) {
+                    this.visitedNodes.add(connectingNode.getId());
                 }
 
                 elapsedTime = (new Date()).getTime() - startTime;
             }
         }
 
-        return new PathTupleMain(null, null, null, new ScorePair(-1, -1),
+        return new PathTupleMain(null, null, null, new ScorePair(-1, -10000),
                 -1, -1, -1);
     }
 
     @Override
-    public void resetVisitedNodes() {
-
+    public void setIncludedWays(HashSet<Long> includedWays) {
+        this.includedWays = includedWays;
     }
 
-    private double addRepeatedVisitScores(Way selectedWay, Node connectingNode) {
-        double score = 0;
-
-
-        return score;
+    @Override
+    public void resetVisitedWays() {
+        this.visitedWays = new HashSet<>();
+        this.visitedNodes = new HashSet<>();
     }
+
 
     public boolean checkMinLength(PathTuple head) {
         int count = 0;

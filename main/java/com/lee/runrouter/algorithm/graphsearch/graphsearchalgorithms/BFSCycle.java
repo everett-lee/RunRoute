@@ -101,7 +101,7 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
             currentRouteLength = topTuple.getTotalLength();
             double heuristicScore;
 
-            // return the first route to exceed the minimum length requirement.
+            // return the first valid cycle to exceed the minimum length requirement.
             if (currentRouteLength > lowerBound) {
                 PathTuple result = returnValidPath(topTuple, currentNode, currentWay);
                 if (result != null) {
@@ -160,6 +160,8 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                 } else {
                     if (visitedWaysInbound.contains(selectedWay.getId())) {
                         continue;
+                    } else if (visitedWaysOutbound.contains(selectedWay.getId())) {
+                        heuristicScore -= 3;
                     }
                 }
 
@@ -184,7 +186,7 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
 
         // null object returned in the event of an error
         return new PathTupleMain(null, null, null,
-                new ScorePair(-1, -1), -1,
+                new ScorePair(-1, -10000), -1,
                 -1, -1);
     }
 

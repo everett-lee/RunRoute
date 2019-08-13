@@ -16,5 +16,7 @@ public interface QueryBuilder {
 
     public void setHighWayOptions(boolean[] opts);
 
+    public void setRunLength(double distance);
+
     public PreparedStatement getPreparedStament();
 }

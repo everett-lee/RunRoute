@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class WayQueryBuilderCombinedTest {
+public class WayQueryBuilderWithinTest {
     QueryDirector qd;
     BBCalculator calc;
     QueryBuilder qb;
@@ -15,7 +15,6 @@ public class WayQueryBuilderCombinedTest {
     // the PostGIS SQL query
     private final String SELECT = "SELECT id, tags, nodes, length, coords, startElevation, endElevation \n";
     private final String FROM = "\tFROM lineCombinedWithWay \n";
-    private final String BB = "\tWHERE l.way && ST_Transform( ST_MakeEnvelope(?,?,?,?, 4326),4326)\n";
     private final String ROAD_OPTIONS = "\tAND ((highway IN ('trunk', 'primary', 'secondary', 'tertiary', 'unclassified', 'residential', 'living_street', 'service', 'pedestrian', 'track', 'road', 'footway', 'bridleway', 'steps', 'path') \n";
     private final String FOOT = "\tAND (foot <> 'no' OR foot IS NULL))";
     private final String END = "\tOR (highway='cycleway' and foot='yes'))";
@@ -23,20 +22,20 @@ public class WayQueryBuilderCombinedTest {
 
     @Before
     public void setUp() {
-        qb = new WayQueryBuilderEnvelope();
-        calc = new ScaledBBCalculator();
-        qd = new WayQueryDirectorEnvelope(qb, calc);
+        qb = new WayQueryBuilderWithin();
+        qd = new WayQueryDirectorWithin(qb, calc);
 
         sql = SELECT + FROM;
     }
 
     @Test
     public void testPreparedStatementCoordsCorrectOne() {
-        qd.buildQuery(52, 4, 5000);
-        double[] BBCords = calc.calcBoundingBox(52, 4, 5000);
+        double runLength = 5000;
+        qd.buildQuery(52, 4, runLength);
+        double[] origin = {52, 4};
 
-        String newBB = String.format("\tWHERE way && ST_Transform( ST_MakeEnvelope(%s,%s,%s,%s, 4326),4326)\n",
-                BBCords[0], BBCords[1], BBCords[2], BBCords[3]);
+        String newBB = String.format("\tWHERE ST_DWithin(way, ST_MakePoint(%s, %s)::geography, %s)\n",
+                origin[1], origin[0], runLength);
 
         sql += newBB + ROAD_OPTIONS + FOOT + END;
 
@@ -46,11 +45,12 @@ public class WayQueryBuilderCombinedTest {
 
     @Test
     public void testPreparedStatementCoordsCorrectTwo() {
-        qd.buildQuery(25, 0, 0.2);
-        double[] BBCords = calc.calcBoundingBox(25, 0, 0.2);
+        double runLength = 0.2;
+        qd.buildQuery(25, 0, runLength);
+        double[] origin = {25, 0};
 
-        String newBB = String.format("\tWHERE way && ST_Transform( ST_MakeEnvelope(%s,%s,%s,%s, 4326),4326)\n",
-                BBCords[0], BBCords[1], BBCords[2], BBCords[3]);
+        String newBB = String.format("\tWHERE ST_DWithin(way, ST_MakePoint(%s, %s)::geography, %s)\n",
+                origin[1], origin[0], runLength);
 
         sql += newBB + ROAD_OPTIONS + FOOT + END;
 
@@ -60,16 +60,15 @@ public class WayQueryBuilderCombinedTest {
 
     @Test
     public void testPreparedStatementOptionsCorrectOne() {
-
-        double[] BBCords = calc.calcBoundingBox(50, 0, 5);
-
         qd.setOptions(new boolean[] {true, false, false, false, false, false, false, false, false,
                 false, false, false, false, true, true}); // set the new options
-        qd.buildQuery(50, 0, 5);
+        double runLength = 5;
 
+        qd.buildQuery(25, 0, runLength);
+        double[] origin = {25, 0};
 
-        String newBB = String.format("\tWHERE way && ST_Transform( ST_MakeEnvelope(%s,%s,%s,%s, 4326),4326)\n",
-                BBCords[0], BBCords[1], BBCords[2], BBCords[3]);
+        String newBB = String.format("\tWHERE ST_DWithin(way, ST_MakePoint(%s, %s)::geography, %s)\n",
+                origin[1], origin[0], runLength);
 
         String newRoadOptions = "\tAND ((highway IN ('trunk', '', '', ''," +
                 " '', '', '', '', '', '', '', '', '', 'steps', 'path') \n";
@@ -83,16 +82,15 @@ public class WayQueryBuilderCombinedTest {
 
     @Test
     public void testPreparedStatementOptionsCorrectTwo() {
-
-        double[] BBCords = calc.calcBoundingBox(50, 0, 5);
-
         qd.setOptions(new boolean[] {false, false, false, false, false, false, false, false, false,
                 false, false, false, false, false, false}); // set the new options
-        qd.buildQuery(50, 0, 5);
 
+        double runLength = 5;
+        qd.buildQuery(50, 0, runLength);
+        double[] origin = {50, 0};
 
-        String newBB = String.format("\tWHERE way && ST_Transform( ST_MakeEnvelope(%s,%s,%s,%s, 4326),4326)\n",
-                BBCords[0], BBCords[1], BBCords[2], BBCords[3]);
+        String newBB = String.format("\tWHERE ST_DWithin(way, ST_MakePoint(%s, %s)::geography, %s)\n",
+                origin[1], origin[0], runLength);
 
         String newRoadOptions = "\tAND ((highway IN ('', '', '', ''," +
                 " '', '', '', '', '', '', '', '', '', '', '') \n";

@@ -7,12 +7,13 @@ import org.springframework.stereotype.Component;
 import java.sql.*;
 
 /**
- * Builder class for the PostGIS query to retrieve details for ways contained within the bounding box
+ * Builder class for the PostGIS query to retrieve details for ways contained within the bounding box.
+ * It queries a combined table where previously a join of two tables was used.
  * The query is also assigned the correct configuration of road options.
  */
 @Component
-@Qualifier("WayQueryBuilder")
-public class WayQueryBuilder implements QueryBuilder {
+@Qualifier("WayQueryBuilderEnvelope")
+public class WayQueryBuilderEnvelope implements QueryBuilder {
     private Connection conn;
     private String sql;
     private PreparedStatement preparedStatement;
@@ -23,32 +24,21 @@ public class WayQueryBuilder implements QueryBuilder {
             "footway", "bridleway", "steps", "path"};
 
     // the PostGIS SQL query
-    private final String SELECT_ID_TAGS_NODES = "SELECT w.id, w.tags, w.nodes, \n";
-    private final String SELECT_LENGTH = "\tST_Length(l.way::geography) AS length, \n";
-    private final String SELECT_CORDS = "\tST_AsText(l.way) AS coords, \n";
-    private final String SELECT_START_ELEVATION = "\t(SELECT ST_Value(rast, ST_SetSRID(ST_StartPoint(l.way),4326)) as startElevation\n" +
-            "\tFROM elevation\n" +
-            "\tWHERE ST_Intersects(rast, ST_SetSRID(ST_StartPoint(l.way),4326)) limit 1), \n";
-    private final String SELECT_END_ELEVATION = "\t(SELECT ST_Value(rast, ST_SetSRID(ST_EndPoint(l.way),4326)) as endElevation \n" +
-            "\tFROM elevation\n" +
-            "\tWHERE ST_Intersects(rast, ST_SetSRID(ST_EndPoint(l.way),4326)) limit 1) \n";
-    private final String FROM = "\tFROM planet_osm_ways w \n";
-    private final String JOIN = "\tJOIN  planet_osm_line l ON l.osm_id = w.id\n";
-    private final String BB = "\tAND l.way && ST_Transform( ST_MakeEnvelope(?,?,?,?, 4326),4326)\n";
-    private final String ROAD_OPTIONS = "\tAND ((l.highway IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) \n";
-    private final String FOOT = "\tAND (l.foot <> 'no' OR l.foot IS NULL))";
-    private final String END = "\tOR (l.highway='cycleway' and l.foot='yes'))";
+    private final String SELECT = "SELECT id, tags, nodes, length, coords, startElevation, endElevation \n";
+    private final String FROM = "\tFROM lineCombinedWithWay \n";
+    private final String BB = "\tWHERE way && ST_Transform( ST_MakeEnvelope(?,?,?,?, 4326),4326)\n";
+    private final String ROAD_OPTIONS = "\tAND ((highway IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) \n";
+    private final String FOOT = "\tAND (foot <> 'no' OR foot IS NULL))";
+    private final String END = "\tOR (highway='cycleway' and foot='yes'))";
 
-    public WayQueryBuilder() {
+    public WayQueryBuilderEnvelope() {
         conn = DBconnection.getInstance().getConnection();
         reset();
     }
 
     @Override
     public void reset() {
-        sql = SELECT_ID_TAGS_NODES + SELECT_LENGTH + SELECT_CORDS +
-                SELECT_START_ELEVATION + SELECT_END_ELEVATION + FROM + JOIN + BB +
-                ROAD_OPTIONS + FOOT + END;
+        sql = SELECT + FROM + BB + ROAD_OPTIONS + FOOT + END;
         try {
             preparedStatement =
                     conn.prepareStatement(sql);
@@ -87,6 +77,10 @@ public class WayQueryBuilder implements QueryBuilder {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void setRunLength(double distance) {
     }
 
     @Override

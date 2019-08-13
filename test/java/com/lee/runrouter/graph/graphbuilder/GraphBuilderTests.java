@@ -22,7 +22,7 @@ public class GraphBuilderTests {
     @Before
     public void setUp() {
         mockWayResults = mock(ResultSet.class);
-        mockWayQueryDirector = mock(WayQueryDirector.class);
+        mockWayQueryDirector = mock(WayQueryDirectorEnvelope.class);
         // query director should return the ResultSet
         when(mockWayQueryDirector.getResults()).thenReturn(mockWayResults);
 

@@ -12,19 +12,18 @@ import org.springframework.stereotype.Component;
  * and retrieve the returned ResultSet.
  */
 @Component
-@Qualifier("WayQueryDirector")
-public class WayQueryDirector extends QueryDirector {
+@Qualifier("WayQueryDirectorWithin")
+public class WayQueryDirectorWithin extends QueryDirector {
     @Autowired
-    public WayQueryDirector(@Qualifier("WayQueryBuilderCombined") QueryBuilder qb, BBCalculator distanceCalc) {
+    public WayQueryDirectorWithin(@Qualifier("WayQueryBuilderWithin") QueryBuilder qb, BBCalculator distanceCalc) {
         super(qb, distanceCalc);
     }
 
     public void buildQuery(double startLat, double startLon, double runLength) {
-        double[] BBCoords = distanceCalc.calcBoundingBox(startLat, startLon, runLength);
         double[] origin = new double[] {startLat, startLon};
-
         qb.reset();
-        qb.setBBCoords(BBCoords, origin);
+        qb.setBBCoords(null, origin);
+        qb.setRunLength(runLength);
         qb.setHighWayOptions(this.options);
         this.ps = qb.getPreparedStament();
 

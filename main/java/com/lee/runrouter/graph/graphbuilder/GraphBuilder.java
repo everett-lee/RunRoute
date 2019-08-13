@@ -22,7 +22,7 @@ public class GraphBuilder {
      * Constructs Way objects from the ResultSet returned by the QueryDirector class and adds them
      * to the repository.
      *
-     * @param wayDirector the WayQueryDirector class. Encapsulates PostGIS SQL query for retrieving
+     * @param wayDirector the WayQueryDirectorEnvelope class. Encapsulates PostGIS SQL query for retrieving
      *                    Ways matching the user-provided parameters
      * @param originParser  builds and executes PostGIS query to retrieve ID
      *                      corresponding to the originating way of the route.
@@ -30,7 +30,7 @@ public class GraphBuilder {
      * @param repo repository of Way objects and their associated nodes
      */
     @Autowired
-    public GraphBuilder(@Qualifier("WayQueryDirector") QueryDirector wayDirector,
+    public GraphBuilder(@Qualifier("WayQueryDirectorEnvelope") QueryDirector wayDirector,
                         OriginParser originParser, WayBuilder wayBuilder, ElementRepo repo) {
         this.wayDirector = wayDirector;
         this.originParser = originParser;

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ScaledBBCalculator implements BBCalculator {
     private final double EARTH_RADIUS_M = 6371000;
-    private final double SCALE_DOWN = 0.9;
+    private final double SCALE_DOWN = 1;
 
     public double[] calcBoundingBox(double startLat, double startLon, double runLength) {
         runLength /= 2; // shift coordinates 0.5 * run length in each direction

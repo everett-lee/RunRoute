@@ -82,6 +82,11 @@ public class OriginQueryBuilder implements QueryBuilder {
     }
 
     @Override
+    public void setRunLength(double distance) {
+
+    }
+
+    @Override
     public PreparedStatement getPreparedStament() {
         return this.preparedStatement;
     }

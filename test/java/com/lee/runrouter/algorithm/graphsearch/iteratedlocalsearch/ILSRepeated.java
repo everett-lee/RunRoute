@@ -47,15 +47,12 @@ public class ILSRepeated {
     IteratedLocalSearch ilsBFS;
 
     {
-        morrish5k = getMorrish5k();
-        morrish14k = getMorrish14k();
-        morrish21k = getMorrish21k();
-        craignair5k = getCraignair5k();
-        craignair14k = getCraignair14k();
-        craignair21k = getCraignair21k();
-        tulseHill5k = getTulse5k();
-        tulseHill14k = getTulse14k();
-        tulseHill21k = getTulse21k();
+        morrish5k = getMorrish5kFeaturesFlat();
+        morrish14k = getMorrish14kFeaturesFlat();
+        craignair5k = getCraignair5kFeaturesFlat();
+        craignair14k = getCraignair14kFeaturesFlat();
+        tulseHill5k = getTulse5keaturesFlat();
+        tulseHill14k = getTulse14keaturesFlat();
 
         repo = getRepo();
     }
@@ -95,17 +92,20 @@ public class ILSRepeated {
         double originalLength = calculateDistance(morrish5k);
         double target = 0;
         int iterations = 100;
+        int improvements = 0;
 
         double totalLength = 0;
         double totalScore = 0;
 
         for (int i = 0; i < iterations; i++) {
-            PathTuple in = getMorrish5k();
+            PathTuple in = getMorrish5kFeaturesFlat();
             PathTuple res = ilsBFS.iterate(in, target);
             totalScore += calculateScore(res);
             totalLength += calculateDistance(res);
+            improvements += ilsBFS.getImprovements();
         }
 
+        System.out.println("THE NUMBER OF IMPROVED " + improvements);
         System.out.println("ORIGINAL LENGTH: " + originalLength);
         System.out.println("ORIGINAL SCORE " + originalScore);
 
@@ -119,17 +119,21 @@ public class ILSRepeated {
         double originalLength = calculateDistance(morrish14k);
         double target = 0;
         int iterations = 100;
+        int improvements = 0;
 
         double totalLength = 0;
         double totalScore = 0;
 
         for (int i = 0; i < iterations; i++) {
 
-            PathTuple res = ilsBFS.iterate(getMorrish14k(), target);
+            PathTuple res = ilsBFS.iterate(getMorrish14kFeaturesFlat(), target);
             totalScore += calculateScore(res);
             totalLength += calculateDistance(res);
+            improvements += ilsBFS.getImprovements();
         }
 
+
+        System.out.println("THE NUMBER OF IMPROVED " + improvements);
         System.out.println("ORIGINAL LENGTH: " + originalLength);
         System.out.println("ORIGINAL SCORE " + originalScore);
 

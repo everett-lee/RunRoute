@@ -61,6 +61,25 @@ public class TestHelpers {
         return route;
     }
 
+    static public PathTuple getMorrish5kFeaturesFlat() {
+        PathTuple route = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn
+                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/morrish5kWithFeaturesFlat.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            route = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return route;
+    }
+
 
     static public PathTuple getMorrish5kFeaturesUphill() {
         PathTuple route = null;
@@ -86,6 +105,26 @@ public class TestHelpers {
         // deserialise test path used for testing.
         try {
             FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/morrish14k.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            route = (PathTuple) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return route;
+    }
+
+
+    static public PathTuple getMorrish14kFeaturesFlat() {
+        PathTuple route = null;
+        // deserialise test path used for testing.
+        try {
+            FileInputStream fileIn
+                    = new FileInputStream("/home/lee/project/app/runrouter/src/savedRoutes/morrish14kWithFeaturesFlat.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             route = (PathTuple) in.readObject();
             in.close();

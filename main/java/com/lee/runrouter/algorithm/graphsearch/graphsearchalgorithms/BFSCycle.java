@@ -25,17 +25,20 @@ import java.util.*;
 @Component
 @Qualifier("BFSCycle")
 public class BFSCycle extends SearchAlgorithm implements GraphSearch {
-    private final double MINIMUM_SCORING_DISTANCE = 550;
+    private final double MINIMUM_SCORING_DISTANCE = 550; // the minimum travelled
+    // along a Way before the distance bonus is applied
     private final double DISTANCE_BONUS = 0.025;
 
     private final double LOWER_SCALE = 0.90; // amount to scale upper lower bound on
     // run length by
     private final double UPPER_SCALE = 1.10 ; // amount to scale upper bound on
     // run length by
+    private final double REPEATED_WAY_VISIT_PENALTY = 3; // a penalty applied for
+    // revisiting a way traversed in the course of the outbound route
 
     private PriorityQueue<PathTuple> queue;
-    private Set<Long> visitedWaysOutbound; // counts number of visits to each Node
-    private Set<Long> visitedWaysInbound; // counts number of visits to each Node
+    private Set<Long> visitedWaysOutbound; // ways visited in the outbound leg of this search
+    private Set<Long> visitedWaysInbound; // ways visited in the inbound leg of this search
     private long timeLimit = 1500;
 
     @Autowired
@@ -57,8 +60,9 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
     /**
      * Method for generating a route of the specified length,
      * that selects a path based on the given preferences.
-     * The method returns as soon as a valid route of the minimum
-     * length has been generated
+     * This is achieved by conducting a greedy best first selection of ways
+     * ot form the required route. The method returns as soon as a valid
+     * route of the minimuh required length has been generated
      *
      * @param root           the Way at which the run begins
      * @param coords         the coordinates at which the run begins
@@ -150,8 +154,8 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
 
                 heuristicScore += super.addScores(selectedWay, distanceToNext, gradient);
 
+                // whether the distance travelled is over half of the target
                 boolean overHalf = (currentRouteLength + distanceToNext) / targetDistance > 0.5;
-                // call helper function to deduct scores for repeat visits to Node/Way
 
                 if (!overHalf) {
                     if (visitedWaysOutbound.contains(selectedWay.getId())) {
@@ -161,7 +165,7 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                     if (visitedWaysInbound.contains(selectedWay.getId())) {
                         continue;
                     } else if (visitedWaysOutbound.contains(selectedWay.getId())) {
-                        heuristicScore -= 3;
+                        heuristicScore -= REPEATED_WAY_VISIT_PENALTY;
                     }
                 }
 
@@ -195,6 +199,16 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
         this.timeLimit = timeLimit;
     }
 
+
+    /***
+     * Checks to see if the current path is eligible and returns it if
+     * it is.
+     * @param topTuple Tuple representing the last section of this path
+     * @param currentNode the last visited Node
+     * @param currentWay the last visited Way
+     * @return a PathTuple containing the path segment linking the origin
+     * and target ways
+     */
     private PathTuple returnValidPath(PathTuple topTuple, Node currentNode, Way currentWay) {
         // the route has returned to the origin
         if (topTuple.getCurrentWay().getId() == repo.getOriginWay().getId()) {
@@ -217,9 +231,8 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
     }
 
 
-
     private void addVisitedWay(Way selectedWay, boolean overHalf) {
-        // increase visited count for this Way if it is not in the
+        // add this Way to set of visited if it is not in the
         // origin set
         if (this.repo.getOriginWay().getId() != selectedWay.getId()) {
             if (!overHalf) {

@@ -20,22 +20,27 @@ import java.util.*;
 /**
  * Variant of the BFS algorithm that restricts the next selected Way
  * to those closer to the starting point than the previous. It is used
- * to complete the circuit and return to the route's starting position
- * following execution of the BFS.
+ * to greedily search for high scoring Ways which connect the starting position
+ * to the target Way.
  */
 @Component
 @Qualifier("BFSConnectionPath")
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
-    private final double MINIMUM_SCORING_DISTANCE = 650;
+    private final double MINIMUM_SCORING_DISTANCE = 650; // the minimum travelled
+    // along a Way before the distance bonus is applied
     private final double DISTANCE_BONUS = 0.025;
-    final double REPEATED_WAY_VISIT_PENALTY = 10;
-    final double MAX_DISTANCE_FROM_TARGET_MULTIPLIER = 1.5;
+    final double REPEATED_WAY_VISIT_PENALTY = 10; // deducted from heuristic score
+    // for visits to Ways included in the main route
+    final double MAX_DISTANCE_FROM_TARGET_MULTIPLIER = 1.5; // maximum increase in
+    // distance to target compared to previous node in the path's position
 
     private PriorityQueue<PathTuple> queue;
     private HashSet<Long> visitedWays; // ways visited in the course of this search
+    private HashSet<Long> visitedNodes; // nodes visited in the course of this search
     private HashSet<Long> includedWays; // ways included in the main path
-    private HashSet<Long> visitedNodes;
-    private double minimumPathPercentage = 0.8;
+    private double minimumPathPercentage = 0.8; // length of this path segment as
+    // a percentage of a the removed path segment required to serve as a valid
+    // replacement
 
     private final double TIME_LIMIT = 500;
 
@@ -57,16 +62,17 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     public PathTuple connectPath(Node originNode, Way originWay, Node targetNode, Way targetWay,
                                  double availableDistance, double initialDistance, double targetDistance) {
 
-        this.queue = new PriorityQueue<>(Comparator
+        queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore().getHeuristicScore()).reversed());
 
-        this.visitedWays = new HashSet<>();
-        this.visitedNodes = new HashSet<>();
+        visitedWays = new HashSet<>();
+        visitedNodes = new HashSet<>();
 
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
         double currentRouteLength;
-        double upperBound = availableDistance + initialDistance; // the remaining distance for the route
+        // the remaining distance for the route
+        double upperBound = availableDistance + initialDistance;
 
         queue.add(new PathTupleMain(null, originNode, originWay,
                 new ScorePair(0, 0), 0, initialDistance, 0));
@@ -81,7 +87,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
             if (topTuple.getCurrentWay().getId() == targetWay.getId()) {
                 PathTuple result = returnValidPath(topTuple, currentNode, currentWay
                         , targetNode, targetWay, targetDistance);
-
+                // return this path if it is valid
                 if (result != null) {
                     return result;
                 }
@@ -100,11 +106,12 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                 Way selectedWay = pair.getConnectingWay();
                 double heuristicScore = 0;
 
+                // continue where already visited
                 if (wayOrNodeInClosedList(selectedWay, connectingNode)) {
                     continue;
                 }
 
-                if (this.includedWays.contains(selectedWay.getId())) {
+                if (includedWays.contains(selectedWay.getId())) {
                     heuristicScore -= REPEATED_WAY_VISIT_PENALTY;
                 }
 
@@ -117,6 +124,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                     continue;
                 }
 
+                // skip this Way if unlit when lighting is required
                 if (super.getAvoidUnlit()) {
                     if (!selectedWay.isLit()) {
                         continue;
@@ -130,6 +138,8 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                     continue; // skip to next where max length exceeded
                 }
 
+
+                // apply the bonus for longer Ways
                 if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
                     heuristicScore += distanceToNext * DISTANCE_BONUS;
                 }
@@ -141,7 +151,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                     continue;
                 }
 
-                // call private method to add scores
+                // call private method to add heuristic scores
                 heuristicScore += addScores(selectedWay, distanceToNext, gradient);
 
                 ScorePair score = new ScorePair(0, heuristicScore);
@@ -161,7 +171,18 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                 -1, -1, -1);
     }
 
-
+    /***
+     * Checks to see if the current path is eligible and returns it if
+     * it is.
+     * @param topTuple Tuple representing the last section of this path
+     * @param currentNode the last visited Node
+     * @param currentWay the last visited Way
+     * @param targetNode the target Node of this segment
+     * @param targetWay the target Way of this segment
+     * @param targetDistance the required distance for this path segment
+     * @return a PathTuple containing the path segment linking the origin
+     * and target ways
+     */
     private PathTuple returnValidPath(PathTuple topTuple, Node currentNode, Way currentWay,
                                       Node targetNode, Way targetWay, double targetDistance) {
         ScorePair finalScore = topTuple.getSegmentScore();
@@ -185,20 +206,20 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     }
 
 
+    // Updates the set of visited Ways and Nodes
     private void addToClosedLists(Way selectedWay, Node connectingNode) {
-        // add this way to the visited list
-        if (!this.visitedWays.contains(selectedWay.getId())) {
-            this.visitedWays.add(selectedWay.getId());
+        if (!visitedWays.contains(selectedWay.getId())) {
+            visitedWays.add(selectedWay.getId());
         }
 
-        if (!this.visitedNodes.contains(connectingNode)) {
-            this.visitedNodes.add(connectingNode.getId());
+        if (!visitedNodes.contains(connectingNode)) {
+            visitedNodes.add(connectingNode.getId());
         }
     }
 
     private boolean wayOrNodeInClosedList(Way selectedWay, Node connectingNode) {
-        return this.visitedWays.contains(selectedWay.getId()) ||
-                this.visitedNodes.contains(connectingNode.getId());
+        return visitedWays.contains(selectedWay.getId()) ||
+                visitedNodes.contains(connectingNode.getId());
     }
 
     @Override
@@ -213,15 +234,19 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     }
 
 
+    // check the length of the path segment contains
+    // at least some minimum number of nodes to
+    // avoid reducing the path size     significantly
     public boolean checkMinLength(PathTuple head) {
         int count = 0;
+        final int MIN_LENGTH = 3;
 
-        while (head != null && count <= 3) {
+        while (head != null && count <= MIN_LENGTH) {
             count++;
             head = head.getPredecessor();
         }
 
-        return (count >= 3);
+        return (count >= MIN_LENGTH);
     }
 
     public void setMinimumPathPercentage(double minimumPathPercentage) {

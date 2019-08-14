@@ -16,18 +16,31 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
     private final long TIME_LIMIT = 2500L;
     private int iterations;
     private int improvements;
-    private HashSet<Long> includedWays;
+    private HashSet<Long> includedWays; // Ways included in the current Path
 
     @Autowired
     public IteratedLocalSearchMain(@Qualifier("BFSConnectionPath") ILSGraphSearch graphSearch) {
         this.graphSearch = graphSearch;
     }
 
+    /**
+     * Iterates over a linked list of PathTuples, representing route generated
+     * by the greedy best-first search (BFS algorithm, and removes segments of
+     * increasing length. A BFS is then used to 'closed the gap' between the start
+     * and end point of the removed segment. If the resulting path segment has a
+     * higher score, it is used as a replacement for the removed segment.
+     *
+     * @param head the head PathTuple of the incoming route
+     * @param distanceToAdd available distance in addition to the length of the
+     *                      incoming route
+     * @return A PathTuple that is the head of a new linked list with the new
+     * path segments added
+     */
     @Override
     public PathTuple iterate(PathTuple head, double distanceToAdd) {
         setIterations(0);
         setImprovements(0);
-        populateAndSetIncludedNodes(head);
+        populateAndSetIncludedWays(head);
 
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
@@ -44,11 +57,9 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
         int a = 1; // the starting node, indexed from 1
         int r = 1; // number of nodes to remove
+
         while (elapsedTime <= TIME_LIMIT) {
             elapsedTime = (new Date()).getTime() - startTime;
-
-//            System.out.println(a);
-//            System.out.println(r);
 
             // get the number of nodes in the the path
             int pathSize = getPathSize(head);
@@ -70,8 +81,8 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
                 r = 1;
             }
 
-            start = getStartPathSegment(head, a);
-            end = getEndPathSegment(start, r);
+            start = getStartPathSegment(head, a); // start of the removed segment
+            end = getEndPathSegment(start, r); // end of th removed segment
 
             // calculate the length in metres of the segment to be removed, and
             // add to available distance
@@ -85,15 +96,12 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
                 newSegment = graphSearch.connectPath(start.getPreviousNode(), start.getCurrentWay(),
                         end.getPreviousNode(), end.getCurrentWay(), availableDistance, start.getTotalLength(),
                         end.getTotalLength());
-
             }
 
             setIterations(getIterations() + 1);
 
-
             double oldSegmentScore = calculateScore(start, end);
             double newSegmentScore = calculateScore(newSegment, null);
-
 
             // if old segment had a better score, or a new segment was not found
             if (oldSegmentScore >= newSegmentScore || newSegment == null
@@ -107,32 +115,39 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             // new segment score is higher, so replace old path segment with the new one
             } else {
 
-                System.out.println("COMING FROM " + start.getPreviousNode());
-                System.out.println("GOING TO " + end.getPreviousNode());
+                System.out.println(oldSegmentScore);
+                System.out.println(newSegmentScore);
+//                System.out.println("COMING FROM " + start.getPreviousNode());
+//                System.out.println("GOING TO " + end.getPreviousNode());
+//
+//                System.out.println();
+//                System.out.println("node(id:");
+//                PathTuple topi = start;
+//                while (topi != end) {
+//                    System.out.print(topi.getPreviousNode().getId() + ", ");
+//                    topi = topi.getPredecessor();
+//                }
+//                System.out.println(topi.getPreviousNode().getId() + ");out;");
+//
+//                System.out.println("THE OLD SEGMENT ^^^^^^^^^^");
+//
+//                System.out.println("node(id:");
+//
+//                topi = newSegment;
+//                while (topi.getPredecessor() != null) {
+//                    System.out.print(topi.getPreviousNode().getId() + ", ");
+//                    topi = topi.getPredecessor();
+//                }
+//                System.out.println(topi.getPreviousNode().getId() + ");out;");
+//                System.out.println("THE NEW SEGMENT ^^^^^^^^^^");
 
-                System.out.println();
-                System.out.println("node(id:");
-                PathTuple topi = start;
-                while (topi != end) {
-                    System.out.print(topi.getPreviousNode().getId() + ", ");
-                    topi = topi.getPredecessor();
-                }
-                System.out.println(topi.getPreviousNode().getId() + ");out;");
+                System.out.println("OLD SCOER" + calculateScore(head, null));
 
-                System.out.println("THE OLD SEGMENT ^^^^^^^^^^");
-
-                System.out.println("node(id:");
-
-                topi = newSegment;
-                while (topi.getPredecessor() != null) {
-                    System.out.print(topi.getPreviousNode().getId() + ", ");
-                    topi = topi.getPredecessor();
-                }
-                System.out.println(topi.getPreviousNode().getId() + ");out;");
-                System.out.println("THE NEW SEGMENT ^^^^^^^^^^");
 
                 setImprovements(getImprovements() + 1);
                 insertSegment(start, end, newSegment);
+                System.out.println("New SCOER" + calculateScore(head, null));
+
 
                 // update current node distances and target distance to reflect added segment
                 double newDistance = updateDistancesAndIncludedWays(head);
@@ -146,13 +161,13 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         System.out.println(this.iterations + " >>>>>> ITERATIONS");
         System.out.println(this.improvements + " >>>>>>>>> IMPROVEMENTS");
 
-        // reset the hashmap for the next round
+        // clear visited Ways for the next round
         graphSearch.resetVisitedWays();
         return head;
     }
 
-
-    private void populateAndSetIncludedNodes(PathTuple head) {
+    // creates a set of visited ways to pass to the BFS algorithm
+    private void populateAndSetIncludedWays(PathTuple head) {
         includedWays = new HashSet<>();
         while (head != null) {
             includedWays.add(head.getCurrentWay().getId());
@@ -161,7 +176,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         graphSearch.setIncludedWays(includedWays);
     }
 
-    // update the route distance and inlcuded Ways to reflect
+    // update the route distance and included Ways to reflect
     // newly added path segment
     private double updateDistancesAndIncludedWays(PathTuple head) {
         double runningDistance = 0;
@@ -199,6 +214,8 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         return prev;
     }
 
+    // get a reference to the node a places into the linked list of PathTuples
+    // this is the start node of the removed segment
     private PathTuple getStartPathSegment(PathTuple head, int a) {
         int i = 0;
         while (i < a - 1) {
@@ -208,6 +225,8 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         return head;
     }
 
+    // get a reference to the node r places from the start of the removed
+    // segment
     private PathTuple getEndPathSegment(PathTuple endNode, int r) {
         int i = 0;
 
@@ -222,6 +241,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         return endNode;
     }
 
+    // get the length of the path in terms of number of nodes
     private int getPathSize(PathTuple head) {
         int count = 0;
 

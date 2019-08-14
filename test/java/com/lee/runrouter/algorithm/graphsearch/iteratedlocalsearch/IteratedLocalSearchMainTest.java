@@ -167,6 +167,30 @@ public class IteratedLocalSearchMainTest {
         assertEquals(expected, result, 0.1);
     }
 
+    @Test
+    public void testcalculateScoreFiveNodes() throws InvocationTargetException, IllegalAccessException {
+        PathTuple tail = new PathTupleMain(null, null,
+                null, new ScorePair(0, 1), 5, 0, 0);
+        PathTuple D = new PathTupleMain(tail, null,
+                null, new ScorePair(0, 1), 5, 0, 0);
+        PathTuple C = new PathTupleMain(D, null, null,
+                new ScorePair(0, 2) , 5, 0, 0);
+        PathTuple B = new PathTupleMain(C, null,
+                null, new ScorePair(0, 3), 5, 0, 0);
+        PathTuple A = new PathTupleMain(B, null, null,
+                new ScorePair(0, 5) , 5, 0, 0);
+        PathTuple head = new PathTupleMain(A, null, null,
+                new ScorePair(0, 8) , 5, 0, 0);
+
+        Method calculateLen = Arrays.stream(ils.getClass().getDeclaredMethods())
+                .filter(x -> x.getName().equals("calculateScore")).findFirst().get();
+        calculateLen.setAccessible(true);
+        double result = (double) calculateLen.invoke(ils, head, tail);
+        double expected = 12;
+
+        assertEquals(expected, result, 0.001);
+    }
+
 
     @Test
     public void testcalculateScoreTwoNodes() throws InvocationTargetException, IllegalAccessException {

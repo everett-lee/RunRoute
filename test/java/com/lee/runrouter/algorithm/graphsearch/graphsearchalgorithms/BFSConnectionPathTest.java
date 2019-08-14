@@ -13,6 +13,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static com.lee.runrouter.testhelpers.TestHelpers.*;
@@ -68,9 +69,8 @@ public class BFSConnectionPathTest {
         start = getStartPathSegment(start, 3);
         PathTuple end = getEndPathSegment(start, 7);
 
-        PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength(),
-                0);
+        PathTuple res = connectPath.connectPath(start,
+                end, 5000, 0);
 
         PathTuple resFinal = getEndTuple(res);
 
@@ -88,9 +88,8 @@ public class BFSConnectionPathTest {
         start = getStartPathSegment(start, 1);
         PathTuple end = getEndPathSegment(start, 1);
 
-        PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength(),
-                0);
+        PathTuple res = connectPath.connectPath(start,
+                end, 5000, 0);
 
         System.out.println(calculateScore(res));
 
@@ -106,9 +105,8 @@ public class BFSConnectionPathTest {
         start = getStartPathSegment(start, 3);
         PathTuple end = getEndPathSegment(start, 4);
 
-        PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength(),
-                0);
+        PathTuple res = connectPath.connectPath(start,
+                end, 5000, 0);
 
         System.out.println(calculateScore(res));
 
@@ -126,9 +124,8 @@ public class BFSConnectionPathTest {
         start = getStartPathSegment(start, 1);
         PathTuple end = getEndPathSegment(start, 16);
 
-        PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength()
-                ,0);
+        PathTuple res = connectPath.connectPath(start,
+                end, 5000, 0);
 
         System.out.println(calculateScore(res));
 
@@ -143,9 +140,8 @@ public class BFSConnectionPathTest {
         start = getStartPathSegment(start, 3);
         PathTuple end = getEndPathSegment(start, 6);
 
-        PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 1000 ,start.getTotalLength(),
-                0);
+        PathTuple res = connectPath.connectPath(start,
+                end, 5000, 0);
 
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
@@ -160,9 +156,8 @@ public class BFSConnectionPathTest {
         start = getStartPathSegment(start, 5);
         PathTuple end = getEndPathSegment(start, 16);
 
-        PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength(),
-                0);
+        PathTuple res = connectPath.connectPath(start,
+                end, 5000, 0);
 
         System.out.println(calculateScore(res));
         System.out.println(returnPath(res, ""));
@@ -180,9 +175,8 @@ public class BFSConnectionPathTest {
         start = getStartPathSegment(start, 1);
         PathTuple end = getEndPathSegment(start, 20);
 
-        PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength(),
-                0);
+        PathTuple res = connectPath.connectPath(start,
+                end, 5000, 0);
 
         System.out.println(calculateScore(res));
 

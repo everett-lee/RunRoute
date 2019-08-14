@@ -77,10 +77,8 @@ public class BeamSearchConnectionPathTest {
         start = getStartPathSegment(start, 3);
         PathTuple end = getEndPathSegment(start, 7);
 
-
-        PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength(),
-                0);
+        PathTuple res = connectPath.connectPath(start,
+                end, 5000, end.getTotalLength());
 
         PathTuple resFinal = getEndTuple(res);
 
@@ -98,9 +96,8 @@ public class BeamSearchConnectionPathTest {
         start = getStartPathSegment(start, 1);
         PathTuple end = getEndPathSegment(start, 3);
 
-        PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength(),
-                0);
+        PathTuple res = connectPath.connectPath(start,
+                end, 5000, end.getTotalLength());
 
         System.out.println(calculateScore(res));
 
@@ -116,9 +113,8 @@ public class BeamSearchConnectionPathTest {
         start = getStartPathSegment(start, 3);
         PathTuple end = getEndPathSegment(start, 4);
 
-        PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength(),
-                0);
+        PathTuple res = connectPath.connectPath(start,
+                end, 5000, end.getTotalLength());
 
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
@@ -134,11 +130,8 @@ public class BeamSearchConnectionPathTest {
         start = getStartPathSegment(start, 1);
         PathTuple end = getEndPathSegment(start, 16);
 
-
-        PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength(),
-                0);
-
+        PathTuple res = connectPath.connectPath(start,
+                end, 5000, end.getTotalLength());
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
@@ -151,10 +144,8 @@ public class BeamSearchConnectionPathTest {
         start = getStartPathSegment(start, 3);
         PathTuple end = getEndPathSegment(start, 6);
 
-        PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 1000, start.getTotalLength(),
-                2000);
-
+        PathTuple res = connectPath.connectPath(start,
+                end, 5000, end.getTotalLength());
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
@@ -168,9 +159,8 @@ public class BeamSearchConnectionPathTest {
         start = getStartPathSegment(start, 5);
         PathTuple end = getEndPathSegment(start, 16);
 
-        PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 2000, start.getTotalLength(),
-                2000);
+        PathTuple res = connectPath.connectPath(start,
+                end, 5000, end.getTotalLength());
 
         assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
         assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
@@ -185,9 +175,8 @@ public class BeamSearchConnectionPathTest {
         start = getStartPathSegment(start, 1);
         PathTuple end = getEndPathSegment(start, 20);
 
-        PathTuple res = connectPath.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                end.getPreviousNode(), end.getCurrentWay(), 5000, start.getTotalLength(),
-                0);
+        PathTuple res = connectPath.connectPath(start,
+                end, 5000, end.getTotalLength());
 
         System.out.println(calculateScore(res));
 

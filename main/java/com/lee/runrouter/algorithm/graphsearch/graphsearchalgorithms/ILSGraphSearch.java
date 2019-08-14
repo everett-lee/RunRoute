@@ -7,8 +7,8 @@ import com.lee.runrouter.graph.graphbuilder.node.Node;
 import java.util.HashSet;
 
 public interface ILSGraphSearch {
-    PathTuple connectPath(Node originNode, Way originWay, Node targetNode, Way targetWay,
-                                 double availableDistance, double initialDistance, double targetDistance);
+    PathTuple connectPath(PathTuple origin, PathTuple target, double availableDistance,
+                          double targetDistance);
     void setIncludedWays(HashSet<Long> includedWays);
     void resetVisitedWays();
     void setMinimumPathPercentage(double minimumPathPercentage);

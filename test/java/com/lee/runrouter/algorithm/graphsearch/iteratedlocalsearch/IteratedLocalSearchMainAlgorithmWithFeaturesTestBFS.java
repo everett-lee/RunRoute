@@ -48,11 +48,9 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
     DistanceFromOriginNodeHeursitic distanceHeuristic;
     ElementRepo repo;
     FeaturesHeuristic featuresHeuristicMain;
-    FeaturesHeuristic featuresHeuristicSensitive;
     EdgeDistanceCalculator edgeDistanceCalculator;
     GradientCalculator gradientCalculator;
     ElevationHeuristic elevationHeuristicMain;
-    ElevationHeuristic elevationHeuristicSensitive;
     ILSGraphSearch connectPathBFS;
     IteratedLocalSearch ilsBFS;
 
@@ -95,11 +93,11 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
         gradientCalculator = new SimpleGradientCalculator();
 
         elevationHeuristicMain = new ElevationHeuristicMain();
-        elevationHeuristicSensitive.setOptions(true);
+        elevationHeuristicMain.setOptions(true);
 
         connectPathBFS = new BFSConnectionPath(repo, distanceHeuristic,
-                featuresHeuristicSensitive, edgeDistanceCalculator,
-                gradientCalculator, elevationHeuristicSensitive);
+                featuresHeuristicMain, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristicMain);
 
         this.ilsBFS = new IteratedLocalSearchMain(connectPathBFS);
 
@@ -234,7 +232,7 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
         double originalLength = calculateDistance(craignair21kflat);
         double target = 1000;
 
-        PathTuple res = ilsBFS.iterate(craignair21kUphill, target);
+        PathTuple res = ilsBFS.iterate(craignair21kflat, target);
 
         double postScore = calculateScore(res);
         double postDistance = calculateDistance(res);

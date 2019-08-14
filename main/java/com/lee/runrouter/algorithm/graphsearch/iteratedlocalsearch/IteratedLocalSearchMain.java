@@ -93,12 +93,14 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             PathTuple newSegment = null;
             if (availableDistance > 0) {
                 // generate the new segment
-                newSegment = graphSearch.connectPath(start.getPreviousNode(), start.getCurrentWay(),
-                        end.getPreviousNode(), end.getCurrentWay(), availableDistance, start.getTotalLength(),
-                        end.getTotalLength());
+                newSegment = graphSearch.connectPath(start, end, availableDistance,
+                        existingSegmentLength);
             }
 
             setIterations(getIterations() + 1);
+
+            newSegment = reverseList(newSegment); // reverse the segment to be added, as it
+            // is currently in the wrong order
 
             double oldSegmentScore = calculateScore(start, end);
             double newSegmentScore = calculateScore(newSegment, null);
@@ -115,39 +117,50 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             // new segment score is higher, so replace old path segment with the new one
             } else {
 
-                System.out.println(oldSegmentScore);
-                System.out.println(newSegmentScore);
-//                System.out.println("COMING FROM " + start.getPreviousNode());
-//                System.out.println("GOING TO " + end.getPreviousNode());
-//
-//                System.out.println();
-//                System.out.println("node(id:");
-//                PathTuple topi = start;
-//                while (topi != end) {
-//                    System.out.print(topi.getPreviousNode().getId() + ", ");
-//                    topi = topi.getPredecessor();
-//                }
-//                System.out.println(topi.getPreviousNode().getId() + ");out;");
-//
-//                System.out.println("THE OLD SEGMENT ^^^^^^^^^^");
-//
-//                System.out.println("node(id:");
-//
-//                topi = newSegment;
-//                while (topi.getPredecessor() != null) {
-//                    System.out.print(topi.getPreviousNode().getId() + ", ");
-//                    topi = topi.getPredecessor();
-//                }
-//                System.out.println(topi.getPreviousNode().getId() + ");out;");
-//                System.out.println("THE NEW SEGMENT ^^^^^^^^^^");
+                System.out.println("OLD SCORE: " + oldSegmentScore);
+                System.out.println("NEW SCORE: " + newSegmentScore);
+                System.out.println("");
+                System.out.println("COMING FROM " + start.getPreviousNode());
+                System.out.println("GOING TO " + end.getPreviousNode());
+                System.out.println();
+                System.out.println("node(id:");
+                PathTuple topi = start;
+                while (topi != end) {
+                    System.out.print("ID: " + topi.getPreviousNode().getId() +
+                            " SCORE: " + topi.getSegmentScore().getHeuristicScore() + ", ");
+                    topi = topi.getPredecessor();
+                }
+                System.out.println("ID: " + topi.getPreviousNode().getId() +
+                        " SCORE: " + topi.getSegmentScore().getHeuristicScore()  + ");out;");
 
-                System.out.println("OLD SCOER" + calculateScore(head, null));
+                System.out.println("THE OLD SEGMENT ^^^^^^^^^^");
 
+                System.out.println("node(id:");
+
+                topi = newSegment;
+                while (topi.getPredecessor() != null) {
+                    System.out.print("ID: " + topi.getPreviousNode().getId() +
+                            " SCORE: " + topi.getSegmentScore().getHeuristicScore() + ", ");
+                    topi = topi.getPredecessor();
+                }
+                System.out.println("ID: " + topi.getPreviousNode().getId() +
+                        " SCORE: " + topi.getSegmentScore().getHeuristicScore() + ");out;");
+                System.out.println("THE NEW SEGMENT ^^^^^^^^^^");
+
+                System.out.println("OLD SCOER " + calculateScore(head, null));
 
                 setImprovements(getImprovements() + 1);
                 insertSegment(start, end, newSegment);
-                System.out.println("New SCOER" + calculateScore(head, null));
+                System.out.println("New SCOER " + calculateScore(head, null));
 
+                System.out.println("PRINTING THE FULL PATH ///////////// \n");
+                topi = head;
+                while (topi != null) {
+                    System.out.print("ID: " + topi.getPreviousNode().getId() +
+                            " SCORE: " + topi.getSegmentScore().getHeuristicScore() + ", ");
+                    topi = topi.getPredecessor();
+                }
+                System.out.println("NEW PATH ABOVE //////////// \n");
 
                 // update current node distances and target distance to reflect added segment
                 double newDistance = updateDistancesAndIncludedWays(head);
@@ -295,8 +308,12 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
     // insert the newSegment linked list into the main path linked list
     private PathTuple insertSegment(PathTuple start, PathTuple end, PathTuple newSegment) {
         PathTuple theTail = newSegment;
-        newSegment = reverseList(newSegment); // reverse the segment to be added, as it
-        // is currently in the wrong order
+
+        // get a reference to the tail node
+        while (theTail.getPredecessor() != null) {
+            theTail = theTail.getPredecessor();
+        }
+
         start.setPredecessor(newSegment.getPredecessor()); // start of segment links to
         // new segment's next link (head of new segment is currently the same as the start
         // head

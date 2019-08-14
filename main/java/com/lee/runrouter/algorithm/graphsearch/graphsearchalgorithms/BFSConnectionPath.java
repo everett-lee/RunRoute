@@ -56,11 +56,12 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore().getHeuristicScore()).reversed());
         this.visitedWays = new HashSet<>();
         this.visitedNodes = new HashSet<>();
+        this.includedWays = new HashSet<>();
     }
 
     @Override
-    public PathTuple connectPath(Node originNode, Way originWay, Node targetNode, Way targetWay,
-                                 double availableDistance, double initialDistance, double targetDistance) {
+    public PathTuple connectPath(PathTuple origin, PathTuple target,
+                                 double availableDistance, double targetDistance) {
 
         queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore().getHeuristicScore()).reversed());
@@ -70,12 +71,14 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
+        Way targetWay = target.getCurrentWay();
+        Node targetNode = target.getPreviousNode();
         double currentRouteLength;
         // the remaining distance for the route
-        double upperBound = availableDistance + initialDistance;
+        double upperBound = availableDistance + origin.getTotalLength();
 
-        queue.add(new PathTupleMain(null, originNode, originWay,
-                new ScorePair(0, 0), 0, initialDistance, 0));
+        queue.add(new PathTupleMain(null, origin.getPreviousNode(), origin.getCurrentWay(),
+                origin.getSegmentScore(), origin.getSegmentLength(),origin.getTotalLength(), origin.getSegmentGradient()));
 
         while (!queue.isEmpty() && elapsedTime <= TIME_LIMIT) {
             PathTuple topTuple = queue.poll();

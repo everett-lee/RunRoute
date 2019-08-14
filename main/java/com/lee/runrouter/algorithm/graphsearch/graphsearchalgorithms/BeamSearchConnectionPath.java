@@ -24,7 +24,7 @@ import java.util.*;
  * to the target Way.
  */
 @Component
-@Qualifier("BFSConnectionPath")
+@Qualifier("BeamSearch  ConnectionPath")
 public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final double MINIMUM_SCORING_DISTANCE = 650; // the minimum travelled
     // along a Way before the distance bonus is applied

@@ -26,7 +26,7 @@ import java.util.*;
 @Component
 @Qualifier("BFSConnectionPath")
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
-    private final double MINIMUM_SCORING_DISTANCE = 650; // the minimum travelled
+    private final double MINIMUM_SCORING_DISTANCE = 550; // the minimum travelled
     // along a Way before the distance bonus is applied
     private final double DISTANCE_BONUS = 0.025;
     final double REPEATED_WAY_VISIT_PENALTY = 10; // deducted from heuristic score

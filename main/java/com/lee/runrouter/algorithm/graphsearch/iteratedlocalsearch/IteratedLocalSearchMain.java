@@ -126,12 +126,11 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
                 System.out.println("node(id:");
                 PathTuple topi = start;
                 while (topi != end) {
-                    System.out.print("ID: " + topi.getPreviousNode().getId() +
-                            " SCORE: " + topi.getSegmentScore().getHeuristicScore() + ", ");
+                    System.out.print(topi.getPreviousNode().getId() + ", ");
                     topi = topi.getPredecessor();
                 }
-                System.out.println("ID: " + topi.getPreviousNode().getId() +
-                        " SCORE: " + topi.getSegmentScore().getHeuristicScore()  + ");out;");
+                System.out.println(topi.getPreviousNode().getId()
+                        + topi.getSegmentScore().getHeuristicScore()  + ");out;");
 
                 System.out.println("THE OLD SEGMENT ^^^^^^^^^^");
 
@@ -139,28 +138,15 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
                 topi = newSegment;
                 while (topi.getPredecessor() != null) {
-                    System.out.print("ID: " + topi.getPreviousNode().getId() +
-                            " SCORE: " + topi.getSegmentScore().getHeuristicScore() + ", ");
+                    System.out.print(topi.getPreviousNode().getId() + ", ");
                     topi = topi.getPredecessor();
                 }
-                System.out.println("ID: " + topi.getPreviousNode().getId() +
-                        " SCORE: " + topi.getSegmentScore().getHeuristicScore() + ");out;");
+                System.out.println(topi.getPreviousNode().getId() + ");out;");
                 System.out.println("THE NEW SEGMENT ^^^^^^^^^^");
-
-                System.out.println("OLD SCOER " + calculateScore(head, null));
 
                 setImprovements(getImprovements() + 1);
                 insertSegment(start, end, newSegment);
-                System.out.println("New SCOER " + calculateScore(head, null));
 
-                System.out.println("PRINTING THE FULL PATH ///////////// \n");
-                topi = head;
-                while (topi != null) {
-                    System.out.print("ID: " + topi.getPreviousNode().getId() +
-                            " SCORE: " + topi.getSegmentScore().getHeuristicScore() + ", ");
-                    topi = topi.getPredecessor();
-                }
-                System.out.println("NEW PATH ABOVE //////////// \n");
 
                 // update current node distances and target distance to reflect added segment
                 double newDistance = updateDistancesAndIncludedWays(head);

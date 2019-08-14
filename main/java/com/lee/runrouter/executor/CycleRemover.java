@@ -24,7 +24,7 @@ public class CycleRemover {
 
         Map<Long, Integer> idToPositionLookUp = new HashMap<>();
         int listSize = nodes.size();
-        int maxCycleLength = 3;
+        int minCycleSize = 5;
 
         // starting from four in
         for (int i = 3; i < listSize; i++) {
@@ -36,7 +36,7 @@ public class CycleRemover {
                 int previousIndex = idToPositionLookUp.get(currentNodeId);
 
                 // if the gap between these nodes is below the minimum
-                if (i - previousIndex < maxCycleLength) {
+                if (i - previousIndex < minCycleSize) {
                     int gapSize = i - previousIndex;
 
                     distance += getRemovedSegmentDistance(nodes,

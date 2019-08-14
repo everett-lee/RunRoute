@@ -129,8 +129,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
                     System.out.print(topi.getPreviousNode().getId() + ", ");
                     topi = topi.getPredecessor();
                 }
-                System.out.println(topi.getPreviousNode().getId()
-                        + topi.getSegmentScore().getHeuristicScore()  + ");out;");
+                System.out.println(topi.getPreviousNode().getId()  + ");out;");
 
                 System.out.println("THE OLD SEGMENT ^^^^^^^^^^");
 

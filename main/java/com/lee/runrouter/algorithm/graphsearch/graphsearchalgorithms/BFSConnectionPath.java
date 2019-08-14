@@ -29,7 +29,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     private final double MINIMUM_SCORING_DISTANCE = 550; // the minimum travelled
     // along a Way before the distance bonus is applied
     private final double DISTANCE_BONUS = 0.025;
-    final double REPEATED_WAY_VISIT_PENALTY = 10; // deducted from heuristic score
+    final double REPEATED_WAY_VISIT_PENALTY = 4; // deducted from heuristic score
     // for visits to Ways included in the main route
     final double MAX_DISTANCE_FROM_TARGET_MULTIPLIER = 1.5; // maximum increase in
     // distance to target compared to previous node in the path's position
@@ -198,11 +198,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
         if (topTuple.getTotalLength() >= targetDistance * minimumPathPercentage) {
             if (checkMinLength(topTuple)) {
-                // create a new tuple representing the journey from the previous node to the final node
-                PathTuple returnTuple = new PathTupleMain(topTuple, targetNode,
-                        targetWay, finalScore, finalDistance,
-                        topTuple.getTotalLength() + finalDistance, finalGradient);
-                return returnTuple;
+                return topTuple;
             }
         }
         return null;
@@ -221,8 +217,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     }
 
     private boolean wayOrNodeInClosedList(Way selectedWay, Node connectingNode) {
-        return visitedWays.contains(selectedWay.getId()) ||
-                visitedNodes.contains(connectingNode.getId());
+        return visitedWays.contains(selectedWay.getId());
     }
 
     @Override

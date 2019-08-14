@@ -105,7 +105,7 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
             if (currentRouteLength > lowerBound) {
                 PathTuple result = returnValidPath(topTuple, currentNode, currentWay);
                 if (result != null) {
-                    return  result;
+                    return result;
                 }
             }
 

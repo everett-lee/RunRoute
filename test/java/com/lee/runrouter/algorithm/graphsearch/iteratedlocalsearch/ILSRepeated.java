@@ -76,7 +76,6 @@ public class ILSRepeated {
         gradientCalculator = new SimpleGradientCalculator();
 
         elevationHeursitic = new ElevationHeuristicMain();
-        elevationHeursitic.setOptions(true);
 
         connectPathBFS = new BFSConnectionPath(repo, distanceHeuristic,
                 featuresHeuristic , edgeDistanceCalculator,

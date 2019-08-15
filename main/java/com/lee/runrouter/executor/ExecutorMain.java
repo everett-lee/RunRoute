@@ -83,15 +83,22 @@ public class ExecutorMain implements Executor {
         PathTuple route = this.routeGenerator.generateRoute(coords, distance);
 
         PathTuple tail = route;
+        double averageGradient = 0;
+        int count = 0;
 
+        // get reference to tail and calculate average gradient
         while (tail.getPredecessor() != null) {
+            count++;
+            averageGradient += tail.getSegmentGradient();
             tail = tail.getPredecessor();
         }
+        averageGradient /= count;
         double length = tail.getTotalLength(); // get total route length from the tail
+
         List<Node> pathNodes = linkedListToArray.convert(route);
         String startingWay = route.getCurrentWay().getName();
 
-        return new ResponseObject(pathNodes, length, startingWay);
+        return new ResponseObject(pathNodes, length, startingWay, averageGradient);
     }
 
     /**

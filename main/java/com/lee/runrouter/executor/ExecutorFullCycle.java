@@ -77,10 +77,16 @@ public class ExecutorFullCycle implements Executor {
         PathTuple route = this.routeGenerator.generateRoute(coords, distance);
 
         PathTuple tail = route;
+        double averageGradient = 0;
+        int count = 0;
 
+        // get reference to tail and calculate average gradient
         while (tail.getPredecessor() != null) {
+            count++;
+            averageGradient += tail.getSegmentGradient();
             tail = tail.getPredecessor();
         }
+        averageGradient /= count;
         double length = tail.getTotalLength(); // get total route length from the tail
 
         // convert the way to an Array
@@ -90,10 +96,11 @@ public class ExecutorFullCycle implements Executor {
         System.out.println(length);
         length -= cycleRemover.removeCycle(pathNodes);
         System.out.println("new length: " + length);
+        System.out.println("Average gradient: " + averageGradient);
 
         String startingWay = route.getCurrentWay().getName();
 
-        return new ResponseObject(pathNodes, length, startingWay);
+        return new ResponseObject(pathNodes, length, startingWay, averageGradient);
     }
 
     /**

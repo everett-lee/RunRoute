@@ -89,6 +89,8 @@ public abstract class SearchAlgorithm {
     public void setElevationHeuristicOptions(boolean preferUphill) {
         if (preferUphill) {
             this.elevationHeuristic.setOptions(true);
+        } else {
+            this.elevationHeuristic.setOptions(false);
         }
     }
 }

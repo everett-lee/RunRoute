@@ -27,7 +27,7 @@ import java.util.*;
 public class BFSCycle extends SearchAlgorithm implements GraphSearch {
     private final double MINIMUM_SCORING_DISTANCE = 550; // the minimum travelled
     // along a Way before the distance bonus is applied
-    private final double DISTANCE_BONUS = 0.025;
+    private final double DISTANCE_BONUS = 0.015;
 
     private final double LOWER_SCALE = 0.90; // amount to scale upper lower bound on
     // run length by
@@ -116,6 +116,7 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
             // for each Way reachable from the the current Way
             for (ConnectionPair pair: this.repo.getConnectedWays(currentWay)) {
 
+
                 currentRouteLength = topTuple.getTotalLength();
                 heuristicScore = 0;
                 currentNode = topTuple.getPreviousNode(); // the last explored Node
@@ -139,7 +140,6 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                     continue; // skip to next where maximum length exceeded
                 }
 
-                //heuristicScore += addLengthScores(distanceToNext);
                 if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
                     heuristicScore += distanceToNext * DISTANCE_BONUS;
                 }
@@ -164,7 +164,8 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                 } else {
                     if (visitedWaysInbound.contains(selectedWay.getId())) {
                         continue;
-                    } else if (visitedWaysOutbound.contains(selectedWay.getId())) {
+                    } else if (visitedWaysOutbound.contains(selectedWay.getId())
+                            && distanceToNext > 0) {
                         heuristicScore -= REPEATED_WAY_VISIT_PENALTY;
                     }
                 }
@@ -236,13 +237,9 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
         // origin set
         if (this.repo.getOriginWay().getId() != selectedWay.getId()) {
             if (!overHalf) {
-                if (!visitedWaysOutbound.contains(selectedWay.getId())) {
-                    visitedWaysOutbound.add(selectedWay.getId());
-                }
+                visitedWaysOutbound.add(selectedWay.getId());
             } else {
-                if (!visitedWaysInbound.contains(selectedWay.getId())) {
-                    visitedWaysInbound.add(selectedWay.getId());
-                }
+                visitedWaysInbound.add(selectedWay.getId());
             }
         }
     }

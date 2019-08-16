@@ -150,6 +150,7 @@ public class ILSRepeated {
         double totalLength = 0;
         double totalScore = 0;
 
+        System.out.println(originalScore);
 
         for (int i = 0; i < iterations; i++) {
 

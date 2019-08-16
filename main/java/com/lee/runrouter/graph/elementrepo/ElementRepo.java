@@ -27,8 +27,10 @@ public class ElementRepo implements Serializable {
     }
 
 
-    /** Examines siblings of a Way to return those others
-     * that connect/intersect it
+    /** Iterates over each Way connected to the input
+     *  Way using a look up of its Nodes. The connected
+     *  Ways are then returned along with the Node
+     *  that joins them.
      *
      ** @param way being examined for connections
      * @return A list of connected Ways
@@ -44,7 +46,7 @@ public class ElementRepo implements Serializable {
                 List<Way> ways = waysOptional.get();
 
                 // for each way in the list of returned ways, add it to the list of connected Ways
-                // along with the connected Node
+                // along with the Node that connects them
                 for (Way w: ways) {
                     if (w.getId() != way.getId()) {
                         connectedWays.add((new ConnectionPair(n, w)));

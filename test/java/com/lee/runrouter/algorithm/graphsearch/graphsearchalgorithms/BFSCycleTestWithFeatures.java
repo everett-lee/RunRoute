@@ -98,7 +98,6 @@ public class BFSCycleTestWithFeatures {
         }
 
         assertTrue(length > 5);
-        System.out.println(returnPath(res, ""));
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
     }

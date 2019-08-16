@@ -152,7 +152,7 @@ public class BeamSearchConnectionPathTest {
     }
 
     @Test
-    // Route B
+    // Route Graph
     public void testCraignairLongerSegment() {
         PathTuple start = reverseList(craignair14k);
 

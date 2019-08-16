@@ -31,7 +31,7 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
 
     private final double LOWER_SCALE = 0.90; // amount to scale upper lower bound on
     // run length by
-    private final double UPPER_SCALE = 1.10 ; // amount to scale upper bound on
+    private final double UPPER_SCALE = 1.05 ; // amount to scale upper bound on
     // run length by
     private final double REPEATED_WAY_VISIT_PENALTY = 3; // a penalty applied for
     // revisiting a way traversed in the course of the outbound route

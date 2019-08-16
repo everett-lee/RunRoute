@@ -250,8 +250,4 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
 
         return (count >= MIN_LENGTH);
     }
-
-    public void setMinimumPathPercentage(double minimumPathPercentage) {
-        this.minimumPathPercentage = minimumPathPercentage;
-    }
 }

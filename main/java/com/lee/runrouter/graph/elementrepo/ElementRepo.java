@@ -43,7 +43,6 @@ public class ElementRepo implements Serializable {
             if (waysOptional.isPresent()) {
                 List<Way> ways = waysOptional.get();
 
-
                 // for each way in the list of returned ways, add it to the list of connected Ways
                 // along with the connected Node
                 for (Way w: ways) {

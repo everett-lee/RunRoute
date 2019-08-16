@@ -11,5 +11,4 @@ public interface ILSGraphSearch {
                           double targetDistance);
     void setIncludedWays(HashSet<Long> includedWays);
     void resetVisitedWays();
-    void setMinimumPathPercentage(double minimumPathPercentage);
 }

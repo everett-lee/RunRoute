@@ -36,7 +36,6 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
     private PriorityQueue<PathTuple> queue;
     private HashSet<Long> visitedWays; // ways visited in the course of this search
-    private HashSet<Long> visitedNodes; // nodes visited in the course of this search
     private HashSet<Long> includedWays; // ways included in the main path
     private double minimumPathPercentage = 0.8; // length of this path segment as
     // a percentage of a the removed path segment required to serve as a valid
@@ -55,7 +54,6 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore().getHeuristicScore()).reversed());
         this.visitedWays = new HashSet<>();
-        this.visitedNodes = new HashSet<>();
         this.includedWays = new HashSet<>();
     }
 
@@ -67,7 +65,6 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore().getHeuristicScore()).reversed());
 
         visitedWays = new HashSet<>();
-        visitedNodes = new HashSet<>();
 
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
@@ -88,8 +85,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
             // the route has reached the target
             if (topTuple.getCurrentWay().getId() == targetWay.getId()) {
-                PathTuple result = returnValidPath(topTuple, currentNode, currentWay
-                        , targetNode, targetWay, targetDistance);
+                PathTuple result = returnValidPath(topTuple, targetDistance);
                 // return this path if it is valid
                 if (result != null) {
                     return result;
@@ -164,10 +160,11 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                         score, distanceToNext, currentRouteLength + distanceToNext, gradient);
                 queue.add(toAdd);
 
-                addToClosedList(selectedWay, connectingNode);
-
                 elapsedTime = (new Date()).getTime() - startTime;
             }
+
+
+            addToClosedList(topTuple.getCurrentWay(), topTuple.getPreviousNode());
         }
 
         return new PathTupleMain(null, null, null, new ScorePair(-1, -10000),
@@ -178,24 +175,11 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
      * Checks to see if the current path is eligible and returns it if
      * it is.
      * @param topTuple Tuple representing the last section of this path
-     * @param currentNode the last visited Node
-     * @param currentWay the last visited Way
-     * @param targetNode the target Node of this segment
-     * @param targetWay the target Way of this segment
      * @param targetDistance the required distance for this path segment
      * @return a PathTuple containing the path segment linking the origin
      * and target ways
      */
-    private PathTuple returnValidPath(PathTuple topTuple, Node currentNode, Way currentWay,
-                                      Node targetNode, Way targetWay, double targetDistance) {
-        ScorePair finalScore = topTuple.getSegmentScore();
-
-        double finalDistance = edgeDistanceCalculator
-                .calculateDistance(currentNode, targetNode, targetWay);
-        double finalGradient = gradientCalculator.calculateGradient(currentNode, currentWay,
-                targetNode, targetWay,
-                finalDistance);
-
+    private PathTuple returnValidPath(PathTuple topTuple, double targetDistance) {
         if (topTuple.getTotalLength() >= targetDistance * minimumPathPercentage) {
             if (checkMinLength(topTuple)) {
                 return topTuple;
@@ -203,7 +187,6 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         }
         return null;
     }
-
 
     // Updates the set of visited Ways and Nodes
     private void addToClosedList(Way selectedWay, Node connectingNode) {
@@ -224,7 +207,6 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     @Override
     public void resetVisitedWays() {
         this.visitedWays = new HashSet<>();
-        this.visitedNodes = new HashSet<>();
     }
 
 
@@ -241,9 +223,5 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         }
 
         return (count >= MIN_LENGTH);
-    }
-
-    public void setMinimumPathPercentage(double minimumPathPercentage) {
-        this.minimumPathPercentage = minimumPathPercentage;
     }
 }

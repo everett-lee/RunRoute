@@ -150,9 +150,10 @@ public class ILSRepeated {
         double totalLength = 0;
         double totalScore = 0;
 
+
         for (int i = 0; i < iterations; i++) {
 
-            PathTuple res = ilsBFS.iterate(getCraignair5k(), target);
+            PathTuple res = ilsBFS.iterate(getCraignair5kFeaturesFlat(), target);
             totalScore += calculateScore(res);
             totalLength += calculateDistance(res);
         }
@@ -176,7 +177,7 @@ public class ILSRepeated {
 
         for (int i = 0; i < iterations; i++) {
 
-            PathTuple res = ilsBFS.iterate(getCraignair14k(), target);
+            PathTuple res = ilsBFS.iterate(getCraignair14kFeaturesFlat(), target);
             totalScore += calculateScore(res);
             totalLength += calculateDistance(res);
         }
@@ -201,7 +202,7 @@ public class ILSRepeated {
 
         for (int i = 0; i < iterations; i++) {
 
-            PathTuple res = ilsBFS.iterate(getTulse5k(), target);
+            PathTuple res = ilsBFS.iterate(getTulse5keaturesFlat(), target);
             totalScore += calculateScore(res);
             totalLength += calculateDistance(res);
         }
@@ -215,8 +216,8 @@ public class ILSRepeated {
 
     @Test
     public void tesTulse14k() {
-        double originalScore = calculateScore(getTulse14k());
-        double originalLength = calculateDistance(getTulse14k());
+        double originalScore = calculateScore(tulseHill14k);
+        double originalLength = calculateDistance(tulseHill14k);
         double target = 0;
         int iterations = 100;
 
@@ -225,7 +226,7 @@ public class ILSRepeated {
 
         for (int i = 0; i < iterations; i++) {
 
-            PathTuple res = ilsBFS.iterate(getTulse14k(), target);
+            PathTuple res = ilsBFS.iterate(getTulse14keaturesFlat(), target);
             totalScore += calculateScore(res);
             totalLength += calculateDistance(res);
         }

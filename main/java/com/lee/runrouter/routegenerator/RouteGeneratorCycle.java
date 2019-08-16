@@ -85,23 +85,10 @@ public class RouteGeneratorCycle implements RouteGenerator {
 
         System.out.println("INITIAL CYCLE LEN " + initialCycle.getTotalLength());
 
-        setMinimumPathPercentage(distance);
         double remainingDistance = distance - initialCycle.getTotalLength();
 
         System.out.println(" <><><><><> THEERE IS " + remainingDistance + "TO ADD <> <> <><><><>");
 
         return ils.iterate(initialCycle, remainingDistance);
-    }
-
-    // increase the minimum length of the path added by the ILS algorithm in line
-    // with the total distance travelled.
-    private void setMinimumPathPercentage(double distance) {
-        if (distance > 10000 && distance < 15000) {
-            connectionPather.setMinimumPathPercentage(0.8);
-        }
-
-        if (distance >= 15000) {
-            connectionPather.setMinimumPathPercentage(0.8);
-        }
     }
 }

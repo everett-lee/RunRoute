@@ -181,7 +181,7 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                         gradient);
                 this.queue.add(toAdd);
 
-                addVisitedWay(selectedWay, overHalf);
+                addToClosedList(selectedWay, overHalf);
 
                 elapsedTime = (new Date()).getTime() - startTime;
 
@@ -231,7 +231,7 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
     }
 
 
-    private void addVisitedWay(Way selectedWay, boolean overHalf) {
+    private void addToClosedList(Way selectedWay, boolean overHalf) {
         // add this Way to set of visited if it is not in the
         // origin set
         if (this.repo.getOriginWay().getId() != selectedWay.getId()) {

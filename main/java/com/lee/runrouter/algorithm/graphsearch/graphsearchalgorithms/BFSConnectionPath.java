@@ -110,7 +110,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                 double heuristicScore = 0;
 
                 // continue where already visited
-                if (wayOrNodeInClosedList(selectedWay, connectingNode)) {
+                if (wayOrNodeInClosedList(selectedWay)) {
                     continue;
                 }
 
@@ -164,7 +164,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                         score, distanceToNext, currentRouteLength + distanceToNext, gradient);
                 queue.add(toAdd);
 
-                addToClosedLists(selectedWay, connectingNode);
+                addToClosedList(selectedWay, connectingNode);
 
                 elapsedTime = (new Date()).getTime() - startTime;
             }
@@ -206,17 +206,13 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
 
     // Updates the set of visited Ways and Nodes
-    private void addToClosedLists(Way selectedWay, Node connectingNode) {
+    private void addToClosedList(Way selectedWay, Node connectingNode) {
         if (!visitedWays.contains(selectedWay.getId())) {
             visitedWays.add(selectedWay.getId());
         }
-
-        if (!visitedNodes.contains(connectingNode)) {
-            visitedNodes.add(connectingNode.getId());
-        }
     }
 
-    private boolean wayOrNodeInClosedList(Way selectedWay, Node connectingNode) {
+    private boolean wayOrNodeInClosedList(Way selectedWay) {
         return visitedWays.contains(selectedWay.getId());
     }
 

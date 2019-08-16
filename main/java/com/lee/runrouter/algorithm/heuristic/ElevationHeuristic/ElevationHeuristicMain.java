@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Qualifier("ElevationHeuristicMain")
 public class ElevationHeuristicMain implements ElevationHeuristic {
     private boolean preferUphill;
-    private final double MULTIPLIER = 50; // number to scale
+    private final double MULTIPLIER = 80; // number to scale
     // gradient by in increase its share of heuristic score
 
     public ElevationHeuristicMain() {
@@ -26,7 +26,6 @@ public class ElevationHeuristicMain implements ElevationHeuristic {
         if (preferUphill) {
             // score increases in line with the gradient
             if (gradient > 0) {
-                System.out.println(gradient * MULTIPLIER);
                 return gradient * MULTIPLIER;
             }
         }

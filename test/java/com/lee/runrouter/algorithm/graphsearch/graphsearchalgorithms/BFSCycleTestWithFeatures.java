@@ -63,7 +63,7 @@ public class BFSCycleTestWithFeatures {
          BFS = new BFSCycle(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
-        saveRoutes = true;
+        saveRoutes = false;
     }
 
     @Test(timeout = 5000)
@@ -218,6 +218,7 @@ public class BFSCycleTestWithFeatures {
             serialize(res, name);
         }
 
+        System.out.println(returnPath(res, ""));
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());

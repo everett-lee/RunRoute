@@ -25,36 +25,38 @@ import java.util.*;
 @Component
 @Qualifier("BFSCycle")
 public class BFSCycle extends SearchAlgorithm implements GraphSearch {
-    private final double MINIMUM_SCORING_DISTANCE = 550; // the minimum travelled
+    private final double MINIMUM_SCORING_DISTANCE = 500; // the minimum travelled
     // along a Way before the distance bonus is applied
-    private final double DISTANCE_BONUS = 0.015;
+    private final double DISTANCE_BONUS = 0.025;
 
     private final double LOWER_SCALE = 0.90; // amount to scale upper lower bound on
     // run length by
-    private final double UPPER_SCALE = 1.05 ; // amount to scale upper bound on
+    private final double UPPER_SCALE = 1.05; // amount to scale upper bound on
     // run length by
-    private final double REPEATED_WAY_VISIT_PENALTY = 3; // a penalty applied for
-    // revisiting a way traversed in the course of the outbound route
+    private final double REPEATED_WAY_VISIT_PENALTY = 1; // a penalty applied for
+    // revisiting a way traversed at an early stage of the route
 
     private PriorityQueue<PathTuple> queue;
-    private Set<Long> visitedWaysOutbound; // ways visited in the outbound leg of this search
-    private Set<Long> visitedWaysInbound; // ways visited in the inbound leg of this search
+    private Set<Long> visitedNodesOutbound; // Nodes visited in the outbound leg of this search
+    private Set<Long> visitedNodesInbound; // Nodes visited in the inbound leg of this search
+    private Set<Long> visitedWays; // Ways visited in the course of the entire search
     private long timeLimit = 1500;
 
     @Autowired
     public BFSCycle(ElementRepo repo,
-                           @Qualifier("DistanceFromOriginNodeHeuristicMain") DistanceFromOriginNodeHeursitic distanceFromOriginHeuristic,
-                           @Qualifier("FeaturesHeuristicUsingDistance") FeaturesHeuristic featuresHeuristic,
-                           @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
-                           @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
-                           @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
+                    @Qualifier("DistanceFromOriginNodeHeuristicMain") DistanceFromOriginNodeHeursitic distanceFromOriginHeuristic,
+                    @Qualifier("FeaturesHeuristicUsingDistance") FeaturesHeuristic featuresHeuristic,
+                    @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
+                    @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
+                    @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceFromOriginHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore().getSum()).reversed());
 
-        this.visitedWaysOutbound = new HashSet<>();
-        this.visitedWaysInbound = new HashSet<>();
+        this.visitedNodesOutbound = new HashSet<>();
+        this.visitedNodesInbound = new HashSet<>();
+        this.visitedWays = new HashSet<>();
     }
 
     /**
@@ -76,8 +78,9 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore().getSum()).reversed());
 
-        this.visitedWaysOutbound = new HashSet<>();
-        this.visitedWaysInbound = new HashSet<>();
+        this.visitedNodesOutbound = new HashSet<>();
+        this.visitedNodesInbound = new HashSet<>();
+        this.visitedWays = new HashSet<>();
 
         double currentRouteLength;
         long startTime = System.currentTimeMillis(); // the algorithm is time-limited
@@ -113,9 +116,11 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                 }
             }
 
-            // for each Way reachable from the the current Way
-            for (ConnectionPair pair: this.repo.getConnectedWays(currentWay)) {
+            boolean overHalf = (currentRouteLength) / targetDistance > 0.5;
+            addToClosedList(currentNode, overHalf);
 
+            // for each Way reachable from the the current Way
+            for (ConnectionPair pair : this.repo.getConnectedWays(currentWay)) {
 
                 currentRouteLength = topTuple.getTotalLength();
                 heuristicScore = 0;
@@ -123,6 +128,11 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                 Node connectingNode = pair.getConnectingNode(); // the Node connecting
                 // the intersecting Ways
                 Way selectedWay = pair.getConnectingWay();
+
+                // skip if this Node has already been explored
+                if (nodeInClosedList(connectingNode, overHalf)) {
+                    continue;
+                }
 
                 // skip the way where street lighting required and none available
                 if (super.getAvoidUnlit()) {
@@ -140,6 +150,11 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                     continue; // skip to next where maximum length exceeded
                 }
 
+                if (visitedWays.contains(selectedWay.getId())
+                        && distanceToNext > 0) {
+                    heuristicScore -= REPEATED_WAY_VISIT_PENALTY;
+                }
+
                 if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
                     heuristicScore += distanceToNext * DISTANCE_BONUS;
                 }
@@ -155,20 +170,7 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                 heuristicScore += super.addScores(selectedWay, distanceToNext, gradient);
 
                 // whether the distance travelled is over half of the target
-                boolean overHalf = (currentRouteLength + distanceToNext) / targetDistance > 0.5;
-
-                if (!overHalf) {
-                    if (visitedWaysOutbound.contains(selectedWay.getId())) {
-                        continue;
-                    }
-                } else {
-                    if (visitedWaysInbound.contains(selectedWay.getId())) {
-                        continue;
-                    } else if (visitedWaysOutbound.contains(selectedWay.getId())
-                            && distanceToNext > 0) {
-                        heuristicScore -= REPEATED_WAY_VISIT_PENALTY;
-                    }
-                }
+                overHalf = (currentRouteLength + distanceToNext) / targetDistance > 0.5;
 
                 double distanceScore = this.distanceFromOriginHeuristic
                         .getScore(connectingNode, repo.getOriginNode(),
@@ -182,10 +184,10 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                         gradient);
                 this.queue.add(toAdd);
 
-                addToClosedList(selectedWay, overHalf);
+                // add the current Way to the set of visited
+                visitedWays.add(selectedWay.getId());
 
                 elapsedTime = (new Date()).getTime() - startTime;
-
             }
         }
 
@@ -195,11 +197,11 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                 -1, -1);
     }
 
+
     @Override
     public void setTimeLimit(long timeLimit) {
         this.timeLimit = timeLimit;
     }
-
 
     /***
      * Checks to see if the current path is eligible and returns it if
@@ -232,15 +234,25 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
     }
 
 
-    private void addToClosedList(Way selectedWay, boolean overHalf) {
-        // add this Way to set of visited if it is not in the
-        // origin set
-        if (this.repo.getOriginWay().getId() != selectedWay.getId()) {
-            if (!overHalf) {
-                visitedWaysOutbound.add(selectedWay.getId());
-            } else {
-                visitedWaysInbound.add(selectedWay.getId());
+    private boolean nodeInClosedList(Node connectingNode, boolean overHalf) {
+        if (!overHalf) {
+            if (visitedNodesOutbound.contains(connectingNode.getId())) {
+                return true;
             }
+        } else {
+            if (visitedNodesInbound.contains(connectingNode.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void addToClosedList(Node previousNode, boolean overHalf) {
+        // add this Node to set of visited
+        if (!overHalf) { // if the route length is over half of the total
+            visitedNodesOutbound.add(previousNode.getId());
+        } else {
+            visitedNodesInbound.add(previousNode.getId());
         }
     }
 

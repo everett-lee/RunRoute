@@ -10,5 +10,5 @@ public interface ILSGraphSearch {
     PathTuple connectPath(PathTuple origin, PathTuple target, double availableDistance,
                           double targetDistance);
     void setIncludedWays(HashSet<Long> includedWays);
-    void resetVisitedWays();
+    void resetVisitedNodes();
 }

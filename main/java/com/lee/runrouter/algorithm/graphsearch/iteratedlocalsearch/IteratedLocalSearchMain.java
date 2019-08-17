@@ -13,7 +13,7 @@ import java.util.HashSet;
 @Qualifier("IteratedLocalSearchMain")
 public class IteratedLocalSearchMain implements IteratedLocalSearch {
     private ILSGraphSearch graphSearch;
-    private final long TIME_LIMIT = 2500L;
+    private final long TIME_LIMIT = 1000;
     private int iterations;
     private int improvements;
     private HashSet<Long> includedWays; // Ways included in the current Path
@@ -160,7 +160,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         System.out.println(this.improvements + " >>>>>>>>> IMPROVEMENTS");
 
         // clear visited Ways for the next round
-        graphSearch.resetVisitedWays();
+        graphSearch.resetVisitedNodes();
         return head;
     }
 

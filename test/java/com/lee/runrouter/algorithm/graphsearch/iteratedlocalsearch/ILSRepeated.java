@@ -119,6 +119,7 @@ public class ILSRepeated {
         double target = 0;
         int iterations = 100;
         int improvements = 0;
+        System.out.println(originalScore);
 
         double totalLength = 0;
         double totalScore = 0;

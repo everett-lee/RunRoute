@@ -35,18 +35,12 @@ public class AlgoHelpersTest {
 
     @Test
     public void testFindClosest() {
-        Way wayUnderTest = null;
-
-        for (Way w: repo.getWayRepo()) {
-            if (w.getId() == 4439919) {
-                wayUnderTest = w;
-            }
-        }
+        Way wayUnderTest = repo.getWayRepo().get(4439919L);
 
         // find a node somewhere in the middle of the Way
         Node nodeUnderTest = null;
         for (Node n : wayUnderTest.getNodeContainer().getNodes()) {
-            if (n.getId() == 27244980) {
+            if (n.getId() == 27244980L) {
                 nodeUnderTest = n;
             }
         }
@@ -64,21 +58,14 @@ public class AlgoHelpersTest {
 
     @Test
     public void testFindClosestTwo() {
-        Way wayUnderTest = null;
-
-        for (Way w: repo.getWayRepo()) {
-            if (w.getId() == 51436348) {
-                wayUnderTest = w;
-            }
-        }
+        Way wayUnderTest = repo.getWayRepo().get(51436348L);
 
         Node nodeUnderTest = null;
         Node closest = null;
         for (Node n : wayUnderTest.getNodeContainer().getNodes()) {
-            if (n.getId() == 43413400) {
+            if (n.getId() == 43413400L) {
                 nodeUnderTest = n;
             } else {
-
                 if (n.getId() == 43413402) {
                     closest = n;
                 }

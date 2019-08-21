@@ -43,8 +43,7 @@ public class EdgeDistanceCalculatorMainTest {
 
     @Test
     public void testLengthProvidedWhereTerminalNodesUsed() {
-       Way wayUnderTest1 = repo.getWayRepo().stream().filter(x -> x.getId() == 51436348L)
-               .findFirst().get();
+       Way wayUnderTest1 = repo.getWayRepo().get(51436348L);
        Node a = wayUnderTest1.getNodeContainer().getEndNode();
 
        Way wayUnderTest2 = repo.getNodeToWay().get(43398761L).stream()
@@ -63,7 +62,7 @@ public class EdgeDistanceCalculatorMainTest {
 
     @Test
     public void testLengthWhereTerminalNodeIntersectsWay() {
-        Way wayUnderTest1 = repo.getWayRepo().stream().filter(x -> x.getId() == 12539701L).findFirst().get();
+        Way wayUnderTest1 = repo.getWayRepo().get(12539701L);
         Node a = wayUnderTest1.getNodeContainer().getStartNode();
 
         Way wayUnderTest2 = repo.getNodeToWay().get(114266678L).stream()
@@ -80,7 +79,7 @@ public class EdgeDistanceCalculatorMainTest {
 
     @Test
     public void testLengthWhereTerminalNodeIntersectsWayTwo() {
-        Way wayUnderTest1 = repo.getWayRepo().stream().filter(x -> x.getId() == 12539701L).findFirst().get();
+        Way wayUnderTest1 = repo.getWayRepo().get(12539701L);
         Node a = wayUnderTest1.getNodeContainer().getEndNode();
 
         Way wayUnderTest2 = repo.getNodeToWay().get(114266678L).stream()
@@ -97,10 +96,10 @@ public class EdgeDistanceCalculatorMainTest {
 
     @Test
     public void testLengthWhereTerminalNodeIntersectsWayThree() {
-        Way wayUnderTest1 = repo.getWayRepo().stream().filter(x -> x.getId() == 303223151L).findFirst().get();
+        Way wayUnderTest1 = repo.getWayRepo().get(303223151L);
         Node a = wayUnderTest1.getNodeContainer().getEndNode();
 
-        Way wayUnderTest2 = repo.getWayRepo().stream().filter(x -> x.getId() == 4791836L).findFirst().get();
+        Way wayUnderTest2 = repo.getWayRepo().get(4791836L);
         Node b = wayUnderTest2.getNodeContainer().getEndNode();
 
         double expected = 290.0;

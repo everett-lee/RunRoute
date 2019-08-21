@@ -14,14 +14,14 @@ import java.sql.*;
 @Component
 public abstract class QueryDirector {
     protected QueryBuilder qb;
-    protected BBCalculator distanceCalc;
+    protected BBCalculator boundingBoxCalculator;
     protected PreparedStatement ps;
     protected boolean[] options;
 
     @Autowired
-    public QueryDirector(QueryBuilder qb, BBCalculator distanceCalc) {
+    public QueryDirector(QueryBuilder qb, BBCalculator boundingBoxCalculator) {
         this.qb = qb;
-        this.distanceCalc = distanceCalc;
+        this.boundingBoxCalculator = boundingBoxCalculator;
 
         // all options are set to true by default
         options = new boolean[]{true, true, true, true, true, true, true,

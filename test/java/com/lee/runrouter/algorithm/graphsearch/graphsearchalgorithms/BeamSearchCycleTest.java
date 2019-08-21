@@ -115,8 +115,7 @@ public class BeamSearchCycleTest {
     public void testCraignairRoad5k()  {
         double[] coords = {51.448321, -0.114648};
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(5045576L);
         repo.setOriginWay(origin);
 
         PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
@@ -137,8 +136,7 @@ public class BeamSearchCycleTest {
     public void testCraignairRoad14k()  {
         double[] coords = {51.448321, -0.114648};
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(5045576L);
         repo.setOriginWay(origin);
 
         PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 14000);
@@ -159,8 +157,7 @@ public class BeamSearchCycleTest {
     public void testCraignairRoad21k()  {
         double[] coords = {51.448321, -0.114648};
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(5045576L);
         repo.setOriginWay(origin);
 
         PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 21000);
@@ -181,8 +178,7 @@ public class BeamSearchCycleTest {
     public void TulseHillTest5KM() {
         double[] coords = {51.441109, -0.106974};
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 4004611L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(4004611L);
         repo.setOriginWay(origin);
 
         PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
@@ -202,8 +198,7 @@ public class BeamSearchCycleTest {
     public void TulseHillTest14KM() {
         double[] coords = {51.441109, -0.106974};
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 4004611L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(4004611L);
         repo.setOriginWay(origin);
 
         PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 14000);
@@ -224,8 +219,7 @@ public class BeamSearchCycleTest {
     public void TulseHillTest21KM() {
         double[] coords = {51.441109, -0.106974};
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 4004611L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(4004611L);
         repo.setOriginWay(origin);
 
         PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 21000);

@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Qualifier("EdgeDistanceCalculatorMain")
 public class EdgeDistanceCalculatorMain implements EdgeDistanceCalculator {
     DistanceCalculator distanceCalculator; // the calculator used to
-    // estimate the graph-circle distance between points
+    // estimate the great-circle distance between points
 
     @Autowired
     public EdgeDistanceCalculatorMain(
@@ -56,7 +56,7 @@ public class EdgeDistanceCalculatorMain implements EdgeDistanceCalculator {
      * @param currentNode the Node being departed from
      * @param connectingNode the Node travelled to. Connects current Way to the next.
      * @param currentWay the Way containing both current and connecting nodes.
-     * @return double representing distance travalled
+     * @return double representing distance travelled in metres 
      */
     private double iterativeDistance(Node currentNode, Node connectingNode, Way currentWay) {
         double distance = 0.0;

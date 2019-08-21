@@ -22,12 +22,12 @@ public class GraphBuilder {
      * Constructs Way objects from the ResultSet returned by the QueryDirector class and adds them
      * to the repository.
      *
-     * @param wayDirector the WayQueryDirectorEnvelope class. Encapsulates PostGIS SQL query for retrieving
-     *                    Ways matching the user-provided parameters
-     * @param originParser  builds and executes PostGIS query to retrieve ID
-     *                      corresponding to the originating way of the route.
-     * @param wayBuilder the WayBuilder class. For incremental construction of Way objects
-     * @param repo repository of Way objects and their associated nodes
+     * @param wayDirector  the WayQueryDirectorEnvelope class. Encapsulates PostGIS SQL query for retrieving
+     *                     Ways matching the user-provided parameters
+     * @param originParser builds and executes PostGIS query to retrieve ID
+     *                     corresponding to the originating way of the route.
+     * @param wayBuilder   the WayBuilder class. For incremental construction of Way objects
+     * @param repo         repository of Way objects and their associated nodes
      */
     @Autowired
     public GraphBuilder(@Qualifier("WayQueryDirectorEnvelope") QueryDirector wayDirector,
@@ -39,9 +39,9 @@ public class GraphBuilder {
     }
 
     /**
-     * @param coords an Array containing the starting latitude and longitude
+     * @param coords   an Array containing the starting latitude and longitude
      * @param distance the distance of the run in KM
-     * @param options an Array of booleans representing options such as acceptable terrain types
+     * @param options  an Array of booleans representing options such as acceptable terrain types
      */
     public void buildGraph(double[] coords, double distance, boolean[] options) {
         repo.reset();
@@ -50,7 +50,7 @@ public class GraphBuilder {
 
         wayDirector.setOptions(options);
         wayDirector.buildQuery(coords[0], coords[1], distance);
-        ResultSet results =  wayDirector.getResults();
+        ResultSet results = wayDirector.getResults();
 
         try {
             while (results.next()) {
@@ -69,27 +69,27 @@ public class GraphBuilder {
                 String[] tagArray = (String[]) tags.getArray();
                 // iterate over tag values and update corresponding fields
                 for (int t = 0; t < tagArray.length; t++) {
-                    if (tagArray[t].equals("lit") && tagArray[t+1].equals("yes")) {
+                    if (tagArray[t].equals("lit") && tagArray[t + 1].equals("yes")) {
                         wayBuilder.setAsLit();
                     }
 
                     // the type of road (eg primary or pathway)
                     if (tagArray[t].equals("highway")) {
-                        if (t+1 < tagArray.length) {
+                        if (t + 1 < tagArray.length) {
                             wayBuilder.setHighWay(tagArray[t + 1]);
                         }
                     }
 
                     // the name of the Way
                     if (tagArray[t].equals("name")) {
-                        if (t+1 < tagArray.length) {
+                        if (t + 1 < tagArray.length) {
                             wayBuilder.setName(tagArray[t + 1]);
                         }
                     }
 
                     // the surface type (eg asphalt or paved)
                     if (tagArray[t].equals("surface")) {
-                        if (t+1 < tagArray.length) {
+                        if (t + 1 < tagArray.length) {
                             wayBuilder.setSurface(tagArray[t + 1]);
                         }
                     }
@@ -100,7 +100,7 @@ public class GraphBuilder {
                 List<Long> nodeVals = Arrays.asList((Long[]) nodes.getArray());
 
                 // add the repo Map from nodeID -> Way
-                for (long nodeId: nodeVals) {
+                for (long nodeId : nodeVals) {
                     repo.addNodeToWay(nodeId, wayBuilder.getElement());
                 }
 
@@ -124,7 +124,7 @@ public class GraphBuilder {
                 wayBuilder.setElevationPair(startElevation, endElevation);
 
                 // add way to the repo
-                repo.getWayRepo().add(wayBuilder.getElement());
+                repo.getWayRepo().put(id, wayBuilder.getElement());
             }
 
         } catch (SQLException e) {

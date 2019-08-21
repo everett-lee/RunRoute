@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-
 @Component
 @Qualifier("OriginQueryDirector")
 public class OriginQueryDirector extends QueryDirector {
@@ -18,7 +16,7 @@ public class OriginQueryDirector extends QueryDirector {
 
     @Override
     public void buildQuery(double startLat, double startLon, double runLength) {
-        double[] BBCoords = distanceCalc.calcBoundingBox(startLat, startLon, runLength);
+        double[] BBCoords = boundingBoxCalculator.calcBoundingBox(startLat, startLon, runLength);
         double[] origin = new double[] {startLat, startLon};
 
         qb.reset();

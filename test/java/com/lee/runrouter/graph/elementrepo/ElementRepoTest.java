@@ -34,13 +34,7 @@ public class ElementRepoTest {
 
     @Test
     public void testFindConnectedWays() {
-        Way wayUnderTest = null;
-
-        for (Way w: repo.getWayRepo()) {
-            if (w.getId() == 639188614) {
-                wayUnderTest = w;
-            }
-        }
+        Way wayUnderTest = repo.getWayRepo().get(639188614L);
 
         List<ConnectionPair> result = repo.getConnectedWays(wayUnderTest);
 
@@ -63,7 +57,7 @@ public class ElementRepoTest {
     public void testFindUniConnectedWay() {
         Way wayUnderTest = null;
 
-        for (Way w: repo.getWayRepo()) {
+        for (Way w: repo.getWayRepo().values()) {
             if (w.getId() == 106644897) {
                 wayUnderTest = w;
             }
@@ -80,7 +74,7 @@ public class ElementRepoTest {
 
     @Test
     public void testFindPathBack() {
-        Way wayUnderTest = repo.getWayRepo().stream().filter(x -> x.getId() == 106644898L).findFirst().get();
+        Way wayUnderTest = repo.getWayRepo().get(106644898L);
 
         Way w1 = repo.getConnectedWays(wayUnderTest).stream()
                 .filter(x -> x.getConnectingWay().getId() == 106644899L).findFirst().get().getConnectingWay();

@@ -189,8 +189,7 @@ public class BeamSearchCycleTestWithFeatures {
     public void testCraignairRoad5kUphill()  {
         double[] coords = {51.448321, -0.114648};
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(5045576L);
         repo.setOriginWay(origin);
 
         PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
@@ -211,8 +210,7 @@ public class BeamSearchCycleTestWithFeatures {
     public void testCraignairRoad5kFlat()  {
         double[] coords = {51.448321, -0.114648};
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(5045576L);
         repo.setOriginWay(origin);
 
         elevationHeuristic.setOptions(false);
@@ -234,8 +232,7 @@ public class BeamSearchCycleTestWithFeatures {
     public void testCraignairRoad14kUphill()  {
         double[] coords = {51.448321, -0.114648};
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(5045576L);
         repo.setOriginWay(origin);
 
         PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 14000);
@@ -256,8 +253,7 @@ public class BeamSearchCycleTestWithFeatures {
     public void testCraignairRoad14kFlat()  {
         double[] coords = {51.448321, -0.114648};
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(5045576L);
         repo.setOriginWay(origin);
 
         elevationHeuristic.setOptions(false);
@@ -279,8 +275,7 @@ public class BeamSearchCycleTestWithFeatures {
     public void testCraignairRoad21kUphill()  {
         double[] coords = {51.448321, -0.114648};
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(5045576L);
         repo.setOriginWay(origin);
 
         PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 21000);
@@ -301,8 +296,7 @@ public class BeamSearchCycleTestWithFeatures {
     public void testCraignairRoad21kFlat()  {
         double[] coords = {51.448321, -0.114648};
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(5045576L);
         repo.setOriginWay(origin);
 
         elevationHeuristic.setOptions(false);
@@ -324,8 +318,7 @@ public class BeamSearchCycleTestWithFeatures {
     public void TulseHillTest5kmUphill() {
         double[] coords = {51.441109, -0.106974};
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 4004611L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(4004611L);
         repo.setOriginWay(origin);
 
         PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
@@ -346,8 +339,7 @@ public class BeamSearchCycleTestWithFeatures {
     public void TulseHillTest5kmFlat() {
         double[] coords = {51.441109, -0.106974};
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 4004611L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(4004611L);
         repo.setOriginWay(origin);
 
         elevationHeuristic.setOptions(false);
@@ -370,8 +362,7 @@ public class BeamSearchCycleTestWithFeatures {
     public void TulseHillTest14kmUphill() {
         double[] coords = {51.441109, -0.106974};
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 4004611L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(4004611L);
         repo.setOriginWay(origin);
 
         PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 14000);
@@ -392,8 +383,7 @@ public class BeamSearchCycleTestWithFeatures {
     public void TulseHillTest14kmFlat() {
         double[] coords = {51.441109, -0.106974};
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 4004611L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(4004611L);
         repo.setOriginWay(origin);
 
         elevationHeuristic.setOptions(false);
@@ -415,8 +405,7 @@ public class BeamSearchCycleTestWithFeatures {
     public void TulseHillTest21kmUphill() {
         double[] coords = {51.441109, -0.106974};
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 4004611L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(4004611L);
         repo.setOriginWay(origin);
 
         PathTuple res = beamSearch.searchGraph(repo.getOriginWay(), coords, 21000);
@@ -437,8 +426,7 @@ public class BeamSearchCycleTestWithFeatures {
     public void TulseHillTest21kmFlat() {
         double[] coords = {51.441109, -0.106974};
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 4004611L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(4004611L);
         repo.setOriginWay(origin);
 
         elevationHeuristic.setOptions(false);

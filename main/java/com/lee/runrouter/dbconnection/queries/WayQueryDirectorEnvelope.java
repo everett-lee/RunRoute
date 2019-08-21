@@ -20,7 +20,7 @@ public class WayQueryDirectorEnvelope extends QueryDirector {
     }
 
     public void buildQuery(double startLat, double startLon, double runLength) {
-        double[] BBCoords = distanceCalc.calcBoundingBox(startLat, startLon, runLength);
+        double[] BBCoords = boundingBoxCalculator.calcBoundingBox(startLat, startLon, runLength);
         double[] origin = new double[] {startLat, startLon};
 
         qb.reset();

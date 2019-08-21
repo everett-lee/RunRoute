@@ -113,7 +113,7 @@ public class ILSRepeated {
     }
 
     @Test
-    public void testMorrish14K() {
+     public void testMorrish14K() {
         double originalScore = calculateScore(morrish14k);
         double originalLength = calculateDistance(morrish14k);
         double target = 0;

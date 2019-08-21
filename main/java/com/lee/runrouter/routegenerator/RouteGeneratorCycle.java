@@ -61,7 +61,7 @@ public class RouteGeneratorCycle implements RouteGenerator {
 
         {
             // reduce the algorithm run time
-            pather.setTimeLimit(500);
+            pather.setTimeLimit(250);
             // continue to generate until max attempts made
             while (attempts < MAX_ATTEMPTS) {
                 initialCycle = pather.searchGraph(repo.getOriginWay(), coords, distance);

@@ -40,7 +40,7 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
     private Set<Long> visitedNodesOutbound; // Nodes visited in the outbound leg of this search
     private Set<Long> visitedNodesInbound; // Nodes visited in the inbound leg of this search
     private Set<Long> visitedWays; // Ways visited in the course of the entire search
-    private long timeLimit = 1500;
+    private long timeLimit = 1000;
 
     @Autowired
     public BFSCycle(ElementRepo repo,
@@ -117,6 +117,7 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
             }
 
             boolean overHalf = (currentRouteLength) / targetDistance > 0.5;
+
             addToClosedList(currentNode, overHalf);
 
             // for each Way reachable from the the current Way

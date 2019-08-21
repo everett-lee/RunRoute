@@ -54,10 +54,10 @@ public class DistanceFromOriginToMidTestHeuristicRealData {
         Node n1 = new Node(1, 1, 0);
         Node n2 = new Node(2, 1, 0);
 
-        Way w1 = repo.getWayRepo().stream().filter(x -> x.getId() == 12536708L).findFirst().get();
-        Way w2 = repo.getWayRepo().stream().filter(x -> x.getId() == 10498542L).findFirst().get();
-        Way w3 = repo.getWayRepo().stream().filter(x -> x.getId() == 22898317L).findFirst().get();
-        Way w4 = repo.getWayRepo().stream().filter(x -> x.getId() == 12536353L).findFirst().get();
+        Way w1 = repo.getWayRepo().get(12536708L);
+        Way w2 = repo.getWayRepo().get(10498542L);
+        Way w3 = repo.getWayRepo().get(22898317L);
+        Way w4 = repo.getWayRepo().get(12536353L);
 
         double score1 = distanceFromOriginHeuristic.getScore(w1);
         double score2 = distanceFromOriginHeuristic.getScore(w2);
@@ -78,7 +78,7 @@ public class DistanceFromOriginToMidTestHeuristicRealData {
         Node n1 = new Node(1, 1, 0);
         Node n2 = new Node(2, 1, 0);
 
-        Way w1 = repo.getWayRepo().stream().filter(x -> x.getId() == 385587247L).findFirst().get();
+        Way w1 = repo.getWayRepo().get(385587247L);
 
         PriorityQueue<PathTuple> queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore().getDistanceScore()).reversed());

@@ -83,8 +83,7 @@ public class BeamSearchTest {
     public void testCraignairRoadShort() {
         double[] coords = {51.448321, -0.114648};
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(5045576L);
         repo.setOriginWay(origin);
 
         PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 2500);
@@ -97,8 +96,7 @@ public class BeamSearchTest {
     public void testCraignairRoadLonger() {
         double[] coords = {51.448321, -0.114648};
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 5045576L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(5045576L);
         repo.setOriginWay(origin);
 
         PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 5000);
@@ -119,8 +117,7 @@ public class BeamSearchTest {
         beamSearch = new BeamSearch(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
-        Way origin = repo.getWayRepo().stream().filter(x -> x.getId() == 4004611L)
-                .findFirst().get();
+        Way origin = repo.getWayRepo().get(4004611L);
         repo.setOriginWay(origin);
 
         PathTuple x = beamSearch.searchGraph(repo.getOriginWay(), coords, 10000);

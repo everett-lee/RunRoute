@@ -58,11 +58,9 @@ public class ElevationHeuristicMainTest {
 
     @Test
     public void testNegativeGradientGivesZeroWhereUphillPreferred() {
-        Way wayUnderTest1 = repo.getWayRepo().stream().filter(x -> x.getId() == 51436348L)
-                .findFirst().get();
+        Way wayUnderTest1 = repo.getWayRepo().get(51436348L);
 
-        Way wayUnderTest2 = repo.getWayRepo().stream().filter(x -> x.getId() == 474810158L)
-                .findFirst().get();
+        Way wayUnderTest2 = repo.getWayRepo().get(474810158L);
 
         Node n1 = wayUnderTest1.getNodeContainer().getStartNode();
 
@@ -83,11 +81,9 @@ public class ElevationHeuristicMainTest {
         elevationHeuristic = new ElevationHeuristicMain();
         elevationHeuristic.setOptions(false);
 
-        Way wayUnderTest1 = repo.getWayRepo().stream().filter(x -> x.getId() == 51436348L)
-                .findFirst().get();
+        Way wayUnderTest1 = repo.getWayRepo().get(51436348L);
 
-        Way wayUnderTest2 = repo.getWayRepo().stream().filter(x -> x.getId() == 474810158L)
-                .findFirst().get();
+        Way wayUnderTest2 = repo.getWayRepo().get(474810158L);
 
         Node n1 = wayUnderTest1.getNodeContainer().getStartNode();
 
@@ -103,11 +99,9 @@ public class ElevationHeuristicMainTest {
 
     @Test
     public void testSteepPathUpHillPreferred() {
-        Way wayUnderTest1 = repo.getWayRepo().stream().filter(x -> x.getId() == 4898590)
-                .findFirst().get(); // tulse hill
+        Way wayUnderTest1 = repo.getWayRepo().get(4898590L);
 
-        Way wayUnderTest2 = repo.getWayRepo().stream().filter(x -> x.getId() == 4898590)
-                .findFirst().get();
+        Way wayUnderTest2 = repo.getWayRepo().get(4898590L);
 
         Node n1 = wayUnderTest1.getNodeContainer().getNodes().get(15);
         Node n2 = wayUnderTest2.getNodeContainer().getNodes().get(2);
@@ -126,11 +120,9 @@ public class ElevationHeuristicMainTest {
         elevationHeuristic = new ElevationHeuristicMain();
         elevationHeuristic.setOptions(false);
 
-        Way wayUnderTest1 = repo.getWayRepo().stream().filter(x -> x.getId() == 4898590)
-                .findFirst().get(); // tulse hill
+        Way wayUnderTest1 = repo.getWayRepo().get(4898590);
 
-        Way wayUnderTest2 = repo.getWayRepo().stream().filter(x -> x.getId() == 4898590)
-                .findFirst().get();
+        Way wayUnderTest2 = repo.getWayRepo().get(4898590);
 
         Node n1 = wayUnderTest1.getNodeContainer().getNodes().get(15);
         Node n2 = wayUnderTest2.getNodeContainer().getNodes().get(2);

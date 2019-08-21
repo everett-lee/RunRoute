@@ -17,10 +17,9 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 /**
- * A greedy Search algorithm that utilises a restricted List.
- * Neighbouring nodes are explored and only those with the
- * highest score (as assessed by the heuristics) at each stage
- * are retained.
+ * A greedy Search algorithm that utilises a priority queue.
+ * Neighbouring nodes are selected and explored in order
+ * of score(as assessed by the heuristics).
  */
 @Component
 @Qualifier("BFSCycle")
@@ -61,10 +60,10 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
 
     /**
      * Method for generating a route of the specified length,
-     * that selects a path based on the given preferences.
+     * that selects a path informed by the given preferences.
      * This is achieved by conducting a greedy best first selection of ways
-     * ot form the required route. The method returns as soon as a valid
-     * route of the minimuh required length has been generated
+     * to form the required route. The method returns as soon as a valid
+     * route of the minimum required length has been generated
      *
      * @param root           the Way at which the run begins
      * @param coords         the coordinates at which the run begins
@@ -75,6 +74,7 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
      */
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double targetDistance) {
+        // sort visited Nodes by score in descending order
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore().getSum()).reversed());
 
@@ -116,8 +116,8 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                 }
             }
 
+            // has the route reached the halfway point
             boolean overHalf = (currentRouteLength) / targetDistance > 0.5;
-
             addToClosedList(currentNode, overHalf);
 
             // for each Way reachable from the the current Way
@@ -128,14 +128,15 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                 currentNode = topTuple.getPreviousNode(); // the last explored Node
                 Node connectingNode = pair.getConnectingNode(); // the Node connecting
                 // the intersecting Ways
-                Way selectedWay = pair.getConnectingWay();
+                Way selectedWay = pair.getConnectingWay(); // the Way
+                // connecting these two nodes
 
                 // skip if this Node has already been explored
                 if (nodeInClosedList(connectingNode, overHalf)) {
                     continue;
                 }
 
-                // skip the way where street lighting required and none available
+                // skip if street lighting required and none available
                 if (super.getAvoidUnlit()) {
                     if (!selectedWay.isLit()) {
                         continue;
@@ -147,15 +148,20 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                 double distanceToNext = this.edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
 
+                // skip where maximum length exceeded
                 if (currentRouteLength + distanceToNext > upperBound) {
-                    continue; // skip to next where maximum length exceeded
+                    continue;
                 }
 
+                // deduct a penalty where this Way has already been
+                // traversed
                 if (visitedWays.contains(selectedWay.getId())
                         && distanceToNext > 0) {
                     heuristicScore -= REPEATED_WAY_VISIT_PENALTY;
                 }
 
+                // add a bonus where the distance travelled exceeds the
+                // minimum required length
                 if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
                     heuristicScore += distanceToNext * DISTANCE_BONUS;
                 }
@@ -164,13 +170,15 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                         .calculateGradient(currentNode, currentWay, connectingNode,
                                 selectedWay, distanceToNext);
 
+                // skip where the gradient of this section of the route
+                // exceeds the maximum allowed
                 if (gradient > super.getMaxGradient()) {
                     continue;
                 }
 
                 heuristicScore += super.addScores(selectedWay, distanceToNext, gradient);
 
-                // whether the distance travelled is over half of the target
+                // is the distance travelled is over half of the target?
                 overHalf = (currentRouteLength + distanceToNext) / targetDistance > 0.5;
 
                 double distanceScore = this.distanceFromOriginHeuristic
@@ -185,11 +193,11 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                         gradient);
                 this.queue.add(toAdd);
 
-                // add the current Way to the set of visited
-                visitedWays.add(selectedWay.getId());
-
                 elapsedTime = (new Date()).getTime() - startTime;
             }
+
+            // add the current Way to the set of visited
+            visitedWays.add(currentWay.getId());
         }
 
         // null object returned in the event of an error
@@ -236,6 +244,7 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
 
 
     private boolean nodeInClosedList(Node connectingNode, boolean overHalf) {
+        // if the route length is over over half of the target
         if (!overHalf) {
             if (visitedNodesOutbound.contains(connectingNode.getId())) {
                 return true;
@@ -249,8 +258,8 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
     }
 
     private void addToClosedList(Node previousNode, boolean overHalf) {
-        // add this Node to set of visited
-        if (!overHalf) { // if the route length is over half of the total
+        // if the route length is over over half of the target
+        if (!overHalf) {
             visitedNodesOutbound.add(previousNode.getId());
         } else {
             visitedNodesInbound.add(previousNode.getId());

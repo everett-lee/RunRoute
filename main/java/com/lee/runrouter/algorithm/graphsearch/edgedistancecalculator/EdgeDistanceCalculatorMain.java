@@ -56,10 +56,10 @@ public class EdgeDistanceCalculatorMain implements EdgeDistanceCalculator {
      * @param currentNode the Node being departed from
      * @param connectingNode the Node travelled to. Connects current Way to the next.
      * @param currentWay the Way containing both current and connecting nodes.
-     * @return double representing distance travelled in metres 
+     * @return double representing distance travelled in metres
      */
     private double iterativeDistance(Node currentNode, Node connectingNode, Way currentWay) {
-        double distance = 0.0;
+        double distance = 0;
 
         List<Node> nodes = currentWay.getNodeContainer().getNodes();
 

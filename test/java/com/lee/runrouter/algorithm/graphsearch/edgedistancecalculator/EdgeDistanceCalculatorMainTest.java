@@ -66,14 +66,13 @@ public class EdgeDistanceCalculatorMainTest {
         Node a = wayUnderTest1.getNodeContainer().getStartNode();
 
         Way wayUnderTest2 = repo.getNodeToWay().get(114266678L).stream()
-                .filter(x -> x.getId() == 26396773L).findFirst().get();
-
+                .filter(way -> way.getId() == 26396773L).findFirst().get();
         Node b = wayUnderTest2.getNodeContainer().getStartNode();
 
-        double expected = 180.0;
+        double expected = 190.0;
         double res = edgeDistanceCalculator.calculateDistance(a, b, wayUnderTest1);
 
-
+        // compared with Google Maps which rounds to to nearest 10 metres
         assertEquals(expected, res, 10);
     }
 
@@ -103,6 +102,22 @@ public class EdgeDistanceCalculatorMainTest {
         Node b = wayUnderTest2.getNodeContainer().getEndNode();
 
         double expected = 290.0;
+        double res = edgeDistanceCalculator.calculateDistance(a, b, wayUnderTest1);
+
+        assertEquals(expected, res, 10);
+    }
+
+    @Test
+    public void testLengthWhereTerminalNodeIntersectsWayFour() {
+        Way wayUnderTest1 = repo.getWayRepo().get(24299314L);
+        Node a = wayUnderTest1.getNodeContainer().getEndNode();
+        System.out.println(a.getId());
+
+        Way wayUnderTest2 = repo.getWayRepo().get(4439930L);
+        Node b = wayUnderTest2.getNodeContainer().getEndNode();
+        System.out.println(b.getId());
+
+        double expected = 600.0;
         double res = edgeDistanceCalculator.calculateDistance(a, b, wayUnderTest1);
 
         assertEquals(expected, res, 10);

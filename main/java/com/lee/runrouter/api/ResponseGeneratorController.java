@@ -32,9 +32,9 @@ public class ResponseGeneratorController {
     final double MIN_LON = -6;
     final double MIN_RUN_LENGTH_M = 500;
     final double MAX_RUN_LENGTH_M = 21000;
-    final String PATH_STRING = "/route/coords=({lat},{lon}),distance={distance}" +
-                              ",maxGradient={maxGradient},options={options}";
-    final String COORDS_STRING = "/start/coords=({lat},{lon})";
+    final String PATH_STRING = "route/coords=({lat},{lon})&distance={distance}" +
+                              "&maxGradient={maxGradient}&options={options}";
+    final String COORDS_STRING = "start/coords=({lat},{lon})";
     private Executor executor;
 
     @Autowired

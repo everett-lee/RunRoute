@@ -83,7 +83,7 @@ public class testRouteReflectsFeaturesHeuristic {
 
         int matchedCountWithoutPref = countMatchedHighways(route);
 
-        FeaturesHeuristic fh = (FeaturesHeuristic) featuresHeuristic;
+        FeaturesHeuristic fh = featuresHeuristic;
         fh.setPreferredHighways(preferredHighways);
         route = routeGenerator.generateRoute(coords, 10000);
 

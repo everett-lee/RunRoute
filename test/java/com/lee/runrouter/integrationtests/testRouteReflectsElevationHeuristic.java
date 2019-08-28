@@ -71,7 +71,7 @@ public class testRouteReflectsElevationHeuristic {
     }
 
     @Test
-    public void testAverageElevationWhenLessWhenFlatPreferredOne() throws PathNotGeneratedException {
+    public void testAverageElevationWhenLessWhenSteepPreferredOne() throws PathNotGeneratedException {
         double[] coords = {51.446537, -0.124989};
         PathTuple route = routeGenerator.generateRoute(coords, 10000);
 
@@ -86,7 +86,7 @@ public class testRouteReflectsElevationHeuristic {
     }
 
     @Test
-    public void testAverageElevationWhenLessWhenFlatPreferredTwo() throws PathNotGeneratedException {
+    public void testAverageElevationWhenLessWhenSteepPreferredTwo() throws PathNotGeneratedException {
         double[] coords = {51.440830, -0.106387};
         PathTuple route = routeGenerator.generateRoute(coords, 10000);
 
@@ -102,7 +102,7 @@ public class testRouteReflectsElevationHeuristic {
 
 
     @Test
-    public void testAverageElevationWhenLessWhenFlatPreferredThree() throws PathNotGeneratedException {
+    public void testAverageElevationWhenLessWhenSteepPreferredThree() throws PathNotGeneratedException {
         double[] coords = {51.461868, -0.115622};
         PathTuple route = routeGenerator.generateRoute(coords, 10000);
 
@@ -118,7 +118,7 @@ public class testRouteReflectsElevationHeuristic {
     }
 
     @Test
-    public void testAverageElevationWhenLessWhenFlatPreferredAndFeaturesIncluded()
+    public void testAverageElevationWhenSteepPreferredAndFeaturesIncluded()
             throws PathNotGeneratedException {
         FeaturesHeuristic fh = (FeaturesHeuristic) featuresHeuristic;
         fh.setPreferredHighways(preferredHighways);
@@ -137,7 +137,7 @@ public class testRouteReflectsElevationHeuristic {
 
 
     @Test
-    public void testAverageElevationWhenLessWhenFlatPreferredAndFeaturesIncludedTwo()
+    public void testAverageElevationWhenSteepPreferredAndFeaturesIncludedTwo()
             throws PathNotGeneratedException {
         FeaturesHeuristic fh = (FeaturesHeuristic) featuresHeuristic;
         fh.setPreferredHighways(preferredHighways);
@@ -157,7 +157,7 @@ public class testRouteReflectsElevationHeuristic {
 
 
     @Test
-    public void testAverageElevationWhenLessWhenFlatPreferredAndFeaturesIncludedThree()
+    public void testAverageElevationWhenSteepPreferredAndFeaturesIncludedThree()
             throws PathNotGeneratedException {
         FeaturesHeuristic fh = (FeaturesHeuristic) featuresHeuristic;
         fh.setPreferredHighways(preferredHighways);

@@ -42,7 +42,7 @@ public class IteratedLocalSearchMainTest {
                 .filter(x -> x.getName().equals("getStartPathSegment")).findFirst().get();
         getStartPathSegment.setAccessible(true);
         PathTuple result = (PathTuple) getStartPathSegment.invoke(ils, morrish5k, 1);
-        long resultid = result.getPreviousNode().getId();
+        long resultid = result.getCurrentNode().getId();
         long expected = 114280020;
 
         assertEquals(expected, resultid);

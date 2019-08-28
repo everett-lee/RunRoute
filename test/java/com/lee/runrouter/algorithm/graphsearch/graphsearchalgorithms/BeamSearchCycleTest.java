@@ -70,7 +70,7 @@ public class BeamSearchCycleTest {
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
-        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+        assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 3000)
@@ -90,7 +90,7 @@ public class BeamSearchCycleTest {
         assertTrue(length > 5);
         System.out.println(returnPath(res, ""));
         assertEquals(length, res.getTotalLength(), 0.01);
-        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+        assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 3000)
@@ -108,7 +108,7 @@ public class BeamSearchCycleTest {
         assertTrue(length > 5);
         System.out.println(returnPath(res, ""));
         assertEquals(length, res.getTotalLength(), 0.01);
-        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+        assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 3000)
@@ -129,7 +129,7 @@ public class BeamSearchCycleTest {
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
-        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+        assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 3000)
@@ -150,7 +150,7 @@ public class BeamSearchCycleTest {
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
-        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+        assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 3000)
@@ -171,7 +171,7 @@ public class BeamSearchCycleTest {
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
-        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+        assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 3000)
@@ -191,7 +191,7 @@ public class BeamSearchCycleTest {
         }
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
-        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+        assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 3000)
@@ -212,7 +212,7 @@ public class BeamSearchCycleTest {
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
-        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+        assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 3000)
@@ -234,7 +234,7 @@ public class BeamSearchCycleTest {
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
-        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+        assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     static void serialize(PathTuple head, String routeName) {

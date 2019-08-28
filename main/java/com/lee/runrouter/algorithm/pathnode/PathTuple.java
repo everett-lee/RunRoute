@@ -5,7 +5,7 @@ import com.lee.runrouter.graph.graphbuilder.node.Node;
 
 public interface PathTuple {
     PathTuple getPredecessor();
-    Node getPreviousNode();
+    Node getCurrentNode();
     Way getCurrentWay();
     void setPredecessor(PathTuple predecessor);
     ScorePair getSegmentScore();

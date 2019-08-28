@@ -12,10 +12,8 @@ import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOrigi
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicMain;
-import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicSensitive;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicUsingDistance;
-import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicUsingDistanceSensitive;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import org.junit.Before;
@@ -242,7 +240,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         double originalLength = calculateDistance(tulseHill21k);
         double target = 1000;
 
-        System.out.println(tulseHill21k.getPreviousNode());
+        System.out.println(tulseHill21k.getCurrentNode());
 
         PathTuple res = ilsBFS.iterate(tulseHill21k, target);
         double postScore = calculateScore(res);

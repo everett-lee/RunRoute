@@ -5,7 +5,6 @@ import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.*;
-import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
@@ -57,7 +56,7 @@ public class ResponseGeneratorControllerTest {
         when(mocknode.getId()).thenReturn(1l);
         PathTuple response = mock(PathTupleMain.class);
         when(response.getPredecessor()).thenReturn(null);
-        when(response.getPreviousNode()).thenReturn(mocknode);
+        when(response.getCurrentNode()).thenReturn(mocknode);
         when(response.getSegmentLength()).thenReturn(1d);
         when(response.getSegmentScore()).thenReturn(new ScorePair(1,1));
         Way mockedWay = mock(Way.class);
@@ -76,7 +75,7 @@ public class ResponseGeneratorControllerTest {
         repo = mock(ElementRepo.class);
         edgeDistanceCalculator = mock(EdgeDistanceCalculatorMain.class);
         gradientCalculator = mock(SimpleGradientCalculator.class);
-        BFS = new BFSCycle(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        BFS = new BFS(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
                                     gradientCalculator, elevationHeuristic);
         BFSconnection = new BFSConnectionPath(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);

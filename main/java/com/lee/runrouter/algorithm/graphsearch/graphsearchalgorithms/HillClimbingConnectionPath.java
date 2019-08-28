@@ -24,26 +24,26 @@ import java.util.*;
  * to the target Way.
  */
 @Component
-@Qualifier("BFSConnectionPath")
-public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
+@Qualifier("HillClimbingConnectionPath")
+public class HillClimbingConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final double MINIMUM_SCORING_DISTANCE = 500; // the minimum travelled
     // along a Way before the distance bonus is applied
-    private final double DISTANCE_BONUS = 0.005;
-    final double REPEATED_WAY_VISIT_PENALTY = 0.05; // deducted from heuristic score
+    private final double DISTANCE_BONUS = 0.001;
+    final double REPEATED_WAY_VISIT_PENALTY = 1.25; // deducted from heuristic score
     // for visits to Ways included in the main route
-    final double MAX_DISTANCE_FROM_TARGET_MULTIPLIER = 1; // maximum increase in
+    final double MAX_DISTANCE_FROM_TARGET_MULTIPLIER = 1.25; // maximum increase in
     // distance to target compared to previous node in the path's position
 
-    private PriorityQueue<PathTuple> queue;
+    private Stack<PathTuple> stack;
     private HashSet<Long> visitedNodes; // ways visited in the course of this search
     private HashSet<Long> includedWays; // ways included in the main path
-    private double minimumPathPercentage = 1; // length of this path segment as
+    private double minimumPathPercentage = 0.9; // length of this path segment as
     // a percentage of a the removed path segment required to serve as a valid
     // replacement
 
     private final double TIME_LIMIT = 500;
 
-    public BFSConnectionPath(ElementRepo repo,
+    public HillClimbingConnectionPath(ElementRepo repo,
                              @Qualifier("DirectDistanceHeuristic") DistanceFromOriginNodeHeursitic distanceFromOriginHeursitic,
                              @Qualifier("FeaturesHeuristicMain") FeaturesHeuristic featuresHeuristic,
                              @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
@@ -51,8 +51,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                              @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceFromOriginHeursitic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
-        this.queue = new PriorityQueue<>(Comparator
-                .comparing((PathTuple tuple) -> tuple.getSegmentScore().getHeuristicScore()).reversed());
+        this.stack = new Stack<>();
         this.visitedNodes = new HashSet<>();
         this.includedWays = new HashSet<>();
     }
@@ -61,8 +60,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     public PathTuple connectPath(PathTuple origin, PathTuple target,
                                  double availableDistance, double targetDistance) {
 
-        queue = new PriorityQueue<>(Comparator
-                .comparing((PathTuple tuple) -> tuple.getSegmentScore().getHeuristicScore()).reversed());
+        stack = new Stack<>();
 
         visitedNodes = new HashSet<>();
 
@@ -74,11 +72,11 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         // the remaining distance for the route
         double upperBound = availableDistance + origin.getTotalLength();
 
-        queue.add(new PathTupleMain(null, origin.getCurrentNode(), origin.getCurrentWay(),
+        stack.add(new PathTupleMain(null, origin.getCurrentNode(), origin.getCurrentWay(),
                 origin.getSegmentScore(), origin.getSegmentLength(),origin.getTotalLength(), origin.getSegmentGradient()));
 
-        while (!queue.isEmpty() && elapsedTime <= TIME_LIMIT) {
-            PathTuple topTuple = queue.poll();
+        while (!stack.isEmpty() && elapsedTime <= TIME_LIMIT) {
+            PathTuple topTuple = stack.pop();
 
             Way currentWay = topTuple.getCurrentWay();
             Node currentNode = topTuple.getCurrentNode();
@@ -97,6 +95,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                     0, 0);
 
             addToClosedList(currentNode);
+            List<PathTuple> children = new ArrayList();
 
             // for each Way reachable from the current Way
             for (ConnectionPair pair : repo.getConnectedWays(currentWay)) {
@@ -160,10 +159,16 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                 // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext, gradient);
-                queue.add(toAdd);
+                children.add(toAdd);
 
                 elapsedTime = (new Date()).getTime() - startTime;
             }
+
+            children.sort(Comparator.comparing((PathTuple tuple) -> tuple.getSegmentScore().getHeuristicScore()));
+            for (PathTuple child: children) {
+                stack.add(child);
+            }
+
         }
 
         return new PathTupleMain(null, null, null, new ScorePair(-1, -10000),

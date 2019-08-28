@@ -34,7 +34,7 @@ public class ExecutorFullCycle implements Executor {
             @Qualifier("RouteGeneratorCycle") RouteGenerator routeGenerator,
             GraphBuilder graphBuilder,
             @Qualifier("LinkedListToArrayAllNodes") LinkedListToArray linkedListToArray,
-            @Qualifier("BFSCycle") SearchAlgorithm pather,
+            @Qualifier("BFS") SearchAlgorithm pather,
             @Qualifier("BFSConnectionPath") SearchAlgorithm connectionPather,
             CycleRemover cycleRemover) {
         this.routeGenerator = routeGenerator;
@@ -149,6 +149,7 @@ public class ExecutorFullCycle implements Executor {
         // user selected avoid concrete
         if (options[2]) {
             dislikedSurfaces.add(Way.Surface.CONCRETE.toString());
+            dislikedSurfaces.add(Way.Surface.ASPHALT.toString());
         }
 
         // user selected avoid unlit
@@ -201,8 +202,8 @@ public class ExecutorFullCycle implements Executor {
     static public String returnPath(PathTuple tp, String acc) {
         acc += "node(id:";
         while (tp != null) {
-            acc += tp.getPreviousNode().getId() + ", ";
-            System.out.println("(" + tp.getPreviousNode() + " distance: "
+            acc += tp.getCurrentNode().getId() + ", ";
+            System.out.println("(" + tp.getCurrentNode() + " distance: "
                     + tp.getTotalLength() + " score: " + tp.getSegmentScore() +
                     ") " + " way: " + tp.getCurrentWay().getId());
             System.out.println("Segment length: " + tp.getSegmentLength());

@@ -32,8 +32,8 @@ public class LinkedListToArrayAllNodes implements LinkedListToArray{
         List<Node> nodes = new ArrayList<>();
 
         while (head.getPredecessor() != null) {
-            final long startId = head.getPreviousNode().getId(); // id of current node
-            final long endId = head.getPredecessor().getPreviousNode().getId(); // id of next node
+            final long startId = head.getCurrentNode().getId(); // id of current node
+            final long endId = head.getPredecessor().getCurrentNode().getId(); // id of next node
 
             Way currentWay = head.getCurrentWay();
             for (Way way: elementRepo.getNodeToWay().get(startId)) {

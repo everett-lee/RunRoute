@@ -75,9 +75,9 @@ public class BFSConnectionPathTest {
 
         System.out.println(returnPath(res, ""));
 
-        assertEquals(start.getPreviousNode(), resFinal.getPreviousNode());
-        assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
-        assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
+        assertEquals(start.getCurrentNode(), resFinal.getCurrentNode());
+        assertEquals(start.getCurrentNode().getId(), getEndTuple(res).getCurrentNode().getId());
+        assertEquals(end.getCurrentNode().getId(), res.getCurrentNode().getId());
     }
 
     @Test
@@ -92,8 +92,8 @@ public class BFSConnectionPathTest {
 
         System.out.println(calculateScore(res));
 
-        assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
-        assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
+        assertEquals(start.getCurrentNode().getId(), getEndTuple(res).getCurrentNode().getId());
+        assertEquals(end.getCurrentNode().getId(), res.getCurrentNode().getId());
     }
 
 
@@ -109,8 +109,8 @@ public class BFSConnectionPathTest {
 
         System.out.println(calculateScore(res));
 
-        assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
-        assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
+        assertEquals(start.getCurrentNode().getId(), getEndTuple(res).getCurrentNode().getId());
+        assertEquals(end.getCurrentNode().getId(), res.getCurrentNode().getId());
     }
 
 
@@ -128,8 +128,8 @@ public class BFSConnectionPathTest {
 
         System.out.println(calculateScore(res));
 
-        assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
-        assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
+        assertEquals(start.getCurrentNode().getId(), getEndTuple(res).getCurrentNode().getId());
+        assertEquals(end.getCurrentNode().getId(), res.getCurrentNode().getId());
     }
 
     @Test
@@ -143,8 +143,8 @@ public class BFSConnectionPathTest {
                 end, 5000, 0);
 
 
-        assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
-        assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
+        assertEquals(start.getCurrentNode().getId(), getEndTuple(res).getCurrentNode().getId());
+        assertEquals(end.getCurrentNode().getId(), res.getCurrentNode().getId());
     }
 
     @Test
@@ -161,8 +161,8 @@ public class BFSConnectionPathTest {
         System.out.println(calculateScore(res));
         System.out.println(returnPath(res, ""));
 
-        assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
-        assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
+        assertEquals(start.getCurrentNode().getId(), getEndTuple(res).getCurrentNode().getId());
+        assertEquals(end.getCurrentNode().getId(), res.getCurrentNode().getId());
     }
 
 
@@ -179,8 +179,8 @@ public class BFSConnectionPathTest {
 
         System.out.println(calculateScore(res));
 
-        assertEquals(start.getPreviousNode().getId(), getEndTuple(res).getPreviousNode().getId());
-        assertEquals(end.getPreviousNode().getId(), res.getPreviousNode().getId());
+        assertEquals(start.getCurrentNode().getId(), getEndTuple(res).getCurrentNode().getId());
+        assertEquals(end.getCurrentNode().getId(), res.getCurrentNode().getId());
     }
 
     private PathTuple getStartPathSegment(PathTuple head, int a) {
@@ -195,7 +195,7 @@ public class BFSConnectionPathTest {
     private PathTuple getEndPathSegment(PathTuple endNode, int r) {
         int i = 0;
 
-        if (endNode.getPreviousNode() == null) {
+        if (endNode.getCurrentNode() == null) {
             return endNode;
         }
 

@@ -56,45 +56,44 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         head = reverseList(head);
 
         int a = 1; // the starting node, indexed from 1
-        int r = 1; // number of nodes to remove
+        int r = 2; // number of nodes to remove
 
         while (elapsedTime <= TIME_LIMIT) {
             elapsedTime = (new Date()).getTime() - startTime;
 
             // get the number of nodes in the the path
             int pathSize = getPathSize(head);
-            // reset if r greater than pathLength minus the start and end node
+            // reset if r extends beyond the penultimate node
             if (r > pathSize - 2) {
-                r = 1;
+                r = 2;
             }
 
             // reset r if removed section plus index of the
-            // start node is greater than the number of nodes
+            // start node extends past the penultimate node
             if (a + r > pathSize - 2) {
                 r = Math.max(2, pathSize - 1 - a);
             }
 
-            // reset a and r if a plus section to remove
-            // extends past the final node
-            if (a >= pathSize - 2) {
+            // reset a and r if a is the penultimate node
+            if (a >= pathSize - 1) {
                 a = 1;
-                r = 1;
+                r = 2;
             }
 
-            start = getStartPathSegment(head, a); // start of the removed segment
-            end = getEndPathSegment(start, r); // end of th removed segment
+            start = getStartPathNode(head, a); // start of the removed segment
+            end = getEndPathNode(start, r); // end of th removed segment
 
             // calculate the length in metres of the segment to be removed, and
             // add to available distance
-            double existingSegmentLength = calculateDistance(start, end); // does not include
+            double existingSegmentDistance = calculateDistance(start, end); // does not include
             // start, includes end
-            availableDistance += existingSegmentLength;
+            availableDistance += existingSegmentDistance;
 
             PathTuple newSegment = null;
             if (availableDistance > 0) {
                 // generate the new segment
                 newSegment = graphSearch.connectPath(start, end, availableDistance,
-                        existingSegmentLength);
+                        end.getTotalLength());
             }
 
             setIterations(getIterations() + 1);
@@ -112,7 +111,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
                 r++;
 
                 // subtract the length in metres of the segment length as it was not removed
-                availableDistance -= existingSegmentLength;
+                availableDistance -= existingSegmentDistance;
 
             // new segment score is higher, so replace old path segment with the new one
             } else {
@@ -120,16 +119,16 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
                 System.out.println("OLD SCORE: " + oldSegmentScore);
                 System.out.println("NEW SCORE: " + newSegmentScore);
                 System.out.println("");
-                System.out.println("COMING FROM " + start.getPreviousNode());
-                System.out.println("GOING TO " + end.getPreviousNode());
+                System.out.println("COMING FROM " + start.getCurrentNode());
+                System.out.println("GOING TO " + end.getCurrentNode());
                 System.out.println();
                 System.out.println("node(id:");
                 PathTuple topi = start;
                 while (topi != end) {
-                    System.out.print(topi.getPreviousNode().getId() + ", ");
+                    System.out.print(topi.getCurrentNode().getId() + ", ");
                     topi = topi.getPredecessor();
                 }
-                System.out.println(topi.getPreviousNode().getId()  + ");out;");
+                System.out.println(topi.getCurrentNode().getId()  + ");out;");
 
                 System.out.println("THE OLD SEGMENT ^^^^^^^^^^");
 
@@ -137,10 +136,10 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
                 topi = newSegment;
                 while (topi.getPredecessor() != null) {
-                    System.out.print(topi.getPreviousNode().getId() + ", ");
+                    System.out.print(topi.getCurrentNode().getId() + ", ");
                     topi = topi.getPredecessor();
                 }
-                System.out.println(topi.getPreviousNode().getId() + ");out;");
+                System.out.println(topi.getCurrentNode().getId() + ");out;");
                 System.out.println("THE NEW SEGMENT ^^^^^^^^^^");
 
                 setImprovements(getImprovements() + 1);
@@ -152,7 +151,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
                 availableDistance = targetDistance - newDistance;
 
                 a = 1;
-                r = 1;
+                r = 2;
             }
         }
 
@@ -214,7 +213,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
     // get a reference to the node a places into the linked list of PathTuples
     // this is the start node of the removed segment
-    private PathTuple getStartPathSegment(PathTuple head, int a) {
+    private PathTuple getStartPathNode(PathTuple head, int a) {
         int i = 0;
         while (i < a - 1) {
             head = head.getPredecessor();
@@ -225,10 +224,10 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
     // get a reference to the node r places from the start of the removed
     // segment
-    private PathTuple getEndPathSegment(PathTuple endNode, int r) {
+    private PathTuple getEndPathNode(PathTuple endNode, int r) {
         int i = 0;
 
-        if (endNode.getPreviousNode() == null) {
+        if (endNode.getCurrentNode() == null) {
             return endNode;
         }
 

@@ -37,7 +37,7 @@ public class PathTupleMain implements PathTuple, Serializable {
     }
 
     @Override
-    public Node getPreviousNode() {
+    public Node getCurrentNode() {
         return this.previousNode;
     }
 

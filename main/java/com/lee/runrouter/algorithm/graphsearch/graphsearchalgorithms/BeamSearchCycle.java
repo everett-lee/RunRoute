@@ -106,7 +106,7 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
             queue.remove(0);
 
             Way currentWay = topTuple.getCurrentWay();
-            Node currentNode = topTuple.getPreviousNode();
+            Node currentNode = topTuple.getCurrentNode();
             currentRouteLength = topTuple.getTotalLength();
             double heuristicScore;
 
@@ -122,7 +122,7 @@ public class BeamSearchCycle extends SearchAlgorithm implements GraphSearch {
             for (ConnectionPair pair: this.repo.getConnectedWays(currentWay)) {
                 currentRouteLength = topTuple.getTotalLength();
                 heuristicScore = 0;
-                currentNode = topTuple.getPreviousNode(); // the last explored Node
+                currentNode = topTuple.getCurrentNode(); // the last explored Node
                 Node connectingNode = pair.getConnectingNode(); // the Node connecting
                 // the intersecting Ways
                 Way selectedWay = pair.getConnectingWay();

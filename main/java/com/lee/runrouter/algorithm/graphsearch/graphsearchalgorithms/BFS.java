@@ -22,11 +22,11 @@ import java.util.*;
  * of score(as assessed by the heuristics).
  */
 @Component
-@Qualifier("BFSCycle")
-public class BFSCycle extends SearchAlgorithm implements GraphSearch {
+@Qualifier("BFS")
+public class BFS extends SearchAlgorithm implements GraphSearch {
     private final double MINIMUM_SCORING_DISTANCE = 500; // the minimum travelled
     // along a Way before the distance bonus is applied
-    private final double DISTANCE_BONUS = 0.025;
+    private final double DISTANCE_BONUS = 0.005;
 
     private final double LOWER_SCALE = 0.90; // amount to scale upper lower bound on
     // run length by
@@ -42,12 +42,12 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
     private long timeLimit = 1000;
 
     @Autowired
-    public BFSCycle(ElementRepo repo,
-                    @Qualifier("DistanceFromOriginNodeHeuristicMain") DistanceFromOriginNodeHeursitic distanceFromOriginHeuristic,
-                    @Qualifier("FeaturesHeuristicUsingDistance") FeaturesHeuristic featuresHeuristic,
-                    @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
-                    @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
-                    @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
+    public BFS(ElementRepo repo,
+               @Qualifier("DistanceFromOriginNodeHeuristicMain") DistanceFromOriginNodeHeursitic distanceFromOriginHeuristic,
+               @Qualifier("FeaturesHeuristicUsingDistance") FeaturesHeuristic featuresHeuristic,
+               @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
+               @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
+               @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceFromOriginHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
         this.queue = new PriorityQueue<>(Comparator
@@ -104,7 +104,7 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
             PathTuple topTuple = queue.poll();
 
             Way currentWay = topTuple.getCurrentWay();
-            Node currentNode = topTuple.getPreviousNode();
+            Node currentNode = topTuple.getCurrentNode();
             currentRouteLength = topTuple.getTotalLength();
             double heuristicScore;
 
@@ -121,13 +121,13 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
             addToClosedList(currentNode, overHalf);
 
             // for each Way reachable from the the current Way
-            for (ConnectionPair pair : this.repo.getConnectedWays(currentWay)) {
+                for (ConnectionPair pair : this.repo.getConnectedWays(currentWay)) {
 
-                currentRouteLength = topTuple.getTotalLength();
-                heuristicScore = 0;
-                currentNode = topTuple.getPreviousNode(); // the last explored Node
-                Node connectingNode = pair.getConnectingNode(); // the Node connecting
-                // the intersecting Ways
+                    currentRouteLength = topTuple.getTotalLength();
+                    heuristicScore = 0;
+                    currentNode = topTuple.getCurrentNode(); // the last explored Node
+                    Node connectingNode = pair.getConnectingNode(); // the Node connecting
+                    // the intersecting Ways
                 Way selectedWay = pair.getConnectingWay(); // the Way
                 // connecting these two nodes
 
@@ -194,10 +194,10 @@ public class BFSCycle extends SearchAlgorithm implements GraphSearch {
                 this.queue.add(toAdd);
 
                 elapsedTime = (new Date()).getTime() - startTime;
-            }
 
-            // add the current Way to the set of visited
-            visitedWays.add(currentWay.getId());
+                // add the current Way to the set of visited
+                visitedWays.add(selectedWay.getId());
+            }
         }
 
         // null object returned in the event of an error

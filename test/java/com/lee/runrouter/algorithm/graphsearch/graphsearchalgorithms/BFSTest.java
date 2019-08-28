@@ -26,7 +26,7 @@ import static com.lee.runrouter.testhelpers.TestHelpers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class BFSCycleTest {
+public class BFSTest {
     ElementRepo repo;
     GraphSearch BFS;
     DistanceCalculator distanceCalculator;
@@ -50,7 +50,7 @@ public class BFSCycleTest {
         elevationHeuristic = new ElevationHeuristicMain();
         gradientCalculator = new SimpleGradientCalculator();
 
-        BFS = new BFSCycle(repo, distanceHeuristic,
+        BFS = new BFS(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
         saveRoutes = false;
@@ -85,7 +85,7 @@ public class BFSCycleTest {
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
-        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+        assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 30000)
@@ -103,7 +103,7 @@ public class BFSCycleTest {
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
-        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+        assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 30000)
@@ -121,7 +121,7 @@ public class BFSCycleTest {
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
-        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+        assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 3000)
@@ -142,7 +142,7 @@ public class BFSCycleTest {
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
-        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+        assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 3000)
@@ -163,7 +163,7 @@ public class BFSCycleTest {
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
-        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+        assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 3000)
@@ -184,7 +184,7 @@ public class BFSCycleTest {
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
-        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+        assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 3000)
@@ -204,7 +204,7 @@ public class BFSCycleTest {
         }
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
-        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+        assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 3000)
@@ -225,7 +225,7 @@ public class BFSCycleTest {
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
-        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+        assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 30000)
@@ -246,7 +246,7 @@ public class BFSCycleTest {
 
         assertTrue(length > 5);
         assertEquals(length, res.getTotalLength(), 0.01);
-        assertTrue(res.getPreviousNode().getId() == getTail(res).getPreviousNode().getId());
+        assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     static void serialize(PathTuple head, String routeName) {

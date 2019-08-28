@@ -12,10 +12,8 @@ import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOrigi
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicMain;
-import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicSensitive;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicUsingDistance;
-import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicUsingDistanceSensitive;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import org.junit.Before;
@@ -109,7 +107,7 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
         double originalLength = calculateDistance(morrish5kUphill);
         double target = 200;
 
-        System.out.println(morrish5kUphill.getPreviousNode());
+        System.out.println(morrish5kUphill.getCurrentNode());
 
         PathTuple res = ilsBFS.iterate(morrish5kUphill, target);
 
@@ -252,7 +250,7 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
         double originalLength = calculateDistance(craignair21kUphill);
         double target = 800;
 
-        System.out.println(craignair21kUphill.getPreviousNode());
+        System.out.println(craignair21kUphill.getCurrentNode());
 
         PathTuple res = ilsBFS.iterate(craignair21kUphill, target);
 

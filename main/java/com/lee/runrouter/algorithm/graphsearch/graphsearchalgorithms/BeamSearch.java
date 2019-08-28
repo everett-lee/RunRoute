@@ -3,7 +3,6 @@ package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
-import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
@@ -102,7 +101,7 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
             queue.remove(0);
 
             Way currentWay = topTuple.getCurrentWay();
-            Node currentNode  = topTuple.getPreviousNode();
+            Node currentNode  = topTuple.getCurrentNode();
             double score;
 
             currentRouteLength = topTuple.getTotalLength();
@@ -116,7 +115,7 @@ public class BeamSearch extends SearchAlgorithm implements GraphSearch {
             for (ConnectionPair pair: repo.getConnectedWays(currentWay)) {
                 currentRouteLength = topTuple.getTotalLength();
                 score = 0;
-                currentNode = topTuple.getPreviousNode();
+                currentNode = topTuple.getCurrentNode();
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();
 

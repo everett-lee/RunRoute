@@ -19,7 +19,7 @@ public class LinkedListToArrayHeadNodes implements LinkedListToArray {
         List<Node> nodes = new ArrayList<>();
 
         while (head != null) {
-            nodes.add(head.getPreviousNode());
+            nodes.add(head.getCurrentNode());
             head = head.getPredecessor();
         }
         return nodes;

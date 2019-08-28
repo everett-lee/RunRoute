@@ -7,7 +7,6 @@ import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
-import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BFSCycle;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.GraphSearch;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
@@ -50,7 +49,7 @@ public class BFS {
         gradientCalculator = new SimpleGradientCalculator();
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
 
-        bfsCycle = new BFSCycle(repo, distanceFromOriginNodeHeursitic,
+        bfsCycle = new com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BFS(repo, distanceFromOriginNodeHeursitic,
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
     }
 

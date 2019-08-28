@@ -56,8 +56,8 @@ public class CycleGeneratorMain implements CycleGenerator {
         // the head of the generated outward path is the last  visited
         // location
         Way lastVisited = outwardPath.getCurrentWay();
-        double[] lastVisitedCoords = {outwardPath.getPreviousNode().getLat(),
-                outwardPath.getPreviousNode().getLon()};
+        double[] lastVisitedCoords = {outwardPath.getCurrentNode().getLat(),
+                outwardPath.getCurrentNode().getLon()};
 
         // find a path from the last visited location back to the origin
         PathTuple returnPath = initialReturnPather.searchGraph(lastVisited, lastVisitedCoords, distance);
@@ -94,11 +94,11 @@ public class CycleGeneratorMain implements CycleGenerator {
         while (current != null) {
 
             // skip duplicating the connecting node between outward and return path
-            if (current.getPreviousNode().getId() != head.getPreviousNode().getId()) {
+            if (current.getCurrentNode().getId() != head.getCurrentNode().getId()) {
 
                 distance += current.getSegmentLength();
 
-                PathTuple toAdd = new PathTupleMain(head, current.getPreviousNode(),
+                PathTuple toAdd = new PathTupleMain(head, current.getCurrentNode(),
                         current.getCurrentWay(), new ScorePair(0, 0), current.getSegmentLength(), distance,
                         current.getSegmentGradient()
                 );
@@ -109,7 +109,7 @@ public class CycleGeneratorMain implements CycleGenerator {
         }
 
         // Head's length must be updated to reflect final stretch of the journey
-        head = new PathTupleMain(head.getPredecessor(), head.getPreviousNode(), head.getCurrentWay(),
+        head = new PathTupleMain(head.getPredecessor(), head.getCurrentNode(), head.getCurrentWay(),
         head.getSegmentScore(), head.getPredecessor().getSegmentLength(),
                 head.getPredecessor().getSegmentLength() + head.getPredecessor().getTotalLength(),
                 head.getSegmentGradient());

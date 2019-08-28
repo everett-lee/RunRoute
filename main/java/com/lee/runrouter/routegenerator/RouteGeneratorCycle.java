@@ -30,7 +30,7 @@ public class RouteGeneratorCycle implements RouteGenerator {
     private ElementRepo repo;
     private int MAX_ATTEMPTS = 5; // maximum number of initial routes to generate
 
-    public RouteGeneratorCycle(@Qualifier("BFSCycle") GraphSearch pather,
+    public RouteGeneratorCycle(@Qualifier("BFS") GraphSearch pather,
                                @Qualifier("IteratedLocalSearchMain") IteratedLocalSearch iteratedLocalSearch,
                                @Qualifier("BFSConnectionPath") ILSGraphSearch connectionPather,
                                ElementRepo repo) {

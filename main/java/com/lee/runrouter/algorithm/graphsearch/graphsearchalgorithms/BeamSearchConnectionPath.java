@@ -71,19 +71,19 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
         Way targetWay = target.getCurrentWay();
-        Node targetNode = target.getPreviousNode();
+        Node targetNode = target.getCurrentNode();
         double currentRouteLength;
         // the remaining distance for the route
         double upperBound = availableDistance + origin.getTotalLength();
 
-        queue.add(new PathTupleMain(null, origin.getPreviousNode(), origin.getCurrentWay(),
+        queue.add(new PathTupleMain(null, origin.getCurrentNode(), origin.getCurrentWay(),
                 origin.getSegmentScore(), origin.getSegmentLength(),origin.getTotalLength(), origin.getSegmentGradient()));
 
         while (!queue.isEmpty() && elapsedTime <= TIME_LIMIT) {
             PathTuple topTuple = queue.poll();
 
             Way currentWay = topTuple.getCurrentWay();
-            Node currentNode = topTuple.getPreviousNode();
+            Node currentNode = topTuple.getCurrentNode();
 
             // the route has reached the target
             if (topTuple.getCurrentWay().getId() == targetWay.getId()) {
@@ -103,7 +103,7 @@ public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGrap
             for (ConnectionPair pair : repo.getConnectedWays(currentWay)) {
                 currentRouteLength = topTuple.getTotalLength();
 
-                currentNode = topTuple.getPreviousNode();
+                currentNode = topTuple.getCurrentNode();
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();
                 double heuristicScore = 0;

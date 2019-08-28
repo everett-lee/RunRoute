@@ -30,8 +30,8 @@ public class TestHelpers {
     static public String returnPath(PathTuple tp, String acc) {
         acc += "node(id:";
         while (tp != null) {
-            acc += tp.getPreviousNode().getId() + ", ";
-            System.out.println("(" + tp.getPreviousNode() + " distance: "
+            acc += tp.getCurrentNode().getId() + ", ";
+            System.out.println("(" + tp.getCurrentNode() + " distance: "
                     + tp.getTotalLength() + " score: " + tp.getSegmentScore().getHeuristicScore() +
                     ") " + " way: " + tp.getCurrentWay().getId());
             System.out.println("Segment length: " + tp.getSegmentLength());

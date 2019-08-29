@@ -60,25 +60,27 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
         while (elapsedTime <= TIME_LIMIT) {
             elapsedTime = (new Date()).getTime() - startTime;
+            System.out.println(a);
+            System.out.println(r);
 
             // get the number of nodes in the the path
             int pathSize = getPathSize(head);
             // reset if r extends beyond the penultimate node
             if (r > pathSize - 2) {
-                r = 2;
+                r = 1;
             }
 
             // reset r if removed section plus index of the
             // start node extends past the penultimate node
             if (a + r > pathSize - 2) {
-                r = Math.max(2, pathSize - 1 - a);
+                r = r + 1;
+                a = 1;
             }
 
             // reset a and r if a is the penultimate node
-            if (a >= pathSize - 1) {
-                a = 1;
-                r = 2;
-            }
+//            if (a >= pathSize - 1) {
+//                a = 1;
+//            }
 
             start = getStartPathNode(head, a); // start of the removed segment
             end = getEndPathNode(start, r); // end of th removed segment
@@ -108,7 +110,6 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             if (oldSegmentScore >= newSegmentScore || newSegment == null
                     || newSegment.getSegmentLength() == -1) {
                 a++;
-                r++;
 
                 // subtract the length in metres of the segment length as it was not removed
                 availableDistance -= existingSegmentDistance;

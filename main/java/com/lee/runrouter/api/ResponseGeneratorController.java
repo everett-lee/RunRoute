@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 /**
@@ -32,9 +29,6 @@ public class ResponseGeneratorController {
     final double MIN_LON = -6;
     final double MIN_RUN_LENGTH_M = 500;
     final double MAX_RUN_LENGTH_M = 21000;
-    final String PATH_STRING = "route/coords=({lat},{lon})&distance={distance}" +
-                              "&maxGradient={maxGradient}&options={options}";
-    final String COORDS_STRING = "start/coords=({lat},{lon})";
     private Executor executor;
 
     @Autowired
@@ -45,10 +39,10 @@ public class ResponseGeneratorController {
 
     // endpoint for the route query. Receives the route parameters and passes them to the
     // Executor class
-    @GetMapping(path = PATH_STRING)
-    public ResponseEntity<ResponseObject> receiveArgs(@PathVariable double lat, @PathVariable double lon,
-                                                      @PathVariable double distance, @PathVariable double maxGradient,
-                                                      @PathVariable boolean[] options) {
+    @GetMapping(value="route/args")
+    public ResponseEntity<ResponseObject> receiveArgs(@RequestParam("lat") double lat, @RequestParam("lon") double lon,
+                                                      @RequestParam("distance") double distance, @RequestParam("maxGradient") double maxGradient,
+                                                      @RequestParam("options") boolean[] options) {
 
         // Coordinates outside of accepted range
         if (!checkCoordInput(lat, lon)) {
@@ -79,8 +73,8 @@ public class ResponseGeneratorController {
 
     // intialise the graph construction when the starting coordinates are received.
     // does not return anything until the route parameters are sent
-    @GetMapping(path = COORDS_STRING)
-    public void receiveStartCoords(@PathVariable double lat, @PathVariable double lon) {
+    @GetMapping(value="start/args")
+    public void receiveStartCoords(@RequestParam("lat") double lat, @RequestParam("lon") double lon) {
         // Coordinates outside of accepted range
         if (!checkCoordInput(lat, lon)) {
             throw new InvalidCoordsException(String.format("Coordinates: (%s,%s)", lat, lon));

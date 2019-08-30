@@ -1,4 +1,5 @@
 package com.lee.runrouter.algorithm.heuristic.DistanceHeuristic;
+
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,6 @@ public class DistanceFromOriginNodeHeuristicMain implements DistanceFromOriginNo
     @Autowired
     public DistanceFromOriginNodeHeuristicMain(@Qualifier("HaversineCalculator")
                                                        DistanceCalculator distanceCalculator) {
-
         this.distanceCalculator = distanceCalculator;
     }
 
@@ -32,6 +32,14 @@ public class DistanceFromOriginNodeHeuristicMain implements DistanceFromOriginNo
     public double getScore(Node currentNode, Node originNode,
                            double currentRouteLength, double targetDistance) {
         double score = 0;
+        double halfDistance = targetDistance / 2;
+        double percentCovered = currentRouteLength / (halfDistance);
+
+        // return if route length less than this percentage of
+        // outbound route
+        if (percentCovered < 0.5) {
+            return score;
+        }
 
         double distanceFromOriginNode =
                 distanceCalculator.calculateDistance(currentNode, originNode);
@@ -39,10 +47,9 @@ public class DistanceFromOriginNodeHeuristicMain implements DistanceFromOriginNo
         if (currentRouteLength > targetDistance * SWITCH_PERCENTAGE) {
             score += RETURN_SCORE_NUMERATOR / distanceFromOriginNode;
         } else {
-            double halfDistance = targetDistance / 2;
-            double percentCovered = currentRouteLength / (halfDistance);
 
-            if (distanceFromOriginNode / (halfDistance) < percentCovered - 0.5) {
+            if ((distanceFromOriginNode / halfDistance) /
+                    (currentRouteLength / halfDistance) < 0.6) {
                 return -1000;
             }
         }

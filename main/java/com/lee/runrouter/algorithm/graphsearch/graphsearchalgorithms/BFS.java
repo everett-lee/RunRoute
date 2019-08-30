@@ -28,7 +28,7 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
     // along a Way before the distance bonus is applied
     private final double DISTANCE_BONUS = 0.005;
 
-    private final double LOWER_SCALE = 0.90; // amount to scale upper lower bound on
+    private final double LOWER_SCALE = 0.95; // amount to scale upper lower bound on
     // run length by
     private final double UPPER_SCALE = 1.05; // amount to scale upper bound on
     // run length by

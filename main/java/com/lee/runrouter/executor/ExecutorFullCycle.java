@@ -166,10 +166,13 @@ public class ExecutorFullCycle implements Executor {
         }
 
 
-        // user selected prefer grass or dirt surfaces
+        // user selected prefer unpaved surfaces
         if (options[6]) {
             preferredSurfaces.add(Way.Surface.DIRT.toString());
             preferredSurfaces.add(Way.Surface.GRASS.toString());
+            preferredSurfaces.add(Way.Surface.GROUND.toString());
+            preferredSurfaces.add(Way.Surface.EARTH.toString());
+            preferredSurfaces.add(Way.Surface.SAND.toString());
             preferredSurfaces.add(Way.Surface.UNPAVED.toString());
         }
 

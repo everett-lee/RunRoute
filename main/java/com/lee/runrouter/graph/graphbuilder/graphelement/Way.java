@@ -10,8 +10,8 @@ import java.io.Serializable;
  * each of the nodes composing the way.
  */
 public class Way implements Serializable {
-    public enum Surface {GRASS, DIRT, GRAVEL, UNPAVED, COBBLESTONE,
-                        ASPHALT, CONCRETE, PAVING_STONES, UNDEFINED};
+    public enum Surface {GRASS, DIRT, GRAVEL, UNPAVED, GROUND, EARTH, COBBLESTONE,
+                        ASPHALT, CONCRETE, PAVING_STONES, SAND, UNDEFINED};
     public enum Highway {TRUNK, PRIMARY, SECONDARY, TERTIARY, UNCLASSIFIED,
                         RESIDENTIAL, LIVING_STREET, SERVICE, PEDESTRIAN, TRACK, ROAD,
                         FOOTWAY, BRIDLEWAY, STEPS, PATH, CYCLEWAY};

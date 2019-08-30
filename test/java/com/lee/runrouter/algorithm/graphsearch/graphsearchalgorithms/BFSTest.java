@@ -56,10 +56,38 @@ public class BFSTest {
         saveRoutes = false;
     }
 
-    @Test(timeout = 30000)
+
+//        double sum = 0;
+//        double max = 0;
+//        int fails = 0;
+//        double min = Integer.MAX_VALUE;
+//        for (int i = 0; i < 5; i++) {
+//            PathTuple testRes = BFS.searchGraph(repo.getOriginWay(), coords, 21000);
+//        }
+//
+//        for (int i = 0; i < 1000; i++) {
+//            System.out.println(i);
+//            long startTime = System.nanoTime();
+//            PathTuple testRes = BFS.searchGraph(repo.getOriginWay(), coords, 21000);
+//            long estimatedTime = System.nanoTime() - startTime;
+//            sum += estimatedTime;
+//            max = Math.max(estimatedTime, max);
+//            min = Math.min(estimatedTime, min);
+//            if (testRes.getTotalLength() == -1) {
+//                fails++;
+//            }
+//        }
+//
+//        System.out.println("TIME: " + sum / 1000 / 1000000);
+//        System.out.println("MAX: " + max / 1000000);
+//        System.out.println("MIN: " + min / 1000000);
+//        System.out.println("FAILS " + fails);
+
+    @Test
     public void testMorrishRoad5k() {
         double[] coords = {51.446810, -0.125484};
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 5000);
+        double target = 5000;
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "morrish5k";
 
         double length = calculateDistance(res);
@@ -68,30 +96,17 @@ public class BFSTest {
             serialize(res, name);
         }
 
-
-        double sum = 0;
-        for (int i = 0; i < 5; i++) {
-            PathTuple testRes = BFS.searchGraph(repo.getOriginWay(), coords, 5000);
-        }
-
-        for (int i = 0; i < 50; i++) {
-            long startTime = System.nanoTime();
-            PathTuple testRes = BFS.searchGraph(repo.getOriginWay(), coords, 5000);
-            long estimatedTime = System.nanoTime() - startTime;
-            sum += estimatedTime;
-        }
-
-        System.out.println("TIME: " + sum / 50 / 1000000);
-
         assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(res.getTotalLength() > target * 0.90);
+        assertTrue(res.getTotalLength() < target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
-    @Test(timeout = 30000)
+    @Test
     public void testMorrishRoad14k() {
         double[] coords = {51.446810, -0.125484};
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 14000);
+        double target = 14000;
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "morrish14k";
 
 
@@ -102,14 +117,16 @@ public class BFSTest {
         }
 
         assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(res.getTotalLength() > target * 0.90);
+        assertTrue(res.getTotalLength() < target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
-    @Test(timeout = 30000)
+    @Test
     public void testMorrishRoad21k() {
         double[] coords = {51.446810, -0.125484};
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 21000);
+        double target = 21000;
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "morrish21k";
 
         double length = calculateDistance(res);
@@ -118,20 +135,20 @@ public class BFSTest {
             serialize(res, name);
         }
 
-
         assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(res.getTotalLength() > target * 0.90);
+        assertTrue(res.getTotalLength() < target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
-    @Test(timeout = 3000)
+    @Test
     public void testCraignairRoad5k()  {
         double[] coords = {51.448321, -0.114648};
-
+        double target = 5000;
         Way origin = repo.getWayRepo().get(5045576L);
         repo.setOriginWay(origin);
 
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 5000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "craignair5k";
 
         double length = calculateDistance(res);
@@ -141,18 +158,19 @@ public class BFSTest {
         }
 
         assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(res.getTotalLength() > target * 0.90);
+        assertTrue(res.getTotalLength() < target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
-    @Test(timeout = 3000)
+    @Test
     public void testCraignairRoad14k()  {
         double[] coords = {51.448321, -0.114648};
-
+        double target = 14000;
         Way origin = repo.getWayRepo().get(5045576L);
         repo.setOriginWay(origin);
 
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 14000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "craignair14k";
 
         double length = calculateDistance(res);
@@ -162,18 +180,19 @@ public class BFSTest {
         }
 
         assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(res.getTotalLength() > target * 0.90);
+        assertTrue(res.getTotalLength() < target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
-    @Test(timeout = 3000)
+    @Test
     public void testCraignairRoad21k()  {
         double[] coords = {51.448321, -0.114648};
-
+        double target = 21000;
         Way origin = repo.getWayRepo().get(5045576L);
         repo.setOriginWay(origin);
 
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 21000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "craignair21k";
 
         double length = calculateDistance(res);
@@ -183,18 +202,19 @@ public class BFSTest {
         }
 
         assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(res.getTotalLength() > target * 0.90);
+        assertTrue(res.getTotalLength() < target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
-    @Test(timeout = 3000)
+    @Test
     public void TulseHillTest5KM() {
         double[] coords = {51.441109, -0.106974};
-
+        double target = 5000;
         Way origin = repo.getWayRepo().get(4004611L);
         repo.setOriginWay(origin);
 
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 5000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "tulse5k";
 
         double length = calculateDistance(res);
@@ -203,18 +223,19 @@ public class BFSTest {
             serialize(res, name);
         }
         assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(res.getTotalLength() > target * 0.90);
+        assertTrue(res.getTotalLength() < target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
-    @Test(timeout = 3000)
+    @Test
     public void TulseHillTest14KM() {
         double[] coords = {51.441109, -0.106974};
-
+        double target = 14000;
         Way origin = repo.getWayRepo().get(4004611L);
         repo.setOriginWay(origin);
 
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 14000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "tulse14k";
 
         double length = calculateDistance(res);
@@ -224,18 +245,19 @@ public class BFSTest {
         }
 
         assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(res.getTotalLength() > target * 0.90);
+        assertTrue(res.getTotalLength() < target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
-    @Test(timeout = 30000)
+    @Test
     public void TulseHillTest21KM() {
         double[] coords = {51.441109, -0.106974};
-
+        double target = 21000;
         Way origin = repo.getWayRepo().get(4004611L);
         repo.setOriginWay(origin);
 
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 21000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "tulse21k";
 
         double length = calculateDistance(res);
@@ -244,8 +266,11 @@ public class BFSTest {
             serialize(res, name);
         }
 
+
+
         assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(res.getTotalLength() > target * 0.90);
+        assertTrue(res.getTotalLength() < target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 

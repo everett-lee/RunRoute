@@ -62,13 +62,14 @@ public class BFSTestWithFeatures {
          BFS = new BFS(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
-        saveRoutes = true;
+        saveRoutes = false;
     }
 
     @Test(timeout = 5000)
     public void testMorrishRoad5kUphill() {
         double[] coords = {51.446810, -0.125484};
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 5000);
+        double target = 5000;
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "morrish5kWithFeaturesUphill";
 
         double length = calculateDistance(res);
@@ -77,17 +78,18 @@ public class BFSTestWithFeatures {
             serialize(res, name);
         }
 
-        assertTrue(length > 5);
-        System.out.println(returnPath(res, ""));
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(length >=  5);
+        assertTrue(res.getTotalLength() >=  target * 0.90);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 5000)
     public void testMorrishRoad5kFlat() {
         double[] coords = {51.446810, -0.125484};
+        double target = 5000;
         elevationHeuristic.setOptions(false);
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 5000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "morrish5kWithFeaturesFlat";
 
         double length = calculateDistance(res);
@@ -96,8 +98,9 @@ public class BFSTestWithFeatures {
             serialize(res, name);
         }
 
-        assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(length >=  5);
+        assertTrue(res.getTotalLength() >=  target * 0.90);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -105,7 +108,8 @@ public class BFSTestWithFeatures {
     @Test(timeout = 5000)
     public void testMorrishRoad14kUphill() {
         double[] coords = {51.446810, -0.125484};
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 14000);
+        double target = 14000;
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "morrish14kWithFeaturesUphill";
 
         double length = calculateDistance(res);
@@ -114,17 +118,18 @@ public class BFSTestWithFeatures {
             serialize(res, name);
         }
 
-        assertTrue(length > 5);
-        System.out.println(returnPath(res, ""));
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(length >=  5);
+        assertTrue(res.getTotalLength() >=  target * 0.90);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 5000)
     public void testMorrishRoad14kFlat() {
         double[] coords = {51.446810, -0.125484};
+        double target = 14000;
         elevationHeuristic.setOptions(false);
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 14000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "morrish14kWithFeaturesFlat";
 
         double length = calculateDistance(res);
@@ -133,9 +138,9 @@ public class BFSTestWithFeatures {
             serialize(res, name);
         }
 
-        assertTrue(length > 5);
-        System.out.println(returnPath(res, ""));
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(length >=  5);
+        assertTrue(res.getTotalLength() >=  target * 0.90);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -143,7 +148,8 @@ public class BFSTestWithFeatures {
     @Test(timeout = 5000)
     public void testMorrishRoad21kUphill() {
         double[] coords = {51.446810, -0.125484};
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 22000);
+        double target = 21000;
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "morrish21kWithFeaturesUphill";
 
         double length = calculateDistance(res);
@@ -152,17 +158,18 @@ public class BFSTestWithFeatures {
             serialize(res, name);
         }
 
-        assertTrue(length > 5);
-        System.out.println(returnPath(res, ""));
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(length >=  5);
+        assertTrue(res.getTotalLength() >=  target * 0.90);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 5000)
     public void testMorrishRoad21kFlat() {
         double[] coords = {51.446810, -0.125484};
+        double target = 21000;
         elevationHeuristic.setOptions(false);
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 21000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "morrish21kWithFeaturesFlat";
 
         double length = calculateDistance(res);
@@ -171,20 +178,20 @@ public class BFSTestWithFeatures {
             serialize(res, name);
         }
 
-        assertTrue(length > 5);
-        System.out.println(returnPath(res, ""));
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(length >=  5);
+        assertTrue(res.getTotalLength() >=  target * 0.90);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 5000)
     public void testCraignairRoad5kUphill()  {
         double[] coords = {51.448321, -0.114648};
-
+        double target = 5000;
         Way origin = repo.getWayRepo().get(5045576L);
         repo.setOriginWay(origin);
 
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 5000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "craignair5kwithFeaturesUphill";
 
         double length = calculateDistance(res);
@@ -193,20 +200,22 @@ public class BFSTestWithFeatures {
             serialize(res, name);
         }
 
-        assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(length >=  5);
+        assertTrue(res.getTotalLength() >=  target * 0.90);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 5000)
     public void testCraignairRoad5kFlat()  {
         double[] coords = {51.448321, -0.114648};
+        double target = 5000;
 
         Way origin = repo.getWayRepo().get(5045576L);
         repo.setOriginWay(origin);
 
         elevationHeuristic.setOptions(false);
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 5000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "craignair5kwithFeaturesFlat";
 
         double length = calculateDistance(res);
@@ -215,20 +224,21 @@ public class BFSTestWithFeatures {
             serialize(res, name);
         }
 
-        System.out.println(returnPath(res, ""));
-        assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(length >=  5);
+        assertTrue(res.getTotalLength() >=  target * 0.90);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 5000)
     public void testCraignairRoad14kUphill()  {
         double[] coords = {51.448321, -0.114648};
+        double target = 14000;
 
         Way origin = repo.getWayRepo().get(5045576L);
         repo.setOriginWay(origin);
 
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 14000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "craignair14kwithFeaturesUphill";
 
         double length = calculateDistance(res);
@@ -237,7 +247,9 @@ public class BFSTestWithFeatures {
             serialize(res, name);
         }
 
-        assertTrue(length > 5);
+        assertTrue(length >=  5);
+        assertTrue(res.getTotalLength() >=  target * 0.90);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertEquals(length, res.getTotalLength(), 0.01);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
@@ -245,12 +257,13 @@ public class BFSTestWithFeatures {
     @Test(timeout = 5000)
     public void testCraignairRoad14kFlat()  {
         double[] coords = {51.448321, -0.114648};
+        double target = 14000;
 
         Way origin = repo.getWayRepo().get(5045576L);
         repo.setOriginWay(origin);
 
         elevationHeuristic.setOptions(false);
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 14000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "craignair14kwithFeaturesFlat";
 
         double length = calculateDistance(res);
@@ -259,19 +272,21 @@ public class BFSTestWithFeatures {
             serialize(res, name);
         }
 
-        assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(length >=  5);
+        assertTrue(res.getTotalLength() >=  target * 0.90);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 5000)
     public void testCraignairRoad21kUphill()  {
         double[] coords = {51.448321, -0.114648};
+        double target = 21000;
 
         Way origin = repo.getWayRepo().get(5045576L);
         repo.setOriginWay(origin);
 
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 21000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "craignair21kwithFeaturesUphill";
 
         double length = calculateDistance(res);
@@ -280,20 +295,21 @@ public class BFSTestWithFeatures {
             serialize(res, name);
         }
 
-        assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(length >=  5);
+        assertTrue(res.getTotalLength() >=  target * 0.90);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 5000)
     public void testCraignairRoad21kFlat()  {
         double[] coords = {51.448321, -0.114648};
-
+        double target = 21000;
         Way origin = repo.getWayRepo().get(5045576L);
         repo.setOriginWay(origin);
 
         elevationHeuristic.setOptions(false);
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 22000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "craignair21kwithFeaturesFlat";
 
         double length = calculateDistance(res);
@@ -302,19 +318,20 @@ public class BFSTestWithFeatures {
             serialize(res, name);
         }
 
-        assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(length >=  5);
+        assertTrue(res.getTotalLength() >=  target * 0.90);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 5000)
     public void TulseHillTest5kmUphill() {
         double[] coords = {51.441109, -0.106974};
-
+        double target = 5000;
         Way origin = repo.getWayRepo().get(4004611L);
         repo.setOriginWay(origin);
 
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 5000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "tulse5kWithFeaturesUphill";
 
         double length = calculateDistance(res);
@@ -323,20 +340,22 @@ public class BFSTestWithFeatures {
             serialize(res, name);
         }
 
-        assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(length >=  5);
+        assertTrue(res.getTotalLength() >=  target * 0.90);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 5000)
     public void TulseHillTest5kmFlat() {
         double[] coords = {51.441109, -0.106974};
+        double target = 5000;
 
         Way origin = repo.getWayRepo().get(4004611L);
         repo.setOriginWay(origin);
 
         elevationHeuristic.setOptions(false);
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 5000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "tulse5kWithFeaturesFlat";
 
         double length = calculateDistance(res);
@@ -345,8 +364,9 @@ public class BFSTestWithFeatures {
             serialize(res, name);
         }
 
-        assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(length >=  5);
+        assertTrue(res.getTotalLength() >= target * 0.90);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -354,11 +374,12 @@ public class BFSTestWithFeatures {
     @Test(timeout = 5000)
     public void TulseHillTest14kmUphill() {
         double[] coords = {51.441109, -0.106974};
+        double target = 14000;
 
         Way origin = repo.getWayRepo().get(4004611L);
         repo.setOriginWay(origin);
 
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 14000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "tulse14kWithFeaturesUphill";
 
         double length = calculateDistance(res);
@@ -367,20 +388,22 @@ public class BFSTestWithFeatures {
             serialize(res, name);
         }
 
-        assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(length >=  5);
+        assertTrue(res.getTotalLength() >=  target * 0.90);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 5000)
     public void TulseHillTest14kmFlat() {
         double[] coords = {51.441109, -0.106974};
+        double target = 14000;
 
         Way origin = repo.getWayRepo().get(4004611L);
         repo.setOriginWay(origin);
 
         elevationHeuristic.setOptions(false);
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 14000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "tulse14kWithFeaturesFlat";
 
         double length = calculateDistance(res);
@@ -389,19 +412,20 @@ public class BFSTestWithFeatures {
             serialize(res, name);
         }
 
-        assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(length >=  5);
+        assertTrue(res.getTotalLength() >=  target * 0.90);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 5000)
     public void TulseHillTest21kmUphill() {
         double[] coords = {51.441109, -0.106974};
-
+        double target = 21000;
         Way origin = repo.getWayRepo().get(4004611L);
         repo.setOriginWay(origin);
 
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 21000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "tulse21kWithFeaturesUphill";
 
         double length = calculateDistance(res);
@@ -410,20 +434,22 @@ public class BFSTestWithFeatures {
             serialize(res, name);
         }
 
-        assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(length >=  5);
+        assertTrue(res.getTotalLength() >=  target * 0.90);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
     @Test(timeout = 5000)
     public void TulseHillTest21kmFlat() {
         double[] coords = {51.441109, -0.106974};
+        double target = 21000;
 
         Way origin = repo.getWayRepo().get(4004611L);
         repo.setOriginWay(origin);
 
         elevationHeuristic.setOptions(false);
-        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, 21000);
+        PathTuple res = BFS.searchGraph(repo.getOriginWay(), coords, target);
         String name = "tulse21kWithFeaturesFlat";
 
         double length = calculateDistance(res);
@@ -432,8 +458,9 @@ public class BFSTestWithFeatures {
             serialize(res, name);
         }
 
-        assertTrue(length > 5);
-        assertEquals(length, res.getTotalLength(), 0.01);
+        assertTrue(length >=  5);
+        assertTrue(res.getTotalLength() >=  target * 0.90);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 

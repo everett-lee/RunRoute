@@ -19,7 +19,7 @@ public class DistanceFromOriginNodeHeuristicMain implements DistanceFromOriginNo
     private final double SWITCH_PERCENTAGE = 0.5; // the percentage of the route at
     // which the heuristic switches from favouring outward paths to favouring returning
     // paths
-    private final double RETURN_SCORE_NUMERATOR = 1500;
+    private final double RETURN_SCORE_NUMERATOR = 1750;
 
     @Autowired
     public DistanceFromOriginNodeHeuristicMain(@Qualifier("HaversineCalculator")

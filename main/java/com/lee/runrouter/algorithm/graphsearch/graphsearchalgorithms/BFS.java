@@ -17,18 +17,19 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 /**
- * A greedy Search algorithm that utilises a priority queue.
- * Neighbouring nodes are selected and explored in order
- * of score(as assessed by the heuristics).
+ * A greedy Search algorithm that utilises a restricted List.
+ * Neighbouring nodes are explored and only those with the
+ * highest score (as assessed by the heuristics) at each stage
+ * are retained.
  */
 @Component
 @Qualifier("BFS")
 public class BFS extends SearchAlgorithm implements GraphSearch {
     private final double MINIMUM_SCORING_DISTANCE = 500; // the minimum travelled
     // along a Way before the distance bonus is applied
-    private final double DISTANCE_BONUS = 0.005;
+    private final double DISTANCE_BONUS = 0.000;
 
-    private final double LOWER_SCALE = 0.95; // amount to scale upper lower bound on
+    private final double LOWER_SCALE = 0.925; // amount to scale upper lower bound on
     // run length by
     private final double UPPER_SCALE = 1.05; // amount to scale upper bound on
     // run length by
@@ -39,15 +40,15 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
     private Set<Long> visitedNodesOutbound; // Nodes visited in the outbound leg of this search
     private Set<Long> visitedNodesInbound; // Nodes visited in the inbound leg of this search
     private Set<Long> visitedWays; // Ways visited in the course of the entire search
-    private long timeLimit = 500;
+    private long timeLimit = 1000;
 
     @Autowired
     public BFS(ElementRepo repo,
-               @Qualifier("DistanceFromOriginNodeHeuristicMain") DistanceFromOriginNodeHeursitic distanceFromOriginHeuristic,
-               @Qualifier("FeaturesHeuristicUsingDistance") FeaturesHeuristic featuresHeuristic,
-               @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
-               @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
-               @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
+                    @Qualifier("DistanceFromOriginNodeHeuristicMain") DistanceFromOriginNodeHeursitic distanceFromOriginHeuristic,
+                    @Qualifier("FeaturesHeuristicUsingDistance") FeaturesHeuristic featuresHeuristic,
+                    @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
+                    @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
+                    @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceFromOriginHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
         this.queue = new PriorityQueue<>(Comparator
@@ -60,10 +61,10 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
 
     /**
      * Method for generating a route of the specified length,
-     * that selects a path informed by the given preferences.
+     * that selects a path based on the given preferences.
      * This is achieved by conducting a greedy best first selection of ways
-     * to form the required route. The method returns as soon as a valid
-     * route of the minimum required length has been generated
+     * ot form the required route. The method returns as soon as a valid
+     * route of the minimuh required length has been generated
      *
      * @param root           the Way at which the run begins
      * @param coords         the coordinates at which the run begins
@@ -74,7 +75,6 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
      */
     @Override
     public PathTuple searchGraph(Way root, double[] coords, double targetDistance) {
-        // sort visited Nodes by score in descending order
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore().getSum()).reversed());
 
@@ -116,27 +116,26 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                 }
             }
 
-            // has the route reached the halfway point
             boolean overHalf = (currentRouteLength) / targetDistance > 0.5;
+
             addToClosedList(currentNode, overHalf);
 
             // for each Way reachable from the the current Way
-                for (ConnectionPair pair : this.repo.getConnectedWays(currentWay)) {
+            for (ConnectionPair pair : this.repo.getConnectedWays(currentWay)) {
 
-                    currentRouteLength = topTuple.getTotalLength();
-                    heuristicScore = 0;
-                    currentNode = topTuple.getCurrentNode(); // the last explored Node
-                    Node connectingNode = pair.getConnectingNode(); // the Node connecting
-                    // the intersecting Ways
-                Way selectedWay = pair.getConnectingWay(); // the Way
-                // connecting these two nodes
+                currentRouteLength = topTuple.getTotalLength();
+                heuristicScore = 0;
+                currentNode = topTuple.getCurrentNode(); // the last explored Node
+                Node connectingNode = pair.getConnectingNode(); // the Node connecting
+                // the intersecting Ways
+                Way selectedWay = pair.getConnectingWay();
 
                 // skip if this Node has already been explored
                 if (nodeInClosedList(connectingNode, overHalf)) {
                     continue;
                 }
 
-                // skip if street lighting required and none available
+                // skip the way where street lighting required and none available
                 if (super.getAvoidUnlit()) {
                     if (!selectedWay.isLit()) {
                         continue;
@@ -148,37 +147,30 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                 double distanceToNext = this.edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
 
-                // skip where maximum length exceeded
                 if (currentRouteLength + distanceToNext > upperBound) {
-                    continue;
+                    continue; // skip to next where maximum length exceeded
                 }
 
-                // deduct a penalty where this Way has already been
-                // traversed
-                if (visitedWays.contains(selectedWay.getId())
-                        && distanceToNext > 0) {
+                if (visitedWays.contains(selectedWay.getId())) {
                     heuristicScore -= REPEATED_WAY_VISIT_PENALTY;
                 }
 
-                // add a bonus where the distance travelled exceeds the
-                // minimum required length
                 if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
-                    heuristicScore += distanceToNext * DISTANCE_BONUS;
+                    double scoreLength = Math.max(distanceToNext, 750);
+                    heuristicScore += scoreLength * DISTANCE_BONUS;
                 }
 
                 double gradient = this.gradientCalculator
                         .calculateGradient(currentNode, currentWay, connectingNode,
                                 selectedWay, distanceToNext);
 
-                // skip where the gradient of this section of the route
-                // exceeds the maximum allowed
                 if (gradient > super.getMaxGradient()) {
                     continue;
                 }
 
                 heuristicScore += super.addScores(selectedWay, distanceToNext, gradient);
 
-                // is the distance travelled is over half of the target?
+                // whether the distance travelled is over half of the target
                 overHalf = (currentRouteLength + distanceToNext) / targetDistance > 0.5;
 
                 double distanceScore = this.distanceFromOriginHeuristic
@@ -193,10 +185,10 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                         gradient);
                 this.queue.add(toAdd);
 
-                elapsedTime = (new Date()).getTime() - startTime;
-
                 // add the current Way to the set of visited
                 visitedWays.add(selectedWay.getId());
+
+                elapsedTime = (new Date()).getTime() - startTime;
             }
         }
 
@@ -244,7 +236,6 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
 
 
     private boolean nodeInClosedList(Node connectingNode, boolean overHalf) {
-        // if the route length is over over half of the target
         if (!overHalf) {
             if (visitedNodesOutbound.contains(connectingNode.getId())) {
                 return true;
@@ -258,8 +249,8 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
     }
 
     private void addToClosedList(Node previousNode, boolean overHalf) {
-        // if the route length is over over half of the target
-        if (!overHalf) {
+        // add this Node to set of visited
+        if (!overHalf) { // if the route length is over half of the total
             visitedNodesOutbound.add(previousNode.getId());
         } else {
             visitedNodesInbound.add(previousNode.getId());

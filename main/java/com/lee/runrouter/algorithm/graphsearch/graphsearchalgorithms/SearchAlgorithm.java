@@ -27,7 +27,7 @@ public abstract class SearchAlgorithm {
     double maxGradient;
     boolean avoidUnlit;
 
-    private final double RANDOM_REDUCER = 500; // divides into random number added to the
+    private final double RANDOM_REDUCER = 5000; // divides into random number added to the
     // score
 
     public SearchAlgorithm(ElementRepo repo,

@@ -70,12 +70,14 @@ public class RouteGeneratorCycle implements RouteGenerator {
             }
         }
 
+        // sort the results by their difference to the target, then by score
         results.sort(Comparator
                 .comparing((PathTuple tuple) -> AlgoHelpers.calculateScore(tuple)).reversed());
 
-        // sort the results by their score
+
         results.stream()
-                .mapToDouble((PathTuple tuple) -> AlgoHelpers.calculateScore(tuple)).forEach(x -> System.out.println(x));
+                .mapToDouble((PathTuple tuple) -> AlgoHelpers.calculateScore(tuple))
+                .forEach(x -> System.out.println(x));
 
         initialCycle = results.get(0);
 

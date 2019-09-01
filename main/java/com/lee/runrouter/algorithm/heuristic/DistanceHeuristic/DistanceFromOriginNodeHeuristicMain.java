@@ -44,7 +44,7 @@ public class DistanceFromOriginNodeHeuristicMain implements DistanceFromOriginNo
             double percentCovered = currentRouteLength / (halfDistance);
 
             if ((distanceFromOriginNode/halfDistance) / (currentRouteLength/halfDistance)
-                    < 0.55) {
+                    < 0.5) {
                 return -1000;
             }
         }

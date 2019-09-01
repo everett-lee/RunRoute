@@ -3,6 +3,7 @@ package com.lee.runrouter.BBCalculator;
 import com.lee.runrouter.bbcalculator.ScaledBBCalculator;
 import org.junit.*;
 import java.lang.reflect.*;
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -21,42 +22,56 @@ public class ScaledBBCalculatorTest {
     }
 
     @Test
-    public void testOffsetOne() {
-        double runlength = 5;
+    public void testOffsetLondon21k() {
+        double runlength = 21000;
+        // should produce four coordinates offset by 10500km from the starting coordinates
         double[] res = dc.calcBoundingBox(51.4,-0.12, runlength);
 
-        double minLon = -0.12 - ((((runlength * scaleDown)) /
-                (EARTH_RADIUS_M * (Math.cos(Math.PI * 51.4/180)))) * (180/Math.PI));
-        double minLat = 51.4 - (((runlength * scaleDown) / EARTH_RADIUS_M) * (180/Math.PI));
-        double maxLon = -0.12 + ((((runlength * scaleDown)) /
-                (EARTH_RADIUS_M * (Math.cos(Math.PI * 51.4/180)))) * (180/Math.PI));
-        double maxLat = 51.4 + (((runlength * scaleDown) / EARTH_RADIUS_M) * (180/Math.PI));
+        // expected coordinates from google maps
+        // min lat 51.398493
+        // min lon -0.251917
+        // max lat 51.494450
+        // max lon 0.031315
 
-        assertEquals(minLon, res[0], 0.001);
-        assertEquals(minLat, res[1], 0.001);
-        assertEquals(maxLon, res[2], 0.001);
-        assertEquals(maxLat, res[3], 0.001);
+        assertEquals(51.305571, res[1], 0.001); // min lat comparison
+        assertEquals(-0.271526, res[0], 0.001); // min lon comparison
+        assertEquals(51.494450, res[3], 0.001); // max lat comparison
+        assertEquals(0.031315, res[2], 0.001); // max lon comparison
     }
 
     @Test
-    public void testOffsetZeroLon() {
-        double runLength = 2000;
-        double lat = 50;
-        double lon = 0;
-        double[] res = dc.calcBoundingBox(50,0, runLength);
+    public void testOffsetManchester21k() {
+        double runlength = 21000;
+        double[] res = dc.calcBoundingBox(53.478200, -2.241380, runlength);
 
-        double dLat = (runLength/2 * scaleDown) / EARTH_RADIUS_M;
-        double dLon = (runLength/2 * scaleDown) / (EARTH_RADIUS_M * Math.cos(Math.PI * lat / 180));
+        // expected coordinates from google maps
+        // min lat 53.383711
+        // min lon -2.400163
+        // max lat 53.478200
+        // max lon -2.082634
 
-        double minLon = lon - (dLon * 180/Math.PI);
-        double minLat = lat - (dLat * 180/Math.PI);
-        double maxLon = lon + (dLon * 180/Math.PI);
-        double maxLat = lat + (dLat * 180/Math.PI);
+        assertEquals(53.383711, res[1], 0.001); // min lat comparison
+        assertEquals(-2.400163, res[0], 0.001); // min lon comparison
+        assertEquals(53.572485, res[3], 0.001); // max lat comparison
+        assertEquals(-2.082634, res[2], 0.001); // max lon comparison
+    }
 
-        assertEquals(minLon, res[0], 0.001);
-        assertEquals(minLat, res[1], 0.001);
-        assertEquals(maxLon, res[2], 0.001);
-        assertEquals(maxLat, res[3], 0.001);
+    @Test
+    public void testOffsetZeroLon5k() {
+        double runLength = 5000;
+        double[] res = dc.calcBoundingBox(51,0, runLength);
+
+
+        // expected coordinates from google maps
+        // min lat 50.977473
+        // min lon -0.035904
+        // max lat 51.022463
+        // max lon 0.035713
+
+        assertEquals(50.977473, res[1], 0.001); // min lat comparison
+        assertEquals(-0.035904, res[0], 0.001); // min lon comparison
+        assertEquals(51.022463, res[3], 0.001); // max lat comparison
+        assertEquals(0.035713, res[2], 0.001); // max lon comparison
     }
 
     @Test

@@ -33,7 +33,7 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
     // run length by
     private final double UPPER_SCALE = 1.05; // amount to scale upper bound on
     // run length by
-    private final double REPEATED_WAY_VISIT_PENALTY = 0.5; // a penalty applied for
+    private final double REPEATED_WAY_VISIT_PENALTY = 0.25; // a penalty applied for
     // revisiting a way traversed at an early stage of the route
 
     private PriorityQueue<PathTuple> queue;

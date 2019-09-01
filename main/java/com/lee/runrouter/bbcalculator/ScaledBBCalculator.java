@@ -4,9 +4,14 @@ import org.springframework.stereotype.Component;
 
 /**
  * For (rough) calculations of offset latitude and longitude from
- * the origin position. This is used as an input for the bounding box
+ * the origin position.
+ *
+ * This is used as an input for the bounding box
  * query in PostGIS. The total size of the bounding box scaled down,
  * so resulting area is less than run distance squared.
+ *
+ * Formula sourced from
+ * https://gis.stackexchange.com/questions/2951/algorithm-for-offsetting-a-latitude-longitude-by-some-amount-of-meters
  */
 @Component
 public class ScaledBBCalculator implements BBCalculator {

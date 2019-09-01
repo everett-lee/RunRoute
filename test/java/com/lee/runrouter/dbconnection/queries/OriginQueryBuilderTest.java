@@ -18,7 +18,7 @@ public class OriginQueryBuilderTest {
     public void testPreparedStatementCorrect() {
         String expected = "SELECT l.osm_id\n" +
                 "FROM planet_osm_line l\n" +
-                "WHERE l.way && ST_Transform( ST_MakeEnvelope(-0.12821094451410836, 51.444895356788166, -0.12243905548589162, 51.448492643211836, 4326),4326)\n" +
+                "WHERE l.way && ST_MakeEnvelope(-0.12821094451410836, 51.444895356788166, -0.12243905548589162, 51.448492643211836, 4326)\n" +
                 "AND (l.highway IN ('trunk', 'primary', 'secondary', 'tertiary', 'unclassified', 'residential', 'living_street', 'service', 'pedestrian', 'track', 'road', 'footway', 'bridleway', 'steps', 'path', 'bicycle'))\n" +
                 "AND l.name IS NOT NULL\n" +
                 "ORDER BY ST_Distance(l.way, ST_MakePoint(51.446694, -0.125325)::geography) limit 1";
@@ -37,7 +37,7 @@ public class OriginQueryBuilderTest {
     public void testPreparedStatementCorrectAllFalse() {
         String expected = "SELECT l.osm_id\n" +
                 "FROM planet_osm_line l\n" +
-                "WHERE l.way && ST_Transform( ST_MakeEnvelope(1.0, 2.0, 3.0, 4.0, 4326),4326)\n" +
+                "WHERE l.way && ST_MakeEnvelope(1.0, 2.0, 3.0, 4.0, 4326)\n" +
                 "AND (l.highway IN ('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'bicycle'))\n" +
                 "AND l.name IS NOT NULL\n" +
                 "ORDER BY ST_Distance(l.way, ST_MakePoint(-2.0, -4.0)::geography) limit 1";

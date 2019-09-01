@@ -64,7 +64,7 @@ public class GraphBuilderTests {
 
         gb.buildGraph(coords, 5, opts);
 
-        Way res = repo.getWayRepo().get(0);
+        Way res = repo.getWayRepo().get(111L);
         assertEquals(repo.getOriginWay(), res);// assert created Way (the only one) is equal to
         // the Origin
         /**
@@ -112,7 +112,7 @@ public class GraphBuilderTests {
 
         gb.buildGraph(coords, 5, opts);
 
-        Way res = repo.getWayRepo().get(0);
+        Way res = repo.getWayRepo().get(116L);
         assertEquals(repo.getOriginWay(), res); // assert created Way (the only one) is equal to
         // the Origin
         /**

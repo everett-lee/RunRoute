@@ -177,6 +177,10 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                         .getScore(connectingNode, repo.getOriginNode(),
                                 currentRouteLength, targetDistance);
 
+                if (distanceScore < 0) {
+                    continue;
+                }
+
                 ScorePair segmentScore = new ScorePair(distanceScore, heuristicScore);
 
                 // create a new tuple representing this segment and add to the list

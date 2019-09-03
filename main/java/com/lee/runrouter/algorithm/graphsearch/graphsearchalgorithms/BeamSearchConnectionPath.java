@@ -28,7 +28,7 @@ import java.util.*;
 public class BeamSearchConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
     private final double MINIMUM_SCORING_DISTANCE = 650; // the minimum travelled
     // along a Way before the distance bonus is applied
-    private final double DISTANCE_BONUS = 0.025;
+    private final double DISTANCE_BONUS = 0.000;
     final double REPEATED_WAY_VISIT_PENALTY = 10; // deducted from heuristic score
     // for visits to Ways included in the main route
     final double MAX_DISTANCE_FROM_TARGET_MULTIPLIER = 1.5; // maximum increase in

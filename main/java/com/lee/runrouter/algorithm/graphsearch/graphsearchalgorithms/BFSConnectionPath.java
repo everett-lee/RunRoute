@@ -29,7 +29,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     private final double MINIMUM_SCORING_DISTANCE = 500; // the minimum travelled
     // along a Way before the distance bonus is applied
     private final double DISTANCE_BONUS = 0.000;
-    final double REPEATED_WAY_VISIT_PENALTY = 0.5; // deducted from heuristic score
+    final double REPEATED_WAY_VISIT_PENALTY = 0.25; // deducted from heuristic score
     // for visits to Ways included in the main route
     final double MAX_DISTANCE_FROM_TARGET_MULTIPLIER = 1; // maximum increase in
     // distance to target compared to previous node in the path's position

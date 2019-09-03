@@ -3,6 +3,7 @@ package com.lee.runrouter.dbconnection.queries;
 import com.lee.runrouter.dbconnection.DBconnection;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.util.backoff.BackOff;
 
 import java.sql.*;
 
@@ -35,7 +36,7 @@ public class OriginQueryBuilder implements QueryBuilder {
             "?, ?, 4326)\n";
     private final String ROAD_OPTIONS = "AND (l.highway IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'bicycle'))\n";
     private final String NOT_NULL = "AND l.name IS NOT NULL\n";
-    private final String ORDER_BY = "ORDER BY ST_Distance(l.way, ST_MakePoint(?, ?)::geography) limit 1;";
+    private final String ORDER_BY = "ORDER BY ST_Distance(l.way::geography, ST_MakePoint(?, ?)::geography) ASC limit 1;";
 
     @Override
     public void reset() {

@@ -3,7 +3,6 @@ package com.lee.runrouter.BBCalculator;
 import com.lee.runrouter.bbcalculator.ScaledBBCalculator;
 import org.junit.*;
 import java.lang.reflect.*;
-import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -18,12 +17,13 @@ public class ScaledBBCalculatorTest {
 
         Field f = dc.getClass().getDeclaredField("SCALE_DOWN");
         f.setAccessible(true);
-        scaleDown = (double) f.get(dc);
+        f.set(dc, 1);
     }
 
     @Test
     public void testOffsetLondon21k() {
         double runlength = 21000;
+
         // should produce four coordinates offset by 10500km from the starting coordinates
         double[] res = dc.calcBoundingBox(51.4,-0.12, runlength);
 
@@ -33,10 +33,10 @@ public class ScaledBBCalculatorTest {
         // max lat 51.494450
         // max lon 0.031315
 
-        assertEquals(51.305571, res[1], 0.001); // min lat comparison
-        assertEquals(-0.271526, res[0], 0.001); // min lon comparison
-        assertEquals(51.494450, res[3], 0.001); // max lat comparison
-        assertEquals(0.031315, res[2], 0.001); // max lon comparison
+        assertEquals(51.305571, res[1], 0.0005); // min lat comparison
+        assertEquals(-0.271526, res[0], 0.0005); // min lon comparison
+        assertEquals(51.494450, res[3], 0.0005); // max lat comparison
+        assertEquals(0.031315, res[2], 0.0005); // max lon comparison
     }
 
     @Test
@@ -50,10 +50,10 @@ public class ScaledBBCalculatorTest {
         // max lat 53.478200
         // max lon -2.082634
 
-        assertEquals(53.383711, res[1], 0.001); // min lat comparison
-        assertEquals(-2.400163, res[0], 0.001); // min lon comparison
-        assertEquals(53.572485, res[3], 0.001); // max lat comparison
-        assertEquals(-2.082634, res[2], 0.001); // max lon comparison
+        assertEquals(53.383711, res[1], 0.0005); // min lat comparison
+        assertEquals(-2.400163, res[0], 0.0005); // min lon comparison
+        assertEquals(53.572485, res[3], 0.0005); // max lat comparison
+        assertEquals(-2.082634, res[2], 0.0005); // max lon comparison
     }
 
     @Test
@@ -68,10 +68,10 @@ public class ScaledBBCalculatorTest {
         // max lat 51.022463
         // max lon 0.035713
 
-        assertEquals(50.977473, res[1], 0.001); // min lat comparison
-        assertEquals(-0.035904, res[0], 0.001); // min lon comparison
-        assertEquals(51.022463, res[3], 0.001); // max lat comparison
-        assertEquals(0.035713, res[2], 0.001); // max lon comparison
+        assertEquals(50.977473, res[1], 0.0005); // min lat comparison
+        assertEquals(-0.035904, res[0], 0.0005); // min lon comparison
+        assertEquals(51.022463, res[3], 0.0005); // max lat comparison
+        assertEquals(0.035713, res[2], 0.0005); // max lon comparison
     }
 
     @Test

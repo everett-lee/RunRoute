@@ -9,21 +9,16 @@ import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistan
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.*;
 import com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch.IteratedLocalSearch;
 import com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch.IteratedLocalSearchMain;
-import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
-import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicUsingDistance;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.routegenerator.RouteGenerator;
 import com.lee.runrouter.routegenerator.RouteGeneratorCycle;
-import com.lee.runrouter.routegenerator.RouteGeneratorMain;
-import com.lee.runrouter.routegenerator.cyclegenerator.CycleGenerator;
-import com.lee.runrouter.routegenerator.cyclegenerator.CycleGeneratorMain;
 import com.lee.runrouter.routegenerator.PathNotGeneratedException;
 import com.lee.runrouter.testhelpers.TestHelpers;
 import org.junit.*;
@@ -34,7 +29,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class testRouteReflectsFeaturesHeuristic {
+public class testRouteReflectsLitHeuristic {
     RouteGenerator routeGenerator;
     ElementRepo repo;
     DistanceFromOriginNodeHeursitic distanceHeuristic;
@@ -46,7 +41,8 @@ public class testRouteReflectsFeaturesHeuristic {
     GraphSearch outward;
     IteratedLocalSearch iteratedLocalSearch;
     ILSGraphSearch ilsGraphSearch;
-    List<String> preferredHighways;
+    List<String> preferredHighwaysInclusive;
+    List<String> preferredHighwaysExclusive;
 
     @Before
     public void setUp() {
@@ -60,7 +56,7 @@ public class testRouteReflectsFeaturesHeuristic {
         gradientCalculator = new SimpleGradientCalculator();
         elevationHeuristic = new ElevationHeuristicMain();
 
-        outward = new BeamSearchCycle(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        outward = new BFS(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
         ilsGraphSearch = new BFSConnectionPath(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
@@ -70,62 +66,12 @@ public class testRouteReflectsFeaturesHeuristic {
         routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repo);
 
         // preferred Highways options
-        preferredHighways = new ArrayList<>(Arrays.asList("CYCLEWAY", "BRIDLEWAY",
+        preferredHighwaysExclusive = new ArrayList<>(Arrays.asList());
+        // preferred Highways options
+        preferredHighwaysInclusive = new ArrayList<>(Arrays.asList("CYCLEWAY", "BRIDLEWAY",
                 "FOOTWAY", "PATH", "TRACK"));
 
 
-    }
-
-    @Test
-    public void testHeuristicReflectedOne() throws PathNotGeneratedException {
-        double[] coords = {51.446537, -0.124989};
-        PathTuple route = routeGenerator.generateRoute(coords, 10000);
-
-        int matchedCountWithoutPref = countMatchedHighways(route);
-
-        FeaturesHeuristic fh = featuresHeuristic;
-        fh.setPreferredHighways(preferredHighways);
-        route = routeGenerator.generateRoute(coords, 10000);
-
-        int matchedCountWithPref = countMatchedHighways(route);
-        System.out.println(matchedCountWithoutPref);
-        System.out.println(matchedCountWithPref);
-
-        assertTrue(matchedCountWithPref > matchedCountWithoutPref);
-    }
-
-    @Test
-    public void testHeuristicReflectedTwo() throws PathNotGeneratedException {
-        double[] coords = {51.440830, -0.106387};
-        PathTuple route = routeGenerator.generateRoute(coords, 10000);
-
-        int matchedCountWithoutPref = countMatchedHighways(route);
-
-        FeaturesHeuristic fh = (FeaturesHeuristic) featuresHeuristic;
-        fh.setPreferredHighways(preferredHighways);
-        route = routeGenerator.generateRoute(coords, 10000);
-
-        int matchedCountWithPref = countMatchedHighways(route);
-        System.out.println(matchedCountWithoutPref);
-        System.out.println(matchedCountWithPref);
-
-        assertTrue(matchedCountWithPref > matchedCountWithoutPref);
-    }
-
-    @Test
-    public void testHeuristicReflectedThree() throws PathNotGeneratedException {
-        double[] coords = {51.461868, -0.115622};
-        PathTuple route = routeGenerator.generateRoute(coords, 11000);
-
-        int matchedCountWithoutPref = countMatchedHighways(route);
-
-        FeaturesHeuristic fh = featuresHeuristic;
-        fh.setPreferredHighways(preferredHighways);
-        route = routeGenerator.generateRoute(coords, 11000);
-
-        int matchedCountWithPref = countMatchedHighways(route);
-
-        assertTrue(matchedCountWithPref > matchedCountWithoutPref);
     }
 
     @Test
@@ -149,15 +95,22 @@ public class testRouteReflectsFeaturesHeuristic {
         assertTrue(numberofUnlitWhenUnlitAvoided < numberofUnlitWhenUnlitAllowed);
     }
 
-    public int countMatchedHighways(PathTuple head) {
-        int matchedCount = 0;
+    public double getDistance(PathTuple head) {
+        while (head.getPredecessor() != null) {
+            head = head.getPredecessor();
+        }
+        return head.getTotalLength();
+    }
+
+    public double countMatchedHighways(PathTuple head) {
+        double matchedDistance = 0;
         while (head != null) {
-            if (preferredHighways.contains(head.getCurrentWay().getHighway())) {
-                matchedCount++;
+            if (preferredHighwaysInclusive.contains(head.getCurrentWay().getHighway())) {
+                matchedDistance += head.getSegmentLength();
             }
             head = head.getPredecessor();
         }
-        return  matchedCount;
+        return  matchedDistance;
     }
 
     public int countUnlit(PathTuple head) {

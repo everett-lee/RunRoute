@@ -37,7 +37,7 @@ public class FeaturesHeuristicUsingDistance implements FeaturesHeuristic {
         double score = 0;
 
         // very short distances are not considered
-        if (distance < 15) {
+        if (distance < 100) {
             return 0;
         }
 

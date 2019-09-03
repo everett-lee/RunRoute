@@ -28,7 +28,7 @@ public class ExecutorFullCycle implements Executor {
     private SearchAlgorithm connectionPather;
     private CycleRemover cycleRemover;
 
-    private final double INITIAL_GRAPH_SIZE = 12000; // the starting size of the generated graph
+    private final double INITIAL_GRAPH_SIZE = 5000; // the starting size of the generated graph
 
     public ExecutorFullCycle(
             @Qualifier("RouteGeneratorCycle") RouteGenerator routeGenerator,

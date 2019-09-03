@@ -27,7 +27,7 @@ public class ResponseGeneratorController {
     final double MIN_LAT = 50;
     final double MAX_LON = 2;
     final double MIN_LON = -6;
-    final double MIN_RUN_LENGTH_M = 500;
+    final double MIN_RUN_LENGTH_M = 2000;
     final double MAX_RUN_LENGTH_M = 21000;
     private Executor executor;
 

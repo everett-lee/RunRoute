@@ -23,14 +23,13 @@ public class RunrouterApplication {
 
         boolean[] opts = {true, true, true, true, true, true, true,
                 true, true, true, true, true, true, true, true};
-        double[] coords = {51.446529, -0.125446};
+        double[] coords = {51.937507, 1.050645};
 
         ElementRepo repo = ctx.getBean(ElementRepo.class);
-        Executor executor = ctx.getBean(ExecutorMain.class);
         GraphBuilder gb = ctx.getBean(GraphBuilder.class);
-    //
-    //        gb.buildGraph(coords, 25000, opts);
-    //        serialize(repo);
+
+            gb.buildGraph(coords, 35000, opts);
+            serialize(repo);
 
     }
 	static void serialize(ElementRepo repo) {

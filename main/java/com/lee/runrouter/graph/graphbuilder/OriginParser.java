@@ -31,7 +31,7 @@ public class OriginParser {
      */
     public long getOriginWayID(double[] coords, boolean[] options) {
         originQueryDirector.setOptions(options);
-        originQueryDirector.buildQuery(coords[0], coords[1], 500);
+        originQueryDirector.buildQuery(coords[0], coords[1], 250);
 
         ResultSet originRes = originQueryDirector.getResults();
 

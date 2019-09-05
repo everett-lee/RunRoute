@@ -55,7 +55,7 @@ public class IteratedLocalSearchMainAlgorithmTestBeam {
         tulseHill14k = getTulse14k();
         tulseHill21k = getTulse21k();
 
-        repo = getRepo();
+        repo = getRepoSW();
     }
 
     @Before

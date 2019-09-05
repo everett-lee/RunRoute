@@ -17,7 +17,7 @@ public class DirectDistanceHeuristic implements DistanceFromOriginNodeHeursitic 
     private DistanceCalculator distanceCalculator;
 
     @Autowired
-    public DirectDistanceHeuristic(@Qualifier("HaversineCalculator")
+    public DirectDistanceHeuristic(@Qualifier("EuclideanCalculator")
                                                        DistanceCalculator distanceCalculator) {
 
         this.distanceCalculator = distanceCalculator;

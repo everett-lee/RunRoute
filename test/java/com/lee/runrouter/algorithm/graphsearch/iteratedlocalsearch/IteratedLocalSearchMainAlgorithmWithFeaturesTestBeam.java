@@ -70,7 +70,7 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBeam {
          tulse21kUphill = getTulse21kFeaturesUphill();
          tulse21kFlat = getTulse21keaturesFlat();
 
-        repo = getRepo();
+        repo = getRepoSW();
     }
 
     @Before

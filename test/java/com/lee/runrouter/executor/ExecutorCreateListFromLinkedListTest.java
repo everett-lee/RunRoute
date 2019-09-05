@@ -23,7 +23,7 @@ public class ExecutorCreateListFromLinkedListTest {
     {
         morrish5k = getMorrish5k();
         craigNair14k = getCraignair14k();
-        repo = getRepo();
+        repo = getRepoSW();
     }
 
     @Before

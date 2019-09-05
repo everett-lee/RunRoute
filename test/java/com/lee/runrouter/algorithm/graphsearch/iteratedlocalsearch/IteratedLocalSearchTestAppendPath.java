@@ -8,7 +8,6 @@ import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistan
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BeamSearchConnectionPath;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ILSGraphSearch;
-import com.lee.runrouter.algorithm.heuristic.*;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
@@ -42,7 +41,7 @@ public class IteratedLocalSearchTestAppendPath {
     {
         morrishWay5k = getMorrish5k();
         tulse14k = getTulse14k();
-        repo = getRepo();
+        repo = getRepoSW();
     }
 
     @Before

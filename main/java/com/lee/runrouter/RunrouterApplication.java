@@ -23,20 +23,20 @@ public class RunrouterApplication {
 
         boolean[] opts = {true, true, true, true, true, true, true,
                 true, true, true, true, true, true, true, true};
-        double[] coords = {51.937507, 1.050645};
+        double[] coords = {51.444512, -0.115335};
 
         ElementRepo repo = ctx.getBean(ElementRepo.class);
         GraphBuilder gb = ctx.getBean(GraphBuilder.class);
-
-            gb.buildGraph(coords, 35000, opts);
-            serialize(repo);
+//
+//            gb.buildGraph(coords, 35000, opts);
+//            serialize(repo);
 
     }
 	static void serialize(ElementRepo repo) {
         try {
             System.out.println("Starting... ");
             FileOutputStream fileOut =
-                    new FileOutputStream("/home/lee/project/app/runrouter/src/repo.ser");
+                    new FileOutputStream("/home/lee/project/app/runrouter/src/repoSW.ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(repo);
             out.close();

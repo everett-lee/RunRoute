@@ -1,7 +1,7 @@
 package com.lee.runrouter.algorithm;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
-import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
+import com.lee.runrouter.algorithm.distanceCalculator.EuclideanCalculator;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
 
@@ -10,7 +10,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class AlgoHelpers {
-    static DistanceCalculator distanceCalculator = new HaversineCalculator();
+    static DistanceCalculator distanceCalculator = new EuclideanCalculator();
 
     // find the closest node and return it.
     static public Node findClosest(Node compared, List<Node> colleagues) {

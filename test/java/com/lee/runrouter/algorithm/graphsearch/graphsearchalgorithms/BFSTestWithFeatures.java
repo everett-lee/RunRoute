@@ -40,7 +40,7 @@ public class BFSTestWithFeatures {
     boolean saveRoutes;
 
     {
-        repo = getRepo();
+        repo = getRepoSW();
     }
 
     {

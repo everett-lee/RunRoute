@@ -25,7 +25,7 @@ public class ScaledBBCalculatorTest {
         double runlength = 21000;
 
         // should produce four coordinates offset by 10500km from the starting coordinates
-        double[] res = dc.calcBoundingBox(51.4,-0.12, runlength);
+        double[] res = dc.calcBoundingBox(51.4459, -0.1235, runlength);
 
         // expected coordinates from google maps
         // min lat 51.398493

@@ -1,6 +1,8 @@
 package com.lee.runrouter.executor;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.lee.runrouter.graph.graphbuilder.node.Node;
@@ -11,7 +13,9 @@ import java.util.Map;
 @Component
 public class CycleRemover {
     DistanceCalculator distanceCalculator;
-    public CycleRemover(DistanceCalculator distanceCalculator) {
+    @Autowired
+    public CycleRemover(
+            @Qualifier("EuclideanCalculator") DistanceCalculator distanceCalculator) {
         this.distanceCalculator = distanceCalculator;
     }
 

@@ -31,7 +31,8 @@ import static org.junit.Assert.*;
 
 public class testRouteReflectsBackroadsHeuristic {
     RouteGenerator routeGenerator;
-    ElementRepo repo;
+    ElementRepo repoSW;
+    ElementRepo repoLAW;
     DistanceFromOriginNodeHeursitic distanceHeuristic;
     DistanceCalculator distanceCalculator;
     FeaturesHeuristic featuresHeuristic;
@@ -46,7 +47,8 @@ public class testRouteReflectsBackroadsHeuristic {
 
     @Before
     public void setUp() {
-        repo = TestHelpers.getRepo();
+        repoSW = TestHelpers.getRepoSW();
+        repoLAW = TestHelpers.getRepoLAW();
         distanceCalculator = new HaversineCalculator();
 
         // heuristics
@@ -56,14 +58,14 @@ public class testRouteReflectsBackroadsHeuristic {
         gradientCalculator = new SimpleGradientCalculator();
         elevationHeuristic = new ElevationHeuristicMain();
 
-        outward = new BFS(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        outward = new BFS(repoSW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
-        ilsGraphSearch = new BFSConnectionPath(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        ilsGraphSearch = new BFSConnectionPath(repoSW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
 
         iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
 
-        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repo);
+        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoSW);
 
         // preferred Highways options
         preferredHighwaysExclusive = new ArrayList<>(Arrays.asList());
@@ -182,6 +184,11 @@ public class testRouteReflectsBackroadsHeuristic {
     @Test
     public void testHeuristicReflectedLaw() throws PathNotGeneratedException {
         double[] coords = {51.937507, 1.050645};
+        outward = new BFS(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
+        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
+        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
         double matchedCountWithoutPref = 0;
         double matchedCountWithPref = 0;
@@ -217,6 +224,11 @@ public class testRouteReflectsBackroadsHeuristic {
     @Test
     public void testHeuristicReflectedMan() throws PathNotGeneratedException {
         double[] coords = {51.946379, 1.059363};
+        outward = new BFS(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
+        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
+        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
         double matchedCountWithoutPref = 0;
         double matchedCountWithPref = 0;
@@ -252,6 +264,12 @@ public class testRouteReflectsBackroadsHeuristic {
     @Test
     public void testHeuristicReflectedLbo() throws PathNotGeneratedException {
         double[] coords = {51.919993, 1.044527};
+        outward = new BFS(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
+        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
+        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
+
 
         double matchedCountWithoutPref = 0;
         double matchedCountWithPref = 0;

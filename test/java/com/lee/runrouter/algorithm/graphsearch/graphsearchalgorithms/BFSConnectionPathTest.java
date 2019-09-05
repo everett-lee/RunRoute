@@ -36,7 +36,7 @@ public class BFSConnectionPathTest {
         morrish5k = getMorrish5k();
         tulse14k = getTulse14k();
         craignair14k = getCraignair14k();
-        repo = getRepo();
+        repo = getRepoSW();
     }
 
     @Before

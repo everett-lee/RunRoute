@@ -22,7 +22,7 @@ public class EdgeDistanceCalculatorMain implements EdgeDistanceCalculator {
 
     @Autowired
     public EdgeDistanceCalculatorMain(
-            @Qualifier("HaversineCalculator") DistanceCalculator distanceCalculator) {
+            @Qualifier("EuclideanCalculator") DistanceCalculator distanceCalculator) {
         this.distanceCalculator = distanceCalculator;
     }
 

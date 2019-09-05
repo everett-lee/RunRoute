@@ -23,7 +23,8 @@ public class DistanceFromOriginToMidHeuristic implements Heuristic {
     // attributed to finding return ways
 
 
-    public DistanceFromOriginToMidHeuristic(ElementRepo repo, DistanceCalculator distanceCalculator) {
+    public DistanceFromOriginToMidHeuristic(ElementRepo repo,
+                                            @Qualifier("EuclideanCalculator") DistanceCalculator distanceCalculator) {
         this.repo = repo;
         this.distanceCalculator = distanceCalculator;
     }

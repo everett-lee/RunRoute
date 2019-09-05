@@ -1,7 +1,6 @@
 package com.lee.runrouter.benchmarks;
 
 import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.profile.StackProfiler;
 import org.openjdk.jmh.runner.*;
 import org.openjdk.jmh.runner.options.*;
 
@@ -13,10 +12,10 @@ public class BenchmarkRunner {
         Options opt = new OptionsBuilder()
                 .include(BFS.class.getSimpleName())
                 .forks(1)
-                .mode(Mode.SampleTime)
+                .mode(Mode.AverageTime)
                 .warmupIterations(1)
                 .timeUnit(TimeUnit.MILLISECONDS)
-                .measurementIterations(1)
+                .measurementIterations(50)
                 .build();
 
         new Runner(opt).run();

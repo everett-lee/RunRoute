@@ -54,7 +54,7 @@ public class ILSRepeated {
         tulseHill5k = getTulse5keaturesFlat();
         tulseHill14k = getTulse14keaturesFlat();
 
-        repo = getRepo();
+        repo = getRepoSW();
     }
 
     @Before

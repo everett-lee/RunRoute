@@ -25,15 +25,15 @@ import java.util.*;
 @Component
 @Qualifier("BFS")
 public class BFS extends SearchAlgorithm implements GraphSearch {
-    private final double MINIMUM_SCORING_DISTANCE = 500; // the minimum travelled
+    private final double MINIMUM_SCORING_DISTANCE = 400; // the minimum travelled
     // along a Way before the distance bonus is applied
-    private final double DISTANCE_BONUS = 0.000;
+    private final double DISTANCE_BONUS = 0.0001;
 
     private final double LOWER_SCALE = 0.925; // amount to scale upper lower bound on
     // run length by
     private final double UPPER_SCALE = 1.05; // amount to scale upper bound on
     // run length by
-    private final double REPEATED_WAY_VISIT_PENALTY = 0.25; // a penalty applied for
+    private final double REPEATED_WAY_VISIT_PENALTY = 0.5;// a penalty applied for
     // revisiting a way traversed at an early stage of the route
 
     private PriorityQueue<PathTuple> queue;

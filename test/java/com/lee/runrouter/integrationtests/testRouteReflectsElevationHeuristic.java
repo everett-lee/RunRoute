@@ -19,7 +19,6 @@ import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.routegenerator.RouteGenerator;
 import com.lee.runrouter.routegenerator.RouteGeneratorCycle;
-import com.lee.runrouter.routegenerator.cyclegenerator.CycleGenerator;
 import com.lee.runrouter.routegenerator.PathNotGeneratedException;
 import com.lee.runrouter.testhelpers.TestHelpers;
 import org.junit.*;
@@ -32,7 +31,8 @@ import static org.junit.Assert.*;
 
 public class testRouteReflectsElevationHeuristic {
     RouteGenerator routeGenerator;
-    ElementRepo repo;
+    ElementRepo repoSW;
+    ElementRepo repoLAW;
     DistanceFromOriginNodeHeursitic distanceHeuristic;
     DistanceCalculator distanceCalculator;
     FeaturesHeuristic featuresHeuristic;
@@ -46,7 +46,8 @@ public class testRouteReflectsElevationHeuristic {
 
     @Before
     public void setUp() {
-        repo = TestHelpers.getRepo();
+        repoSW = TestHelpers.getRepoSW();
+        repoLAW = TestHelpers.getRepoLAW();
         distanceCalculator = new HaversineCalculator();
 
         // heuristics
@@ -56,14 +57,14 @@ public class testRouteReflectsElevationHeuristic {
         gradientCalculator = new SimpleGradientCalculator();
         elevationHeuristic = new ElevationHeuristicMain();
 
-        outward = new BeamSearchCycle(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        outward = new BFS(repoSW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
-        ilsGraphSearch = new BFSConnectionPath(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        ilsGraphSearch = new BFSConnectionPath(repoSW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
 
         iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
 
-        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repo);
+        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoSW);
 
         // preferred Highways options
         preferredHighways = new ArrayList<>(Arrays.asList("CYCLEWAY", "BRIDLEWAY",
@@ -71,112 +72,161 @@ public class testRouteReflectsElevationHeuristic {
     }
 
     @Test
-    public void testAverageElevationWhenLessWhenSteepPreferredOne() throws PathNotGeneratedException {
+    public void testAverageElevationMorr() throws PathNotGeneratedException {
         double[] coords = {51.446537, -0.124989};
-        PathTuple route = routeGenerator.generateRoute(coords, 10000);
 
-        double avgGradientFlat = getAverageGradient(route);
+        double avgGradientFlat = 0;
+        double avgGradientSteep = 0;
 
-        elevationHeuristic.setOptions(true);
-        route = routeGenerator.generateRoute(coords, 10000);
-        double avgGradientSteep = getAverageGradient(route);
+        for (int i = 0; i < 100; i++) {
+            elevationHeuristic.setOptions(false);
+            PathTuple route = routeGenerator.generateRoute(coords, 10000);
+            avgGradientFlat += getAverageGradient(route);
 
+            elevationHeuristic.setOptions(true);
+            route = routeGenerator.generateRoute(coords, 10000);
+            avgGradientSteep += getAverageGradient(route);
+        }
+
+        System.out.println(avgGradientFlat);
+        System.out.println(avgGradientSteep);
         assertTrue(avgGradientFlat <= avgGradientSteep);
 
     }
 
     @Test
-    public void testAverageElevationWhenLessWhenSteepPreferredTwo() throws PathNotGeneratedException {
+    public void testAverageElevationTulse() throws PathNotGeneratedException {
         double[] coords = {51.440830, -0.106387};
-        PathTuple route = routeGenerator.generateRoute(coords, 10000);
 
-        double avgGradientFlat = getAverageGradient(route);
+        double avgGradientFlat = 0;
+        double avgGradientSteep = 0;
 
-        elevationHeuristic.setOptions(true);
-        route = routeGenerator.generateRoute(coords, 10000);
-        double avgGradientSteep = getAverageGradient(route);
+        for (int i = 0; i < 100; i++) {
+            elevationHeuristic.setOptions(false);
+            PathTuple route = routeGenerator.generateRoute(coords, 10000);
+            avgGradientFlat += getAverageGradient(route);
 
+            elevationHeuristic.setOptions(true);
+            route = routeGenerator.generateRoute(coords, 10000);
+            avgGradientSteep += getAverageGradient(route);
+        }
 
+        System.out.println(avgGradientFlat);
+        System.out.println(avgGradientSteep);
         assertTrue(avgGradientFlat <= avgGradientSteep);
     }
 
 
     @Test
-    public void testAverageElevationWhenLessWhenSteepPreferredThree() throws PathNotGeneratedException {
+    public void testAverageElevationBrix() throws PathNotGeneratedException {
         double[] coords = {51.461868, -0.115622};
-        PathTuple route = routeGenerator.generateRoute(coords, 10000);
 
-        double avgGradientFlat = getAverageGradient(route);
+        double avgGradientFlat = 0;
+        double avgGradientSteep = 0;
 
-        elevationHeuristic.setOptions(true);
-        route = routeGenerator.generateRoute(coords, 10000);
-        double avgGradientSteep = getAverageGradient(route);
+        for (int i = 0; i < 100; i++) {
+            elevationHeuristic.setOptions(false);
+            PathTuple route = routeGenerator.generateRoute(coords, 10000);
+            avgGradientFlat += getAverageGradient(route);
 
+            elevationHeuristic.setOptions(true);
+            route = routeGenerator.generateRoute(coords, 10000);
+            avgGradientSteep += getAverageGradient(route);
+        }
 
-        assertTrue(avgGradientFlat <= avgGradientSteep);
-
-    }
-
-    @Test
-    public void testAverageElevationWhenSteepPreferredAndFeaturesIncluded()
-            throws PathNotGeneratedException {
-        FeaturesHeuristic fh = (FeaturesHeuristic) featuresHeuristic;
-        fh.setPreferredHighways(preferredHighways);
-
-        double[] coords = {51.446537, -0.124989};
-        PathTuple route = routeGenerator.generateRoute(coords, 10000);
-
-        double avgGradientFlat = getAverageGradient(route);
-
-        elevationHeuristic.setOptions(true);
-        route = routeGenerator.generateRoute(coords, 10000);
-        double avgGradientSteep = getAverageGradient(route);
+        System.out.println(avgGradientFlat);
+        System.out.println(avgGradientSteep);
 
         assertTrue(avgGradientFlat <= avgGradientSteep);
     }
 
-
     @Test
-    public void testAverageElevationWhenSteepPreferredAndFeaturesIncludedTwo()
-            throws PathNotGeneratedException {
-        FeaturesHeuristic fh = (FeaturesHeuristic) featuresHeuristic;
-        fh.setPreferredHighways(preferredHighways);
+    public void testAverageElevationLaw() throws PathNotGeneratedException {
+        double[] coords = {51.937507, 1.050645};
+        outward = new BFS(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
+        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
+        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
-        double[] coords = {51.440830, -0.106387};
-        PathTuple route = routeGenerator.generateRoute(coords, 10000);
+        double avgGradientFlat = 0;
+        double avgGradientSteep = 0;
 
-        double avgGradientFlat = getAverageGradient(route);
+        for (int i = 0; i < 100; i++) {
+            elevationHeuristic.setOptions(false);
+            PathTuple route = routeGenerator.generateRoute(coords, 10000);
+            avgGradientFlat += getAverageGradient(route);
 
-        elevationHeuristic.setOptions(true);
-        route = routeGenerator.generateRoute(coords, 10000);
-        double avgGradientSteep = getAverageGradient(route);
+            elevationHeuristic.setOptions(true);
+            route = routeGenerator.generateRoute(coords, 10000);
+            avgGradientSteep += getAverageGradient(route);
+        }
 
+        System.out.println(avgGradientFlat);
+        System.out.println(avgGradientSteep);
 
         assertTrue(avgGradientFlat <= avgGradientSteep);
     }
 
 
     @Test
-    public void testAverageElevationWhenSteepPreferredAndFeaturesIncludedThree()
-            throws PathNotGeneratedException {
-        FeaturesHeuristic fh = (FeaturesHeuristic) featuresHeuristic;
-        fh.setPreferredHighways(preferredHighways);
+    public void testAverageElevationMan() throws PathNotGeneratedException {
+        double[] coords = {51.946379, 1.059363};
+        outward = new BFS(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
+        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
+        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
-        double[] coords = {51.461868, -0.115622};
-        PathTuple route = routeGenerator.generateRoute(coords, 5000);
+        double avgGradientFlat = 0;
+        double avgGradientSteep = 0;
 
-        double avgGradientFlat = getAverageGradient(route);
+        for (int i = 0; i < 100; i++) {
+            elevationHeuristic.setOptions(false);
+            PathTuple route = routeGenerator.generateRoute(coords, 10000);
+            avgGradientFlat += getAverageGradient(route);
 
-        elevationHeuristic.setOptions(true);
-        route = routeGenerator.generateRoute(coords, 5000);
-        double avgGradientSteep = getAverageGradient(route);
+            elevationHeuristic.setOptions(true);
+            route = routeGenerator.generateRoute(coords, 10000);
+            avgGradientSteep += getAverageGradient(route);
+        }
 
-        assertTrue(avgGradientFlat < avgGradientSteep);
+        System.out.println(avgGradientFlat);
+        System.out.println(avgGradientSteep);
+
+        assertTrue(avgGradientFlat <= avgGradientSteep);
     }
 
+    @Test
+    public void testAverageElevationLbo() throws PathNotGeneratedException {
+        double[] coords = {51.919993, 1.044527};
+        outward = new BFS(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
+        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
+        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
+
+        double avgGradientFlat = 0;
+        double avgGradientSteep = 0;
+
+        for (int i = 0; i < 100; i++) {
+            elevationHeuristic.setOptions(false);
+            PathTuple route = routeGenerator.generateRoute(coords, 10000);
+            avgGradientFlat += getAverageGradient(route);
+
+            elevationHeuristic.setOptions(true);
+            route = routeGenerator.generateRoute(coords, 10000);
+            avgGradientSteep += getAverageGradient(route);
+        }
+
+        System.out.println(avgGradientFlat);
+        System.out.println(avgGradientSteep);
+
+        assertTrue(avgGradientFlat <= avgGradientSteep);
+    }
 
     @Test
-    public void testmaxElevationReflected()
+    public void testmaxElevationReflectedMor()
             throws PathNotGeneratedException {
 
         double[] coords = {51.446537, -0.124989};
@@ -206,7 +256,7 @@ public class testRouteReflectsElevationHeuristic {
     }
 
     @Test
-    public void testmaxElevationReflectedTwo()
+    public void testmaxElevationReflectedTul()
             throws PathNotGeneratedException {
 
         double[] coords = {51.440830, -0.106387};
@@ -236,10 +286,112 @@ public class testRouteReflectsElevationHeuristic {
     }
 
     @Test
-    public void testMaxElevationReflectedThree()
+    public void testMaxElevationReflectedBrix()
             throws PathNotGeneratedException {
 
         double[] coords = {51.461868, -0.115622};
+        double maxGradient = 0.05;
+
+        SearchAlgorithm sa1 = (SearchAlgorithm) outward;
+        sa1.setMaxGradient(maxGradient);
+        SearchAlgorithm sa3 = (SearchAlgorithm) ilsGraphSearch;
+        sa3.setMaxGradient(maxGradient);
+
+        elevationHeuristic.setOptions(true);
+        PathTuple route = routeGenerator.generateRoute(coords, 21000);
+        double avgGradientSteep = getAverageGradient(route);
+
+        boolean flag = true;
+
+        PathTuple head = route;
+        while (head != null) {
+            if (head.getSegmentGradient() > maxGradient) {
+                flag = false;
+            }
+            head = head.getPredecessor();
+        }
+
+        // route has max incline <= 0.05
+        assertTrue(flag);
+    }
+
+    @Test
+    public void testMaxElevationReflectedLaw()
+            throws PathNotGeneratedException {
+        outward = new BFS(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
+        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
+        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
+
+        double[] coords = {51.937507, 1.050645};
+        double maxGradient = 0.05;
+
+        SearchAlgorithm sa1 = (SearchAlgorithm) outward;
+        sa1.setMaxGradient(maxGradient);
+        SearchAlgorithm sa2 = (SearchAlgorithm) ilsGraphSearch;
+        sa2.setMaxGradient(maxGradient);
+
+        elevationHeuristic.setOptions(true);
+        PathTuple route = routeGenerator.generateRoute(coords, 21000);
+
+        boolean flag = true;
+
+        PathTuple head = route;
+        while (head != null) {
+            if (head.getSegmentGradient() > maxGradient) {
+                flag = false;
+            }
+            head = head.getPredecessor();
+        }
+
+        // route has max incline <= 0.05
+        assertTrue(flag);
+    }
+    @Test
+    public void testMaxElevationReflectedMan()
+            throws PathNotGeneratedException {
+        outward = new BFS(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
+        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
+        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
+
+        double[] coords = {51.946379, 1.059363};
+        double maxGradient = 0.05;
+
+        SearchAlgorithm sa1 = (SearchAlgorithm) outward;
+        sa1.setMaxGradient(maxGradient);
+        SearchAlgorithm sa3 = (SearchAlgorithm) ilsGraphSearch;
+        sa3.setMaxGradient(maxGradient);
+
+        elevationHeuristic.setOptions(true);
+        PathTuple route = routeGenerator.generateRoute(coords, 21000);
+        double avgGradientSteep = getAverageGradient(route);
+
+        boolean flag = true;
+
+        PathTuple head = route;
+        while (head != null) {
+            if (head.getSegmentGradient() > maxGradient) {
+                flag = false;
+            }
+            head = head.getPredecessor();
+        }
+
+        // route has max incline <= 0.05
+        assertTrue(flag);
+    }
+    @Test
+    public void testMaxElevationReflectedLbo()
+            throws PathNotGeneratedException {
+        outward = new BFS(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
+        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
+        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
+
+        double[] coords = {51.919993, 1.044527};
         double maxGradient = 0.05;
 
         SearchAlgorithm sa1 = (SearchAlgorithm) outward;

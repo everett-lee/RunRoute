@@ -23,7 +23,7 @@ public class DistanceFromOriginNodeHeuristicMain implements DistanceFromOriginNo
     private final double OUTWARD_SCORE_DENOMINATOR = 10000.0;
 
     @Autowired
-    public DistanceFromOriginNodeHeuristicMain(@Qualifier("HaversineCalculator")
+    public DistanceFromOriginNodeHeuristicMain(@Qualifier("EuclideanCalculator")
                                                        DistanceCalculator distanceCalculator) {
 
         this.distanceCalculator = distanceCalculator;

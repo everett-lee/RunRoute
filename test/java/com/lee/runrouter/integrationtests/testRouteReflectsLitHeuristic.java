@@ -23,15 +23,12 @@ import com.lee.runrouter.routegenerator.PathNotGeneratedException;
 import com.lee.runrouter.testhelpers.TestHelpers;
 import org.junit.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.junit.Assert.*;
 
 public class testRouteReflectsLitHeuristic {
     RouteGenerator routeGenerator;
-    ElementRepo repo;
+    ElementRepo repoSW;
+    ElementRepo repoLAW;
     DistanceFromOriginNodeHeursitic distanceHeuristic;
     DistanceCalculator distanceCalculator;
     FeaturesHeuristic featuresHeuristic;
@@ -41,12 +38,11 @@ public class testRouteReflectsLitHeuristic {
     GraphSearch outward;
     IteratedLocalSearch iteratedLocalSearch;
     ILSGraphSearch ilsGraphSearch;
-    List<String> preferredHighwaysInclusive;
-    List<String> preferredHighwaysExclusive;
 
     @Before
     public void setUp() {
-        repo = TestHelpers.getRepo();
+        repoSW = TestHelpers.getRepoSW();
+        repoLAW = TestHelpers.getRepoLAW();
         distanceCalculator = new HaversineCalculator();
 
         // heuristics
@@ -56,72 +52,65 @@ public class testRouteReflectsLitHeuristic {
         gradientCalculator = new SimpleGradientCalculator();
         elevationHeuristic = new ElevationHeuristicMain();
 
-        outward = new BFS(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        outward = new BFS(repoSW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
-        ilsGraphSearch = new BFSConnectionPath(repo, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        ilsGraphSearch = new BFSConnectionPath(repoSW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
-
         iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
-
-        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repo);
-
-        // preferred Highways options
-        preferredHighwaysExclusive = new ArrayList<>(Arrays.asList());
-        // preferred Highways options
-        preferredHighwaysInclusive = new ArrayList<>(Arrays.asList("CYCLEWAY", "BRIDLEWAY",
-                "FOOTWAY", "PATH", "TRACK"));
-
+        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoSW);
 
     }
 
     @Test
-    public void testLitHeuristicReflectedOne() throws PathNotGeneratedException {
-        double[] coords = {51.441, -0.125   };
-        PathTuple route = routeGenerator.generateRoute(coords, 5000);
-
-        int numberofUnlitWhenUnlitAllowed = countUnlit(route);
-
+    public void testLitHeuristicReflectedMorr() throws PathNotGeneratedException {
+        double[] coords = {51.446, -0.124};
         SearchAlgorithm sa1 = (SearchAlgorithm) outward;
         sa1.setAvoidUnlit(true);
         SearchAlgorithm sa2 = (SearchAlgorithm) ilsGraphSearch;
         sa2.setAvoidUnlit(true);
+        PathTuple route = routeGenerator.generateRoute(coords, 10000);
+        boolean flag = containsUnlit(route);
 
-        route = routeGenerator.generateRoute(coords, 5000);
-
-        int numberofUnlitWhenUnlitAvoided = countUnlit(route);
-
-        System.out.println(numberofUnlitWhenUnlitAllowed);
-        System.out.println(numberofUnlitWhenUnlitAvoided);
-        assertTrue(numberofUnlitWhenUnlitAvoided < numberofUnlitWhenUnlitAllowed);
+        assertFalse(flag);
     }
 
-    public double getDistance(PathTuple head) {
-        while (head.getPredecessor() != null) {
-            head = head.getPredecessor();
-        }
-        return head.getTotalLength();
+    @Test
+    public void testLitHeuristicReflectedTulse() throws PathNotGeneratedException {
+        double[] coords = {51.440830, -0.106387};
+        SearchAlgorithm sa1 = (SearchAlgorithm) outward;
+        sa1.setAvoidUnlit(true);
+        SearchAlgorithm sa2 = (SearchAlgorithm) ilsGraphSearch;
+        sa2.setAvoidUnlit(true);
+        PathTuple route = routeGenerator.generateRoute(coords, 10000);
+        boolean flag = containsUnlit(route);
+
+        assertFalse(flag);
     }
 
-    public double countMatchedHighways(PathTuple head) {
-        double matchedDistance = 0;
-        while (head != null) {
-            if (preferredHighwaysInclusive.contains(head.getCurrentWay().getHighway())) {
-                matchedDistance += head.getSegmentLength();
-            }
-            head = head.getPredecessor();
-        }
-        return  matchedDistance;
+
+    @Test
+    public void testLitHeuristicReflectedBrixton() throws PathNotGeneratedException {
+        double[] coords = {51.461868, -0.115622};
+        SearchAlgorithm sa1 = (SearchAlgorithm) outward;
+        sa1.setAvoidUnlit(true);
+        SearchAlgorithm sa2 = (SearchAlgorithm) ilsGraphSearch;
+        sa2.setAvoidUnlit(true);
+        PathTuple route = routeGenerator.generateRoute(coords, 10000);
+        boolean flag = containsUnlit(route);
+
+        assertFalse(flag);
     }
 
-    public int countUnlit(PathTuple head) {
-        int matchedCount = 0;
+
+    public boolean containsUnlit(PathTuple head) {
         while (head != null) {
             if (!head.getCurrentWay().isLit()) {
-                matchedCount++;
+                System.out.println(head.getCurrentWay().getId());
+                return true;
             }
             head = head.getPredecessor();
         }
-        return  matchedCount;
+        return false;
     }
 
 }

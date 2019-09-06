@@ -29,18 +29,18 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
     // along a Way before the distance bonus is applied
     private final double DISTANCE_BONUS = 0.0001;
 
-    private final double LOWER_SCALE = 0.925; // amount to scale upper lower bound on
+    private final double LOWER_SCALE = 0.95; // amount to scale upper lower bound on
     // run length by
     private final double UPPER_SCALE = 1.05; // amount to scale upper bound on
     // run length by
-    private final double REPEATED_WAY_VISIT_PENALTY = 0.5;// a penalty applied for
+    private final double REPEATED_WAY_VISIT_PENALTY = 1;// a penalty applied for
     // revisiting a way traversed at an early stage of the route
 
     private PriorityQueue<PathTuple> queue;
     private Set<Long> visitedNodesOutbound; // Nodes visited in the outbound leg of this search
     private Set<Long> visitedNodesInbound; // Nodes visited in the inbound leg of this search
-    private Set<Long> visitedWays; // Ways visited in the course of the entire search
-    private long timeLimit = 1000;
+    private HashSet<Long> visitedWays; // Ways visited in the course of the entire search
+    private long timeLimit = 500;
 
     @Autowired
     public BFS(ElementRepo repo,
@@ -189,8 +189,15 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                         gradient);
                 this.queue.add(toAdd);
 
-                // add the current Way to the set of visited
-                visitedWays.add(selectedWay.getId());
+                boolean connectedToStart = repo.getNodeToWay().get(repo.getOriginNode().getId())
+                        .stream()
+                        .map(x -> x.getId())
+                        .anyMatch(x -> x == (selectedWay.getId()));
+
+                if (!connectedToStart) {
+                    visitedWays.add(selectedWay.getId());
+                }
+
 
                 elapsedTime = (new Date()).getTime() - startTime;
             }

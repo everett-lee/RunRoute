@@ -19,13 +19,11 @@ public class DistanceFromOriginNodeHeuristicMain implements DistanceFromOriginNo
     private final double SWITCH_PERCENTAGE = 0.5; // the percentage of the route at
     // which the heuristic switches from favouring outward paths to favouring returning
     // paths
-    private final double RETURN_SCORE_NUMERATOR = 1000;
-    private final double OUTWARD_SCORE_DENOMINATOR = 10000.0;
+    private final double RETURN_SCORE_NUMERATOR = 750;
 
     @Autowired
     public DistanceFromOriginNodeHeuristicMain(@Qualifier("EuclideanCalculator")
                                                        DistanceCalculator distanceCalculator) {
-
         this.distanceCalculator = distanceCalculator;
     }
 
@@ -34,17 +32,18 @@ public class DistanceFromOriginNodeHeuristicMain implements DistanceFromOriginNo
                            double currentRouteLength, double targetDistance) {
         double score = 0;
 
+        if (currentRouteLength / targetDistance < 0.1) {
+            return score;
+        }
+
         double distanceFromOriginNode =
                 distanceCalculator.calculateDistance(currentNode, originNode);
 
         if (currentRouteLength > targetDistance * SWITCH_PERCENTAGE) {
             score += RETURN_SCORE_NUMERATOR / distanceFromOriginNode;
         } else {
-            double halfDistance = targetDistance / 2;
-            double percentCovered = currentRouteLength / (halfDistance);
-
-            if ((distanceFromOriginNode/halfDistance) / (currentRouteLength/halfDistance)
-                    < 0.5) {
+            if ((distanceFromOriginNode) / (currentRouteLength)
+                    < 0.45) {
                 return -1000;
             }
         }

@@ -28,7 +28,7 @@ public class RouteGeneratorCycle implements RouteGenerator {
     private ILSGraphSearch connectionPather;
     private IteratedLocalSearch ils;
     private ElementRepo repo;
-    private int MAX_ATTEMPTS = 5; // maximum number of initial routes to generate
+    private int MAX_ATTEMPTS = 4; // maximum number of initial routes to generate
 
     public RouteGeneratorCycle(@Qualifier("BFS") GraphSearch pather,
                                @Qualifier("IteratedLocalSearchMain") IteratedLocalSearch iteratedLocalSearch,
@@ -61,7 +61,7 @@ public class RouteGeneratorCycle implements RouteGenerator {
 
         {
             // reduce the algorithm run time
-            pather.setTimeLimit(250);
+            pather.setTimeLimit(500);
             // continue to generate until max attempts made
             while (attempts < MAX_ATTEMPTS) {
                 initialCycle = pather.searchGraph(repo.getOriginWay(), coords, distance);

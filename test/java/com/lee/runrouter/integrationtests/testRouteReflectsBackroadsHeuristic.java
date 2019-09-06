@@ -73,7 +73,6 @@ public class testRouteReflectsBackroadsHeuristic {
         preferredHighwaysInclusive = new ArrayList<>(Arrays.asList("CYCLEWAY", "BRIDLEWAY",
                 "FOOTWAY", "PATH", "TRACK"));
 
-
     }
 
     @Test

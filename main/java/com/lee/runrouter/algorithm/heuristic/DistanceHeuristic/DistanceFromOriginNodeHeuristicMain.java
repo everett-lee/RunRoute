@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Qualifier("DistanceFromOriginNodeHeuristicMain")
 public class DistanceFromOriginNodeHeuristicMain implements DistanceFromOriginNodeHeursitic {
     private DistanceCalculator distanceCalculator;
-    private final double SWITCH_PERCENTAGE = 0.5; // the percentage of the route at
+    private final double SWITCH_PERCENTAGE = 0.45; // the percentage of the route at
     // which the heuristic switches from favouring outward paths to favouring returning
     // paths
     private final double RETURN_SCORE_NUMERATOR = 750;
@@ -32,8 +32,13 @@ public class DistanceFromOriginNodeHeuristicMain implements DistanceFromOriginNo
                            double currentRouteLength, double targetDistance) {
         double score = 0;
 
-        if (currentRouteLength / targetDistance < 0.1) {
+        if (currentRouteLength / targetDistance < 0.05) {
             return score;
+        }
+
+        if (currentRouteLength / targetDistance > 0.45
+                && currentRouteLength / targetDistance < 0.90) {
+            return 0;
         }
 
         double distanceFromOriginNode =

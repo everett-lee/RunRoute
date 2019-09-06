@@ -1,6 +1,7 @@
 package com.lee.runrouter.integrationtests;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
+import com.lee.runrouter.algorithm.distanceCalculator.EuclideanCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
@@ -53,7 +54,7 @@ public class testRouteReflectsAvoidConcreteHeuristic {
     public void setUp() {
         repoSW = TestHelpers.getRepoSW();
         repoLAW = TestHelpers.getRepoLAW();
-        distanceCalculator = new HaversineCalculator();
+        distanceCalculator = new EuclideanCalculator();
 
         // heuristics
         distanceHeuristic = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);

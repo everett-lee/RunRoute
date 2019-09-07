@@ -23,12 +23,12 @@ public class RunrouterApplication {
 
         boolean[] opts = {true, true, true, true, true, true, true,
                 true, true, true, true, true, true, true, true};
-        double[] coords = {51.444512, -0.115335};
+        double[] coords = {51.522270, -0.131174};
 
         ElementRepo repo = ctx.getBean(ElementRepo.class);
         GraphBuilder gb = ctx.getBean(GraphBuilder.class);
 //
-//            gb.buildGraph(coords, 35000, opts);
+//            gb.buildGraph(coords, 25000, opts);
 //            serialize(repo);
 
     }
@@ -36,7 +36,7 @@ public class RunrouterApplication {
         try {
             System.out.println("Starting... ");
             FileOutputStream fileOut =
-                    new FileOutputStream("/home/lee/project/app/runrouter/src/repoSW.ser");
+                    new FileOutputStream("/home/lee/project/app/runrouter/src/repoCEN.ser");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(repo);
             out.close();

@@ -19,9 +19,9 @@ import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.GraphBuilder;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.routegenerator.RouteGenerator;
-import com.lee.runrouter.routegenerator.RouteGeneratorMain;
 import com.lee.runrouter.routegenerator.PathNotGeneratedException;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
+import com.lee.runrouter.routegenerator.RouteGeneratorCycle;
 import org.junit.Before;
 import org.junit.Test;
 import java.lang.reflect.*;
@@ -49,7 +49,7 @@ public class ResponseGeneratorControllerTest {
 
     @Before
     public void setUp() throws PathNotGeneratedException {
-        routeGenerator = mock(RouteGeneratorMain.class);
+        routeGenerator = mock(RouteGeneratorCycle.class);
 
         // mock the response PathTuple and associated objects
         Node mocknode = mock(Node.class);
@@ -81,7 +81,7 @@ public class ResponseGeneratorControllerTest {
                 gradientCalculator, elevationHeuristic);
         cycleRemover = mock(CycleRemover.class);
 
-        executor = new ExecutorFullCycle(routeGenerator, graphBuilder, linkedListToArray,
+        executor = new ExecutorMain(routeGenerator, graphBuilder, linkedListToArray,
                 BFS, BFSconnection, cycleRemover);
         responseGeneratorController = new ResponseGeneratorController(executor);
     }

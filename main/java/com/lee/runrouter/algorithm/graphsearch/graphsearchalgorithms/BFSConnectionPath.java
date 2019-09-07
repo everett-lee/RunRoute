@@ -26,18 +26,16 @@ import java.util.*;
 @Component
 @Qualifier("BFSConnectionPath")
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
-    private final double MINIMUM_SCORING_DISTANCE = 400; // the minimum travelled
+    private final double MINIMUM_SCORING_DISTANCE = 500; // the minimum travelled
     // along a Way before the distance bonus is applied
-    private final double DISTANCE_BONUS = 0.0001;
+    private final double DISTANCE_BONUS = 0.001;
     final double REPEATED_WAY_VISIT_PENALTY = 1; // deducted from heuristic score
     // for visits to Ways included in the main route
-    final double MAX_DISTANCE_FROM_TARGET_MULTIPLIER = 1; // maximum increase in
-    // distance to target compared to previous node in the path's position
 
     private PriorityQueue<PathTuple> queue;
     private HashSet<Long> visitedNodes; // ways visited in the course of this search
     private HashSet<Long> includedWays; // ways included in the main path
-    private double minimumPathPercentage = 0.90; // length of this path segment as
+    private double minimumPathPercentage = 0.95; // length of this path segment as
     // a percentage of a the removed path segment required to serve as a valid
     // replacement
 
@@ -92,10 +90,6 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                 }
             }
 
-            double currentDistanceFromTarget
-                    = distanceFromOriginHeuristic.getScore(currentNode, targetNode,
-                    0, 0);
-
             addToClosedList(currentNode);
 
             // for each Way reachable from the current Way
@@ -112,17 +106,14 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                     continue;
                 }
 
-                if (includedWays.contains(selectedWay.getId())) {
-                    heuristicScore -= REPEATED_WAY_VISIT_PENALTY;
+                if (distanceFromOriginHeuristic
+                        .getScore(currentNode, connectingNode, targetNode,
+                                0, 0) < 0) {
+                    continue;
                 }
 
-                double distanceFromSelectedToTarget
-                        = distanceFromOriginHeuristic.getScore(connectingNode, targetNode,
-                        0, 0);
-
-                if (distanceFromSelectedToTarget > currentDistanceFromTarget
-                        * MAX_DISTANCE_FROM_TARGET_MULTIPLIER) {
-                    continue;
+                if (includedWays.contains(selectedWay.getId())) {
+                    heuristicScore -= REPEATED_WAY_VISIT_PENALTY;
                 }
 
                 // skip this Way if unlit when lighting is required

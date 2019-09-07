@@ -1,7 +1,5 @@
 package com.lee.runrouter;
 
-import com.lee.runrouter.executor.Executor;
-import com.lee.runrouter.executor.ExecutorMain;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 
 import com.lee.runrouter.graph.graphbuilder.GraphBuilder;

@@ -4,14 +4,12 @@ import com.lee.runrouter.algorithm.AlgoHelpers;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.GraphSearch;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ILSGraphSearch;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
-import com.lee.runrouter.routegenerator.cyclegenerator.CycleGenerator;
 import com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch.IteratedLocalSearch;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 
 /**

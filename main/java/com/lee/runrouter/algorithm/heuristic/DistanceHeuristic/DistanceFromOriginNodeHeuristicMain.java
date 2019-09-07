@@ -8,18 +8,14 @@ import org.springframework.stereotype.Component;
 /**
  * Calculates a score based on the current distance
  * from the origin point. This is used to favour routes
- * that move further from the origin in the first half
- * of the route and move closer to the start in the second
- * halfs
+ * that move back towards the starting point once the
+ * route reaches a certain distance
  */
 @Component
 @Qualifier("DistanceFromOriginNodeHeuristicMain")
 public class DistanceFromOriginNodeHeuristicMain implements DistanceFromOriginNodeHeursitic {
     private DistanceCalculator distanceCalculator;
-    private final double SWITCH_PERCENTAGE = 0.5; // the percentage of the route at
-    // which the heuristic switches from favouring outward paths to favouring returning
-    // paths
-    private final double RETURN_SCORE_NUMERATOR = 750;
+    private final double RETURN_SCORE_NUMERATOR = 100;
 
     @Autowired
     public DistanceFromOriginNodeHeuristicMain(@Qualifier("EuclideanCalculator")
@@ -28,28 +24,18 @@ public class DistanceFromOriginNodeHeuristicMain implements DistanceFromOriginNo
     }
 
     @Override
-    public double getScore(Node currentNode, Node originNode,
+    public double getScore(Node currentNode, Node selectedNode, Node originNode,
                            double currentRouteLength, double targetDistance) {
         double score = 0;
 
-        if (currentRouteLength / targetDistance < 0.05) {
-            return score;
-        }
-
-        if (currentRouteLength / targetDistance > 0.45
-                && currentRouteLength / targetDistance < 0.90) {
-            return score;
-        }
-
-        double distanceFromOriginNode =
+        double currentDistanceFromOriginNode =
                 distanceCalculator.calculateDistance(currentNode, originNode);
+        double selectedDistanceFromOriginNode =
+                distanceCalculator.calculateDistance(selectedNode, originNode);
 
-        if (currentRouteLength > targetDistance * SWITCH_PERCENTAGE) {
-            score += RETURN_SCORE_NUMERATOR / distanceFromOriginNode;
-        } else {
-            if ((distanceFromOriginNode) / (currentRouteLength)
-                    < 0.45) {
-                return -1000;
+        if (currentRouteLength / targetDistance > 0.5) {
+            if (currentDistanceFromOriginNode > (targetDistance - currentRouteLength) * 0.30) {
+                score = RETURN_SCORE_NUMERATOR / selectedDistanceFromOriginNode;
             }
         }
 

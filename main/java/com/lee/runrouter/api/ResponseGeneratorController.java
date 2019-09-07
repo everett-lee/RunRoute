@@ -33,7 +33,7 @@ public class ResponseGeneratorController {
 
     @Autowired
     public ResponseGeneratorController(
-            @Qualifier("ExecutorFullCycle") Executor executor) {
+            @Qualifier("ExecutorMain") Executor executor) {
      this.executor = executor;
     }
 

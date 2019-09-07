@@ -1,9 +1,12 @@
 package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 import com.lee.runrouter.algorithm.AlgoHelpers;
+import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
+import com.lee.runrouter.algorithm.distanceCalculator.EuclideanCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
+import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceTwo;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
 import com.lee.runrouter.algorithm.pathnode.*;
@@ -12,6 +15,7 @@ import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import com.lee.runrouter.graph.graphbuilder.node.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.geo.Distance;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -25,9 +29,9 @@ import java.util.*;
 @Component
 @Qualifier("BFS")
 public class BFS extends SearchAlgorithm implements GraphSearch {
-    private final double MINIMUM_SCORING_DISTANCE = 400; // the minimum travelled
+    private final double MINIMUM_SCORING_DISTANCE = 500; // the minimum travelled
     // along a Way before the distance bonus is applied
-    private final double DISTANCE_BONUS = 0.0001;
+    private final double DISTANCE_BONUS = 0.001;
 
     private final double LOWER_SCALE = 0.95; // amount to scale upper lower bound on
     // run length by
@@ -40,15 +44,15 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
     private Set<Long> visitedNodesOutbound; // Nodes visited in the outbound leg of this search
     private Set<Long> visitedNodesInbound; // Nodes visited in the inbound leg of this search
     private HashSet<Long> visitedWays; // Ways visited in the course of the entire search
-    private long timeLimit = 500;
+    private long timeLimit = 650;
 
     @Autowired
     public BFS(ElementRepo repo,
-                    @Qualifier("DistanceFromOriginNodeHeuristicMain") DistanceFromOriginNodeHeursitic distanceFromOriginHeuristic,
-                    @Qualifier("FeaturesHeuristicUsingDistance") FeaturesHeuristic featuresHeuristic,
-                    @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
-                    @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
-                    @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
+               @Qualifier("DistanceFromOriginNodeHeuristicMain") DistanceFromOriginNodeHeursitic distanceFromOriginHeuristic,
+               @Qualifier("FeaturesHeuristicUsingDistance") FeaturesHeuristic featuresHeuristic,
+               @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
+               @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
+               @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceFromOriginHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
         this.queue = new PriorityQueue<>(Comparator
@@ -108,21 +112,33 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
             currentRouteLength = topTuple.getTotalLength();
             double heuristicScore;
 
-            // return the first valid cycle to exceed the minimum length requirement.
-            if (currentRouteLength > lowerBound) {
-                PathTuple result = returnValidPath(topTuple, currentNode, currentWay);
-                if (result != null) {
-                    return result;
+            // the route has returned to the origin
+            if (currentWay.getId() == repo.getOriginWay().getId()) {
+                double finalDistance = this.edgeDistanceCalculator
+                        .calculateDistance(currentNode, repo.getOriginNode(),
+                                this.repo.getOriginWay());
+
+                double totalRouteLength = currentRouteLength + finalDistance;
+                // return the first valid cycle to exceed the min and max length requirement.
+                if (totalRouteLength > lowerBound &&
+                        totalRouteLength < upperBound) {
+                    PathTuple result = returnValidPath(topTuple, currentNode,
+                            currentWay, finalDistance);
+                    if (result != null) {
+                        return result;
+                    }
                 }
             }
+
+
 
             boolean overHalf = (currentRouteLength) / targetDistance > 0.5;
 
             addToClosedList(currentNode, overHalf);
 
+
             // for each Way reachable from the the current Way
             for (ConnectionPair pair : this.repo.getConnectedWays(currentWay)) {
-
                 currentRouteLength = topTuple.getTotalLength();
                 heuristicScore = 0;
                 currentNode = topTuple.getCurrentNode(); // the last explored Node
@@ -135,17 +151,17 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                     continue;
                 }
 
+                // calculates targetDistance from the current Node to the Node connecting
+                // the current Way to the selected Way
+                double distanceToNext = this.edgeDistanceCalculator
+                        .calculateDistance(currentNode, connectingNode, currentWay);
+
                 // skip the way where street lighting required and none available
                 if (super.getAvoidUnlit()) {
                     if (!selectedWay.isLit()) {
                         continue;
                     }
                 }
-
-                // calculates targetDistance from the current Node to the Node connecting
-                // the current Way to the selected Way
-                double distanceToNext = this.edgeDistanceCalculator
-                        .calculateDistance(currentNode, connectingNode, currentWay);
 
                 if (currentRouteLength + distanceToNext > upperBound) {
                     continue; // skip to next where maximum length exceeded
@@ -173,13 +189,9 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                 // whether the distance travelled is over half of the target
                 overHalf = (currentRouteLength + distanceToNext) / targetDistance > 0.5;
 
-                double distanceScore = this.distanceFromOriginHeuristic
-                        .getScore(connectingNode, repo.getOriginNode(),
-                                currentRouteLength, targetDistance);
-
-                if (distanceScore < 0) {
-                    continue;
-                }
+                double distanceScore = distanceFromOriginHeuristic
+                        .getScore(currentNode, connectingNode, originNode, currentRouteLength,
+                                    targetDistance);
 
                 ScorePair segmentScore = new ScorePair(distanceScore, heuristicScore);
 
@@ -197,7 +209,6 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                 if (!connectedToStart) {
                     visitedWays.add(selectedWay.getId());
                 }
-
 
                 elapsedTime = (new Date()).getTime() - startTime;
             }
@@ -224,25 +235,19 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
      * @return a PathTuple containing the path segment linking the origin
      * and target ways
      */
-    private PathTuple returnValidPath(PathTuple topTuple, Node currentNode, Way currentWay) {
-        // the route has returned to the origin
-        if (topTuple.getCurrentWay().getId() == repo.getOriginWay().getId()) {
+    private PathTuple returnValidPath(PathTuple topTuple, Node currentNode,
+                                      Way currentWay, double finalDistance) {
+        double finalGradient = this.gradientCalculator.calculateGradient(currentNode, currentWay,
+                this.repo.getOriginNode(), this.repo.getOriginWay(),
+                finalDistance);
 
-            double finalDistance = this.edgeDistanceCalculator
-                    .calculateDistance(currentNode, repo.getOriginNode(), this.repo.getOriginWay());
-            double finalGradient = this.gradientCalculator.calculateGradient(currentNode, currentWay,
-                    this.repo.getOriginNode(), this.repo.getOriginWay(),
-                    finalDistance);
+        ScorePair finalScore = new ScorePair(0, 0);
 
-            ScorePair finalScore = new ScorePair(0, 0);
-
-            // create a new tuple representing the journey from the previous node to the final node
-            PathTuple returnTuple = new PathTupleMain(topTuple, this.repo.getOriginNode(),
-                    this.repo.getOriginWay(), finalScore, finalDistance,
-                    topTuple.getTotalLength() + finalDistance, finalGradient);
-            return returnTuple;
-        }
-        return null;
+        // create a new tuple representing the journey from the previous node to the final node
+        PathTuple returnTuple = new PathTupleMain(topTuple, this.repo.getOriginNode(),
+                this.repo.getOriginWay(), finalScore, finalDistance,
+                topTuple.getTotalLength() + finalDistance, finalGradient);
+        return returnTuple;
     }
 
 

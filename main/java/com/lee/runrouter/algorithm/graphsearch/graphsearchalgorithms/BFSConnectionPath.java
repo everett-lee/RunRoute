@@ -29,13 +29,13 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     private final double MINIMUM_SCORING_DISTANCE = 500; // the minimum travelled
     // along a Way before the distance bonus is applied
     private final double DISTANCE_BONUS = 0.0005;
-    final double REPEATED_WAY_VISIT_PENALTY = 1; // deducted from heuristic score
+    final double REPEATED_WAY_VISIT_PENALTY = 1.5; // deducted from heuristic score
     // for visits to Ways included in the main route
 
     private PriorityQueue<PathTuple> queue;
     private HashSet<Long> visitedNodes; // ways visited in the course of this search
     private HashSet<Long> includedWays; // ways included in the main path
-    private double minimumPathPercentage = 0.95; // length of this path segment as
+    private double minimumPathPercentage = 0.90; // length of this path segment as
     // a percentage of a the removed path segment required to serve as a valid
     // replacement
 
@@ -43,7 +43,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
     public BFSConnectionPath(ElementRepo repo,
                              @Qualifier("DirectDistanceHeuristic") DistanceFromOriginNodeHeursitic distanceFromOriginHeursitic,
-                             @Qualifier("FeaturesHeuristicMain") FeaturesHeuristic featuresHeuristic,
+                             @Qualifier("FeaturesHeuristicUsingDistance") FeaturesHeuristic featuresHeuristic,
                              @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
                              @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
                              @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {

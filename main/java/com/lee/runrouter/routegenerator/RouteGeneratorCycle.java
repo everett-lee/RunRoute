@@ -30,7 +30,7 @@ public class RouteGeneratorCycle implements RouteGenerator {
 
     public RouteGeneratorCycle(@Qualifier("BFS") GraphSearch pather,
                                @Qualifier("IteratedLocalSearchMain") IteratedLocalSearch iteratedLocalSearch,
-                               @Qualifier("DFSConnectionPath") ILSGraphSearch connectionPather,
+                               @Qualifier("BFSConnectionPath") ILSGraphSearch connectionPather,
                                ElementRepo repo) {
         this.pather = pather;
         this.ils = iteratedLocalSearch;

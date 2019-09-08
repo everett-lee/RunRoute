@@ -1,16 +1,14 @@
 package com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
-import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
+import com.lee.runrouter.algorithm.distanceCalculator.EuclideanCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
-import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BFSConnectionPath;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.DFSConnectionPath;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ILSGraphSearch;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DirectDistanceHeuristic;
-import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristicMain;
@@ -44,8 +42,8 @@ public class ILSImprovementDFSTest {
     EdgeDistanceCalculator edgeDistanceCalculator;
     GradientCalculator gradientCalculator;
     ElevationHeuristic elevationHeursitic;
-    ILSGraphSearch connectPathBFS;
-    IteratedLocalSearch ilsBFS;
+    ILSGraphSearch connectPathDFS;
+    IteratedLocalSearch ilsDFS;
 
     {
         morrish5k = getMorrish5kFeaturesFlat();
@@ -60,7 +58,7 @@ public class ILSImprovementDFSTest {
 
     @Before
     public void setUp() {
-        distanceCalculator = new HaversineCalculator();
+        distanceCalculator = new EuclideanCalculator();
         distanceHeuristic = new DirectDistanceHeuristic(distanceCalculator);
 
         List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("GRASS",
@@ -76,11 +74,11 @@ public class ILSImprovementDFSTest {
         gradientCalculator = new SimpleGradientCalculator();
         elevationHeursitic = new ElevationHeuristicMain();
 
-        connectPathBFS = new DFSConnectionPath(repo, distanceHeuristic,
+        connectPathDFS = new DFSConnectionPath(repo, distanceHeuristic,
                 featuresHeuristic , edgeDistanceCalculator,
                 gradientCalculator, elevationHeursitic);
 
-        ilsBFS = new IteratedLocalSearchMain(connectPathBFS);
+        ilsDFS = new IteratedLocalSearchMain(connectPathDFS);
 
     }
 
@@ -97,10 +95,10 @@ public class ILSImprovementDFSTest {
 
         for (int i = 0; i < iterations; i++) {
             PathTuple in = getMorrish5kFeaturesFlat();
-            PathTuple res = ilsBFS.iterate(in, target);
+            PathTuple res = ilsDFS.iterate(in, target);
             totalScore += calculateScore(res);
             totalLength += calculateDistance(res);
-            improvements += ilsBFS.getImprovements();
+            improvements += ilsDFS.getImprovements();
         }
 
         System.out.println("THE NUMBER OF IMPROVED " + improvements);
@@ -125,10 +123,10 @@ public class ILSImprovementDFSTest {
 
         for (int i = 0; i < iterations; i++) {
 
-            PathTuple res = ilsBFS.iterate(getMorrish14kFeaturesFlat(), target);
+            PathTuple res = ilsDFS.iterate(getMorrish14kFeaturesFlat(), target);
             totalScore += calculateScore(res);
             totalLength += calculateDistance(res);
-            improvements += ilsBFS.getImprovements();
+            improvements += ilsDFS.getImprovements();
         }
 
 
@@ -154,7 +152,7 @@ public class ILSImprovementDFSTest {
 
         for (int i = 0; i < iterations; i++) {
 
-            PathTuple res = ilsBFS.iterate(getCraignair5kFeaturesFlat(), target);
+            PathTuple res = ilsDFS.iterate(getCraignair5kFeaturesFlat(), target);
             totalScore += calculateScore(res);
             totalLength += calculateDistance(res);
         }
@@ -178,7 +176,7 @@ public class ILSImprovementDFSTest {
 
         for (int i = 0; i < iterations; i++) {
 
-            PathTuple res = ilsBFS.iterate(getCraignair14kFeaturesFlat(), target);
+            PathTuple res = ilsDFS.iterate(getCraignair14kFeaturesFlat(), target);
             totalScore += calculateScore(res);
             totalLength += calculateDistance(res);
         }
@@ -203,7 +201,7 @@ public class ILSImprovementDFSTest {
 
         for (int i = 0; i < iterations; i++) {
 
-            PathTuple res = ilsBFS.iterate(getTulse5keaturesFlat(), target);
+            PathTuple res = ilsDFS.iterate(getTulse5keaturesFlat(), target);
             totalScore += calculateScore(res);
             totalLength += calculateDistance(res);
         }
@@ -227,7 +225,7 @@ public class ILSImprovementDFSTest {
 
         for (int i = 0; i < iterations; i++) {
 
-            PathTuple res = ilsBFS.iterate(getTulse14keaturesFlat(), target);
+            PathTuple res = ilsDFS.iterate(getTulse14keaturesFlat(), target);
             totalScore += calculateScore(res);
             totalLength += calculateDistance(res);
         }

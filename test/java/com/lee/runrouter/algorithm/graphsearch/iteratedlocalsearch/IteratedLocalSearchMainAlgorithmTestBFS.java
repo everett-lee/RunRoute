@@ -1,6 +1,7 @@
 package com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
+import com.lee.runrouter.algorithm.distanceCalculator.EuclideanCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
@@ -60,7 +61,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
 
     @Before
     public void setUp() {
-        distanceCalculator = new HaversineCalculator();
+        distanceCalculator = new EuclideanCalculator();
         distanceHeuristic = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
 
         featuresHeuristic = new FeaturesHeuristicUsingDistance();

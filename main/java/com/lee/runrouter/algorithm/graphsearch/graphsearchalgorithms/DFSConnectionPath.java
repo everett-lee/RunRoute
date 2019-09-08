@@ -29,7 +29,7 @@ public class DFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     private final double MINIMUM_SCORING_DISTANCE = 500; // the minimum travelled
     // along a Way before the distance bonus is applied
     private final double DISTANCE_BONUS = 0.0005;
-    final double REPEATED_WAY_VISIT_PENALTY = 1; // deducted from heuristic score
+    final double REPEATED_WAY_VISIT_PENALTY = 1.5; // deducted from heuristic score
     // for visits to Ways included in the main route
 
     private Stack<PathTuple> stack;
@@ -43,7 +43,7 @@ public class DFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
     public DFSConnectionPath(ElementRepo repo,
                              @Qualifier("DirectDistanceHeuristic") DistanceFromOriginNodeHeursitic distanceFromOriginHeursitic,
-                             @Qualifier("FeaturesHeuristicMain") FeaturesHeuristic featuresHeuristic,
+                             @Qualifier("FeaturesHeuristicUsingDistance") FeaturesHeuristic featuresHeuristic,
                              @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
                              @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
                              @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {

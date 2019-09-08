@@ -36,8 +36,8 @@ public class FeaturesHeuristicUsingDistance implements FeaturesHeuristic {
     private double calculateScore(Way selectedWay, double distance) {
         double score = 0;
 
-        // very short distances are not considered
-        if (distance < 200) {
+        // short distances are not considered
+        if (distance < 250) {
             return 0;
         }
 

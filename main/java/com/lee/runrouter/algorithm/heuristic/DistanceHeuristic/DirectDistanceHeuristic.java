@@ -26,7 +26,7 @@ public class DirectDistanceHeuristic implements DistanceFromOriginNodeHeursitic 
         double selectedDistanceFromOriginNode =
                 distanceCalculator.calculateDistance(selectedNode, originNode);
 
-        if (currentDistanceFromOriginNode < selectedDistanceFromOriginNode) {
+        if (selectedDistanceFromOriginNode > currentDistanceFromOriginNode * 1.5) {
             return - 100;
         }
         return 0;

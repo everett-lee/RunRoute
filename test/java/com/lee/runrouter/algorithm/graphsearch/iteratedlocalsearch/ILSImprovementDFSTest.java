@@ -7,7 +7,9 @@ import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BFSConnectionPath;
+import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.DFSConnectionPath;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ILSGraphSearch;
+import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DirectDistanceHeuristic;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
@@ -19,14 +21,13 @@ import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import org.junit.Before;
 import org.junit.Test;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static com.lee.runrouter.testhelpers.TestHelpers.*;
 
-public class ILSRepeated {
+public class ILSImprovementDFSTest {
     PathTuple morrish5k;
     PathTuple morrish14k;
     PathTuple morrish21k;
@@ -60,7 +61,7 @@ public class ILSRepeated {
     @Before
     public void setUp() {
         distanceCalculator = new HaversineCalculator();
-        distanceHeuristic = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
+        distanceHeuristic = new DirectDistanceHeuristic(distanceCalculator);
 
         List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("GRASS",
                 "DIRT", "GRAVEL"));
@@ -68,16 +69,14 @@ public class ILSRepeated {
                 "FOOTWAY", "BRIDLEWAY", "STEPS", "PATH"));
 
         featuresHeuristic = new FeaturesHeuristicUsingDistance();
-
         featuresHeuristic.setPreferredSurfaces(preferredSurfaces);
         featuresHeuristic.setPreferredHighways(preferredHighways);
 
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         gradientCalculator = new SimpleGradientCalculator();
-
         elevationHeursitic = new ElevationHeuristicMain();
 
-        connectPathBFS = new BFSConnectionPath(repo, distanceHeuristic,
+        connectPathBFS = new DFSConnectionPath(repo, distanceHeuristic,
                 featuresHeuristic , edgeDistanceCalculator,
                 gradientCalculator, elevationHeursitic);
 

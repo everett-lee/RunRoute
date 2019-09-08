@@ -31,7 +31,7 @@ import java.util.*;
 public class BFS extends SearchAlgorithm implements GraphSearch {
     private final double MINIMUM_SCORING_DISTANCE = 500; // the minimum travelled
     // along a Way before the distance bonus is applied
-    private final double DISTANCE_BONUS = 0.001;
+    private final double DISTANCE_BONUS = 0.0005;
 
     private final double LOWER_SCALE = 0.95; // amount to scale upper lower bound on
     // run length by

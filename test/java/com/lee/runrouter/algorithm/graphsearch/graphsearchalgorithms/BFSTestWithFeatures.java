@@ -63,7 +63,7 @@ public class BFSTestWithFeatures {
          BFS = new BFS(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
-        saveRoutes = false;
+        saveRoutes = true;
     }
 
     @Test(timeout = 5000)

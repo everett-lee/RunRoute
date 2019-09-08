@@ -35,7 +35,7 @@ public class ExecutorMain implements Executor {
             GraphBuilder graphBuilder,
             @Qualifier("LinkedListToArrayAllNodes") LinkedListToArray linkedListToArray,
             @Qualifier("BFS") SearchAlgorithm pather,
-            @Qualifier("BFSConnectionPath") SearchAlgorithm connectionPather,
+            @Qualifier("DFSConnectionPath") SearchAlgorithm connectionPather,
             CycleRemover cycleRemover) {
         this.routeGenerator = routeGenerator;
         this.graphBuilder = graphBuilder;

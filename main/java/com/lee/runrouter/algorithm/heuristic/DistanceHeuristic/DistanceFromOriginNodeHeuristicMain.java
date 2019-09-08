@@ -34,7 +34,7 @@ public class DistanceFromOriginNodeHeuristicMain implements DistanceFromOriginNo
                 distanceCalculator.calculateDistance(selectedNode, originNode);
 
         if (currentRouteLength / targetDistance > 0.5) {
-            if (currentDistanceFromOriginNode > (targetDistance - currentRouteLength) * 0.30) {
+            if (currentDistanceFromOriginNode > (targetDistance - currentRouteLength) * 0.35) {
                 score = RETURN_SCORE_NUMERATOR / selectedDistanceFromOriginNode;
             }
         }

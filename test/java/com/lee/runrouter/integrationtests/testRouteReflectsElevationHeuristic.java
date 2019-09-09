@@ -33,7 +33,8 @@ public class testRouteReflectsElevationHeuristic {
     RouteGenerator routeGenerator;
     ElementRepo repoSW;
     ElementRepo repoLAW;
-    DistanceFromOriginNodeHeursitic distanceHeuristic;
+    DistanceFromOriginNodeHeursitic distanceHeuristicReturn;
+    DistanceFromOriginNodeHeursitic distanceHeuristicDirect;
     DistanceCalculator distanceCalculator;
     FeaturesHeuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
@@ -51,15 +52,16 @@ public class testRouteReflectsElevationHeuristic {
         distanceCalculator = new HaversineCalculator();
 
         // heuristics
-        distanceHeuristic = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
+        distanceHeuristicReturn = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
+        distanceHeuristicDirect = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
         featuresHeuristic = new FeaturesHeuristicUsingDistance();
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         gradientCalculator = new SimpleGradientCalculator();
         elevationHeuristic = new ElevationHeuristicMain();
 
-        outward = new BFS(repoSW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        outward = new BFS(repoSW, distanceHeuristicReturn, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
-        ilsGraphSearch = new BFSConnectionPath(repoSW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        ilsGraphSearch = new BFSConnectionPath(repoSW, distanceHeuristicDirect, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
 
         iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
@@ -142,11 +144,14 @@ public class testRouteReflectsElevationHeuristic {
 
     @Test
     public void testAverageElevationLaw() throws PathNotGeneratedException {
-        double[] coords = {51.937507, 1.050645};
-        outward = new BFS(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        double[] coords = {51.9375650, 1.0507934};
+        repoLAW.setOriginWay(repoLAW.getWayRepo().get(55178471L));
+
+        outward = new BFS(repoLAW, distanceHeuristicReturn, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
-        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristicDirect, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
+        iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
         routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
         double avgGradientFlat = 0;
@@ -172,10 +177,13 @@ public class testRouteReflectsElevationHeuristic {
     @Test
     public void testAverageElevationMan() throws PathNotGeneratedException {
         double[] coords = {51.946379, 1.059363};
-        outward = new BFS(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        repoLAW.setOriginWay(repoLAW.getWayRepo().get(239734311L));
+
+        outward = new BFS(repoLAW, distanceHeuristicReturn, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
-        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristicDirect, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
+        iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
         routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
         double avgGradientFlat = 0;
@@ -199,11 +207,14 @@ public class testRouteReflectsElevationHeuristic {
 
     @Test
     public void testAverageElevationLbo() throws PathNotGeneratedException {
-        double[] coords = {51.919993, 1.044527};
-        outward = new BFS(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        double[] coords = {51.9199469, 1.0437911};
+        repoLAW.setOriginWay(repoLAW.getWayRepo().get(58755144L));
+
+        outward = new BFS(repoLAW, distanceHeuristicReturn, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
-        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristicDirect, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
+        iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
         routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
         double avgGradientFlat = 0;
@@ -269,7 +280,6 @@ public class testRouteReflectsElevationHeuristic {
 
         elevationHeuristic.setOptions(true);
         PathTuple route = routeGenerator.generateRoute(coords, 21000);
-        double avgGradientSteep = getAverageGradient(route);
 
         boolean flag = true;
 
@@ -299,7 +309,6 @@ public class testRouteReflectsElevationHeuristic {
 
         elevationHeuristic.setOptions(true);
         PathTuple route = routeGenerator.generateRoute(coords, 21000);
-        double avgGradientSteep = getAverageGradient(route);
 
         boolean flag = true;
 
@@ -318,13 +327,16 @@ public class testRouteReflectsElevationHeuristic {
     @Test
     public void testMaxElevationReflectedLaw()
             throws PathNotGeneratedException {
-        outward = new BFS(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        repoLAW.setOriginWay(repoLAW.getWayRepo().get(55178471L));
+
+        outward = new BFS(repoLAW, distanceHeuristicReturn, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
-        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristicDirect, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
+        iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
         routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
-        double[] coords = {51.937507, 1.050645};
+        double[] coords = {51.9375650, 1.0507934};
         double maxGradient = 0.05;
 
         SearchAlgorithm sa1 = (SearchAlgorithm) outward;
@@ -351,10 +363,13 @@ public class testRouteReflectsElevationHeuristic {
     @Test
     public void testMaxElevationReflectedMan()
             throws PathNotGeneratedException {
-        outward = new BFS(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        repoLAW.setOriginWay(repoLAW.getWayRepo().get(239734311L));
+
+        outward = new BFS(repoLAW, distanceHeuristicReturn, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
-        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristicDirect, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
+        iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
         routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
         double[] coords = {51.946379, 1.059363};
@@ -367,7 +382,6 @@ public class testRouteReflectsElevationHeuristic {
 
         elevationHeuristic.setOptions(true);
         PathTuple route = routeGenerator.generateRoute(coords, 21000);
-        double avgGradientSteep = getAverageGradient(route);
 
         boolean flag = true;
 
@@ -385,23 +399,25 @@ public class testRouteReflectsElevationHeuristic {
     @Test
     public void testMaxElevationReflectedLbo()
             throws PathNotGeneratedException {
-        outward = new BFS(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        repoLAW.setOriginWay(repoLAW.getWayRepo().get(58755144L));
+
+        outward = new BFS(repoLAW, distanceHeuristicReturn, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
-        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristicDirect, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
+        iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
         routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
-        double[] coords = {51.919993, 1.044527};
+        double[] coords = {51.9199469, 1.0437911};
         double maxGradient = 0.05;
 
         SearchAlgorithm sa1 = (SearchAlgorithm) outward;
         sa1.setMaxGradient(maxGradient);
-        SearchAlgorithm sa3 = (SearchAlgorithm) ilsGraphSearch;
-        sa3.setMaxGradient(maxGradient);
+        SearchAlgorithm sa2 = (SearchAlgorithm) ilsGraphSearch;
+        sa2.setMaxGradient(maxGradient);
 
         elevationHeuristic.setOptions(true);
         PathTuple route = routeGenerator.generateRoute(coords, 21000);
-        double avgGradientSteep = getAverageGradient(route);
 
         boolean flag = true;
 

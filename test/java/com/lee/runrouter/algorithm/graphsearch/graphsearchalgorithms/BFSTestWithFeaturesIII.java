@@ -14,6 +14,7 @@ import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristicUsingDistance;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
+import com.lee.runrouter.testhelpers.TestHelpers;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -394,6 +395,7 @@ public class BFSTestWithFeaturesIII {
 
         double length = calculateDistance(res);
 
+        System.out.println(TestHelpers.returnPath(res, ""));
         assertTrue(length >= 5);
         assertTrue(res.getTotalLength() >=  target * 0.95);
         assertTrue(res.getTotalLength() <= target * 1.05);

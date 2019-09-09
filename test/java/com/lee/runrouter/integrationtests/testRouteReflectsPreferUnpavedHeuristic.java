@@ -1,6 +1,7 @@
 package com.lee.runrouter.integrationtests;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
+import com.lee.runrouter.algorithm.distanceCalculator.EuclideanCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
@@ -37,7 +38,8 @@ public class testRouteReflectsPreferUnpavedHeuristic {
     RouteGenerator routeGenerator;
     ElementRepo repoSW;
     ElementRepo repoLAW;
-    DistanceFromOriginNodeHeursitic distanceHeuristic;
+    DistanceFromOriginNodeHeursitic distanceHeuristicReturn;
+    DistanceFromOriginNodeHeursitic distanceHeuristicDirect;
     DistanceCalculator distanceCalculator;
     FeaturesHeuristic featuresHeuristic;
     EdgeDistanceCalculator edgeDistanceCalculator;
@@ -53,18 +55,19 @@ public class testRouteReflectsPreferUnpavedHeuristic {
     public void setUp() {
         repoSW = TestHelpers.getRepoSW();
         repoLAW = TestHelpers.getRepoLAW();
-        distanceCalculator = new HaversineCalculator();
+        distanceCalculator = new EuclideanCalculator();
 
         // heuristics
-        distanceHeuristic = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
+        distanceHeuristicReturn = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
+        distanceHeuristicDirect = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
         featuresHeuristic = new FeaturesHeuristicUsingDistance();
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
         gradientCalculator = new SimpleGradientCalculator();
         elevationHeuristic = new ElevationHeuristicMain();
 
-        outward = new BFS(repoSW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        outward = new BFS(repoSW, distanceHeuristicReturn, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
-        ilsGraphSearch = new BFSConnectionPath(repoSW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        ilsGraphSearch = new BFSConnectionPath(repoSW, distanceHeuristicDirect, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
 
         iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
@@ -76,8 +79,6 @@ public class testRouteReflectsPreferUnpavedHeuristic {
         // avoided paths options
         avoidedPathsInclusive = new ArrayList<>(Arrays.asList("DIRT", "GRASS", "GROUND",
                                                                 "EARTH", "SAND", "UNPAVED"));
-
-
     }
 
     @Test
@@ -187,11 +188,14 @@ public class testRouteReflectsPreferUnpavedHeuristic {
 
     @Test
     public void testHeuristicReflectedLaw() throws PathNotGeneratedException {
-        double[] coords = {51.937507, 1.050645};
-        outward = new BFS(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        double[] coords = { 51.9375650, 1.0507934};
+        repoLAW.setOriginWay(repoLAW.getWayRepo().get(55178471L));
+
+        outward = new BFS(repoLAW, distanceHeuristicReturn, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
-        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristicDirect, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
+        iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
         routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
         double matchedCountWithoutPref = 0;
@@ -228,12 +232,14 @@ public class testRouteReflectsPreferUnpavedHeuristic {
     @Test
     public void testHeuristicReflectedMan() throws PathNotGeneratedException {
         double[] coords = {51.946379, 1.059363};
-        outward = new BFS(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
-                gradientCalculator, elevationHeuristic);
-        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
-                gradientCalculator, elevationHeuristic);
-        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
+        repoLAW.setOriginWay(repoLAW.getWayRepo().get(239734311L));
 
+        outward = new BFS(repoLAW, distanceHeuristicReturn, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
+        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristicDirect, featuresHeuristic, edgeDistanceCalculator,
+                gradientCalculator, elevationHeuristic);
+        iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
+        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
         double matchedCountWithoutPref = 0;
         double matchedCountWithPref = 0;
@@ -268,11 +274,14 @@ public class testRouteReflectsPreferUnpavedHeuristic {
 
     @Test
     public void testHeuristicReflectedLbo() throws PathNotGeneratedException {
-        double[] coords = {51.919993, 1.044527};
-        outward = new BFS(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        double[] coords = {51.9199469, 1.0437911};
+        repoLAW.setOriginWay(repoLAW.getWayRepo().get(58755144L));
+
+        outward = new BFS(repoLAW, distanceHeuristicReturn, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
-        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
+        ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristicDirect, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
+        iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
         routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
         double matchedCountWithoutPref = 0;

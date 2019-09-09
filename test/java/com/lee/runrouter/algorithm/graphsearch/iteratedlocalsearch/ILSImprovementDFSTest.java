@@ -139,7 +139,7 @@ public class ILSImprovementDFSTest {
     }
 
     @Test
-    public void testCraignair5k() {
+            public void testCraignair5k() {
         double originalScore = calculateScore(craignair5k);
         double originalLength = calculateDistance(craignair5k);
         double target = 0;

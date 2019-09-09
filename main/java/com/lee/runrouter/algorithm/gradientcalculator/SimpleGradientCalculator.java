@@ -12,7 +12,18 @@ import java.util.List;
 @Component
 @Qualifier("SimpleGradientCalculator")
 public class SimpleGradientCalculator implements GradientCalculator {
-    // simple rise over run calculation
+    /**
+     * Returns the gradient between two pairs of coordinates using a
+     * simple rise over run calculation
+     *
+     * @param currentNode the Node containing the starting coordinates
+     * @param startingWay the Way containing the starting Node
+     * @param visitedNode the Node containing the end coordinates
+     * @param selectedWay the Way containing the end Node
+     * @param distance the distance travelled between each Node/pair
+     *                 of coordinates
+     * @return A double representing the gradient
+     */
     public double calculateGradient(Node currentNode, Way startingWay,
                                     Node visitedNode, Way selectedWay, double distance) {
         if (distance == 0) {
@@ -25,12 +36,12 @@ public class SimpleGradientCalculator implements GradientCalculator {
 
         double elevationDelta = endElevation - startElevation;
 
-        return ((elevationDelta) / distance);
+        return elevationDelta / distance;
     }
 
 
     /**
-     * Test which endpoint of the Way the current Node is closest
+     * Determines which endpoint of the Way the current Node is closest
      * to and return the corresponding elevation.
      */
     private double getStartElevation(Node currentNode, Way startingWay) {
@@ -48,7 +59,7 @@ public class SimpleGradientCalculator implements GradientCalculator {
     }
 
     /**
-     * Test which endpoint of the Way the current Node is closest
+     * Determines which endpoint of the Way the current Node is closest
      * to and return the corresponding elevation.
      */
     public double getEndElevation(Node visitedNode, Way selectedWay) {

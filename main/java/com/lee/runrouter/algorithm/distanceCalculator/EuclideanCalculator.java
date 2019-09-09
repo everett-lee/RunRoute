@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 /***
  * Approximates distance along the Earth's surface 'as the crow flies'
- * using an equirectangular approximation formula.
+ * using an equirectangular approximation.
  * Sourced from https://www.movable-type.co.uk/scripts/latlong.html
  */
 @Component

@@ -74,7 +74,7 @@ public class ResponseGeneratorController {
     // intialise the graph construction when the starting coordinates are received.
     // does not return anything until the route parameters are sent
     @GetMapping(value="start/args")
-    public void receiveStartCoords(@RequestParam("lat") double lat, @RequestParam("lon") double lon) {
+    public void recieveStartCoords(@RequestParam("lat") double lat, @RequestParam("lon") double lon) {
         // Coordinates outside of accepted range
         if (!checkCoordInput(lat, lon)) {
             throw new InvalidCoordsException(String.format("Coordinates: (%s,%s)", lat, lon));

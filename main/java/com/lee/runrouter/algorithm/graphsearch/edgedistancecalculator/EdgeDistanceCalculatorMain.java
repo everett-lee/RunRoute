@@ -11,14 +11,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * For calculating the great-circle distance between each of the points/Nodes
+ * For calculating the distance between each of the points/Nodes
  * making up a given Way.
  */
 @Component
 @Qualifier("EdgeDistanceCalculatorMain")
 public class EdgeDistanceCalculatorMain implements EdgeDistanceCalculator {
     DistanceCalculator distanceCalculator; // the calculator used to
-    // estimate the great-circle distance between points
+    // estimate the distance between coordinates
 
     @Autowired
     public EdgeDistanceCalculatorMain(

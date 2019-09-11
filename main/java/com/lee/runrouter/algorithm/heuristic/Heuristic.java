@@ -1,9 +1,12 @@
 package com.lee.runrouter.algorithm.heuristic;
 
 import com.lee.runrouter.graph.graphbuilder.graphelement.*;
-import com.lee.runrouter.graph.graphbuilder.node.*;
 
+/**
+ * Interface for deriving a score from the features
+ * of the input Way
+ */
 public interface Heuristic {
-    public double getScore(Way selectedWay);
+    double getScore(Way selectedWay);
 
 }

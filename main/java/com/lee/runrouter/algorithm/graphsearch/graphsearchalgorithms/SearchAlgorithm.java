@@ -47,7 +47,8 @@ public abstract class SearchAlgorithm {
 
     }
 
-    // a helper method for calculating the score of way Way making up a path
+    // a helper method for calculating the score accrued from the Way
+    // making up a path
     protected double addScores(Way selectedWay, double distanceTravelled, double gradient) {
         double score = 0;
 
@@ -55,7 +56,7 @@ public abstract class SearchAlgorithm {
         score += featuresHeuristic.getScore(selectedWay, distanceTravelled);
 
         // add score reflecting gradient of the Way
-        score += elevationHeuristic.getScore(gradient);
+        score += elevationHeuristic.getScore(gradient, distanceTravelled);
 
         // add a small random value to break ties
         score += (Math.random() / RANDOM_REDUCER);
@@ -86,6 +87,8 @@ public abstract class SearchAlgorithm {
         this.featuresHeuristic.setDislikedSurfaces(dislikedSurfaces);
     }
 
+    // set the prefer uphill preference. Guides the search towards
+    // steeper paths
     public void setElevationHeuristicOptions(boolean preferUphill) {
         if (preferUphill) {
             this.elevationHeuristic.setOptions(true);

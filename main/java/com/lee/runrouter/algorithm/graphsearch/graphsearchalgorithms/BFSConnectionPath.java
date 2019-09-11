@@ -18,18 +18,20 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 /**
- * Variant of the BFS algorithm that restricts the next selected Way
- * to those closer to the starting point than the previous. It is used
+ * Variant of the BFS algorithm that restricts selects the next Node
+ * only where they are closer to starting point than the current. It is used
  * to greedily search for high scoring Ways which connect the starting position
  * to the target Way.
  */
 @Component
 @Qualifier("BFSConnectionPath")
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
-    private final double MINIMUM_SCORING_DISTANCE = 500; // the minimum travelled
-    // along a Way before the distance bonus is applied
+    private final double MINIMUM_SCORING_DISTANCE = 500; // the minimum distance
+    // travelled along a Way before the distance bonus is applied
+    private final double MAXIMUM_SCORING_DISTANCE = 1000; //the maximum distance
+    // travelled along a Way that will contributed to the distance bonus
     private final double DISTANCE_BONUS = 0.0005;
-    final double REPEATED_WAY_VISIT_PENALTY = 1.5; // deducted from heuristic score
+    final double REPEATED_WAY_VISIT_PENALTY = 2.5; // deducted from heuristic score
     // for visits to Ways included in the main route
 
     private PriorityQueue<PathTuple> queue;
@@ -42,12 +44,12 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     private final double TIME_LIMIT = 250;
 
     public BFSConnectionPath(ElementRepo repo,
-                             @Qualifier("DirectDistanceHeuristic") DistanceFromOriginNodeHeursitic distanceFromOriginHeursitic,
+                             @Qualifier("DirectDistanceHeuristic") DistanceFromOriginNodeHeursitic distanceFromTargetnHeursitic,
                              @Qualifier("FeaturesHeuristicUsingDistance") FeaturesHeuristic featuresHeuristic,
                              @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
                              @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
                              @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
-        super(repo, distanceFromOriginHeursitic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
+        super(repo, distanceFromTargetnHeursitic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore().getHeuristicScore()).reversed());
@@ -58,7 +60,6 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     @Override
     public PathTuple connectPath(PathTuple origin, PathTuple target,
                                  double availableDistance, double targetDistance) {
-
         queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore().getHeuristicScore()).reversed());
 
@@ -68,7 +69,6 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         long elapsedTime = 0L;
         Way targetWay = target.getCurrentWay();
         Node targetNode = target.getCurrentNode();
-        double currentRouteLength;
         // the remaining distance for the route
         double upperBound = availableDistance + origin.getTotalLength();
 
@@ -94,9 +94,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
             // for each Way reachable from the current Way
             for (ConnectionPair pair : repo.getConnectedWays(currentWay)) {
-                currentRouteLength = topTuple.getTotalLength();
-
-                currentNode = topTuple.getCurrentNode();
+                double currentRouteLength = topTuple.getTotalLength();
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();
                 double heuristicScore = 0;
@@ -106,6 +104,9 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                     continue;
                 }
 
+                // prunes the current branch if the connecting Node's distance
+                // from the target is greater than some percentage of the current
+                // Node
                 if (distanceFromOriginHeuristic
                         .getScore(currentNode, connectingNode, targetNode,
                                 0, 0) < 0) {
@@ -116,7 +117,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                     heuristicScore -= REPEATED_WAY_VISIT_PENALTY;
                 }
 
-                // skip this Way if unlit when lighting is required
+                // prune this branch if unlit when lighting is required
                 if (super.getAvoidUnlit()) {
                     if (!selectedWay.isLit()) {
                         continue;
@@ -126,15 +127,12 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                 double distanceToNext = edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
 
+                // prune this branch where max length exceeded
                 if (currentRouteLength + distanceToNext > upperBound) {
-                    continue; // skip to next where max length exceeded
+                    continue;
                 }
 
-
-                // apply the bonus for longer Ways
-                if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
-                    heuristicScore += distanceToNext * DISTANCE_BONUS;
-                }
+                heuristicScore += applyDistanceScore(distanceToNext);
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
@@ -144,7 +142,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                 }
 
                 // call private method to add heuristic scores
-                heuristicScore += addScores(selectedWay, distanceToNext, gradient);
+                heuristicScore += super.addScores(selectedWay, distanceToNext, gradient);
 
                 ScorePair score = new ScorePair(0, heuristicScore);
 
@@ -198,10 +196,18 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         this.visitedNodes = new HashSet<>();
     }
 
+    private double applyDistanceScore(double distanceToNext) {
+        if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
+            double scoreLength = Math
+                    .max(distanceToNext, MAXIMUM_SCORING_DISTANCE);
+            return scoreLength * DISTANCE_BONUS;
+        }
+        return 0;
+    }
 
     // check the length of the path segment contains
     // at least some minimum number of nodes to
-    // avoid reducing the path size     significantly
+    // avoid reducing the path size significantly
     public boolean checkMinLength(PathTuple head) {
         int count = 0;
         final int MIN_LENGTH = 3;

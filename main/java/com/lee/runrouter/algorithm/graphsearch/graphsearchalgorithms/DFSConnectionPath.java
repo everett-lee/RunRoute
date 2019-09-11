@@ -18,16 +18,18 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 /**
- * Variant of the BFS algorithm that restricts the next selected Way
- * to those closer to the starting point than the previous. It is used
- * to greedily search for high scoring Ways which connect the starting position
+ * Depth first search that selects the next Node only if
+ * it is closer to the target coordinates that the current Node. It is used
+ * to search for high scoring Ways which connect the starting position
  * to the target Way.
  */
 @Component
 @Qualifier("DFSConnectionPath")
 public class DFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
-    private final double MINIMUM_SCORING_DISTANCE = 500; // the minimum travelled
-    // along a Way before the distance bonus is applied
+    private final double MINIMUM_SCORING_DISTANCE = 500; // the minimum distance
+    // travelled along a Way before the distance bonus is applied
+    private final double MAXIMUM_SCORING_DISTANCE = 1000; //the maximum distance
+    // travelled along a Way that will contributed to the distance bonus
     private final double DISTANCE_BONUS = 0.0005;
     final double REPEATED_WAY_VISIT_PENALTY = 1.5; // deducted from heuristic score
     // for visits to Ways included in the main route
@@ -57,19 +59,18 @@ public class DFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     @Override
     public PathTuple connectPath(PathTuple origin, PathTuple target,
                                  double availableDistance, double targetDistance) {
+        stack = new Stack<>();
 
-        this.stack = new Stack<>();
         visitedNodes = new HashSet<>();
 
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
         Way targetWay = target.getCurrentWay();
         Node targetNode = target.getCurrentNode();
-        double currentRouteLength;
         // the remaining distance for the route
         double upperBound = availableDistance + origin.getTotalLength();
 
-        stack.add(new PathTupleMain(null, origin.getCurrentNode(), origin.getCurrentWay(),
+        stack.push(new PathTupleMain(null, origin.getCurrentNode(), origin.getCurrentWay(),
                 origin.getSegmentScore(), origin.getSegmentLength(),origin.getTotalLength(), origin.getSegmentGradient()));
 
         while (!stack.isEmpty() && elapsedTime <= TIME_LIMIT) {
@@ -91,9 +92,7 @@ public class DFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
 
             // for each Way reachable from the current Way
             for (ConnectionPair pair : repo.getConnectedWays(currentWay)) {
-                currentRouteLength = topTuple.getTotalLength();
-
-                currentNode = topTuple.getCurrentNode();
+                double currentRouteLength = topTuple.getTotalLength();
                 Node connectingNode = pair.getConnectingNode();
                 Way selectedWay = pair.getConnectingWay();
                 double heuristicScore = 0;
@@ -103,6 +102,9 @@ public class DFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                     continue;
                 }
 
+                // prunes the current branch if the connecting Node's distance
+                // from the target is greater than some percentage of the current
+                // Node
                 if (distanceFromOriginHeuristic
                         .getScore(currentNode, connectingNode, targetNode,
                                 0, 0) < 0) {
@@ -113,7 +115,7 @@ public class DFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                     heuristicScore -= REPEATED_WAY_VISIT_PENALTY;
                 }
 
-                // skip this Way if unlit when lighting is required
+                // prune this branch if unlit when lighting is required
                 if (super.getAvoidUnlit()) {
                     if (!selectedWay.isLit()) {
                         continue;
@@ -123,15 +125,12 @@ public class DFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                 double distanceToNext = edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
 
+                // prune this branch where max length exceeded
                 if (currentRouteLength + distanceToNext > upperBound) {
-                    continue; // skip to next where max length exceeded
+                    continue;
                 }
 
-
-                // apply the bonus for longer Ways
-                if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
-                    heuristicScore += distanceToNext * DISTANCE_BONUS;
-                }
+                heuristicScore += applyDistanceScore(distanceToNext);
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
@@ -141,14 +140,14 @@ public class DFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                 }
 
                 // call private method to add heuristic scores
-                heuristicScore += addScores(selectedWay, distanceToNext, gradient);
+                heuristicScore += super.addScores(selectedWay, distanceToNext, gradient);
 
                 ScorePair score = new ScorePair(0, heuristicScore);
 
                 // create a new tuple representing this segment and add to the list
                 PathTuple toAdd = new PathTupleMain(topTuple, connectingNode, selectedWay,
                         score, distanceToNext, currentRouteLength + distanceToNext, gradient);
-                stack.add(toAdd);
+                stack.push(toAdd);
 
                 elapsedTime = (new Date()).getTime() - startTime;
             }
@@ -195,10 +194,18 @@ public class DFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
         this.visitedNodes = new HashSet<>();
     }
 
+    private double applyDistanceScore(double distanceToNext) {
+        if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
+            double scoreLength = Math
+                    .max(distanceToNext, MAXIMUM_SCORING_DISTANCE);
+            return scoreLength * DISTANCE_BONUS;
+        }
+        return 0;
+    }
 
     // check the length of the path segment contains
     // at least some minimum number of nodes to
-    // avoid reducing the path size     significantly
+    // avoid reducing the path size significantly
     public boolean checkMinLength(PathTuple head) {
         int count = 0;
         final int MIN_LENGTH = 3;

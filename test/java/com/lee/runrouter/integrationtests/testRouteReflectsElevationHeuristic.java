@@ -18,7 +18,7 @@ import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.routegenerator.RouteGenerator;
-import com.lee.runrouter.routegenerator.RouteGeneratorCycle;
+import com.lee.runrouter.routegenerator.RouteGeneratorMain;
 import com.lee.runrouter.routegenerator.PathNotGeneratedException;
 import com.lee.runrouter.testhelpers.TestHelpers;
 import org.junit.*;
@@ -66,7 +66,7 @@ public class testRouteReflectsElevationHeuristic {
 
         iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
 
-        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoSW);
+        routeGenerator = new RouteGeneratorMain(outward, iteratedLocalSearch, ilsGraphSearch, repoSW);
 
         // preferred Highways options
         preferredHighways = new ArrayList<>(Arrays.asList("CYCLEWAY", "BRIDLEWAY",
@@ -152,7 +152,7 @@ public class testRouteReflectsElevationHeuristic {
         ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristicDirect, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
         iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
-        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
+        routeGenerator = new RouteGeneratorMain(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
         double avgGradientFlat = 0;
         double avgGradientSteep = 0;
@@ -184,7 +184,7 @@ public class testRouteReflectsElevationHeuristic {
         ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristicDirect, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
         iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
-        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
+        routeGenerator = new RouteGeneratorMain(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
         double avgGradientFlat = 0;
         double avgGradientSteep = 0;
@@ -215,7 +215,7 @@ public class testRouteReflectsElevationHeuristic {
         ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristicDirect, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
         iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
-        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
+        routeGenerator = new RouteGeneratorMain(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
         double avgGradientFlat = 0;
         double avgGradientSteep = 0;
@@ -334,7 +334,7 @@ public class testRouteReflectsElevationHeuristic {
         ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristicDirect, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
         iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
-        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
+        routeGenerator = new RouteGeneratorMain(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
         double[] coords = {51.9375650, 1.0507934};
         double maxGradient = 0.05;
@@ -370,7 +370,7 @@ public class testRouteReflectsElevationHeuristic {
         ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristicDirect, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
         iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
-        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
+        routeGenerator = new RouteGeneratorMain(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
         double[] coords = {51.946379, 1.059363};
         double maxGradient = 0.05;
@@ -406,7 +406,7 @@ public class testRouteReflectsElevationHeuristic {
         ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristicDirect, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
         iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
-        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
+        routeGenerator = new RouteGeneratorMain(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
         double[] coords = {51.9199469, 1.0437911};
         double maxGradient = 0.05;

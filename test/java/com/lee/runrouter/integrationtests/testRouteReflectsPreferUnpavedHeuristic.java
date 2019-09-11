@@ -2,7 +2,6 @@ package com.lee.runrouter.integrationtests;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.EuclideanCalculator;
-import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculator;
@@ -23,7 +22,7 @@ import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.routegenerator.PathNotGeneratedException;
 import com.lee.runrouter.routegenerator.RouteGenerator;
-import com.lee.runrouter.routegenerator.RouteGeneratorCycle;
+import com.lee.runrouter.routegenerator.RouteGeneratorMain;
 import com.lee.runrouter.testhelpers.TestHelpers;
 import org.junit.Before;
 import org.junit.Test;
@@ -72,7 +71,7 @@ public class testRouteReflectsPreferUnpavedHeuristic {
 
         iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
 
-        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoSW);
+        routeGenerator = new RouteGeneratorMain(outward, iteratedLocalSearch, ilsGraphSearch, repoSW);
 
         // avoided paths options
         avoidedPathsExclusive = new ArrayList<>(Arrays.asList());
@@ -196,7 +195,7 @@ public class testRouteReflectsPreferUnpavedHeuristic {
         ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristicDirect, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
         iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
-        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
+        routeGenerator = new RouteGeneratorMain(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
         double matchedCountWithoutPref = 0;
         double matchedCountWithPref = 0;
@@ -239,7 +238,7 @@ public class testRouteReflectsPreferUnpavedHeuristic {
         ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristicDirect, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
         iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
-        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
+        routeGenerator = new RouteGeneratorMain(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
         double matchedCountWithoutPref = 0;
         double matchedCountWithPref = 0;
@@ -282,7 +281,7 @@ public class testRouteReflectsPreferUnpavedHeuristic {
         ilsGraphSearch = new BFSConnectionPath(repoLAW, distanceHeuristicDirect, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
         iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
-        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
+        routeGenerator = new RouteGeneratorMain(outward, iteratedLocalSearch, ilsGraphSearch, repoLAW);
 
         double matchedCountWithoutPref = 0;
         double matchedCountWithPref = 0;

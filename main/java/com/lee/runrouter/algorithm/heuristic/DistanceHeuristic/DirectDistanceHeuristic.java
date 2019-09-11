@@ -6,9 +6,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+/**
+ * Compares the distance 'as the crow flies' between two Nodes and the target,
+ * and returns a negative score if the second Node is more than some
+ * percentages of the first Node's distance away from the target. This guides
+ * the search towards the goal.
+ */
 @Component
 @Qualifier("DirectDistanceHeuristic")
 public class DirectDistanceHeuristic implements DistanceFromOriginNodeHeursitic {
+    private final double SCALE_UP = 1.5; // amount to scale up the current Node's
+    // distance by
     private DistanceCalculator distanceCalculator;
 
     @Autowired
@@ -26,7 +34,8 @@ public class DirectDistanceHeuristic implements DistanceFromOriginNodeHeursitic 
         double selectedDistanceFromOriginNode =
                 distanceCalculator.calculateDistance(selectedNode, originNode);
 
-        if (selectedDistanceFromOriginNode > currentDistanceFromOriginNode * 1.5) {
+        if (selectedDistanceFromOriginNode >
+                currentDistanceFromOriginNode * SCALE_UP) {
             return - 100;
         }
         return 0;

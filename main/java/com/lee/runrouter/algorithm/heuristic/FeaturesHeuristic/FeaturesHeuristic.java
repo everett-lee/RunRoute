@@ -6,9 +6,16 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+/**
+ * Interface for calculating a score derived from the
+ * features of a transited Way
+ */
 public interface FeaturesHeuristic {
-    public double getScore(Way selectedWay, double distance);
-    public void setPreferredSurfaces(List<String> preferredSurfaces);
-    public void setDislikedSurfaces(List<String> dislikedSurfaces);
-    public void setPreferredHighways(List<String> preferredHighways);
+    double getScore(Way selectedWay, double distance);
+
+    void setPreferredSurfaces(List<String> preferredSurfaces);
+
+    void setDislikedSurfaces(List<String> dislikedSurfaces);
+
+    void setPreferredHighways(List<String> preferredHighways);
 }

@@ -18,7 +18,7 @@ import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.routegenerator.RouteGenerator;
-import com.lee.runrouter.routegenerator.RouteGeneratorCycle;
+import com.lee.runrouter.routegenerator.RouteGeneratorMain;
 import com.lee.runrouter.routegenerator.PathNotGeneratedException;
 import com.lee.runrouter.testhelpers.TestHelpers;
 import org.junit.*;
@@ -57,7 +57,7 @@ public class testRouteReflectsLitHeuristic {
         ilsGraphSearch = new BFSConnectionPath(repoSW, distanceHeuristic, featuresHeuristic, edgeDistanceCalculator,
                 gradientCalculator, elevationHeuristic);
         iteratedLocalSearch = new IteratedLocalSearchMain(ilsGraphSearch);
-        routeGenerator = new RouteGeneratorCycle(outward, iteratedLocalSearch, ilsGraphSearch, repoSW);
+        routeGenerator = new RouteGeneratorMain(outward, iteratedLocalSearch, ilsGraphSearch, repoSW);
 
     }
 

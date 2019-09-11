@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 import java.sql.*;
 
 /**
- * Peforms duties of a director class. Executes the query
+ * Performs duties of a director class. Executes the query
  * produced by the QueryBuilder implementation and returns the
- * procued ResultSet
+ * produced ResultSet
  */
 @Component
 public abstract class QueryDirector {

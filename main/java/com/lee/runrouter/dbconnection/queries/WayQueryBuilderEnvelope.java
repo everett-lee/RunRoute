@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.sql.*;
 
 /**
- * Builder class for the PostGIS query to retrieve details for ways contained within the bounding box.
+ * Builder class for the PostGIS query to retrieve details for Ways contained within the bounding box.
  * It queries a combined table where previously a join of two tables was used.
  * The query is also assigned the correct configuration of road options.
  */
@@ -26,7 +26,7 @@ public class WayQueryBuilderEnvelope implements QueryBuilder {
     // the PostGIS SQL query
     private final String SELECT = "SELECT id, tags, nodes, length, coords, startElevation, endElevation \n";
     private final String FROM = "\tFROM lineCombinedWithWay \n";
-    private final String BB = "\tWHERE way @ ST_MakeEnvelope(?,?,?,?, 4326)::geometry\n";
+    private final String BB = "\tWHERE way @ ST_MakeEnvelope(?,?,?,?, 4326)\n";
     private final String ROAD_OPTIONS = "\tAND ((highway IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) \n";
     private final String FOOT = "\tAND (foot <> 'no' OR foot IS NULL))";
     private final String END = "\tOR (highway='cycleway' and foot='yes'))";

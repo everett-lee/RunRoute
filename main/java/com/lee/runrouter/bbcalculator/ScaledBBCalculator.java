@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
  * the origin position.
  *
  * This is used as an input for the bounding box
- * query in PostGIS. The total size of the bounding box scaled down,
- * so resulting area is less than run distance squared.
+ * query in PostGIS. The total size of the bounding box is scaled,
+ * so resulting area can be more or less than the run distance squared.
  *
  * Formula sourced from
  * https://gis.stackexchange.com/questions/2951/algorithm-for-offsetting-a-latitude-longitude-by-some-amount-of-meters

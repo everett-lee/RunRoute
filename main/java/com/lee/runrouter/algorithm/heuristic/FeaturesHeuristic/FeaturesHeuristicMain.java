@@ -1,6 +1,5 @@
 package com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic;
 
-import com.lee.runrouter.algorithm.heuristic.Heuristic;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -10,7 +9,8 @@ import java.util.List;
 
 /**
  * Scores Way under consideration based on its features and attributes.
- * The scores reflect matches against user-supplied preferences.
+ * The scores reflect matches against user-supplied preferences. This
+ * simply adds a constant bonus where the feature is encountered.
  */
 @Component
 @Qualifier("FeaturesHeuristicMain")
@@ -35,20 +35,20 @@ public class FeaturesHeuristicMain implements FeaturesHeuristic {
     private double calculateScore(Way selectedWay) {
         double score = 0;
 
-        for (String surface: this.preferredSurfaces) {
+        for (String surface : this.preferredSurfaces) {
             if (selectedWay.getSurface().equals(surface.toUpperCase())) {
                 score += SURFACE_VALUE;
             }
         }
 
         // lower score where surface should be avoided
-        for (String surface: this.dislikedSurfaces) {
+        for (String surface : this.dislikedSurfaces) {
             if (selectedWay.getSurface().equals(surface.toUpperCase())) {
                 score -= SURFACE_VALUE;
             }
         }
 
-        for (String highway: this.preferredHighways) {
+        for (String highway : this.preferredHighways) {
             if (selectedWay.getHighway().equals(highway.toUpperCase())) {
                 score += HIGHWAY_VALUE;
             }
@@ -59,9 +59,7 @@ public class FeaturesHeuristicMain implements FeaturesHeuristic {
 
     @Override
     public double getScore(Way selectedWay, double distance) {
-        double score = calculateScore(selectedWay);
-
-        return score;
+        return calculateScore(selectedWay);
     }
 
     public void setPreferredSurfaces(List<String> preferredSurfaces) {

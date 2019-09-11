@@ -15,7 +15,7 @@ public class WayQueryBuilderCombinedTest {
     // the PostGIS SQL query
     private final String SELECT = "SELECT id, tags, nodes, length, coords, startElevation, endElevation \n";
     private final String FROM = "\tFROM lineCombinedWithWay \n";
-    private final String BB = "\tWHERE l.way @ ST_MakeEnvelope(?,?,?,?, 4326)::geometry\n";
+    private final String BB = "\tWHERE l.way @ ST_MakeEnvelope(?,?,?,?, 4326)\n";
     private final String ROAD_OPTIONS = "\tAND ((highway IN ('trunk', 'primary', 'secondary', 'tertiary', 'unclassified', 'residential', 'living_street', 'service', 'pedestrian', 'track', 'road', 'footway', 'bridleway', 'steps', 'path') \n";
     private final String FOOT = "\tAND (foot <> 'no' OR foot IS NULL))";
     private final String END = "\tOR (highway='cycleway' and foot='yes'))";
@@ -35,7 +35,7 @@ public class WayQueryBuilderCombinedTest {
         qd.buildQuery(52, 4, 5000);
         double[] BBCords = calc.calcBoundingBox(52, 4, 5000);
 
-        String newBB = String.format("\tWHERE way @ ST_MakeEnvelope(%s,%s,%s,%s, 4326)::geometry\n",
+        String newBB = String.format("\tWHERE way @ ST_MakeEnvelope(%s,%s,%s,%s, 4326)\n",
                 BBCords[0], BBCords[1], BBCords[2], BBCords[3]);
 
         sql += newBB + ROAD_OPTIONS + FOOT + END;
@@ -49,7 +49,7 @@ public class WayQueryBuilderCombinedTest {
         qd.buildQuery(25, 0, 0.2);
         double[] BBCords = calc.calcBoundingBox(25, 0, 0.2);
 
-        String newBB = String.format("\tWHERE way @ ST_MakeEnvelope(%s,%s,%s,%s, 4326)::geometry\n",
+        String newBB = String.format("\tWHERE way @ ST_MakeEnvelope(%s,%s,%s,%s, 4326)\n",
                 BBCords[0], BBCords[1], BBCords[2], BBCords[3]);
 
         sql += newBB + ROAD_OPTIONS + FOOT + END;
@@ -68,7 +68,7 @@ public class WayQueryBuilderCombinedTest {
         qd.buildQuery(50, 0, 5);
 
 
-        String newBB = String.format("\tWHERE way @ ST_MakeEnvelope(%s,%s,%s,%s, 4326)::geometry\n",
+        String newBB = String.format("\tWHERE way @ ST_MakeEnvelope(%s,%s,%s,%s, 4326)\n",
                 BBCords[0], BBCords[1], BBCords[2], BBCords[3]);
 
         String newRoadOptions = "\tAND ((highway IN ('trunk', '', '', ''," +
@@ -91,7 +91,7 @@ public class WayQueryBuilderCombinedTest {
         qd.buildQuery(50, 0, 5);
 
 
-        String newBB = String.format("\tWHERE way @ ST_MakeEnvelope(%s,%s,%s,%s, 4326)::geometry\n",
+        String newBB = String.format("\tWHERE way @ ST_MakeEnvelope(%s,%s,%s,%s, 4326)\n",
                 BBCords[0], BBCords[1], BBCords[2], BBCords[3]);
 
         String newRoadOptions = "\tAND ((highway IN ('', '', '', ''," +

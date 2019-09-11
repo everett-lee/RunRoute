@@ -25,14 +25,15 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
     /**
      * Iterates over a linked list of PathTuples, representing route generated
-     * by the greedy best-first search (BFS algorithm, and removes segments of
-     * increasing length. A BFS is then used to 'closed the gap' between the start
+     * by the greedy best-first search (BFS) algorithm, and removes segments of
+     * increasing length. A BFS is then used to 'close the gap' between the start
      * and end point of the removed segment. If the resulting path segment has a
      * higher score, it is used as a replacement for the removed segment.
      *
-     * @param head the head PathTuple of the incoming route
-     * @param distanceToAdd available distance in addition to the length of the
-     *                      incoming route
+     * @param head the head PathTuple of the input route
+     * @param distanceToAdd available excess distance to add to the route. This
+     *                      is the distance between the target and actual length
+     *                      of the route.
      * @return A PathTuple that is the head of a new linked list with the new
      * path segments added
      */
@@ -44,25 +45,23 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0L;
-        PathTuple start = null;
-        PathTuple end = null;
 
         double targetDistance = head.getTotalLength() + distanceToAdd; // target is current route length
         // plus the remaining available distance
-
         double availableDistance = distanceToAdd; // distance left available to add to route
 
         // begin by reversing the incoming path
         head = reverseList(head);
 
         int a = 1; // the starting node, indexed from 1
-        int r = 2; // number of nodes to remove
+        int r = 2; // number of edges to remove
 
         while (elapsedTime <= TIME_LIMIT) {
             elapsedTime = (new Date()).getTime() - startTime;
             // get the number of nodes in the the path
             int pathSize = getPathSize(head);
             // reset if r extends beyond the penultimate node
+            // as final edge should not be removed
             if (r > pathSize - 2) {
                 r = 1;
             }
@@ -74,13 +73,8 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
                 a = 1;
             }
 
-            // reset a and r if a is the penultimate node
-//            if (a >= pathSize - 1) {
-//                a = 1;
-//            }
-
-            start = getStartPathNode(head, a); // start of the removed segment
-            end = getEndPathNode(start, r); // end of th removed segment
+            PathTuple start = getStartPathNode(head, a); // start Node of the removed segment
+            PathTuple end = getEndPathNode(start, r); // end Node of the removed segment
 
             // calculate the length in metres of the segment to be removed, and
             // add to available distance
@@ -161,7 +155,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         return head;
     }
 
-    // creates a set of visited ways to pass to the BFS algorithm
+    // creates a set of visited Ways to pass to the graph search algorithm
     private void populateAndSetIncludedWays(PathTuple head) {
         includedWays = new HashSet<>();
         while (head != null) {

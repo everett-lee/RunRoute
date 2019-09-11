@@ -15,8 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Receives input starting coordinates and distances and executes
- * algorithm and graph generation procedures.
+ * Receives input starting coordinates and distances and
+ * pass them to the graph generation and graph search
+ * routines.
  */
 @Component
 @Qualifier("ExecutorMain")
@@ -31,7 +32,7 @@ public class ExecutorMain implements Executor {
     private final double INITIAL_GRAPH_SIZE = 5000; // the starting size of the generated graph
 
     public ExecutorMain(
-            @Qualifier("RouteGeneratorCycle") RouteGenerator routeGenerator,
+            @Qualifier("RouteGeneratorMain") RouteGenerator routeGenerator,
             GraphBuilder graphBuilder,
             @Qualifier("LinkedListToArrayAllNodes") LinkedListToArray linkedListToArray,
             @Qualifier("BFS") SearchAlgorithm pather,
@@ -46,7 +47,7 @@ public class ExecutorMain implements Executor {
     }
 
     /**
-     * Receive the route paramaters from the client and generate the required route.
+     * Receive the route parameters from the client and generate the required route.
      * The coordinates and distance are first used to build a graph containing
      * information for the required area. The other parameters are then passed to the
      * route generation class.
@@ -78,8 +79,8 @@ public class ExecutorMain implements Executor {
 
         PathTuple tail = route;
         double averageGradient = 0;
-        int count = 0;
 
+        int count = 0;
         // get reference to tail and calculate average gradient
         while (tail.getPredecessor() != null) {
             count++;
@@ -91,12 +92,6 @@ public class ExecutorMain implements Executor {
 
         // convert the way to an Array
         List<Node> pathNodes = linkedListToArray.convert(route);
-
-        // remove small cycles and reduce length to reflect this
-        System.out.println(length);
-        length -= cycleRemover.removeCycle(pathNodes);
-        System.out.println("new length: " + length);
-        System.out.println("Average gradient: " + averageGradient);
 
         String startingWay = route.getCurrentWay().getName();
 

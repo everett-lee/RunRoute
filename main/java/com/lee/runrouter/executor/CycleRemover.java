@@ -10,6 +10,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Checks the input route, represented as a list of Nodes,
+ * and removes small cycles. It then measures the new distance
+ * and returns it.
+ */
 @Component
 public class CycleRemover {
     DistanceCalculator distanceCalculator;
@@ -19,7 +24,7 @@ public class CycleRemover {
         this.distanceCalculator = distanceCalculator;
     }
 
-    public double removeCycle (List <Node> nodes) {
+    public double removeCycle (List<Node> nodes) {
         double distance = 0;
 
         if (nodes.size() < 3) {

@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+/**
+ * Director class for the PostGIS query to retrieve the closest Way to the origin point.
+ */
 @Component
 @Qualifier("OriginQueryDirector")
 public class OriginQueryDirector extends QueryDirector {

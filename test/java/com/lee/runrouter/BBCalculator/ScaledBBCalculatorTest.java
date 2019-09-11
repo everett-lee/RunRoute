@@ -14,10 +14,6 @@ public class ScaledBBCalculatorTest {
     @Before
     public void setUp() throws NoSuchFieldException, IllegalAccessException {
         dc = new ScaledBBCalculator();
-
-        Field f = dc.getClass().getDeclaredField("SCALE_DOWN");
-        f.setAccessible(true);
-        f.set(dc, 1);
     }
 
     @Test
@@ -33,10 +29,10 @@ public class ScaledBBCalculatorTest {
         // max lat 51.494450
         // max lon 0.031315
 
-        assertEquals(51.305571, res[1], 0.0005); // min lat comparison
-        assertEquals(-0.271526, res[0], 0.0005); // min lon comparison
-        assertEquals(51.494450, res[3], 0.0005); // max lat comparison
-        assertEquals(0.031315, res[2], 0.0005); // max lon comparison
+        assertEquals(51.351492, res[1], 0.0005); // min lat comparison
+        assertEquals(-0.274880, res[0], 0.0005); // min lon comparison
+        assertEquals(51.540230, res[3], 0.0005); // max lat comparison
+        assertEquals(0.027940, res[2], 0.0005); // max lon comparison
     }
 
     @Test

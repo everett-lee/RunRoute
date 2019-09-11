@@ -1,6 +1,5 @@
 package com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic;
 
-import com.lee.runrouter.algorithm.heuristic.Heuristic;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -10,7 +9,7 @@ import java.util.List;
 
 /**
  * Scores Way under consideration based on its features and attributes.
- * The scores reflect matches against user-supplied preferences.
+ * The score reflects user-supplied preferences.
  * This variant multipliers the score by the distance travelled.
  */
 @Component
@@ -37,7 +36,7 @@ public class FeaturesHeuristicUsingDistance implements FeaturesHeuristic {
         double score = 0;
 
         // short distances are not considered
-        if (distance < 250) {
+        if (distance < 200) {
             return 0;
         }
 
@@ -65,9 +64,7 @@ public class FeaturesHeuristicUsingDistance implements FeaturesHeuristic {
 
     @Override
     public double getScore (Way selectedWay, double distance) {
-        double score = calculateScore(selectedWay, distance);
-
-        return score;
+        return calculateScore(selectedWay, distance);
     }
 
     public void setPreferredSurfaces(List<String> preferredSurfaces) {

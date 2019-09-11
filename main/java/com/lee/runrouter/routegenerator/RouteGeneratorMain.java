@@ -20,18 +20,18 @@ import java.util.Comparator;
  * to yield the improved final route.
  */
 @Component
-@Qualifier("RouteGeneratorCycle")
-public class RouteGeneratorCycle implements RouteGenerator {
+@Qualifier("RouteGeneratorMain")
+public class RouteGeneratorMain implements RouteGenerator {
     private GraphSearch pather;
     private ILSGraphSearch connectionPather;
     private IteratedLocalSearch ils;
     private ElementRepo repo;
     private int MAX_ATTEMPTS = 4; // maximum number of initial routes to generate
 
-    public RouteGeneratorCycle(@Qualifier("BFS") GraphSearch pather,
-                               @Qualifier("IteratedLocalSearchMain") IteratedLocalSearch iteratedLocalSearch,
-                               @Qualifier("BFSConnectionPath") ILSGraphSearch connectionPather,
-                               ElementRepo repo) {
+    public RouteGeneratorMain(@Qualifier("BFS") GraphSearch pather,
+                              @Qualifier("IteratedLocalSearchMain") IteratedLocalSearch iteratedLocalSearch,
+                              @Qualifier("BFSConnectionPath") ILSGraphSearch connectionPather,
+                              ElementRepo repo) {
         this.pather = pather;
         this.ils = iteratedLocalSearch;
         this.connectionPather = connectionPather;

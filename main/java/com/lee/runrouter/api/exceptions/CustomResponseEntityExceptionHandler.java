@@ -10,6 +10,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.Date;
 
+/**
+ *  Custom exceptions arsing from the report procedure call.
+ */
 @ControllerAdvice
 @RestController
 public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
@@ -23,6 +26,7 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         return new ResponseEntity(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    // where the provided coordinates are invalid
     @ExceptionHandler(InvalidCoordsException.class)
     public final ResponseEntity<Object> handleInvalidCoordsException(Exception ex, WebRequest request) {
 
@@ -32,6 +36,7 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
+    // where the provided length is invalid
     @ExceptionHandler(InvalidDistanceException.class)
     public final ResponseEntity<Object> handleInvalidLengthException(Exception ex, WebRequest request) {
 
@@ -41,6 +46,7 @@ public class CustomResponseEntityExceptionHandler extends ResponseEntityExceptio
         return new ResponseEntity(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 
+    // where a valid route is not generated
     @ExceptionHandler(PathGenerationFailureException.class)
     public final ResponseEntity<Object> handlePassGenerationFailureException(Exception ex, WebRequest request) {
 

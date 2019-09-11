@@ -5,18 +5,18 @@ import org.springframework.stereotype.Component;
 import java.sql.PreparedStatement;
 
 /**
- * Abstraction for generating and retrieving PostGIS query
+ * Interfae for generating and retrieving PostGIS query
  */
 
 @Component
 public interface QueryBuilder {
-    public void reset();
+    void reset();
 
-    public void setBBCoords(double[] BBCoords, double[] origin);
+    void setBBCoords(double[] BBCoords, double[] origin);
 
-    public void setHighWayOptions(boolean[] opts);
+    void setHighWayOptions(boolean[] opts);
 
-    public void setRunLength(double distance);
+    void setRunLength(double distance);
 
-    public PreparedStatement getPreparedStament();
+    PreparedStatement getPreparedStament();
 }

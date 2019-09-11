@@ -71,7 +71,7 @@ public class ElevationHeuristicMainTest {
 
         double expected = 0;
         double gradient = gradientCalculator.calculateGradient(n1, wayUnderTest1, n2, wayUnderTest2, distance);
-        double score = elevationHeuristic.getScore(gradient);
+        double score = elevationHeuristic.getScore(gradient, 500);
 
         assertEquals(expected, score, 0.001);
     }
@@ -93,7 +93,7 @@ public class ElevationHeuristicMainTest {
         double distance = edgeDistanceCalculator.calculateDistance(n1,n2, wayUnderTest2);
 
         double gradient = gradientCalculator.calculateGradient(n1, wayUnderTest1, n2, wayUnderTest2, distance);
-        double score = elevationHeuristic.getScore(gradient);
+        double score = elevationHeuristic.getScore(gradient, 500);
        assertTrue(score > 0);
     }
 
@@ -111,7 +111,7 @@ public class ElevationHeuristicMainTest {
 
 
         double gradient = gradientCalculator.calculateGradient(n1, wayUnderTest1, n2, wayUnderTest2, distance);
-        double score = elevationHeuristic.getScore(gradient);
+        double score = elevationHeuristic.getScore(gradient, 500);
         assertTrue(score > 0);
     }
 
@@ -130,7 +130,7 @@ public class ElevationHeuristicMainTest {
         double distance = edgeDistanceCalculator.calculateDistance(n1,n2, wayUnderTest2);
 
         double gradient = gradientCalculator.calculateGradient(n1, wayUnderTest1, n2, wayUnderTest2, distance);
-        double score = elevationHeuristic.getScore(gradient);
+        double score = elevationHeuristic.getScore(gradient, 500);
         assertTrue(score < 0.48);
     }
 
@@ -150,7 +150,7 @@ public class ElevationHeuristicMainTest {
         when(startingWay.getElevationPair()).thenReturn(ep);
 
         double gradient = gradientCalculator.calculateGradient(n1, startingWay, n2, startingWay, 50);
-        double score = elevationHeuristic.getScore(gradient);
+        double score = elevationHeuristic.getScore(gradient, 500);
         assertTrue(score >= 1);
     }
 }

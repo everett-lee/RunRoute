@@ -60,14 +60,13 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             elapsedTime = (new Date()).getTime() - startTime;
             // get the number of nodes in the the path
             int pathSize = getPathSize(head);
-            // reset if r extends beyond the penultimate node
-            // as final edge should not be removed
+            // reset if r if it will remove the penultimate edge
             if (r > pathSize - 3) {
                 r = 2;
             }
 
-            // reset r if removed section plus index of the
-            // start node extends past the penultimate node
+            // increment r and reset a if a + r results in removal
+            // of the penultimate edge
             if (a + r > pathSize - 2) {
                 r = r + 1;
                 a = 1;

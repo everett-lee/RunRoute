@@ -63,7 +63,7 @@ public class ResponseGeneratorController {
             ResponseObject result = executor.executeQuery(coords, maxGradient, distance, options);
             return new ResponseEntity<>(result, responseHeaders, HttpStatus.CREATED);
 
-        // a suitable path could not be generated
+        // a valid path could not be generated
         } catch (PathNotGeneratedException e) {
             throw new PathGenerationFailureException(String.format("Coordinates: (%s,%s), Distance: %s",
                     lat, lon, distance));
@@ -99,7 +99,7 @@ public class ResponseGeneratorController {
     }
 
 
-    // method for checking lower and upper bounds of distance
+    // checks lower and upper bounds of distance
     // parameter
     private boolean checkLengthInput(double length){
         return length >= MIN_RUN_LENGTH_M &&

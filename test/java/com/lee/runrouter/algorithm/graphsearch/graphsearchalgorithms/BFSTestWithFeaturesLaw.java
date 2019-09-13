@@ -28,7 +28,7 @@ import static com.lee.runrouter.testhelpers.TestHelpers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class BFSTestWithFeaturesII {
+public class BFSTestWithFeaturesLaw {
     ElementRepo repoLAW;
     GraphSearch BFSLaw;
     DistanceCalculator distanceCalculator;

@@ -55,8 +55,6 @@ public class RouteGeneratorMain implements RouteGenerator {
         PathTuple initialCycle = pather.searchGraph(repo.getOriginWay(), coords, distance);
         results.add(initialCycle);
 
-        System.out.println("INITIAL CYCLE DONE");
-
         {
             // reduce the algorithm run time
             pather.setTimeLimit(500);
@@ -72,23 +70,14 @@ public class RouteGeneratorMain implements RouteGenerator {
         results.sort(Comparator
                 .comparing((PathTuple tuple) -> AlgoHelpers.calculateScore(tuple)).reversed());
 
-
-        results.stream()
-                .mapToDouble((PathTuple tuple) -> AlgoHelpers.calculateScore(tuple))
-                .forEach(x -> System.out.println(x));
-
         initialCycle = results.get(0);
 
         if (initialCycle.getTotalLength() == -1) {
             throw new PathNotGeneratedException("No valid path was generated");
         }
 
-        System.out.println("INITIAL CYCLE LEN " + initialCycle.getTotalLength());
 
         double remainingDistance = distance - initialCycle.getTotalLength();
-
-        System.out.println(" <><><><><> THEERE IS " + remainingDistance + "TO ADD <> <> <><><><>");
-
         return ils.iterate(initialCycle, remainingDistance);
     }
 }

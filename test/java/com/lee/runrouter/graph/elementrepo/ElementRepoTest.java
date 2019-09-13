@@ -1,13 +1,8 @@
 package com.lee.runrouter.graph.elementrepo;
 
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
-import com.lee.runrouter.graph.graphbuilder.node.Node;
-import org.junit.Before;
+import com.lee.runrouter.testhelpers.TestHelpers;
 import org.junit.Test;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -18,18 +13,8 @@ public class ElementRepoTest {
 
     {
         // deserialise test repo used for testing.
-        try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/repo.ser");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            repo = (ElementRepo) in.readObject();
-            in.close();
-            fileIn.close();
-        } catch (IOException i) {
-            i.printStackTrace();
-        } catch (ClassNotFoundException c) {
-            System.out.println("Repo class not found");
-            c.printStackTrace();
-        }
+
+        repo = TestHelpers.getRepoSW();
     }
 
     @Test
@@ -65,7 +50,7 @@ public class ElementRepoTest {
 
         List<ConnectionPair> result = repo.getConnectedWays(wayUnderTest);
 
-        // there is only the Way with this id number connected
+        // there is only one Way with this id number connected
         boolean flag = result.get(0).getConnectingWay().getId() == 26576457;
 
         assertTrue(flag);

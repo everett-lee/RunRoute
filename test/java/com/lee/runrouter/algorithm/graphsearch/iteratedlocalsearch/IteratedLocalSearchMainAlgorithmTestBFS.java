@@ -93,7 +93,8 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
     @Test
@@ -114,7 +115,8 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
 
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
     @Test
@@ -134,7 +136,8 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
     @Test
@@ -154,7 +157,8 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
     @Test
@@ -174,7 +178,8 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
     @Test
@@ -193,7 +198,8 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         System.out.println(originalScore);
         System.out.println(postScore);
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
 
@@ -213,7 +219,8 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
     @Test
@@ -232,7 +239,8 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
     @Test
@@ -253,6 +261,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 }

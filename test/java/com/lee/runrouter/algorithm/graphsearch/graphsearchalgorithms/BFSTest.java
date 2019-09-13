@@ -1,6 +1,7 @@
 package com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
+import com.lee.runrouter.algorithm.distanceCalculator.EuclideanCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
@@ -43,7 +44,7 @@ public class BFSTest {
 
     @Before
     public void setUp() {
-        distanceCalculator = new HaversineCalculator();
+        distanceCalculator = new EuclideanCalculator();
         distanceHeuristic = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
         featuresHeuristic = new FeaturesHeuristicUsingDistance();
         edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
@@ -55,33 +56,6 @@ public class BFSTest {
 
         saveRoutes = false;
     }
-
-
-//        double sum = 0;
-//        double max = 0;
-//        int fails = 0;
-//        double min = Integer.MAX_VALUE;
-//        for (int i = 0; i < 5; i++) {
-//            PathTuple testRes = BFS.searchGraph(repo.getOriginWay(), coords, 21000);
-//        }
-//
-//        for (int i = 0; i < 1000; i++) {
-//            System.out.println(i);
-//            long startTime = System.nanoTime();
-//            PathTuple testRes = BFS.searchGraph(repo.getOriginWay(), coords, 21000);
-//            long estimatedTime = System.nanoTime() - startTime;
-//            sum += estimatedTime;
-//            max = Math.max(estimatedTime, max);
-//            min = Math.min(estimatedTime, min);
-//            if (testRes.getTotalLength() == -1) {
-//                fails++;
-//            }
-//        }
-//
-//        System.out.println("TIME: " + sum / 1000 / 1000000);
-//        System.out.println("MAX: " + max / 1000000);
-//        System.out.println("MIN: " + min / 1000000);
-//        System.out.println("FAILS " + fails);
 
     @Test
     public void testMorrishRoad5k() {
@@ -97,8 +71,8 @@ public class BFSTest {
         }
 
         assertTrue(length > 5);
-        assertTrue(res.getTotalLength() > target * 0.925);
-        assertTrue(res.getTotalLength() < target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * 0.95);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -117,8 +91,8 @@ public class BFSTest {
         }
 
         assertTrue(length > 5);
-        assertTrue(res.getTotalLength() > target * 0.925);
-        assertTrue(res.getTotalLength() < target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * 0.95);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -136,8 +110,8 @@ public class BFSTest {
         }
 
         assertTrue(length > 5);
-        assertTrue(res.getTotalLength() > target * 0.925);
-        assertTrue(res.getTotalLength() < target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * 0.95);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -158,8 +132,8 @@ public class BFSTest {
         }
 
         assertTrue(length > 5);
-        assertTrue(res.getTotalLength() > target * 0.925);
-        assertTrue(res.getTotalLength() < target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * 0.95);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -180,8 +154,8 @@ public class BFSTest {
         }
 
         assertTrue(length > 5);
-        assertTrue(res.getTotalLength() > target * 0.925);
-        assertTrue(res.getTotalLength() < target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * 0.95);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -202,8 +176,8 @@ public class BFSTest {
         }
 
         assertTrue(length > 5);
-        assertTrue(res.getTotalLength() > target * 0.925);
-        assertTrue(res.getTotalLength() < target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * 0.95);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -223,8 +197,8 @@ public class BFSTest {
             serialize(res, name);
         }
         assertTrue(length > 5);
-        assertTrue(res.getTotalLength() > target * 0.925);
-        assertTrue(res.getTotalLength() < target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * 0.95);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -245,8 +219,8 @@ public class BFSTest {
         }
 
         assertTrue(length > 5);
-        assertTrue(res.getTotalLength() > target * 0.925);
-        assertTrue(res.getTotalLength() < target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * 0.95);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -262,37 +236,9 @@ public class BFSTest {
 
         double length = calculateDistance(res);
 
-
-
-        double sum = 0;
-        double max = 0;
-        int fails = 0;
-        double min = Integer.MAX_VALUE;
-        for (int i = 0; i < 5; i++) {
-            PathTuple testRes = BFS.searchGraph(repo.getOriginWay(), coords, 21000);
-        }
-
-        for (int i = 0; i < 1000; i++) {
-            System.out.println(i);
-            long startTime = System.nanoTime();
-            PathTuple testRes = BFS.searchGraph(repo.getOriginWay(), coords, 21000);
-            long estimatedTime = System.nanoTime() - startTime;
-            sum += estimatedTime;
-            max = Math.max(estimatedTime, max);
-            min = Math.min(estimatedTime, min);
-            if (testRes.getTotalLength() == -1) {
-                fails++;
-            }
-        }
-
-        System.out.println("TIME: " + sum / 1000 / 1000000);
-        System.out.println("MAX: " + max / 1000000);
-        System.out.println("MIN: " + min / 1000000);
-        System.out.println("FAILS " + fails);
-
         assertTrue(length > 5);
-        assertTrue(res.getTotalLength() > target * 0.925);
-        assertTrue(res.getTotalLength() < target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * 0.95);
+        assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 

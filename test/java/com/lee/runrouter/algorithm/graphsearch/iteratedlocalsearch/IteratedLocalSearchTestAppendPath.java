@@ -1,6 +1,7 @@
 package com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
+import com.lee.runrouter.algorithm.distanceCalculator.EuclideanCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.GradientCalculator;
 import com.lee.runrouter.algorithm.gradientcalculator.SimpleGradientCalculator;
@@ -8,6 +9,7 @@ import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistan
 import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistanceCalculatorMain;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.BFSConnectionPath;
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ILSGraphSearch;
+import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DirectDistanceHeuristic;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeuristicMain;
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
@@ -46,8 +48,8 @@ public class IteratedLocalSearchTestAppendPath {
 
     @Before
     public void setUp() {
-        distanceCalculator = new HaversineCalculator();
-        distanceHeuristic = new DistanceFromOriginNodeHeuristicMain(distanceCalculator);
+        distanceCalculator = new EuclideanCalculator();
+        distanceHeuristic = new DirectDistanceHeuristic(distanceCalculator);
 
         List<String> preferredSurfaces = new ArrayList<>(Arrays.asList("GRASS",
                 "DIRT", "GRAVEL"));
@@ -60,7 +62,6 @@ public class IteratedLocalSearchTestAppendPath {
         gradientCalculator = new SimpleGradientCalculator();
         elevationHeuristic = new ElevationHeuristicMain();
         elevationHeuristic.setOptions(true);
-
 
         connectPath = new BFSConnectionPath(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
@@ -109,8 +110,6 @@ public class IteratedLocalSearchTestAppendPath {
     }
 
 
-
-
     private PathTuple reverseList(PathTuple head) {
         PathTuple prev = null;
         PathTuple current = head;
@@ -142,17 +141,6 @@ public class IteratedLocalSearchTestAppendPath {
             i++;
         }
         return endNode;
-    }
-
-    private int getPathSize(PathTuple head) {
-        int count = 0;
-
-        while (head != null) {
-            count++;
-            head = head.getPredecessor();
-        }
-
-        return count;
     }
 
     private PathTuple getTail(PathTuple head) {

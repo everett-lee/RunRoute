@@ -121,7 +121,8 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
         System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
     @Test
@@ -141,7 +142,8 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
         System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
     @Test
@@ -161,7 +163,8 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
         System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.051);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
     @Test
@@ -181,7 +184,8 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
         System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
 
@@ -202,7 +206,8 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
         System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
     @Test
@@ -222,7 +227,8 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
         System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
     @Test
@@ -242,7 +248,8 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
         System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
     @Test
@@ -264,7 +271,8 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
         System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
     @Test
@@ -284,7 +292,8 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
         System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
     @Test
@@ -304,7 +313,8 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
         System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
     @Test
@@ -324,7 +334,8 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
         System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
     @Test
@@ -344,7 +355,8 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
         System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
     @Test
@@ -364,7 +376,8 @@ public class IteratedLocalSearchMainAlgorithmWithFeaturesTestBFS {
         System.out.println(postScore);
 
         assertTrue(postScore >= originalScore);
-        assertTrue(postDistance <= (originalLength + target) * 1.1);
+        assertTrue(postDistance <= (originalLength + target) * 1.05);
+        assertTrue(postDistance <= (originalLength + target) * 95);
     }
 
 }

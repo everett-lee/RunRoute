@@ -62,8 +62,8 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             int pathSize = getPathSize(head);
             // reset if r extends beyond the penultimate node
             // as final edge should not be removed
-            if (r > pathSize - 2) {
-                r = 1;
+            if (r > pathSize - 3) {
+                r = 2;
             }
 
             // reset r if removed section plus index of the

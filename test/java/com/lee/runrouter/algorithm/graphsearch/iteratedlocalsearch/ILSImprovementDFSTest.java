@@ -56,6 +56,9 @@ public class ILSImprovementDFSTest {
         repo = getRepoSW();
     }
 
+    /**
+     * Used to get data on the change in score following N iterations of ILS
+     */
     @Before
     public void setUp() {
         distanceCalculator = new EuclideanCalculator();

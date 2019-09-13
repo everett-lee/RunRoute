@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * query in PostGIS. The total size of the bounding box is scaled,
  * so resulting area can be more or less than the run distance squared.
  *
- * Formula sourced from
+ * Formulas sourced from
  * https://gis.stackexchange.com/questions/2951/algorithm-for-offsetting-a-latitude-longitude-by-some-amount-of-meters
  */
 @Component

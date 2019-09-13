@@ -24,7 +24,7 @@ import java.util.List;
 import static com.lee.runrouter.testhelpers.TestHelpers.*;
 import static org.junit.Assert.assertTrue;
 
-public class BFSTestWithFeaturesIII {
+public class BFSTestWithFeaturesCentral {
     ElementRepo repoCEN;
     GraphSearch BFS;
     DistanceCalculator distanceCalculator;

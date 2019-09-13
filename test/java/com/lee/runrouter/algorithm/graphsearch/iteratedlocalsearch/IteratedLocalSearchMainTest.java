@@ -35,22 +35,36 @@ public class IteratedLocalSearchMainTest {
     }
 
 
-
+    // test first node in removed segment is correctly selected
     @Test
     public void testGetStartPathSegmentFirst() throws InvocationTargetException, IllegalAccessException {
         Method getStartPathSegment = Arrays.stream(ils.getClass().getDeclaredMethods())
-                .filter(x -> x.getName().equals("getStartPathSegment")).findFirst().get();
+                .filter(x -> x.getName().equals("getStartPathNode")).findFirst().get();
         getStartPathSegment.setAccessible(true);
-        PathTuple result = (PathTuple) getStartPathSegment.invoke(ils, morrish5k, 1);
-        long resultid = result.getCurrentNode().getId();
-        long expected = 114280020;
 
-        assertEquals(expected, resultid);
+        // create the linked list
+        PathTuple a  = new PathTupleMain(null, null,
+                null, new ScorePair(1, 1), 0, 0, 0);
+        PathTuple b  = new PathTupleMain(a, null,
+                null, new ScorePair(2, 2), 0, 0, 0);
+        PathTuple c  = new PathTupleMain(b, null,
+                null, new ScorePair(3, 3), 0, 0, 0);
+        PathTuple d  = new PathTupleMain(c, null,
+                null, new ScorePair(4, 4), 0, 0, 0);
+        PathTuple e  = new PathTupleMain (d, null,
+                null, new ScorePair(5, 5), 0, 0, 0);
+
+        PathTuple result = (PathTuple) getStartPathSegment.invoke(ils, e, 1);
+        double resultDistanceScore = result.getSegmentScore().getDistanceScore();
+        long expected =  5;
+
+        assertEquals(expected, resultDistanceScore, 0.01);
     }
 
-
+    // test third node in removed segment is correctly selected
     @Test
     public void testGetStartPathSegmentThirdIn() throws InvocationTargetException, IllegalAccessException {
+        // create the linked list
         PathTuple a  = new PathTupleMain(null, null,
                 null, new ScorePair(1, 1), 0, 0, 0);
         PathTuple b  = new PathTupleMain(a, null,
@@ -64,7 +78,7 @@ public class IteratedLocalSearchMainTest {
 
 
         Method getStartPathSegment = Arrays.stream(ils.getClass().getDeclaredMethods())
-                .filter(x -> x.getName().equals("getStartPathSegment")).findFirst().get();
+                .filter(x -> x.getName().equals("getStartPathNode")).findFirst().get();
         getStartPathSegment.setAccessible(true);
         PathTuple result = (PathTuple) getStartPathSegment.invoke(ils, e, 3);
         double resultScore = result.getSegmentScore().getHeuristicScore();
@@ -73,7 +87,7 @@ public class IteratedLocalSearchMainTest {
         assertEquals(expected, resultScore, 0.0001);
     }
 
-
+    // test that node two from the start is selected
     @Test
     public void testGetEndPathSegmentTwoLong() throws InvocationTargetException, IllegalAccessException {
         PathTuple a  = new PathTupleMain(null, null,
@@ -89,12 +103,12 @@ public class IteratedLocalSearchMainTest {
 
 
         Method getStartPathSegment = Arrays.stream(ils.getClass().getDeclaredMethods())
-                .filter(x -> x.getName().equals("getStartPathSegment")).findFirst().get();
+                .filter(x -> x.getName().equals("getStartPathNode")).findFirst().get();
         getStartPathSegment.setAccessible(true);
         PathTuple start = (PathTuple) getStartPathSegment.invoke(ils, e, 2);
 
         Method getEndPathSegment = Arrays.stream(ils.getClass().getDeclaredMethods())
-                .filter(x -> x.getName().equals("getEndPathSegment")).findFirst().get();
+                .filter(x -> x.getName().equals("getEndPathNode")).findFirst().get();
         getEndPathSegment.setAccessible(true);
         PathTuple end = (PathTuple) getEndPathSegment.invoke(ils, start, 2);
 
@@ -310,26 +324,5 @@ public class IteratedLocalSearchMainTest {
 
         assertEquals(result, tail);
     }
-
-    @Test
-    public void tesUpdateDistancesOne() throws InvocationTargetException, IllegalAccessException {
-        PathTuple head = morrish5k;
-        double originalLen = calculateDistance(head);
-        PathTuple originalPred = head.getPredecessor();
-
-        PathTuple newTwo = new PathTupleMain(originalPred, null, null,
-                new ScorePair(0, 0), 5, 0, 0);
-        PathTuple newOne = new PathTupleMain(newTwo, null, null, new ScorePair(0, 0),
-                7.5, 0, 0);
-        head.setPredecessor(newOne);
-
-        Method updateDistances = Arrays.stream(ils.getClass().getDeclaredMethods())
-                .filter(x -> x.getName().equals("updateDistances")).findFirst().get();
-        updateDistances.setAccessible(true);
-        updateDistances.invoke(ils, head);
-
-        assertEquals(originalLen + 12.5, calculateDistance(head), 0.0001);
-    }
-
 
 }

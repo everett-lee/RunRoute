@@ -27,6 +27,11 @@ public abstract class SearchAlgorithm {
     double maxGradient;
     boolean avoidUnlit;
 
+    private final double MINIMUM_SCORING_DISTANCE = 450; // the minimum distance
+    // travelled along a Way before the distance bonus is applied
+    private final double MAXIMUM_SCORING_DISTANCE = 1000; //the maximum distance
+    // travelled along a Way that will contributed to the distance bonus
+    private final double DISTANCE_BONUS = 0.0005;
     private final double RANDOM_REDUCER = 50000; // divides into random number added to the
     // score
 
@@ -95,5 +100,29 @@ public abstract class SearchAlgorithm {
         } else {
             this.elevationHeuristic.setOptions(false);
         }
+    }
+
+    public double applyDistanceScore(double distanceToNext) {
+        if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
+            double scoreLength = Math
+                    .max(distanceToNext, MAXIMUM_SCORING_DISTANCE);
+            return scoreLength * DISTANCE_BONUS;
+        }
+        return 0;
+    }
+
+    public boolean pruneBranch(Way selectedWay, double currentDistance, double upperBound) {
+        // prune this branch where street lighting required and none available
+        if (getAvoidUnlit()) {
+            if (!selectedWay.isLit()) {
+                return true;
+            }
+        }
+
+        // prune this branch where maximum length exceeded
+        if (currentDistance > upperBound) {
+            return true;
+        }
+        return false;
     }
 }

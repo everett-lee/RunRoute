@@ -18,38 +18,33 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 /**
- * Depth first search that selects the next Node only if
- * it is closer to the target coordinates that the current Node. It is used
- * to search for high scoring Ways which connect the starting position
+ * DFS algorithm that restricts selects the next Node
+ * only where they are closer to starting point than the current. It is used
+ * to search for Ways which connect the starting position
  * to the target Way.
  */
 @Component
 @Qualifier("DFSConnectionPath")
 public class DFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
-    private final double MINIMUM_SCORING_DISTANCE = 500; // the minimum distance
-    // travelled along a Way before the distance bonus is applied
-    private final double MAXIMUM_SCORING_DISTANCE = 1000; //the maximum distance
-    // travelled along a Way that will contributed to the distance bonus
-    private final double DISTANCE_BONUS = 0.0005;
-    final double REPEATED_WAY_VISIT_PENALTY = 1.5; // deducted from heuristic score
+    final double REPEATED_WAY_VISIT_PENALTY = 2.5; // deducted from heuristic score
     // for visits to Ways included in the main route
 
     private Stack<PathTuple> stack;
     private HashSet<Long> visitedNodes; // ways visited in the course of this search
     private HashSet<Long> includedWays; // ways included in the main path
-    private double minimumPathPercentage = 0.9; // length of this path segment as
+    private double minimumPathPercentage = 0.90; // length of this path segment as
     // a percentage of a the removed path segment required to serve as a valid
     // replacement
 
-    private final double TIME_LIMIT = 500;
+    private final double TIME_LIMIT = 250;
 
     public DFSConnectionPath(ElementRepo repo,
-                             @Qualifier("DirectDistanceHeuristic") DistanceFromOriginNodeHeursitic distanceFromOriginHeursitic,
+                             @Qualifier("DirectDistanceHeuristic") DistanceFromOriginNodeHeursitic distanceFromTargetnHeursitic,
                              @Qualifier("FeaturesHeuristicUsingDistance") FeaturesHeuristic featuresHeuristic,
                              @Qualifier("EdgeDistanceCalculatorMain") EdgeDistanceCalculator edgeDistanceCalculator,
                              @Qualifier("SimpleGradientCalculator") GradientCalculator gradientCalculator,
                              @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
-        super(repo, distanceFromOriginHeursitic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
+        super(repo, distanceFromTargetnHeursitic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
         this.stack = new Stack<>();
         this.visitedNodes = new HashSet<>();
@@ -115,31 +110,25 @@ public class DFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                     heuristicScore -= REPEATED_WAY_VISIT_PENALTY;
                 }
 
-                // prune this branch if unlit when lighting is required
-                if (super.getAvoidUnlit()) {
-                    if (!selectedWay.isLit()) {
-                        continue;
-                    }
-                }
 
                 double distanceToNext = edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
 
-                // prune this branch where max length exceeded
-                if (currentRouteLength + distanceToNext > upperBound) {
+
+                if (super.pruneBranch(selectedWay, currentRouteLength + distanceToNext,
+                        upperBound)) {
                     continue;
                 }
 
-                heuristicScore += applyDistanceScore(distanceToNext);
+                heuristicScore += super.applyDistanceScore(distanceToNext);
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
-
                 if (gradient > super.getMaxGradient()) {
                     continue;
                 }
 
-                // call private method to add heuristic scores
+                // call method to add heuristic scores
                 heuristicScore += super.addScores(selectedWay, distanceToNext, gradient);
 
                 ScorePair score = new ScorePair(0, heuristicScore);
@@ -149,8 +138,8 @@ public class DFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                         score, distanceToNext, currentRouteLength + distanceToNext, gradient);
                 stack.push(toAdd);
 
-                elapsedTime = (new Date()).getTime() - startTime;
             }
+            elapsedTime = (new Date()).getTime() - startTime;
         }
 
         return new PathTupleMain(null, null, null, new ScorePair(-1, -10000),
@@ -192,15 +181,6 @@ public class DFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     @Override
     public void resetVisitedNodes() {
         this.visitedNodes = new HashSet<>();
-    }
-
-    private double applyDistanceScore(double distanceToNext) {
-        if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
-            double scoreLength = Math
-                    .max(distanceToNext, MAXIMUM_SCORING_DISTANCE);
-            return scoreLength * DISTANCE_BONUS;
-        }
-        return 0;
     }
 
     // check the length of the path segment contains

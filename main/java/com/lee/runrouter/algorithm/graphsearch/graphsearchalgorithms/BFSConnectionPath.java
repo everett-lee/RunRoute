@@ -26,11 +26,6 @@ import java.util.*;
 @Component
 @Qualifier("BFSConnectionPath")
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
-    private final double MINIMUM_SCORING_DISTANCE = 500; // the minimum distance
-    // travelled along a Way before the distance bonus is applied
-    private final double MAXIMUM_SCORING_DISTANCE = 1000; //the maximum distance
-    // travelled along a Way that will contributed to the distance bonus
-    private final double DISTANCE_BONUS = 0.0005;
     final double REPEATED_WAY_VISIT_PENALTY = 2.5; // deducted from heuristic score
     // for visits to Ways included in the main route
 
@@ -117,31 +112,25 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                     heuristicScore -= REPEATED_WAY_VISIT_PENALTY;
                 }
 
-                // prune this branch if unlit when lighting is required
-                if (super.getAvoidUnlit()) {
-                    if (!selectedWay.isLit()) {
-                        continue;
-                    }
-                }
 
                 double distanceToNext = edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
 
-                // prune this branch where max length exceeded
-                if (currentRouteLength + distanceToNext > upperBound) {
+
+                if (super.pruneBranch(selectedWay, currentRouteLength + distanceToNext,
+                                    upperBound)) {
                     continue;
                 }
 
-                heuristicScore += applyDistanceScore(distanceToNext);
+                heuristicScore += super.applyDistanceScore(distanceToNext);
 
                 double gradient = gradientCalculator.calculateGradient(currentNode, currentWay, connectingNode,
                         selectedWay, distanceToNext);
-
                 if (gradient > super.getMaxGradient()) {
                     continue;
                 }
 
-                // call private method to add heuristic scores
+                // call method to add heuristic scores
                 heuristicScore += super.addScores(selectedWay, distanceToNext, gradient);
 
                 ScorePair score = new ScorePair(0, heuristicScore);
@@ -151,8 +140,8 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
                         score, distanceToNext, currentRouteLength + distanceToNext, gradient);
                 queue.add(toAdd);
 
-                elapsedTime = (new Date()).getTime() - startTime;
             }
+            elapsedTime = (new Date()).getTime() - startTime;
         }
 
         return new PathTupleMain(null, null, null, new ScorePair(-1, -10000),
@@ -194,15 +183,6 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
     @Override
     public void resetVisitedNodes() {
         this.visitedNodes = new HashSet<>();
-    }
-
-    private double applyDistanceScore(double distanceToNext) {
-        if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
-            double scoreLength = Math
-                    .max(distanceToNext, MAXIMUM_SCORING_DISTANCE);
-            return scoreLength * DISTANCE_BONUS;
-        }
-        return 0;
     }
 
     // check the length of the path segment contains

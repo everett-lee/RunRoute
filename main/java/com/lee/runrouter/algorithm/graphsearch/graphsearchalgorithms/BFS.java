@@ -26,12 +26,6 @@ import java.util.stream.Collectors;
 @Component
 @Qualifier("BFS")
 public class BFS extends SearchAlgorithm implements GraphSearch {
-    private final double MINIMUM_SCORING_DISTANCE = 450; // the minimum distance
-    // travelled along a Way before the distance bonus is applied
-    private final double MAXIMUM_SCORING_DISTANCE = 750; //the maximum distance
-    // travelled along a Way that will contributed to the distance bonus
-    private final double DISTANCE_BONUS = 0.0005;
-
     private final double LOWER_SCALE = 0.95; // amount to scale upper lower bound on
     // run length by
     private final double UPPER_SCALE = 1.05; // amount to scale upper bound on
@@ -100,6 +94,7 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
         // find the Node contained in the starting Way that is
         // closest to the the starting coordinates
         originNode = AlgoHelpers.findClosest(originNode, repo.getOriginWay().getNodeContainer().getNodes());
+
         queue.add(new PathTupleMain(null, originNode, root,
                 new ScorePair(0, 0), 0, 0, 0));
 
@@ -131,6 +126,7 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                 }
             }
 
+            // is the distance travelled is over half of the target
             boolean overHalf = currentRouteLength / targetDistance > 0.5;
             addToClosedList(currentNode, overHalf);
 
@@ -151,15 +147,11 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                 double distanceToNext = this.edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
 
-                // prune this branch where street lighting required and none available
-                if (super.getAvoidUnlit()) {
-                    if (!selectedWay.isLit()) {
-                        continue;
-                    }
-                }
-
-                // prune this branch where maximum length exceeded
-                if (currentRouteLength + distanceToNext > upperBound) {
+                // checks to see if branch violates unlit or distance requirements
+                // and prunes if it does
+                if (super.pruneBranch(selectedWay,
+                        currentRouteLength + distanceToNext,
+                                    upperBound)) {
                     continue;
                 }
 
@@ -169,7 +161,7 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
 
                 // adds a bonus score where the distance between current Node
                 // and the next is above the minimum threshold
-                heuristicScore += applyDistanceScore(distanceToNext);
+                heuristicScore += super.applyDistanceScore(distanceToNext);
 
                 double gradient = this.gradientCalculator
                         .calculateGradient(currentNode, currentWay, connectingNode,
@@ -181,7 +173,6 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
 
                 heuristicScore += super.addScores(selectedWay, distanceToNext, gradient);
 
-                // whether the distance travelled is over half of the target
                 overHalf = (currentRouteLength + distanceToNext) / targetDistance > 0.5;
 
                 // provides a score bonus at the later stages of the route where
@@ -204,9 +195,8 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                 if (!connectedToStart) {
                     visitedWays.add(selectedWay.getId());
                 }
-
-                elapsedTime = (new Date()).getTime() - startTime;
             }
+            elapsedTime = (new Date()).getTime() - startTime;
         }
 
         // null object returned in the event of an error
@@ -256,15 +246,6 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
             return returnTuple;
         }
         return  null; // return null if route length not within the required bounds
-    }
-
-    private double applyDistanceScore(double distanceToNext) {
-        if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
-            double scoreLength = Math
-                    .max(distanceToNext, MAXIMUM_SCORING_DISTANCE);
-           return scoreLength * DISTANCE_BONUS;
-        }
-        return 0;
     }
 
 

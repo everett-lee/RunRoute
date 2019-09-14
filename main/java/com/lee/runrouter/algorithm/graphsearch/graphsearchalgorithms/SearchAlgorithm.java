@@ -105,7 +105,7 @@ public abstract class SearchAlgorithm {
     public double applyDistanceScore(double distanceToNext) {
         if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
             double scoreLength = Math
-                    .max(distanceToNext, MAXIMUM_SCORING_DISTANCE);
+                    .min(distanceToNext, MAXIMUM_SCORING_DISTANCE);
             return scoreLength * DISTANCE_BONUS;
         }
         return 0;

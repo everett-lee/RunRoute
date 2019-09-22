@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * Receives input starting coordinates and distances and
- * pass them to the graph generation and graph search
+ * passes them to the graph generation and graph search
  * routines.
  */
 @Component
@@ -73,8 +73,6 @@ public class ExecutorMain implements Executor {
         processElevationOptions(maxGradient, options);
 
         this.graphBuilder.buildGraph(coords, distance, processRoadOptions(options));
-
-        System.out.println("GRAPH BUILT");
         PathTuple route = this.routeGenerator.generateRoute(coords, distance);
 
         PathTuple tail = route;
@@ -88,6 +86,7 @@ public class ExecutorMain implements Executor {
             tail = tail.getPredecessor();
         }
         averageGradient /= count;
+
         double length = tail.getTotalLength(); // get total route length from the tail
 
         // convert the way to an Array
@@ -99,9 +98,8 @@ public class ExecutorMain implements Executor {
     }
 
     /**
-     * Build a graph suited to a 21km route on receiving the user's initial
-     * position from the client. This serves to speed up the graph generation
-     * stage of later queries
+     * Build a graph on receiving the user's initial position from the client.
+     * This serves to speed up the graph generation stage of later queries
      *
      * @param coords the user's initial coordinates
      */

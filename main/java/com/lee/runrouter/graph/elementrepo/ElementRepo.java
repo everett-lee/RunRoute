@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
  */
 @Component
 public class ElementRepo implements Serializable {
-    private Way originWay;
-    private Node originNode; // starting node of the route
-    private Map<Long, List<Way>> nodeToWay; // the Ways associated
-    // with each node ID
+    private Way originWay; // starting Way of the route
+    private Node originNode; // starting Node of the route
+    private Map<Long, List<Way>> nodeToWay; // the Ways containing
+    // with each Node. Looked up using id number.
     private Map<Long, Way> wayRepo; // contains all generated Ways
 
     public ElementRepo() {
@@ -25,7 +25,6 @@ public class ElementRepo implements Serializable {
         this.nodeToWay = new HashMap<>();
         this.wayRepo = new HashMap<>();
     }
-
 
     /** Iterates over each Way connected to the input
      *  Way using a look up of its Nodes. The connected

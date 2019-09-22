@@ -34,7 +34,7 @@ public class ElevationHeuristicMainTest {
     {
         // deserialise test repo used for testing.
         try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/repo.ser");
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/repoSW.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             repo = (ElementRepo) in.readObject();
             in.close();
@@ -76,26 +76,6 @@ public class ElevationHeuristicMainTest {
         assertEquals(expected, score, 0.001);
     }
 
-    @Test
-    public void testMildNegativeGradientGivesPositiveWhereFlatPreferred() {
-        elevationHeuristic = new ElevationHeuristicMain();
-        elevationHeuristic.setOptions(false);
-
-        Way wayUnderTest1 = repo.getWayRepo().get(51436348L);
-
-        Way wayUnderTest2 = repo.getWayRepo().get(474810158L);
-
-        Node n1 = wayUnderTest1.getNodeContainer().getStartNode();
-
-        Node n2 = wayUnderTest2.getNodeContainer().getEndNode();
-
-
-        double distance = edgeDistanceCalculator.calculateDistance(n1,n2, wayUnderTest2);
-
-        double gradient = gradientCalculator.calculateGradient(n1, wayUnderTest1, n2, wayUnderTest2, distance);
-        double score = elevationHeuristic.getScore(gradient, 500);
-       assertTrue(score > 0);
-    }
 
     @Test
     public void testSteepPathUpHillPreferred() {
@@ -114,26 +94,6 @@ public class ElevationHeuristicMainTest {
         double score = elevationHeuristic.getScore(gradient, 500);
         assertTrue(score > 0);
     }
-
-    @Test
-    public void testSteepPathFlatPreferred() {
-        elevationHeuristic = new ElevationHeuristicMain();
-        elevationHeuristic.setOptions(false);
-
-        Way wayUnderTest1 = repo.getWayRepo().get(4898590);
-
-        Way wayUnderTest2 = repo.getWayRepo().get(4898590);
-
-        Node n1 = wayUnderTest1.getNodeContainer().getNodes().get(15);
-        Node n2 = wayUnderTest2.getNodeContainer().getNodes().get(2);
-
-        double distance = edgeDistanceCalculator.calculateDistance(n1,n2, wayUnderTest2);
-
-        double gradient = gradientCalculator.calculateGradient(n1, wayUnderTest1, n2, wayUnderTest2, distance);
-        double score = elevationHeuristic.getScore(gradient, 500);
-        assertTrue(score < 0.48);
-    }
-
 
     @Test
     public void testVerySteepWay() {

@@ -20,7 +20,7 @@ public class AlgoHelpersTest {
     {
         // deserialise test repo used for testing.
         try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/repo.ser");
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/repoSW.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             repo = (ElementRepo) in.readObject();
             in.close();

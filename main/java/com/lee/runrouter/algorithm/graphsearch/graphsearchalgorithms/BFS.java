@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
 
 /**
  * A greedy Search algorithm that utilises a restricted List.
- * Vertices with the highest associated edge queue are added
+ * Vertices with the highest associated edge are added
  * to a priority queue, then selected and processed in order
- * or theirs score.
+ * of their score.
  */
 @Component
 @Qualifier("BFS")
@@ -30,8 +30,8 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
     // run length by
     private final double UPPER_SCALE = 1.05; // amount to scale upper bound on
     // run length by
-    private final double REPEATED_WAY_VISIT_PENALTY = 1.5;// a penalty applied for
-    // revisiting a way traversed at an early stage of the route
+    private final double REPEATED_WAY_VISIT_PENALTY = 2;// a penalty applied for
+    // revisiting a way traversed at an earlier stage of the route
 
     private PriorityQueue<PathTuple> queue;
     private Set<Long> visitedNodesOutbound; // Nodes visited in the outbound leg of this search
@@ -48,7 +48,7 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                @Qualifier("ElevationHeuristicMain") ElevationHeuristic elevationHeuristic) {
         super(repo, distanceFromOriginHeuristic, featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
-        // vertices in the queue are sorted in descending order using
+        // tuples in the queue are sorted in descending order using
         // their score
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore().getSum()).reversed());
@@ -59,21 +59,20 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
     }
 
     /**
-     * Method for generating a route of the specified length,
-     * that selects a path based on the given preferences.
+     * Method for generating a route of the specified length
+     * based on the given preferences.
      * This is achieved by conducting a greedy best first selection of Nodes
      * to form the required route. The method returns as soon as a valid
      * route of the minimum required length has been generated
      *
-     * @param root           the Way at which the run begins
+     * @param startingWay           the Way at which the run begins
      * @param coords         the coordinates at which the run begins
      * @param targetDistance the required target distance for the run
-     * @return a PathTuple containing links to previous PathTuples,
-     * the final Node and Way, their score, and the total length
-     * of the path
+     * @return the head of a linked list of PathTuples representing
+     * the route
      */
     @Override
-    public PathTuple searchGraph(Way root, double[] coords, double targetDistance) {
+    public PathTuple searchGraph(Way startingWay, double[] coords, double targetDistance) {
         this.queue = new PriorityQueue<>(Comparator
                 .comparing((PathTuple tuple) -> tuple.getSegmentScore().getSum()).reversed());
 
@@ -91,11 +90,12 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
         // run length
 
         Node originNode = new Node(-1, coords[0], coords[1]);
+
         // find the Node contained in the starting Way that is
         // closest to the the starting coordinates
         originNode = AlgoHelpers.findClosest(originNode, repo.getOriginWay().getNodeContainer().getNodes());
 
-        queue.add(new PathTupleMain(null, originNode, root,
+        queue.add(new PathTupleMain(null, originNode, startingWay,
                 new ScorePair(0, 0), 0, 0, 0));
 
         // update the repository origin node
@@ -176,7 +176,7 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                 overHalf = (currentRouteLength + distanceToNext) / targetDistance > 0.5;
 
                 // provides a score bonus at the later stages of the route where
-                // the connecting node leads back to the starting point
+                // the connecting Node leads back to the starting point
                 double distanceScore = distanceFromOriginHeuristic
                         .getScore(currentNode, connectingNode, originNode, currentRouteLength,
                                     targetDistance);

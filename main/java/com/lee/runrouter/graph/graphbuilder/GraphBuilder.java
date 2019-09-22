@@ -48,6 +48,8 @@ public class GraphBuilder {
 
         Long originID = originParser.getOriginWayID(coords, options);
 
+        System.out.println(originID);
+
         wayDirector.setOptions(options);
         wayDirector.buildQuery(coords[0], coords[1], distance);
         ResultSet results = wayDirector.getResults();
@@ -99,7 +101,7 @@ public class GraphBuilder {
                 Array nodes = results.getArray(++i);
                 List<Long> nodeVals = Arrays.asList((Long[]) nodes.getArray());
 
-                // add the repo Map from nodeID -> Way
+                // add to hash table mapping Node's id -> Way
                 for (long nodeId : nodeVals) {
                     repo.addNodeToWay(nodeId, wayBuilder.getElement());
                 }
@@ -129,6 +131,11 @@ public class GraphBuilder {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+
+        if (repo.getOriginWay() == null) {
+            throw new IllegalArgumentException("The provided coordinates do not correspond" +
+                    " to any found starting position");
         }
     }
 }

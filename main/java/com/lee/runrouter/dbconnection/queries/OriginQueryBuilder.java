@@ -35,7 +35,7 @@ public class OriginQueryBuilder implements QueryBuilder {
             "?, ?, 4326)\n";
     private final String ROAD_OPTIONS = "AND (l.highway IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'bicycle'))\n";
     private final String NOT_NULL = "AND l.name IS NOT NULL\n";
-    private final String ORDER_BY = "ORDER BY ST_Distance(l.way::geography, ST_MakePoint(?, ?)) ASC limit 1;";
+    private final String ORDER_BY = "ORDER BY ST_Distance(l.way::geography, ST_MakePoint(?, ?)) limit 1;";
 
     @Override
     public void reset() {

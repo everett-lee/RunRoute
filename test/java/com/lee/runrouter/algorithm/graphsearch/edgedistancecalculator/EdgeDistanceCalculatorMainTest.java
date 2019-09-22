@@ -1,6 +1,7 @@
 package com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator;
 
 import com.lee.runrouter.algorithm.distanceCalculator.DistanceCalculator;
+import com.lee.runrouter.algorithm.distanceCalculator.EuclideanCalculator;
 import com.lee.runrouter.algorithm.distanceCalculator.HaversineCalculator;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
@@ -22,7 +23,7 @@ public class EdgeDistanceCalculatorMainTest {
    {
         // deserialise test repo used for testing.
         try {
-            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/repo.ser");
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/repoSW.ser");
             ObjectInputStream in = new ObjectInputStream(fileIn);
             repo = (ElementRepo) in.readObject();
             in.close();
@@ -37,7 +38,7 @@ public class EdgeDistanceCalculatorMainTest {
 
     @Before
     public void setUp() {
-        this.distanceCalculator = new HaversineCalculator();
+        this.distanceCalculator = new EuclideanCalculator();
         this.edgeDistanceCalculator = new EdgeDistanceCalculatorMain(distanceCalculator);
     }
 
@@ -117,7 +118,7 @@ public class EdgeDistanceCalculatorMainTest {
         Node b = wayUnderTest2.getNodeContainer().getEndNode();
         System.out.println(b.getId());
 
-        double expected = 600.0;
+        double expected = 580;
         double res = edgeDistanceCalculator.calculateDistance(a, b, wayUnderTest1);
 
         assertEquals(expected, res, 10);

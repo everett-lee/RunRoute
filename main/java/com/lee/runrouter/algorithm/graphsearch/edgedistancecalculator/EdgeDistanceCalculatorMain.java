@@ -63,11 +63,11 @@ public class EdgeDistanceCalculatorMain implements EdgeDistanceCalculator {
 
         List<Node> nodes = currentWay.getNodeContainer().getNodes();
 
-        int indexofCurrentNode = -1;
+        int indexOfCurrentNode = -1;
         int indexOfConnectingNode = -1;
         for (int i = 0; i < nodes.size(); i++) {
             if (nodes.get(i).getId() == currentNode.getId()) {
-                indexofCurrentNode = i;
+                indexOfCurrentNode = i;
             }
 
             if (nodes.get(i).getId() == connectingNode.getId()) {
@@ -78,8 +78,8 @@ public class EdgeDistanceCalculatorMain implements EdgeDistanceCalculator {
         Node thisNode = currentNode;
         Node nextNode = null;
         // current node is at the front of the list, so iterate forwards
-        if (indexOfConnectingNode > indexofCurrentNode) {
-            int i = indexofCurrentNode;
+        if (indexOfConnectingNode > indexOfCurrentNode) {
+            int i = indexOfCurrentNode;
             while (thisNode.getId() != connectingNode.getId()) {
                 i += 1;
                 nextNode = nodes.get(i);
@@ -91,7 +91,7 @@ public class EdgeDistanceCalculatorMain implements EdgeDistanceCalculator {
 
         // current node is at the back of the list, so iterate backwards
         } else {
-            int i = indexofCurrentNode;
+            int i = indexOfCurrentNode;
             while (thisNode.getId() != connectingNode.getId()) {
                 i -= 1;
                 nextNode = nodes.get(i);

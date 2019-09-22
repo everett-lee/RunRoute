@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class DistanceFromOriginNodeHeuristicMain implements DistanceFromOriginNodeHeursitic {
     private DistanceCalculator distanceCalculator;
     private final double RETURN_SCORE_NUMERATOR = 100;
-    private final double SCALE_DOWN = 0.35; // amount to scale down the difference
+    private final double SCALE_DOWN = 0.4; // amount to scale down the difference
     // between the target distance and the current route length before beginning
     // to guide the route back to the starting point
 

@@ -9,5 +9,5 @@ import org.springframework.stereotype.Component;
  * two pairs of coordinates, as contained in the Node inputs.
  */
 public interface DistanceCalculator {
-    public double calculateDistance(Node n1, Node n2);
+    double calculateDistance(Node n1, Node n2);
 }

@@ -106,36 +106,8 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
             // new segment score is higher, so replace old path segment with the new one
             } else {
-
-                System.out.println("OLD SCORE: " + oldSegmentScore);
-                System.out.println("NEW SCORE: " + newSegmentScore);
-                System.out.println("");
-                System.out.println("COMING FROM " + start.getCurrentNode());
-                System.out.println("GOING TO " + end.getCurrentNode());
-                System.out.println();
-                System.out.println("node(id:");
-                PathTuple topi = start;
-                while (topi != end) {
-                    System.out.print(topi.getCurrentNode().getId() + ", ");
-                    topi = topi.getPredecessor();
-                }
-                System.out.println(topi.getCurrentNode().getId()  + ");out;");
-
-                System.out.println("THE OLD SEGMENT ^^^^^^^^^^");
-
-                System.out.println("node(id:");
-
-                topi = newSegment;
-                while (topi.getPredecessor() != null) {
-                    System.out.print(topi.getCurrentNode().getId() + ", ");
-                    topi = topi.getPredecessor();
-                }
-                System.out.println(topi.getCurrentNode().getId() + ");out;");
-                System.out.println("THE NEW SEGMENT ^^^^^^^^^^");
-
                 setImprovements(getImprovements() + 1);
                 insertSegment(start, end, newSegment);
-
 
                 // update current node distances and target distance to reflect added segment
                 double newDistance = updateDistancesAndIncludedWays(head);
@@ -145,11 +117,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
                 r = 2;
             }
         }
-
-        System.out.println(this.iterations + " >>>>>> ITERATIONS");
-        System.out.println(this.improvements + " >>>>>>>>> IMPROVEMENTS");
-
-        // clear visited Ways for the next round
+        // clear visited Nodes for the next round
         graphSearch.resetVisitedNodes();
         return head;
     }

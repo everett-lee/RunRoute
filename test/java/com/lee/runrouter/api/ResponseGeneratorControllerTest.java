@@ -97,7 +97,7 @@ public class ResponseGeneratorControllerTest {
         List<String> dislikedSurfaces = (List<String>) f.get(featuresHeuristic);
 
         assertTrue(dislikedSurfaces.contains("CONCRETE"));
-        assertTrue(dislikedSurfaces.size() == 1);
+        assertTrue(dislikedSurfaces.size() == 2);
     }
 
     @Test
@@ -190,7 +190,7 @@ public class ResponseGeneratorControllerTest {
         assertTrue(preferredSurfaces.contains("DIRT"));
         assertTrue(preferredSurfaces.contains("GRASS"));
         assertTrue(preferredSurfaces.contains("UNPAVED"));
-        assertTrue(preferredSurfaces.size() == 3);
+        assertTrue(preferredSurfaces.size() == 6);
     }
 
 

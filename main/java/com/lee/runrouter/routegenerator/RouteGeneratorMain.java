@@ -39,7 +39,7 @@ public class RouteGeneratorMain implements RouteGenerator {
     }
 
     /**
-     * Generates the required circular route
+     * Generates the required cycle
      *
      * @param coords   the coordinates of the route's starting point
      * @param distance the distance to run
@@ -51,10 +51,10 @@ public class RouteGeneratorMain implements RouteGenerator {
     @Override
     public PathTuple generateRoute(double[] coords, double distance) throws PathNotGeneratedException {
         int attempts = 1;
+
         ArrayList<PathTuple> results = new ArrayList<>();
         PathTuple initialCycle = pather.searchGraph(repo.getOriginWay(), coords, distance);
         results.add(initialCycle);
-
         {
             // reduce the algorithm run time
             pather.setTimeLimit(500);
@@ -72,10 +72,10 @@ public class RouteGeneratorMain implements RouteGenerator {
 
         initialCycle = results.get(0);
 
+
         if (initialCycle.getTotalLength() == -1) {
             throw new PathNotGeneratedException("No valid path was generated");
         }
-
 
         double remainingDistance = distance - initialCycle.getTotalLength();
         return ils.iterate(initialCycle, remainingDistance);

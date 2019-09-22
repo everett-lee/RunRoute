@@ -16,9 +16,9 @@ public class EuclideanCalculator implements DistanceCalculator {
 
     /**
      *
-     * @param n1 First graph Node to measure distance from
-     * @param n2 Second Graph node to measure distance to
-     * @return an approximately in of the distance between the two
+     * @param n1 First Node to measure distance from
+     * @param n2 Second Node to measure distance to
+     * @return an approximation of the distance between the two
      *         points in metres.
      */
     @Override

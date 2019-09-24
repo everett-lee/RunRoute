@@ -9,5 +9,5 @@ A greedy search process and the ILS metaheuristic is used to achieve this.
 
 The repo for the corresponding client component is located here: https://github.com/everett-lee/RunRouteClient/
 
-![GitHub Logo](/images/route.jpg)
+![A generated route](/route.jpg)
 

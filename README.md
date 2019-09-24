@@ -1,6 +1,5 @@
 # RunRoute
-
-This is a web service for runners that generates routes based on a set of preferences.
+A web service for runners that generates routes based on a set of preferences.
 
 OpenStreetMap data is used to build the underlying graph, which is then searched for features that align with the
 user preferences. This is achieved by assigning a score to each explored graph edge.

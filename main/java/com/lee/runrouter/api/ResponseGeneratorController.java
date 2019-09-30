@@ -55,7 +55,6 @@ public class ResponseGeneratorController {
         }
 
         HttpHeaders responseHeaders = new HttpHeaders();
-        //TODO : remove crossorigin
 
         double[] coords = {lat, lon};
 

@@ -26,17 +26,17 @@ import java.util.*;
 @Component
 @Qualifier("BFSConnectionPath")
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
-    final double REPEATED_WAY_VISIT_PENALTY = 2; // deducted from heuristic score
+    final double REPEATED_WAY_VISIT_PENALTY = 0.05; // deducted from heuristic score
     // for visits to Ways included in the main route
 
     private PriorityQueue<PathTuple> queue;
     private HashSet<Long> visitedNodes; // ways visited in the course of this search
     private HashSet<Long> includedWays; // ways included in the main path
-    private double minimumPathPercentage = 0.95; // length of this path segment as
+    private double minimumPathPercentage = 0.05; // length of this path segment as
     // a percentage of a the removed path segment required to serve as a valid
     // replacement
 
-    private final double TIME_LIMIT = 250;
+    private final double TIME_LIMIT = 100;
 
     public BFSConnectionPath(ElementRepo repo,
                              @Qualifier("DirectDistanceHeuristic") DistanceFromOriginNodeHeursitic distanceFromTargetnHeursitic,

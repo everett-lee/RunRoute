@@ -13,9 +13,11 @@ import java.util.HashSet;
 @Qualifier("IteratedLocalSearchMain")
 public class IteratedLocalSearchMain implements IteratedLocalSearch {
     private ILSGraphSearch graphSearch;
-    private final long TIME_LIMIT = 1500;
+    private final long TIME_LIMIT = 5000;
     private int iterations;
     private int improvements;
+    private int noImprovement; // number of iterations that have not yielded
+    // an improved score
     private HashSet<Long> includedWays; // Ways included in the current Path
 
     @Autowired
@@ -56,7 +58,10 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         int a = 1; // the starting node, indexed from 1
         int r = 2; // number of edges to remove
 
-        while (elapsedTime <= TIME_LIMIT) {
+        while (elapsedTime <= TIME_LIMIT && (this.getNoImprovement() < 50
+                || availableDistance > targetDistance * 0.1 )) {
+
+            System.out.println("available " + availableDistance + " " + "target " + targetDistance);
             elapsedTime = (new Date()).getTime() - startTime;
             // get the number of nodes in the the path
             int pathSize = getPathSize(head);
@@ -103,6 +108,8 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
                 // subtract the length in metres of the segment length as it was not removed
                 availableDistance -= existingSegmentDistance;
+
+                this.setNoImprovement(this.getNoImprovement() + 1);
 
             // new segment score is higher, so replace old path segment with the new one
             } else {
@@ -281,5 +288,13 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
 
     public void setImprovements(int improvements) {
         this.improvements = improvements;
+    }
+
+    public int getNoImprovement() {
+        return noImprovement;
+    }
+
+    public void setNoImprovement(int noImprovement) {
+        this.noImprovement = noImprovement;
     }
 }

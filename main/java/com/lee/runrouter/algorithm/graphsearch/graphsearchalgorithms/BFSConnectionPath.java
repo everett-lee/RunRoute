@@ -143,6 +143,7 @@ public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch
             elapsedTime = (new Date()).getTime() - startTime;
         }
 
+        // return null object where route not found
         return new PathTupleMain(null, null, null, new ScorePair(-1, -10000),
                 -1, -1, -1);
     }

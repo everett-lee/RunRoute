@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Qualifier("DirectDistanceHeuristic")
 public class DirectDistanceHeuristic implements DistanceFromOriginNodeHeursitic {
-    private final double SCALE_UP = 1.5; // amount to scale up the current Node's
+    private final double SCALE_UP = 2; // amount to scale up the current Node's
     // distance by
     private DistanceCalculator distanceCalculator;
 

@@ -2,10 +2,13 @@ package com.lee.runrouter.algorithm.graphsearch.iteratedlocalsearch;
 
 import com.lee.runrouter.algorithm.graphsearch.graphsearchalgorithms.ILSGraphSearch;
 import com.lee.runrouter.algorithm.pathnode.PathTuple;
+import com.lee.runrouter.algorithm.pathnode.PathTupleMain;
+import com.lee.runrouter.algorithm.pathnode.ScorePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.nio.file.Path;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -19,6 +22,9 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
     private int noImprovement; // number of iterations that have not yielded
     // an improved score
     private HashSet<Long> includedWays; // Ways included in the current Path
+
+    private final int MAX_NO_IMPROVEMENT = 50; // the maximum number of iterations without
+    // an improvement before the algorithm stops
 
     @Autowired
     public IteratedLocalSearchMain(@Qualifier("BFSConnectionPath") ILSGraphSearch graphSearch) {
@@ -58,8 +64,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         int a = 1; // the starting node, indexed from 1
         int r = 2; // number of edges to remove
 
-        while (elapsedTime <= TIME_LIMIT && (this.getNoImprovement() < 50
-                || availableDistance > targetDistance * 0.1 )) {
+        while (elapsedTime <= TIME_LIMIT && (this.getNoImprovement() < MAX_NO_IMPROVEMENT)) {
 
             System.out.println("available " + availableDistance + " " + "target " + targetDistance);
             elapsedTime = (new Date()).getTime() - startTime;
@@ -83,7 +88,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             // calculate the length in metres of the segment to be removed, and
             // add to available distance
             double existingSegmentDistance = calculateDistance(start, end); // does not include
-            // start, includes end
+            // start distance, includes end distance
             availableDistance += existingSegmentDistance;
 
             PathTuple newSegment = null;
@@ -126,7 +131,24 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         }
         // clear visited Nodes for the next round
         graphSearch.resetVisitedNodes();
+
+        // return a null object to signify an invalid route if minimum length
+        // requirement not met
+        if (!checkExpectedLength(head, targetDistance)) {
+            return new PathTupleMain(null, null, null, new ScorePair(-1, -10000),
+                    -1, -1, -1);
+        }
+
         return head;
+    }
+
+    // checks to see if the route is within 10% of the target
+    private boolean checkExpectedLength(PathTuple head, double targetDistance) {
+        while (head.getPredecessor() != null) {
+            head = head.getPredecessor();
+        }
+
+        return head.getTotalLength() >= targetDistance * 0.9;
     }
 
     // creates a set of visited Ways to pass to the graph search algorithm

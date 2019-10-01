@@ -73,11 +73,20 @@ public class RouteGeneratorMain implements RouteGenerator {
         initialCycle = results.get(0);
 
 
+        // throw exception where initial route was not found
         if (initialCycle.getTotalLength() == -1) {
             throw new PathNotGeneratedException("No valid path was generated");
         }
 
         double remainingDistance = distance - initialCycle.getTotalLength();
-        return ils.iterate(initialCycle, remainingDistance);
+
+        PathTuple improvedResult = ils.iterate(initialCycle, remainingDistance);;
+
+        // throw exception where improved route fell short of required distance
+        if (improvedResult.getTotalLength() == -1) {
+            throw new PathNotGeneratedException("No valid path was generated");
+        }
+
+        return improvedResult;
     }
 }

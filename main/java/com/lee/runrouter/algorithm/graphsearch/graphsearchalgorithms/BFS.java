@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Component
 @Qualifier("BFS")
 public class BFS extends SearchAlgorithm implements GraphSearch {
-    private final double LOWER_SCALE = 0.10; // amount to scale upper lower bound on
+    private final double LOWER_SCALE = 0.30; // amount to scale upper lower bound on
     // run length by
     private final double UPPER_SCALE = 1.05; // amount to scale upper bound on
     // run length by

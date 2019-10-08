@@ -5,6 +5,8 @@ import com.lee.runrouter.bbcalculator.ScaledBBCalculator;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.SQLException;
+
 import static org.junit.Assert.*;
 
 public class WayQueryBuilderCombinedTest {
@@ -22,7 +24,7 @@ public class WayQueryBuilderCombinedTest {
     private String sql;
 
     @Before
-    public void setUp() {
+    public void setUp() throws SQLException, ClassNotFoundException {
         qb = new WayQueryBuilderEnvelope();
         calc = new ScaledBBCalculator();
         qd = new WayQueryDirectorEnvelope(qb, calc);

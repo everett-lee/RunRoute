@@ -16,7 +16,7 @@ import java.util.HashSet;
 @Qualifier("IteratedLocalSearchMain")
 public class IteratedLocalSearchMain implements IteratedLocalSearch {
     private ILSGraphSearch graphSearch;
-    private final long TIME_LIMIT = 5000;
+    private final long TIME_LIMIT = 2500;
     private int iterations;
     private int improvements;
     private int noImprovement; // number of iterations that have not yielded
@@ -49,6 +49,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
     public PathTuple iterate(PathTuple head, double distanceToAdd) {
         setIterations(0);
         setImprovements(0);
+        setNoImprovement(0);
         populateAndSetIncludedWays(head);
 
         long startTime = System.currentTimeMillis();
@@ -65,7 +66,6 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         int r = 2; // number of edges to remove
 
         while (elapsedTime <= TIME_LIMIT && (this.getNoImprovement() < MAX_NO_IMPROVEMENT)) {
-
             System.out.println("available " + availableDistance + " " + "target " + targetDistance);
             elapsedTime = (new Date()).getTime() - startTime;
             // get the number of nodes in the the path
@@ -142,13 +142,13 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         return head;
     }
 
-    // checks to see if the route is within 10% of the target
+    // checks to see if the route is within 15% of the target
     private boolean checkExpectedLength(PathTuple head, double targetDistance) {
         while (head.getPredecessor() != null) {
             head = head.getPredecessor();
         }
 
-        return head.getTotalLength() >= targetDistance * 0.9;
+        return head.getTotalLength() >= targetDistance * 0.85;
     }
 
     // creates a set of visited Ways to pass to the graph search algorithm

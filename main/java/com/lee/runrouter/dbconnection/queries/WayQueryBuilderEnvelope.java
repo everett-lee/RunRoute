@@ -32,7 +32,13 @@ public class WayQueryBuilderEnvelope implements QueryBuilder {
     private final String END = "\tOR (highway='cycleway' and foot='yes'))";
 
     public WayQueryBuilderEnvelope() {
-        conn = DBconnection.getInstance().getConnection();
+        try {
+            conn = DBconnection.getInstance().getConnection();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         reset();
     }
 

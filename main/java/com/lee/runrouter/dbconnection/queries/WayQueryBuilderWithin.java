@@ -34,7 +34,7 @@ public class WayQueryBuilderWithin implements QueryBuilder {
     private final String FOOT = "\tAND (foot <> 'no' OR foot IS NULL))";
     private final String END = "\tOR (highway='cycleway' and foot='yes'))";
 
-    public WayQueryBuilderWithin() {
+    public WayQueryBuilderWithin() throws SQLException, ClassNotFoundException {
         conn = DBconnection.getInstance().getConnection();
         reset();
     }

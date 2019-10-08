@@ -3,6 +3,7 @@ package com.lee.runrouter.dbconnection.queries;
 import org.junit.Before;
 import org.junit.Test;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import static org.junit.Assert.*;
 
@@ -10,7 +11,7 @@ public class OriginQueryBuilderTest {
     OriginQueryBuilder oqb;
 
     @Before
-    public void setUp() {
+    public void setUp() throws SQLException, ClassNotFoundException {
         this.oqb = new OriginQueryBuilder();
     }
 

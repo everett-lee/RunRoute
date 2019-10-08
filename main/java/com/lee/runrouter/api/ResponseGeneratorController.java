@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
  * variables to the executor class.
  */
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*")
 public class ResponseGeneratorController {
     final double MAX_LAT = 52.7;
     final double MIN_LAT = 50;
@@ -68,7 +68,6 @@ public class ResponseGeneratorController {
                     lat, lon, distance));
         }
     }
-
 
     // intialise the graph construction when the starting coordinates are received.
     // does not return anything until the route parameters are sent

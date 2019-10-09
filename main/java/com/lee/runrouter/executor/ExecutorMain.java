@@ -74,6 +74,7 @@ public class ExecutorMain implements Executor {
 
         this.graphBuilder.buildGraph(coords, distance, processRoadOptions(options));
 
+        System.out.println("graph built>>>>>>>>>>>>>>>>>>>>>>>");
         PathTuple route = this.routeGenerator.generateRoute(coords, distance);
 
         PathTuple tail = route;

@@ -24,22 +24,27 @@ public class OriginQueryBuilder implements QueryBuilder {
 
 
     public OriginQueryBuilder() {
-        conn = DBconnection.getInstance().getConnection();
+        try {
+            conn = DBconnection.getInstance().getConnection();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         reset();
     }
 
     // the PostGIS SQL query
-    private final String SELECT = "SELECT l.osm_id\n";
-    private final String FROM = "FROM planet_osm_line l\n";
-    private final String BB = "WHERE l.way && ST_MakeEnvelope(?, ?, " +
+    private final String SELECT = "SELECT id\n";
+    private final String FROM = "FROM linecombinedwithway l\n";
+    private final String BB = "WHERE way && ST_MakeEnvelope(?, ?, " +
             "?, ?, 4326)\n";
-    private final String ROAD_OPTIONS = "AND (l.highway IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'bicycle'))\n";
-    private final String NOT_NULL = "AND l.name IS NOT NULL\n";
-    private final String ORDER_BY = "ORDER BY ST_Distance(l.way::geography, ST_MakePoint(?, ?)) limit 1;";
+    private final String ROAD_OPTIONS = "AND (highway IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'bicycle'))\n";
+    private final String ORDER_BY = "ORDER BY ST_Distance(way::geography, ST_MakePoint(?, ?)) limit 1;";
 
     @Override
     public void reset() {
-        this.sql = SELECT + FROM + BB + ROAD_OPTIONS + NOT_NULL + ORDER_BY;
+        this.sql = SELECT + FROM + BB + ROAD_OPTIONS + ORDER_BY;
         try {
             this.preparedStatement =
                     conn.prepareStatement(sql);

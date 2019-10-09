@@ -137,15 +137,17 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                 // the intersecting Ways
                 Way selectedWay = pair.getConnectingWay();
 
-                // prune this branch if Node has already been processed
-                if (nodeInClosedList(connectingNode, overHalf)) {
-                    continue;
-                }
 
                 // calculates distance between the current Node to the Node connecting
                 // the current Way to the selected Way
                 double distanceToNext = this.edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
+
+                // prune this branch if Node has already been processed
+                overHalf = (currentRouteLength + distanceToNext) / targetDistance > 0.5;
+                if (nodeInClosedList(connectingNode, overHalf)) {
+                    continue;
+                }
 
                 // checks to see if branch violates unlit or distance requirements
                 // and prunes if it does
@@ -172,8 +174,6 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                 }
 
                 heuristicScore += super.addScores(selectedWay, distanceToNext, gradient);
-
-                overHalf = (currentRouteLength + distanceToNext) / targetDistance > 0.5;
 
                 // provides a score bonus at the later stages of the route where
                 // the connecting Node leads back to the starting point

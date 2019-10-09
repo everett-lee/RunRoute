@@ -38,11 +38,6 @@ public class BFSTestWithFeaturesLaw {
     GradientCalculator gradientCalculator;
     ElevationHeuristic elevationHeuristic;
 
-    final double MIN_INITIAL_DIST = 0.25; // minimum percentage
-    // of target required covered by initial route
-    final double MAX_INITIAL_DIST = 1.05; // maximum percentage
-    // of target required covered by initial route
-
     {
         repoLAW = getRepoLAW();
     }
@@ -240,8 +235,6 @@ public class BFSTestWithFeaturesLaw {
         assertTrue(res.getTotalLength() <= target * 1.05);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
-
-
 
     @Test(timeout = 5000)
     public void testMan21kFlat() {

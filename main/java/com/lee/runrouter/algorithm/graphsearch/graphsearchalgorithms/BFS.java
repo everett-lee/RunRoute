@@ -26,12 +26,10 @@ import java.util.stream.Collectors;
 @Component
 @Qualifier("BFS")
 public class BFS extends SearchAlgorithm implements GraphSearch {
-    private final double LOWER_SCALE = 0.5; // amount to scale upper lower bound on
+    private final double LOWER_SCALE = 0.30; // amount to scale upper lower bound on
     // run length by
     private final double UPPER_SCALE = 1.05; // amount to scale upper bound on
     // run length by
-    private final double MIN_OUT_DISTANCE = 0.5; // distance to travel before switching to
-    // new closed list
     private final double REPEATED_WAY_VISIT_PENALTY = 2;// a penalty applied for
     // revisiting a way traversed at an earlier stage of the route
 
@@ -128,10 +126,9 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                 }
             }
 
-            // is the distance travelled is at least the distance
-            // required to switch restricted sets
-            boolean distanceToSwitch = currentRouteLength / targetDistance > MIN_OUT_DISTANCE;
-            addToClosedList(currentNode, distanceToSwitch);
+            // is the distance travelled is over half of the target
+            boolean overHalf = currentRouteLength / targetDistance > 0.5;
+            addToClosedList(currentNode, overHalf);
 
             // for each Way reachable from the the current Way
             for (ConnectionPair pair : this.repo.getConnectedWays(currentWay)) {
@@ -146,9 +143,9 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                 double distanceToNext = this.edgeDistanceCalculator
                         .calculateDistance(currentNode, connectingNode, currentWay);
 
-                distanceToSwitch = (currentRouteLength + distanceToNext) / targetDistance > MIN_OUT_DISTANCE;
+                overHalf = (currentRouteLength + distanceToNext) / targetDistance > 0.5;
                 // prune this branch if Node has already been processed
-                if (nodeInClosedList(connectingNode, distanceToSwitch)) {
+                if (nodeInClosedList(connectingNode, overHalf)) {
                     continue;
                 }
 

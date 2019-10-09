@@ -16,7 +16,7 @@ import java.util.HashSet;
 @Qualifier("IteratedLocalSearchMain")
 public class IteratedLocalSearchMain implements IteratedLocalSearch {
     private ILSGraphSearch graphSearch;
-    private final long TIME_LIMIT = 4000;
+    private final long TIME_LIMIT = 2500;
     private int iterations;
     private int improvements;
     private int noImprovement; // number of iterations that have not yielded

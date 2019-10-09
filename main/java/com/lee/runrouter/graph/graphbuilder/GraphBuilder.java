@@ -52,7 +52,7 @@ public class GraphBuilder {
 
         wayDirector.setOptions(options);
         wayDirector.buildQuery(coords[0], coords[1], distance);
-        ResultSet results = wayDirector.getResults();;
+        ResultSet results = wayDirector.getResults();
 
         try {
             while (results.next()) {

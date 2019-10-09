@@ -34,6 +34,11 @@ public class BFSTestWithFeaturesCentral {
     GradientCalculator gradientCalculator;
     ElevationHeuristic elevationHeuristic;
 
+    final double MIN_INITIAL_DIST = 0.25; // minimum percentage
+    // of target required covered by initial route
+    final double MAX_INITIAL_DIST = 1.05; // maximum percentage
+    // of target required covered by initial route
+
     {
         repoCEN = getRepoCEN();
     }
@@ -68,8 +73,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -84,8 +89,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -99,8 +104,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -115,8 +120,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -130,8 +135,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -146,8 +151,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -161,8 +166,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -177,8 +182,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -192,8 +197,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -208,8 +213,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -223,8 +228,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -239,8 +244,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -255,8 +260,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -271,8 +276,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -287,8 +292,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -303,8 +308,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -318,8 +323,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -334,8 +339,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -349,8 +354,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -365,8 +370,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -380,8 +385,8 @@ public class BFSTestWithFeaturesCentral {
         double length = calculateDistance(res);
 
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -397,8 +402,8 @@ public class BFSTestWithFeaturesCentral {
 
         System.out.println(TestHelpers.returnPath(res, ""));
         assertTrue(length >= 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 

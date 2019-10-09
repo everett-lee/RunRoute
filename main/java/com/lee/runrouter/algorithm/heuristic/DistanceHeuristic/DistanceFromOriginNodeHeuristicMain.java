@@ -16,9 +16,6 @@ import org.springframework.stereotype.Component;
 public class DistanceFromOriginNodeHeuristicMain implements DistanceFromOriginNodeHeursitic {
     private DistanceCalculator distanceCalculator;
     private final double RETURN_SCORE_NUMERATOR = 100;
-    private final double SCALE_DOWN = 0.4; // amount to scale down the difference
-    // between the target distance and the current route length before beginning
-    // to guide the route back to the starting point
 
     @Autowired
     public DistanceFromOriginNodeHeuristicMain(@Qualifier("EuclideanCalculator")
@@ -31,17 +28,12 @@ public class DistanceFromOriginNodeHeuristicMain implements DistanceFromOriginNo
                            double currentRouteLength, double targetDistance) {
         double score = 0;
 
-        double currentDistanceFromOriginNode =
-                distanceCalculator.calculateDistance(currentNode, originNode);
         double selectedDistanceFromOriginNode =
                 distanceCalculator.calculateDistance(selectedNode, originNode);
         boolean overHalf = currentRouteLength / targetDistance > 0.5;
 
         if (overHalf) {
-            if (currentDistanceFromOriginNode >
-                    (targetDistance - currentRouteLength) * SCALE_DOWN) {
-                score = RETURN_SCORE_NUMERATOR / selectedDistanceFromOriginNode;
-            }
+            return  RETURN_SCORE_NUMERATOR / selectedDistanceFromOriginNode;
         }
 
         return score;

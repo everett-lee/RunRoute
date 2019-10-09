@@ -19,6 +19,7 @@ import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.validation.constraints.Max;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -38,6 +39,11 @@ public class BFSTest {
     ElevationHeuristic elevationHeuristic;
     boolean saveRoutes;
 
+    final double MIN_INITIAL_DIST = 0.25; // minimum percentage
+    // of target required covered by initial route
+    final double MAX_INITIAL_DIST = 1.05; // maximum percentage
+    // of target required covered by initial route
+
     {
         repo = getRepoSW();
     }
@@ -54,7 +60,7 @@ public class BFSTest {
         BFS = new BFS(repo, distanceHeuristic,
                 featuresHeuristic, edgeDistanceCalculator, gradientCalculator, elevationHeuristic);
 
-        saveRoutes = true;
+        saveRoutes = false;
     }
 
     @Test
@@ -71,8 +77,8 @@ public class BFSTest {
         }
 
         assertTrue(length > 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -91,8 +97,8 @@ public class BFSTest {
         }
 
         assertTrue(length > 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -110,8 +116,8 @@ public class BFSTest {
         }
 
         assertTrue(length > 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -132,8 +138,8 @@ public class BFSTest {
         }
 
         assertTrue(length > 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -154,8 +160,8 @@ public class BFSTest {
         }
 
         assertTrue(length > 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -176,8 +182,8 @@ public class BFSTest {
         }
 
         assertTrue(length > 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -197,8 +203,8 @@ public class BFSTest {
             serialize(res, name);
         }
         assertTrue(length > 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -219,8 +225,8 @@ public class BFSTest {
         }
 
         assertTrue(length > 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 
@@ -237,8 +243,8 @@ public class BFSTest {
         double length = calculateDistance(res);
 
         assertTrue(length > 5);
-        assertTrue(res.getTotalLength() >=  target * 0.95);
-        assertTrue(res.getTotalLength() <= target * 1.05);
+        assertTrue(res.getTotalLength() >=  target * MIN_INITIAL_DIST);
+        assertTrue(res.getTotalLength() <= target * MAX_INITIAL_DIST);
         assertTrue(res.getCurrentNode().getId() == getTail(res).getCurrentNode().getId());
     }
 

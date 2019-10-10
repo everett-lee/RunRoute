@@ -73,6 +73,8 @@ public class ExecutorMain implements Executor {
         processElevationOptions(maxGradient, options);
 
         this.graphBuilder.buildGraph(coords, distance, processRoadOptions(options));
+        System.out.println("graph build");
+
         PathTuple route = this.routeGenerator.generateRoute(coords, distance);
 
         PathTuple tail = route;

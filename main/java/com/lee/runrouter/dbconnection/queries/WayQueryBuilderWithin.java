@@ -29,7 +29,7 @@ public class WayQueryBuilderWithin implements QueryBuilder {
     // the PostGIS SQL query
     private final String SELECT = "SELECT id, tags, nodes, length, coords, startElevation, endElevation \n";
     private final String FROM = "\tFROM lineCombinedWithWay \n";
-    private final String BB = "\tWHERE ST_DWithin(way, ST_MakePoint(?, ?)::geography, ?)\n";
+    private final String BB = "\tWHERE ST_DWithin(way, ST_MakePoint(?, ?), ?)\n";
     private final String ROAD_OPTIONS = "\tAND ((highway IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) \n";
     private final String FOOT = "\tAND (foot <> 'no' OR foot IS NULL))";
     private final String END = "\tOR (highway='cycleway' and foot='yes'))";
@@ -70,6 +70,9 @@ public class WayQueryBuilderWithin implements QueryBuilder {
     // set the run distance
     @Override
     public void setRunLength(double distance) {
+        double radius =  distance/2; // radius of the projected circle is half
+        // the run distance;
+
         try {
             preparedStatement.setDouble(3, distance);
         } catch (SQLException e) {

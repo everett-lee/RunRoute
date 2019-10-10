@@ -9,7 +9,25 @@ import java.io.ObjectInputStream;
 
 public class TestHelpers {
 
+
     // deserialise test repo used for testing.
+    static public ElementRepo getRepo() {
+        ElementRepo repo = null;
+        try {
+            FileInputStream fileIn = new FileInputStream("/home/lee/project/app/runrouter/src/repo.ser");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            repo = (ElementRepo) in.readObject();
+            in.close();
+            fileIn.close();
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Repo class not found");
+            c.printStackTrace();
+        }
+        return repo;
+    }
+
     static public ElementRepo getRepoSW() {
         ElementRepo repo = null;
         try {

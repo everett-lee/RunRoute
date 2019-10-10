@@ -30,7 +30,7 @@ public class GraphBuilder {
      * @param repo         repository of Way objects and their associated nodes
      */
     @Autowired
-    public GraphBuilder(@Qualifier("WayQueryDirectorEnvelope") QueryDirector wayDirector,
+    public GraphBuilder(@Qualifier("WayQueryDirectorWithin") QueryDirector wayDirector,
                         OriginParser originParser, WayBuilder wayBuilder, ElementRepo repo) {
         this.wayDirector = wayDirector;
         this.originParser = originParser;
@@ -53,7 +53,7 @@ public class GraphBuilder {
         wayDirector.setOptions(options);
         wayDirector.buildQuery(coords[0], coords[1], distance);
         ResultSet results = wayDirector.getResults();
-
+        System.out.println("got results");
         try {
             while (results.next()) {
                 int i = 0;

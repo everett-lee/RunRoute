@@ -8,5 +8,5 @@ import com.lee.runrouter.graph.graphbuilder.node.Node;
  *  a given Way.
  */
 public interface EdgeDistanceCalculator {
-    public double calculateDistance(Node currentNode, Node connectingNode, Way currentWay);
+    double calculateDistance(Node currentNode, Node connectingNode, Way currentWay);
 }

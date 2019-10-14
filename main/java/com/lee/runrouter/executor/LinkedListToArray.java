@@ -9,5 +9,5 @@ import java.util.List;
  * of PathTuples to any array
  */
 public interface LinkedListToArray {
-    public List<Node> convert(PathTuple head);
+    List<Node> convert(PathTuple head);
 }

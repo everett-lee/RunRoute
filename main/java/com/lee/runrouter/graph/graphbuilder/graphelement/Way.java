@@ -11,7 +11,8 @@ import java.io.Serializable;
  */
 public class Way implements Serializable {
     public enum Surface {GRASS, DIRT, GRAVEL, UNPAVED, GROUND, EARTH, COBBLESTONE,
-                        ASPHALT, CONCRETE, PAVING_STONES, SAND, UNDEFINED};
+                        ASPHALT, CONCRETE, PAVING_STONES, SAND, UNDEFINED}
+
     public enum Highway {TRUNK, PRIMARY, SECONDARY, TERTIARY, UNCLASSIFIED,
                         RESIDENTIAL, LIVING_STREET, SERVICE, PEDESTRIAN, TRACK, ROAD,
                         FOOTWAY, BRIDLEWAY, STEPS, PATH, CYCLEWAY};

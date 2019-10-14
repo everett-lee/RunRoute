@@ -8,5 +8,5 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public interface BBCalculator {
-    public double[] calcBoundingBox(double startLat, double startLon, double runLength);
+    double[] calcBoundingBox(double startLat, double startLon, double runLength);
 }

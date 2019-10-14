@@ -74,7 +74,7 @@ public class WayQueryBuilderWithin implements QueryBuilder {
         // the run distance;
 
         try {
-            preparedStatement.setDouble(3, distance);
+            preparedStatement.setDouble(3, radius);
         } catch (SQLException e) {
             e.printStackTrace();
         }

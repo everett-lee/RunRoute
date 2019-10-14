@@ -26,7 +26,7 @@ import java.util.*;
 @Component
 @Qualifier("BFSConnectionPath")
 public class BFSConnectionPath extends SearchAlgorithm implements ILSGraphSearch {
-    final double REPEATED_WAY_VISIT_PENALTY = 2; // deducted from heuristic score
+    final double REPEATED_WAY_VISIT_PENALTY = 2.5; // deducted from heuristic score
     // for visits to Ways included in the main route
 
     private PriorityQueue<PathTuple> queue;

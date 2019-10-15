@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Arrays;
 
 /**
  * Builder class for the PostGIS query to retrieve details for ways contained within
@@ -74,7 +73,8 @@ public class WayQueryBuilderWithin implements QueryBuilder {
         // the run distance;
 
         try {
-            preparedStatement.setDouble(3, radius);
+            preparedStatement.setDouble(3, radius
+            );
         } catch (SQLException e) {
             e.printStackTrace();
         }

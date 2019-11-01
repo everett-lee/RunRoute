@@ -11,3 +11,4 @@ The repo for the corresponding client component is located here: https://github.
 ## A generated route 
 ![A generated route](/route.jpg)
 
+ 

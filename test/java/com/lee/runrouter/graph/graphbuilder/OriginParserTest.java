@@ -33,35 +33,6 @@ public class OriginParserTest {
         assertEquals(12540900, id);
     }
 
-    @Test
-    public void testkReturnedIDMatchesSQLTwo() {
-        boolean[] opts = {true, true, true, true, true, true, true,
-                true, true, true, true, true, true, true, true};
-
-        //System.out.println(calc.calcBoundingBox());
-
-        double[] coords = {51.919199, 1.045613};
-        long id = op.getOriginWayID(coords, opts);
-
-        // originWay closest to the giving coordinates
-        assertEquals(60886410, id);
-    }
-
-
-    @Test
-    public void testkReturnedIDMatchesSQLThree() {
-        boolean[] opts = {true, true, true, true, true, true, true,
-                true, true, true, true, true, true, true, true};
-
-        //System.out.println(calc.calcBoundingBox());
-
-        double[] coords = {51.925080, 0.986514};
-        long id = op.getOriginWayID(coords, opts);
-
-        // originWay closest to the giving coordinates
-        assertEquals(42202876, id);
-    }
-
 
     @Test(expected = IllegalArgumentException.class)
     public void testThrowErrorOnNoResult() {

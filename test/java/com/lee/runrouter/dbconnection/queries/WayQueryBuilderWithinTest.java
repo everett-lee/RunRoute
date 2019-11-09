@@ -31,10 +31,10 @@ public class WayQueryBuilderWithinTest {
     @Test
     public void testPreparedStatementCoordsCorrectOne() {
         double runLength = 5000;
-        qd.buildQuery(52, 4, runLength);
+        qd.buildQuery(52, 4, runLength/2);
         double[] origin = {52, 4};
 
-        String newBB = String.format("\tWHERE ST_DWithin(way, ST_MakePoint(%s, %s)::geography, %s)\n",
+        String newBB = String.format("\tWHERE ST_DWithin(way, ST_MakePoint(%s, %s), %s)\n",
                 origin[1], origin[0], runLength);
 
         sql += newBB + ROAD_OPTIONS + FOOT + END;
@@ -46,10 +46,10 @@ public class WayQueryBuilderWithinTest {
     @Test
     public void testPreparedStatementCoordsCorrectTwo() {
         double runLength = 0.2;
-        qd.buildQuery(25, 0, runLength);
+        qd.buildQuery(25, 0, runLength/2);
         double[] origin = {25, 0};
 
-        String newBB = String.format("\tWHERE ST_DWithin(way, ST_MakePoint(%s, %s)::geography, %s)\n",
+        String newBB = String.format("\tWHERE ST_DWithin(way, ST_MakePoint(%s, %s), %s)\n",
                 origin[1], origin[0], runLength);
 
         sql += newBB + ROAD_OPTIONS + FOOT + END;
@@ -64,10 +64,10 @@ public class WayQueryBuilderWithinTest {
                 false, false, false, false, true, true}); // set the new options
         double runLength = 5;
 
-        qd.buildQuery(25, 0, runLength);
+        qd.buildQuery(25, 0, runLength/2);
         double[] origin = {25, 0};
 
-        String newBB = String.format("\tWHERE ST_DWithin(way, ST_MakePoint(%s, %s)::geography, %s)\n",
+        String newBB = String.format("\tWHERE ST_DWithin(way, ST_MakePoint(%s, %s), %s)\n",
                 origin[1], origin[0], runLength);
 
         String newRoadOptions = "\tAND ((highway IN ('trunk', '', '', ''," +
@@ -86,10 +86,10 @@ public class WayQueryBuilderWithinTest {
                 false, false, false, false, false, false}); // set the new options
 
         double runLength = 5;
-        qd.buildQuery(50, 0, runLength);
+        qd.buildQuery(50, 0, runLength/2);
         double[] origin = {50, 0};
 
-        String newBB = String.format("\tWHERE ST_DWithin(way, ST_MakePoint(%s, %s)::geography, %s)\n",
+        String newBB = String.format("\tWHERE ST_DWithin(way, ST_MakePoint(%s, %s), %s)\n",
                 origin[1], origin[0], runLength);
 
         String newRoadOptions = "\tAND ((highway IN ('', '', '', ''," +

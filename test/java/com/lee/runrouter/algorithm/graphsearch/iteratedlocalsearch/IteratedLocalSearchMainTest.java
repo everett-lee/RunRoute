@@ -133,7 +133,6 @@ public class IteratedLocalSearchMainTest {
         assertEquals(expected, result);
     }
 
-
     @Test
     public void testGetPathSizeTriple() throws InvocationTargetException, IllegalAccessException {
         int expected = 3;

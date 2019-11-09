@@ -94,7 +94,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
 
         assertTrue(postScore >= originalScore);
         assertTrue(postDistance <= (originalLength + target) * 1.05);
-        assertTrue(postDistance <= (originalLength + target) * 95);
+        assertTrue(postDistance >= (originalLength + target) * 0.95);
     }
 
     @Test
@@ -116,7 +116,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
 
         assertTrue(postScore >= originalScore);
         assertTrue(postDistance <= (originalLength + target) * 1.05);
-        assertTrue(postDistance <= (originalLength + target) * 95);
+        assertTrue(postDistance >= (originalLength + target) * 0.95);
     }
 
     @Test
@@ -137,7 +137,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
 
         assertTrue(postScore >= originalScore);
         assertTrue(postDistance <= (originalLength + target) * 1.05);
-        assertTrue(postDistance <= (originalLength + target) * 95);
+        assertTrue(postDistance >= (originalLength + target) * 0.95);
     }
 
     @Test
@@ -158,7 +158,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
 
         assertTrue(postScore >= originalScore);
         assertTrue(postDistance <= (originalLength + target) * 1.05);
-        assertTrue(postDistance <= (originalLength + target) * 95);
+        assertTrue(postDistance >= (originalLength + target) * 0.95);
     }
 
     @Test
@@ -179,7 +179,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
 
         assertTrue(postScore >= originalScore);
         assertTrue(postDistance <= (originalLength + target) * 1.05);
-        assertTrue(postDistance <= (originalLength + target) * 95);
+        assertTrue(postDistance >= (originalLength + target) * 0.95);
     }
 
     @Test
@@ -199,7 +199,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
         System.out.println(postScore);
         assertTrue(postScore >= originalScore);
         assertTrue(postDistance <= (originalLength + target) * 1.05);
-        assertTrue(postDistance <= (originalLength + target) * 95);
+        assertTrue(postDistance >= (originalLength + target) * 0.95);
     }
 
 
@@ -220,7 +220,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
 
         assertTrue(postScore >= originalScore);
         assertTrue(postDistance <= (originalLength + target) * 1.05);
-        assertTrue(postDistance <= (originalLength + target) * 95);
+        assertTrue(postDistance >= (originalLength + target) * 0.95);
     }
 
     @Test
@@ -240,7 +240,7 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
 
         assertTrue(postScore >= originalScore);
         assertTrue(postDistance <= (originalLength + target) * 1.05);
-        assertTrue(postDistance <= (originalLength + target) * 95);
+        assertTrue(postDistance >= (originalLength + target) * 0.95);
     }
 
     @Test
@@ -262,6 +262,6 @@ public class IteratedLocalSearchMainAlgorithmTestBFS {
 
         assertTrue(postScore >= originalScore);
         assertTrue(postDistance <= (originalLength + target) * 1.05);
-        assertTrue(postDistance <= (originalLength + target) * 95);
+        assertTrue(postDistance >= (originalLength + target) * 0.95);
     }
 }

@@ -92,7 +92,7 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
         Node originNode = new Node(-1, coords[0], coords[1]);
 
         // find the Node contained in the starting Way that is
-        // closest to the the starting coordinates
+        // closest to the the selected starting coordinates
         originNode = AlgoHelpers.findClosest(originNode, repo.getOriginWay().getNodeContainer().getNodes());
 
         queue.add(new PathTupleMain(null, originNode, startingWay,
@@ -101,7 +101,7 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
         // update the repository origin node
         repo.setOriginNode(originNode);
 
-        // a Stream of each id corresponding to the Ways connected to the
+        // Create a list of each id corresponding to the Ways connected to the
         // starting Way. These are not added to the list of visited Ways
         List<Long> waysConnectedToStartIds = repo.getNodeToWay()
                 .get(repo.getOriginNode().getId())
@@ -220,18 +220,16 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
      * @return a PathTuple containing the path segment linking the origin
      * and target ways
      */
-    private PathTuple returnValidRoute(PathTuple topTuple, Node currentNode,
-                                       Way currentWay, double lowerBound, double upperBound) {
+    private PathTuple returnValidRoute(PathTuple topTuple, Node currentNode, Way currentWay, double lowerBound,
+                                       double upperBound) {
 
         double currentRouteLength = topTuple.getTotalLength();
-        double finalDistance = this.edgeDistanceCalculator
-                .calculateDistance(currentNode, repo.getOriginNode(),
-                        this.repo.getOriginWay());
+        double finalDistance = this.edgeDistanceCalculator.calculateDistance(currentNode, repo.getOriginNode(),
+                                                                             this.repo.getOriginWay());
 
         double totalRouteLength = currentRouteLength + finalDistance;
         // return the first valid cycle to exceed the min and max length requirement.
-        if (totalRouteLength > lowerBound &&
-                totalRouteLength < upperBound) {
+        if (totalRouteLength > lowerBound && totalRouteLength < upperBound) {
 
             double finalGradient = this.gradientCalculator.calculateGradient(currentNode, currentWay,
                     this.repo.getOriginNode(), this.repo.getOriginWay(),
@@ -245,6 +243,7 @@ public class BFS extends SearchAlgorithm implements GraphSearch {
                     topTuple.getTotalLength() + finalDistance, finalGradient);
             return returnTuple;
         }
+
         return  null; // return null if route length not within the required bounds
     }
 

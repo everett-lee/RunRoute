@@ -16,8 +16,8 @@ public class HaversineCalculator implements DistanceCalculator {
 
     /**
      *
-     * @param n1 First Node to measure distance from
-     * @param n2 Second node to measure distance to
+     * @param n1 Node to measure distance from
+     * @param n2 Node to measure distance to
      * @return an approximation of the distance between the two
      *         points in metres.
      */

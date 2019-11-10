@@ -29,7 +29,7 @@ public class ExecutorMain implements Executor {
     private SearchAlgorithm connectionPather;
     private CycleRemover cycleRemover;
 
-    private final double INITIAL_GRAPH_SIZE = 5000; // the starting size of the generated graph
+    private final double INITIAL_GRAPH_SIZE = 5000; // size (in KM^2) of requested graph
 
     public ExecutorMain(
             @Qualifier("RouteGeneratorMain") RouteGenerator routeGenerator,
@@ -73,7 +73,7 @@ public class ExecutorMain implements Executor {
         processElevationOptions(maxGradient, options);
 
         this.graphBuilder.buildGraph(coords, distance, processRoadOptions(options));
-        System.out.println("graph build");
+        System.out.println("graph built");
 
         PathTuple route = this.routeGenerator.generateRoute(coords, distance);
 
@@ -96,6 +96,7 @@ public class ExecutorMain implements Executor {
 
         String startingWay = route.getCurrentWay().getName();
 
+        // return as object suitable for marshalling as HTTP response
         return new ResponseObject(pathNodes, length, startingWay, averageGradient);
     }
 

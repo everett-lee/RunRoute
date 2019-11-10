@@ -56,12 +56,14 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         // plus the remaining available distance
         double availableDistance = distanceToAdd; // distance left available to add to route
 
-        // begin by reversing the incoming path
+        // begin by reversing the input path
         head = reverseList(head);
 
         int a = 1; // the starting node, indexed from 1
         int r = 2; // number of edges to remove
 
+        // while time limit not exceeded and maximum iterations without an improvement
+        // is below the maximum
         while (elapsedTime <= TIME_LIMIT && (this.getNoImprovement() < MAX_NO_IMPROVEMENT)) {
             elapsedTime = (new Date()).getTime() - startTime;
 
@@ -116,6 +118,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
             // new segment score is higher, so replace old path segment with the new one
             } else {
                 setImprovements(getImprovements() + 1);
+                // add this segment to the linked list
                 insertSegment(start, end, newSegment);
 
                 // update current node distances and target distance to reflect added segment
@@ -179,7 +182,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         return prev;
     }
 
-    // get a reference to the node a places into the linked list of PathTuples
+    // get a reference to the node 'a' places into the linked list of PathTuples
     // this is the start node of the removed segment
     private PathTuple getStartPathNode(PathTuple head, int a) {
         int i = 0;
@@ -190,7 +193,7 @@ public class IteratedLocalSearchMain implements IteratedLocalSearch {
         return head;
     }
 
-    // get a reference to the node r places from the start of the removed
+    // get a reference to the node 'r' places from the start of the removed
     // segment
     private PathTuple getEndPathNode(PathTuple endNode, int r) {
         int i = 0;

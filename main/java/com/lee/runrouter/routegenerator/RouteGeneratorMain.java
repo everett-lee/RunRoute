@@ -23,18 +23,15 @@ import java.util.Comparator;
 @Qualifier("RouteGeneratorMain")
 public class RouteGeneratorMain implements RouteGenerator {
     private GraphSearch pather;
-    private ILSGraphSearch connectionPather;
     private IteratedLocalSearch ils;
     private ElementRepo repo;
-    private int MAX_ATTEMPTS = 4; // maximum number of initial routes to generate
+    private int MAX_ATTEMPTS = 3; // maximum number of initial routes to generate
 
     public RouteGeneratorMain(@Qualifier("BFS") GraphSearch pather,
                               @Qualifier("IteratedLocalSearchMain") IteratedLocalSearch iteratedLocalSearch,
-                              @Qualifier("BFSConnectionPath") ILSGraphSearch connectionPather,
                               ElementRepo repo) {
         this.pather = pather;
         this.ils = iteratedLocalSearch;
-        this.connectionPather = connectionPather;
         this.repo = repo;
     }
 
@@ -66,10 +63,9 @@ public class RouteGeneratorMain implements RouteGenerator {
             }
         }
 
-        // sort the results by their difference to the target, then by score
+        // sort the results by score
         results.sort(Comparator
                 .comparing((PathTuple tuple) -> AlgoHelpers.calculateScore(tuple)).reversed());
-
         initialCycle = results.get(0);
 
 

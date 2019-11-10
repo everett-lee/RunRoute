@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 public class DirectDistanceHeuristic implements DistanceFromOriginNodeHeursitic {
     private final double SCALE_UP = 1.5; // amount to scale up the current Node's
     // distance by
+    private final double PENALTY = 100;
     private DistanceCalculator distanceCalculator;
 
     @Autowired
@@ -36,7 +37,7 @@ public class DirectDistanceHeuristic implements DistanceFromOriginNodeHeursitic 
 
         if (selectedDistanceFromOriginNode >
                 currentDistanceFromOriginNode * SCALE_UP) {
-            return - 100;
+            return - PENALTY;
         }
         return 0;
     }

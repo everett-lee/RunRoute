@@ -5,7 +5,6 @@ import com.lee.runrouter.algorithm.graphsearch.edgedistancecalculator.EdgeDistan
 import com.lee.runrouter.algorithm.heuristic.DistanceHeuristic.DistanceFromOriginNodeHeursitic;
 import com.lee.runrouter.algorithm.heuristic.ElevationHeuristic.ElevationHeuristic;
 import com.lee.runrouter.algorithm.heuristic.FeaturesHeuristic.FeaturesHeuristic;
-import com.lee.runrouter.algorithm.heuristic.Heuristic;
 import com.lee.runrouter.graph.elementrepo.ElementRepo;
 import com.lee.runrouter.graph.graphbuilder.graphelement.Way;
 import org.springframework.stereotype.Component;
@@ -92,8 +91,8 @@ public abstract class SearchAlgorithm {
         this.featuresHeuristic.setDislikedSurfaces(dislikedSurfaces);
     }
 
-    // set the prefer uphill preference. Guides the search towards
-    // steeper paths
+    // set the prefer uphill preference in the embedded heuristic.
+    // This guides the search towards steeper paths
     public void setElevationHeuristicOptions(boolean preferUphill) {
         if (preferUphill) {
             this.elevationHeuristic.setOptions(true);
@@ -103,9 +102,10 @@ public abstract class SearchAlgorithm {
     }
 
     public double applyDistanceScore(double distanceToNext) {
+        // if the distance to the next node exceeds the required amount
         if (distanceToNext > MINIMUM_SCORING_DISTANCE) {
-            double scoreLength = Math
-                    .min(distanceToNext, MAXIMUM_SCORING_DISTANCE);
+            // add the minimum of the distance covered and maximum store multiplier
+            double scoreLength = Math.min(distanceToNext, MAXIMUM_SCORING_DISTANCE);
             return scoreLength * DISTANCE_BONUS;
         }
         return 0;
